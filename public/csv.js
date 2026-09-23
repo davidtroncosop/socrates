@@ -1,6 +1,7 @@
 import { validateCatalog } from "./content.js";
 import { parseNumber, GRADES } from "./learning.js";
 import { videoFromFields } from "./video.js";
+import { parseMistakes, formatMistakes } from "./mistakes.js";
 export const columns = [
   "leccion_id",
   "titulo",
@@ -23,6 +24,7 @@ export const optionalColumns = [
   "video_titulo",
   "video_inicio",
   "video_fin",
+  "errores",
 ];
 const gradeFromCell = (value) =>
   value in GRADES
@@ -149,12 +151,14 @@ export function importCSV(raw) {
       throw Error(
         `Fila ${line}: la respuesta debe ser numérica (por ejemplo 7, 0,5 o 1/2).`,
       );
+    const mistakes = parseMistakes(record.errores, `Fila ${line}`);
     const q = [
       record.expresion,
       answer,
       record.instruccion,
       record.pista,
       record.explicacion,
+      ...(mistakes.length ? [mistakes] : []),
     ];
     if (record.tipo === "repaso") {
       if (l.review) throw Error(`Fila ${line}: repaso repetido para ${id}.`);
@@ -201,6 +205,7 @@ export function exportCSV(catalog) {
         // En segundos: Excel convierte «1:30» en la hora 01:30.
         l.video?.start ?? "",
         l.video?.end ?? "",
+        formatMistakes(q[5], " | "),
       ]),
     );
   }

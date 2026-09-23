@@ -72,3 +72,11 @@ test("CSV carries optional videos with times in seconds", () => {
   const broken = csv.replaceAll("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "https://vimeo.com/1");
   assert.throws(() => importCSV(broken), /enlace de YouTube/);
 });
+
+test("CSV carries common mistakes per exercise", () => {
+  const c = seedCatalog();
+  c.lessons[0].questions[2] = [...c.lessons[0].questions[2], [[12, "Falta dividir entre 2."], [-6, "Revisa el signo."]]];
+  const back = importCSV(exportCSV(c)).lessons[0];
+  assert.deepEqual(back.questions[2][5], [[12, "Falta dividir entre 2."], [-6, "Revisa el signo."]]);
+  assert.equal(back.questions[0].length, 5);
+});

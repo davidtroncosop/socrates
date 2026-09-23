@@ -624,3 +624,15 @@ test("reading reviews need two correct answers with reshuffled alternatives", as
   h.click("next");
   assert.deepEqual(h.read().mastered, ["lectura-narraciones"]);
 });
+
+test("wrong answers explain the likely mistake", async () => {
+  const h = await harness();
+  h.click("lesson:equations");
+  h.click("begin-exercises");
+  h.answer("−7");
+  assert.match(h.node("#feedback").textContent, /signo contrario/);
+  h.answer("7");
+  h.click("next");
+  h.answer("54");
+  assert.match(h.node("#feedback").textContent, /Multiplicaste por 3/);
+});

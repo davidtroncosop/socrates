@@ -66,6 +66,12 @@ function enteros(rng, level) {
     "Calcula el resultado combinando los números enteros.",
     "Sumar un negativo equivale a restar su valor absoluto. Opera de izquierda a derecha.",
     `${expr} = ${num(answer)}.`,
+    [
+      [
+        terms.reduce((a, b) => a + Math.abs(b), 0),
+        "Sumaste los números sin sus signos. Un número negativo resta: ubícalo en la recta numérica.",
+      ],
+    ],
   ];
 }
 
@@ -84,6 +90,12 @@ function semejantes(rng, level) {
     "Reduce los términos semejantes y escribe el coeficiente final de x.",
     "Todos los términos tienen x: suma y resta solo sus coeficientes.",
     `${terms.map(paren).join(" + ")} = ${num(answer)}; queda ${coef(answer)}.`,
+    [
+      [
+        terms.reduce((a, b) => a + Math.abs(b), 0),
+        "Sumaste todos los coeficientes. Los términos con signo − se restan.",
+      ],
+    ],
   ];
 }
 
@@ -108,6 +120,10 @@ function proporciones(rng, level) {
     `¿Cuánto cuestan ${b} cuadernos? Escribe solo el número.`,
     `Encuentra primero el precio de un cuaderno: $${a * price} ÷ ${a}.`,
     `Un cuaderno cuesta $${price}; ${b} cuestan ${b} × ${price} = $${b * price}.`,
+    [
+      [price, `Ese es el precio de un cuaderno. Ahora multiplícalo por ${b}.`],
+      [a * price + (b - a), "En una proporción directa no se suma la diferencia: se mantiene el precio por unidad."],
+    ],
   ];
 }
 
@@ -121,6 +137,7 @@ function signs(rng, level) {
       "Calcula el producto.",
       "Dos factores negativos dan un producto positivo.",
       `${num(a)} × ${paren(b)} = ${a * b}.`,
+      [[a + b, "Sumaste los números. Aquí se multiplican: (−) × (−) = (+)."]],
     ];
   }
   if (level === 1) {
@@ -133,6 +150,7 @@ function signs(rng, level) {
       "Resuelve primero el paréntesis.",
       `${b} − ${c} = ${num(b - c)}. Luego multiplica por ${num(a)}.`,
       `${num(a)} × ${paren(b - c)} = ${num(a * (b - c))}.`,
+      [[a * (b + c), `Dentro del paréntesis es una resta: ${b} − ${c} = ${num(b - c)}.`]],
     ];
   }
   const a = level === 2 ? int(rng, 2, 6) : -int(rng, 2, 6);
@@ -216,6 +234,10 @@ function potencias(rng, level) {
       "Aplica la suma de exponentes y calcula el valor.",
       `Misma base: suma los exponentes, ${m} + ${n} = ${m + n}.`,
       `${base}^${m + n} = ${base ** (m + n)}.`,
+      [
+        [base ** (m * n), "Multiplicaste los exponentes. Al multiplicar potencias de igual base, los exponentes se suman."],
+        [base * (m + n), `Una potencia no es base × exponente: ${base}^${m + n} es ${base} multiplicado por sí mismo ${m + n} veces.`],
+      ],
     ];
   }
   const n = int(rng, 1, max - 1),
@@ -226,6 +248,10 @@ function potencias(rng, level) {
     "Aplica la resta de exponentes y calcula el valor.",
     `Misma base: resta los exponentes, ${m} − ${n} = ${m - n}.`,
     `${base}^${m - n} = ${base ** (m - n)}.`,
+    [
+      [base * (m - n), `Una potencia no es base × exponente: ${base}^${m - n} es ${base} multiplicado por sí mismo ${m - n} veces.`],
+      [base ** (m + n), "Sumaste los exponentes. Al dividir potencias de igual base, se restan."],
+    ],
   ];
 }
 
@@ -241,6 +267,10 @@ function funcion(rng, level) {
       `Calcula la imagen de ${num(k)}.`,
       `Reemplaza x por ${num(k)}: ${num(m)} · ${paren(k)} ${plus(n)}.`,
       `f(${num(k)}) = ${num(m * k)} ${plus(n)} = ${num(y)}.`,
+      [
+        [m * k, `Calculaste ${num(m)} · ${paren(k)}, pero falta ${n < 0 ? "restar" : "sumar"} ${Math.abs(n)}.`],
+        [m + k + n, "Sumaste los números. En f(x) = mx + n, m multiplica a x."],
+      ],
     ];
   return [
     `f(x) = ${linear(m, n)} y f(x) = ${num(y)}`,
@@ -260,6 +290,10 @@ function notables(rng, level) {
       "Calcula el coeficiente del término del medio.",
       `El término del medio es 2 · x · ${a}.`,
       `(x + ${a})² = x² + ${2 * a}x + ${a * a}; el coeficiente es ${2 * a}.`,
+      [
+        [a, `Falta el doble: el término del medio es 2 · x · ${a}.`],
+        [a * a, "Ese es el término libre (a²). El coeficiente de x es 2a."],
+      ],
     ];
   if (level === 1)
     return [
@@ -268,6 +302,10 @@ function notables(rng, level) {
       "Calcula el término que no tiene x.",
       `El último término es el cuadrado de ${a}, siempre positivo.`,
       `(x − ${a})² = x² − ${2 * a}x + ${a * a}; el término libre es ${a * a}.`,
+      [
+        [-(a * a), "El cuadrado de un número negativo es positivo: (−a)² = a²."],
+        [2 * a, "Ese es el coeficiente del término del medio. El término libre es a²."],
+      ],
     ];
   if (level === 2)
     return [
@@ -276,6 +314,7 @@ function notables(rng, level) {
       "Suma por su diferencia: calcula el término sin x.",
       "(x + a)(x − a) = x² − a².",
       `(x + ${a})(x − ${a}) = x² − ${a * a}; el término libre es −${a * a}.`,
+      [[a * a, "En la suma por su diferencia el término libre es −a²: (+a)(−a) es negativo."]],
     ];
   const x = int(rng, 2, 9);
   return [
@@ -298,6 +337,10 @@ function porcentajes(rng, level) {
     "Calcula la cantidad. Escribe solo el número.",
     `Multiplica ${base} por ${p} y divide entre 100.`,
     `${base} × ${p} ÷ 100 = ${value}.`,
+    [
+      [p * base, "Olvidaste dividir entre 100: p % significa p de cada 100."],
+      [base - value, "Eso es lo que queda después de descontar. Se pide el porcentaje, no el resto."],
+    ],
   ];
 }
 
@@ -316,6 +359,10 @@ function pitagoras(rng, level) {
       "Calcula la hipotenusa del triángulo rectángulo.",
       "Usa a² + b² = c² y saca raíz cuadrada.",
       `${(a * k) ** 2} + ${(b * k) ** 2} = ${(c * k) ** 2}; c = ${c * k}.`,
+      [
+        [(a + b) * k, "No se suman los lados: se suman sus cuadrados y después se saca la raíz."],
+        [(c * k) ** 2, "Ese es c². Falta sacar la raíz cuadrada."],
+      ],
     ];
   return [
     `Hipotenusa ${c * k} y un cateto ${a * k}`,
@@ -323,6 +370,10 @@ function pitagoras(rng, level) {
     "Calcula el otro cateto.",
     "Despeja: b² = c² − a².",
     `${(c * k) ** 2} − ${(a * k) ** 2} = ${(b * k) ** 2}; b = ${b * k}.`,
+    [
+      [(b * k) ** 2, "Ese es b². Falta sacar la raíz cuadrada."],
+      [(c - a) * k, "No se restan los lados: se restan sus cuadrados y después se saca la raíz."],
+    ],
   ];
 }
 
@@ -344,7 +395,14 @@ export const generators = {
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);
 
+// Quita errores que coinciden con la respuesta o se repiten.
+function tidy(q) {
+  const seen = new Set([q[1]]);
+  const mistakes = (q[5] ?? []).filter(([v]) => !seen.has(v) && seen.add(v));
+  return mistakes.length ? [...q.slice(0, 5), mistakes] : q.slice(0, 5);
+}
+
 export function generateQuestions(lessonId, levels, rng = Math.random) {
   const gen = generators[lessonId];
-  return gen ? levels.map((level) => gen(rng, level)) : null;
+  return gen ? levels.map((level) => tidy(gen(rng, level))) : null;
 }

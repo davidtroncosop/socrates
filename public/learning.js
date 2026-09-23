@@ -539,7 +539,7 @@ export function solveLinear(raw) {
   if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
   return Math.abs(a) < 1e-12
     ? { kind: Math.abs(b) < 1e-12 ? "infinite" : "none" }
-    : { kind: "unique", answer: b / a, a, b };
+    : { kind: "unique", answer: b / a, a, b, left: l, right: r };
 }
 export function freshState() {
   return {

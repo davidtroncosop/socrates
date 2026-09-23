@@ -8,6 +8,7 @@ import {
   displayTitle,
 } from "./learning.js";
 import { validateVideo } from "./video.js";
+import { parseMistakes } from "./mistakes.js";
 export const SUBJECTS = ["matematica", "lenguaje"];
 export const CONTENT_KEY = "socatres.content.v1";
 export const LEGACY_CONTENT_KEY = "tutorai.content.v1";
@@ -133,8 +134,29 @@ export function validateCatalog(input) {
         throw Error(`${prefix}: completa ${label} (máximo ${max} caracteres).`);
       return value.trim();
     }
+    // Sexto elemento opcional: errores frecuentes [[respuesta, mensaje], …].
+    function mistakes(list, label) {
+      if (list === undefined || (Array.isArray(list) && !list.length)) return [];
+      if (
+        !Array.isArray(list) ||
+        list.length > 8 ||
+        !list.every(
+          (m) =>
+            Array.isArray(m) &&
+            m.length === 2 &&
+            Number.isFinite(m[0]) &&
+            typeof m[1] === "string" &&
+            m[1].trim() &&
+            m[1].length <= 300,
+        )
+      )
+        throw Error(
+          `${prefix}: ${label} tiene errores frecuentes inválidos (hasta 8, cada uno con respuesta numérica y mensaje).`,
+        );
+      return [list.map(([answer, message]) => [answer, message.trim()])];
+    }
     function question(q, label) {
-      if (!Array.isArray(q) || q.length !== 5)
+      if (!Array.isArray(q) || (q.length !== 5 && q.length !== 6))
         throw Error(
           `${prefix}: ${label} debe tener expresión, respuesta, enunciado, pista y explicación.`,
         );
@@ -148,6 +170,7 @@ export function validateCatalog(input) {
         text(q[2], `${label}, enunciado`),
         text(q[3], `${label}, pista`),
         text(q[4], `${label}, explicación`),
+        ...mistakes(q[5], label),
       ];
     }
     if (!Array.isArray(l.questions) || l.questions.length !== 4)
@@ -242,5 +265,9 @@ export function formQuestion(data, prefix) {
     String(data.get(prefix + "-0") || ""),
     answer,
     ...[2, 3, 4].map((i) => String(data.get(prefix + "-" + i) || "")),
+    ...(() => {
+      const list = parseMistakes(data.get(prefix + "-5"));
+      return list.length ? [list] : [];
+    })(),
   ];
 }

@@ -23,6 +23,7 @@ import { readCatalog, seedCatalog, writeCatalog } from "./content.js";
 import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
 import { videoFacade, videoPlayer } from "./video.js";
+import { diagnoseMistake } from "./mistakes.js";
 import { $, escape, button, heading } from "./ui.js";
 import { getUnitsForLessons } from "./units.js";
 import { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
@@ -925,8 +926,11 @@ function check(e) {
   f.className = "feedback" + (correct ? " good" : "");
   if (!correct) {
     s.wrong++;
-    f.textContent =
-      "Todavía no coincide. Revisa el enunciado y tu respuesta; puedes probar otra vez o pedir una pista.";
+    // Sin profesor al lado, se explica el error cuando se reconoce.
+    const why = diagnoseMistake(q, raw);
+    f.textContent = why
+      ? `Todavía no. ${why} Inténtalo otra vez.`
+      : "Todavía no coincide. Revisa el enunciado y tu respuesta; puedes probar otra vez o pedir una pista.";
     if (!state.reviews.some((r) => r.lesson === lesson))
       state.reviews.push({ lesson, due: Date.now() });
     save();
