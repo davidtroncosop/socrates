@@ -1,7 +1,9 @@
 export const lessons = [
   {
     id: "equations",
-    title: "7° Básico · Encuentra el valor de x",
+    title: "Encuentra el valor de x",
+    subject: "matematica",
+    grade: "7b",
     description: "MA07 OA 09 · Operaciones inversas y principio de la balanza",
     concept:
       "Una ecuación es como una balanza en equilibrio (Mineduc MA07 OA 09): el signo igual (=) significa que ambos lados pesan lo mismo. Para despejar la incógnita x, aplicamos operaciones inversas. Principio fundamental: la misma operación que aplicas a un lado de la balanza, debes aplicarla exactamente igual al otro lado para mantener el equilibrio.",
@@ -40,7 +42,9 @@ export const lessons = [
   },
   {
     id: "signs",
-    title: "8° Básico · Haz las paces con los signos",
+    title: "Haz las paces con los signos",
+    subject: "matematica",
+    grade: "8b",
     description: "MA08 OA 08 · Paréntesis, distribución y números enteros en Z",
     concept:
       "El factor fuera del paréntesis multiplica a cada término. Al operar con números enteros (Z), recuerda que (-) × (-) = (+) y (-) × (+) = (-) (Mineduc MA08 OA 08).",
@@ -78,7 +82,9 @@ export const lessons = [
   },
   {
     id: "both",
-    title: "8° Básico · Conecta las dos partes",
+    title: "Conecta las dos partes",
+    subject: "matematica",
+    grade: "8b",
     description: "MA08 OA 08 · Ecuaciones con incógnita en ambos lados (ax + b = cx + d)",
     concept:
       "Agrupa las incógnitas en un lado y los números en el otro, aplicando siempre la misma operación a ambos lados (Mineduc MA08 OA 08).",
@@ -116,7 +122,9 @@ export const lessons = [
   },
   {
     id: "racionales",
-    title: "8° Básico · Ecuaciones con racionales y decimales",
+    title: "Ecuaciones con racionales y decimales",
+    subject: "matematica",
+    grade: "8b",
     description: "MA08 OA 08 · Coeficientes racionales en Q y valores decimales",
     concept:
       "En los números racionales (Q), una ecuación con decimales se resuelve aislando los términos en x o amplificando para operar con enteros (Mineduc MA08 OA 08).",
@@ -154,7 +162,9 @@ export const lessons = [
   },
   {
     id: "combinadas",
-    title: "8° Básico · Distribución y reducción combinada",
+    title: "Distribución y reducción combinada",
+    subject: "matematica",
+    grade: "8b",
     description: "MA08 OA 08 · Ecuaciones complejas con varios pasos de simplificación",
     concept:
       "Para resolver ecuaciones complejas: primero elimina paréntesis distribuyendo, luego reduce términos semejantes y finalmente despeja la incógnita (Mineduc MA08 OA 08).",
@@ -192,7 +202,9 @@ export const lessons = [
   },
   {
     id: "problemas",
-    title: "8° Básico / 1° Medio · Modelamiento y problemas reales",
+    title: "Modelamiento y problemas reales",
+    subject: "matematica",
+    grade: "1m",
     description: "MA08 OA 08 / MA01 OA 04 · Planteamiento y resolución de situaciones cotidianas",
     concept:
       "Modelar es traducir un problema real a lenguaje matemático (Mineduc MA08 OA 08 / MA01 OA 04): define la incógnita x, escribe la relación como ecuación y comprueba la solución en el contexto.",
@@ -230,7 +242,9 @@ export const lessons = [
   },
   {
     id: "enteros",
-    title: "7° Básico · Suma y resta de enteros en Z",
+    title: "Suma y resta de enteros en Z",
+    subject: "matematica",
+    grade: "7b",
     description: "MA07 OA 01 · Reglas de signos, valor absoluto y recta numérica",
     concept:
       "En los números enteros (Z), sumar valores con signos iguales mantiene el signo; sumar con signos opuestos resta sus valores y mantiene el signo del mayor en valor absoluto (Mineduc MA07 OA 01).",
@@ -268,7 +282,9 @@ export const lessons = [
   },
   {
     id: "semejantes",
-    title: "7° Básico · Reducción de términos semejantes",
+    title: "Reducción de términos semejantes",
+    subject: "matematica",
+    grade: "7b",
     description: "MA07 OA 07 · Expresiones algebraicas y coeficientes numéricos",
     concept:
       "Para reducir términos semejantes se suman o restan únicamente sus coeficientes numéricos, conservando intacta la parte literal (Mineduc MA07 OA 07).",
@@ -306,7 +322,9 @@ export const lessons = [
   },
   {
     id: "proporciones",
-    title: "7° Básico · Proporcionalidad directa y regla de tres",
+    title: "Proporcionalidad directa y regla de tres",
+    subject: "matematica",
+    grade: "7b",
     description: "MA07 OA 08 · Constante de proporcionalidad k y cálculo de incógnitas",
     concept:
       "Dos variables son directamente proporcionales cuando su cociente es constante (y = k · x). Si a/b = c/x, entonces x = (b · c) / a (Mineduc MA07 OA 08).",
@@ -344,7 +362,9 @@ export const lessons = [
   },
   {
     id: "potencias",
-    title: "8° Básico · Potencias y propiedades de exponentes",
+    title: "Potencias y propiedades de exponentes",
+    subject: "matematica",
+    grade: "8b",
     description: "MA08 OA 02 · Multiplicación y división de potencias de igual base en Z",
     concept:
       "Al multiplicar potencias de igual base se suman los exponentes: a^n · a^m = a^(n+m). Al dividir se restan: a^n ÷ a^m = a^(n-m) (Mineduc MA08 OA 02).",
@@ -382,7 +402,9 @@ export const lessons = [
   },
   {
     id: "funcion",
-    title: "8° Básico · Función afín y pendiente",
+    title: "Función afín y pendiente",
+    subject: "matematica",
+    grade: "8b",
     description: "MA08 OA 07 · Evaluación de f(x) = mx + n, pendiente m e intercepto",
     concept:
       "Una función afín tiene la forma f(x) = mx + n, donde m es la pendiente (tasa de cambio) y n es el valor inicial cuando x = 0 (Mineduc MA08 OA 07).",
@@ -420,7 +442,9 @@ export const lessons = [
   },
   {
     id: "notables",
-    title: "1° Medio · Productos notables y binomios",
+    title: "Productos notables y binomios",
+    subject: "matematica",
+    grade: "1m",
     description: "MA01 OA 03 · Cuadrado de binomio (a+b)² y suma por su diferencia",
     concept:
       "Los productos notables permiten multiplicar expresiones algebraicas de forma directa (Mineduc MA01 OA 03): (a + b)² = a² + 2ab + b²; (a + b)(a − b) = a² − b².",
@@ -578,6 +602,32 @@ export function loadState(storage, availableLessons = lessons) {
   } catch {
     return freshState();
   }
+}
+
+export const GRADES = {
+  "5b": "5° Básico",
+  "6b": "6° Básico",
+  "7b": "7° Básico",
+  "8b": "8° Básico",
+  "1m": "1° Medio",
+  "2m": "2° Medio",
+};
+const gradePrefix = new RegExp(
+  `^(?:${Object.values(GRADES).join("|")})(?:\\s*/\\s*(?:${Object.values(GRADES).join("|")}))*\\s*·\\s*`,
+);
+// Catálogos anteriores guardaban el curso solo en el título («7° Básico · …»).
+export function inferGrade(lesson) {
+  if (lesson?.grade in GRADES) return lesson.grade;
+  const title = String(lesson?.title || "");
+  const prefix = title.match(gradePrefix)?.[0] ?? "";
+  // «8° Básico / 1° Medio · …» se asigna al curso más alto.
+  let grade = "7b";
+  for (const [key, label] of Object.entries(GRADES))
+    if (prefix.includes(label)) grade = key;
+  return grade;
+}
+export function displayTitle(lesson) {
+  return String(lesson?.title || "").replace(gradePrefix, "");
 }
 
 export function getSubject(lesson) {

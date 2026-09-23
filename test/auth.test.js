@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { SESSION_KEY, readSession, startSession, endSession } from "./auth.js";
+import { SESSION_KEY, readSession, startSession, endSession } from "../public/auth.js";
 function storage() {
   const values = new Map();
   return {

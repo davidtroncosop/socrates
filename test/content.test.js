@@ -8,8 +8,8 @@ import {
   readCatalog,
   writeCatalog,
   formQuestion,
-} from "./content.js";
-import { loadState } from "./learning.js";
+} from "../public/content.js";
+import { loadState } from "../public/learning.js";
 test("initial catalog supplies complete independent reviews", () => {
   const catalog = validateCatalog(seedCatalog());
   assert.equal(catalog.lessons.length, 26);
@@ -126,4 +126,24 @@ test("existing catalogs receive new lessons once, preserving edits and withdrawa
   upgraded.lessons.find(l => l.id === "lectura-medios").status = "draft";
   writeCatalog(storage, upgraded);
   assert.deepEqual(readCatalog(storage), upgraded);
+});
+
+test("legacy catalogs gain subject and grade from titles without duplicating them", () => {
+  const legacy = seedCatalog();
+  for (const l of legacy.lessons) {
+    delete l.subject;
+    delete l.grade;
+  }
+  legacy.lessons[0].title = "8° Básico / 1° Medio · Modelamiento";
+  legacy.lessons[1].title = "5° Básico · Resumen";
+  const migrated = validateCatalog(legacy).lessons;
+  assert.equal(migrated[0].grade, "1m");
+  assert.equal(migrated[0].title, "Modelamiento");
+  assert.equal(migrated[1].grade, "5b");
+  assert.equal(migrated[1].title, "Resumen");
+  assert.ok(migrated.every((l) => ["matematica", "lenguaje"].includes(l.subject)));
+  assert.equal(migrated.find((l) => l.id === "lectura-narraciones").subject, "lenguaje");
+  const bad = seedCatalog();
+  bad.lessons[0].grade = "9b";
+  assert.throws(() => validateCatalog(bad), /curso/);
 });

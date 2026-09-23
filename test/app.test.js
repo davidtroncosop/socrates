@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { solveLinear } from "../public/learning.js";
 // Lightweight DOM adapter for exercising real app handlers; visual QA remains separate.
 async function harness(saved) {
   const nodes = new Map();
@@ -34,7 +35,7 @@ async function harness(saved) {
     querySelectorAll: () => [],
     createElement: () => node("created"),
   };
-  const mod = await import(`./app.js?test=${Math.random()}`);
+  const mod = await import(`../public/app.js?test=${Math.random()}`);
   return {
     node,
     mod,
@@ -43,6 +44,11 @@ async function harness(saved) {
       node("#app").click({
         target: { closest: () => ({ dataset: { action }, disabled: false }) },
       });
+    },
+    // Los repasos son generados: se lee la ecuación en pantalla y se resuelve.
+    shownAnswer() {
+      const expr = node("#app").innerHTML.match(/class="equation[^"]*">([^<]+)</)[1];
+      return String(solveLinear(expr).answer);
     },
     answer(value, work = "") {
       node("#answer").value = value;
@@ -105,7 +111,7 @@ test("later independent review confirms mastery and moves next review forward", 
     reviews: [{ lesson: "equations", due: now - 1000 }],
   });
   h.click("review:equations");
-  h.answer("7");
+  h.answer(h.shownAnswer());
   h.click("next");
   assert.deepEqual(h.read().mastered, ["equations"]);
   assert.ok(h.read().reviews[0].due > now + 6 * 86400000);
@@ -122,7 +128,7 @@ test("same-day corrective practice does not certify mastery", async () => {
     reviews: [{ lesson: "equations", due: now }],
   });
   h.click("review:equations");
-  h.answer("7");
+  h.answer(h.shownAnswer());
   h.click("next");
   assert.deepEqual(h.read().mastered, []);
 });
@@ -391,14 +397,10 @@ test("Engagement mechanics: effort XP, reward tokens, streak shield, belts, triu
   // 7. Verify Triumphant session closure (finish):
   h.click("lesson:equations");
   h.click("begin-exercises");
-  h.answer("7");
-  h.click("next");
-  h.answer("6");
-  h.click("next");
-  h.answer("6");
-  h.click("next");
-  h.answer("7");
-  h.click("next"); // triggers finish()
+  for (let i = 0; i < 4; i++) {
+    h.answer(h.shownAnswer());
+    h.click("next"); // the fourth triggers finish()
+  }
 
   const finishHtml = h.node("#app").innerHTML;
   assert.match(finishHtml, /triumphant-summary/);
@@ -415,3 +417,36 @@ test("Engagement mechanics: effort XP, reward tokens, streak shield, belts, triu
 });
 
 
+
+test("practicing a completed lesson again uses new generated exercises", async () => {
+  const h = await harness({
+    version: 1,
+    diagnosed: true,
+    completed: ["equations"],
+    mastered: [],
+    notes: [],
+    attempts: [],
+    reviews: [],
+  });
+  h.click("lesson:equations");
+  assert.match(h.node("#app").innerHTML, /ejercicios nuevos/);
+  h.click("begin-exercises");
+  for (let i = 0; i < 4; i++) {
+    h.answer(h.shownAnswer());
+    h.click("next");
+  }
+  assert.deepEqual(h.read().completed, ["equations"]);
+  assert.equal(h.read().attempts.filter((a) => a.correct).length, 4);
+});
+
+test("grade filters use lesson metadata, not titles", async () => {
+  const h = await harness();
+  assert.match(h.node("#app").innerHTML, /data-action="filter:5b">5° Básico \(1\)/);
+  h.click("filter:1m");
+  const html = h.node("#app").innerHTML;
+  assert.match(html, /data-action="lesson:notables"/);
+  assert.match(html, /data-action="lesson:lectura-critica-1m"/);
+  assert.doesNotMatch(html, /data-action="lesson:equations"/);
+  h.click("filter:7b");
+  assert.match(h.node("#app").innerHTML, /data-action="lesson:equations"/);
+});

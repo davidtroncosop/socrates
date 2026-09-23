@@ -8,7 +8,7 @@ import {
   lessons,
   getSubject,
   compressImage,
-} from "./learning.js";
+} from "../public/learning.js";
 test("accepts equivalent numeric answers without executing expressions", () => {
   for (const raw of ["7", "x = 7", "14/2", "7,0"]) assert.ok(isCorrect(raw, 7));
   assert.equal(parseNumber("1/0"), null);

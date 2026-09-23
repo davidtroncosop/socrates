@@ -1,5 +1,13 @@
 import { curriculumLessons } from "./curriculum.js";
-import { lessons as defaults, parseNumber } from "./learning.js";
+import {
+  lessons as defaults,
+  parseNumber,
+  GRADES,
+  getSubject,
+  inferGrade,
+  displayTitle,
+} from "./learning.js";
+export const SUBJECTS = ["matematica", "lenguaje"];
 export const CONTENT_KEY = "socatres.content.v1";
 export const LEGACY_CONTENT_KEY = "tutorai.content.v1";
 const reviews = [
@@ -143,9 +151,22 @@ export function validateCatalog(input) {
     }
     if (!Array.isArray(l.questions) || l.questions.length !== 4)
       throw Error(`${prefix}: se necesitan exactamente cuatro ejercicios.`);
+    if (l.subject !== undefined && !SUBJECTS.includes(l.subject))
+      throw Error(`${prefix}: la materia debe ser matematica o lenguaje.`);
+    if (l.grade !== undefined && !(l.grade in GRADES))
+      throw Error(
+        `${prefix}: el curso debe ser ${Object.keys(GRADES).join(", ")}.`,
+      );
     return {
       id: l.id,
-      title: text(l.title, "título", 150),
+      subject: l.subject ?? getSubject(l),
+      grade: l.grade ?? inferGrade(l),
+      // Al migrar, el curso deja de repetirse en el título.
+      title: text(
+        l.grade === undefined ? displayTitle(l) : l.title,
+        "título",
+        150,
+      ),
       description: text(l.description, "descripción", 300),
       concept: text(l.concept, "concepto"),
       examples: text(l.examples, "ejemplo"),
@@ -196,6 +217,8 @@ export function mergeCatalog(current, incoming) {
 export function newLesson() {
   return {
     id: "leccion-" + crypto.randomUUID(),
+    subject: "matematica",
+    grade: "7b",
     title: "",
     description: "",
     concept: "",

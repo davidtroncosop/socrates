@@ -1,5 +1,5 @@
 import { validateCatalog } from "./content.js";
-import { parseNumber } from "./learning.js";
+import { parseNumber, GRADES } from "./learning.js";
 export const columns = [
   "leccion_id",
   "titulo",
@@ -14,6 +14,14 @@ export const columns = [
   "pista",
   "explicacion",
 ];
+// Opcionales para que las plantillas anteriores sigan siendo válidas.
+export const optionalColumns = ["materia", "curso"];
+const gradeFromCell = (value) =>
+  value in GRADES
+    ? value
+    : Object.keys(GRADES).find(
+        (k) => GRADES[k].toLowerCase() === value.toLowerCase(),
+      ) ?? value;
 export function parseCSV(raw) {
   const text = raw
     .replace(/^\uFEFF/, "")
@@ -96,6 +104,8 @@ export function importCSV(raw) {
         description: "",
         concept: "",
         examples: "",
+        subject: undefined,
+        grade: undefined,
         status: "draft",
         questions: Array(4).fill(null),
         review: null,
@@ -107,7 +117,13 @@ export function importCSV(raw) {
       ["descripcion", "description"],
       ["concepto", "concept"],
       ["ejemplo", "examples"],
+      ["materia", "subject"],
+      ["curso", "grade"],
     ]) {
+      if (column === "curso" && record.curso)
+        record.curso = gradeFromCell(record.curso);
+      if (column === "materia" && record.materia)
+        record.materia = record.materia.toLowerCase();
       if (record[column]) {
         if (l[field] && l[field] !== record[column])
           throw Error(
@@ -145,7 +161,7 @@ export function importCSV(raw) {
   return validateCatalog({ version: 1, lessons: [...groups.values()] });
 }
 export function exportCSV(catalog) {
-  const rows = [columns];
+  const rows = [[...columns, ...optionalColumns]];
   for (const l of validateCatalog(catalog).lessons) {
     [...l.questions, l.review].forEach((q, i) =>
       rows.push([
@@ -161,6 +177,8 @@ export function exportCSV(catalog) {
         q[2],
         q[3],
         q[4],
+        l.subject,
+        l.grade,
       ]),
     );
   }

@@ -6,7 +6,7 @@ import {
   formQuestion,
   seedCatalog,
 } from "./content.js";
-import { getSubject } from "./learning.js";
+import { getSubject, GRADES } from "./learning.js";
 const esc = (s) =>
   String(s).replace(
     /[&<>"']/g,
@@ -91,7 +91,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
             const sub = getSubject(l);
             const isLang = sub === "lenguaje";
             const subjectTag = `<span class="subject-tag ${isLang ? "subject-lang" : "subject-math"}">${isLang ? "📖 Lenguaje" : "📐 Matemática"}</span>`;
-            return `<article class="lesson admin-lesson ${isLang ? "lesson-lang" : "lesson-math"}"><span class="node">${String(i + 1).padStart(2, "0")}</span><div class="lesson-info"><div class="lesson-tags"><span class="status-tag ${l.status}">${l.status === "published" ? "Publicada" : "Borrador"}</span>${subjectTag}</div><h3>${esc(l.title)}</h3><p>${esc(l.description)}</p><small>4 ejercicios + repaso</small></div><div class="actions"><button data-admin="edit" data-id="${l.id}">Editar</button><button data-admin="toggle" data-id="${l.id}">${l.status === "published" ? "Retirar de ruta" : "Publicar"}</button><button data-admin="up" data-id="${l.id}" ${i === 0 ? "disabled" : ""} aria-label="Subir ${esc(l.title)}">↑</button><button data-admin="down" data-id="${l.id}" ${i === all.length - 1 ? "disabled" : ""} aria-label="Bajar ${esc(l.title)}">↓</button></div></article>`;
+            return `<article class="lesson admin-lesson ${isLang ? "lesson-lang" : "lesson-math"}"><span class="node">${String(i + 1).padStart(2, "0")}</span><div class="lesson-info"><div class="lesson-tags"><span class="status-tag ${l.status}">${l.status === "published" ? "Publicada" : "Borrador"}</span><span class="oa-badge">${esc(GRADES[l.grade])}</span>${subjectTag}</div><h3>${esc(l.title)}</h3><p>${esc(l.description)}</p><small>4 ejercicios + repaso</small></div><div class="actions"><button data-admin="edit" data-id="${l.id}">Editar</button><button data-admin="toggle" data-id="${l.id}">${l.status === "published" ? "Retirar de ruta" : "Publicar"}</button><button data-admin="up" data-id="${l.id}" ${i === 0 ? "disabled" : ""} aria-label="Subir ${esc(l.title)}">↑</button><button data-admin="down" data-id="${l.id}" ${i === all.length - 1 ? "disabled" : ""} aria-label="Bajar ${esc(l.title)}">↓</button></div></article>`;
           })
           .join("")
       : '<section class="card empty">No hay lecciones para mostrar. Crea una o importa un archivo.</section>';
@@ -99,10 +99,20 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
   function field(name, label, value, large = false) {
     return `<label for="${name}">${label}</label>${large ? `<textarea id="${name}" name="${name}" required maxlength="3000">${esc(value)}</textarea>` : `<input id="${name}" name="${name}" required maxlength="${name === "title" ? 150 : name === "description" ? 300 : 3000}" value="${esc(value)}">`}`;
   }
+  function select(name, label, value, options) {
+    return `<label for="${name}">${label}</label><select id="${name}" name="${name}">${Object.entries(
+      options,
+    )
+      .map(
+        ([key, text]) =>
+          `<option value="${key}"${key === value ? " selected" : ""}>${esc(text)}</option>`,
+      )
+      .join("")}</select>`;
+  }
   function editor(lesson) {
     editing = structuredClone(lesson);
     dirty = false;
-    app.innerHTML = `<button class="back" data-admin="back">← Biblioteca de contenido</button><div class="eyebrow">EDITOR DE LECCIONES</div><h1>${lesson.title ? "Editar lección" : "Una nueva oportunidad de aprender."}</h1><p class="intro">Completa cuatro ejercicios y un repaso diferente. Esta versión admite respuestas numéricas. Guardar conserva el estado actual de publicación.</p><div id="admin-message" class="feedback" role="status"></div><form id="lesson-editor"><section class="card">${field("title", "Título", lesson.title)}${field("description", "Descripción breve", lesson.description)}${field("concept", "Concepto que aprenderá el alumno", lesson.concept, true)}${field("examples", "Ejemplo resuelto para la segunda pista", lesson.examples, true)}<p class="muted">Identificador: ${esc(lesson.id)} · ${lesson.status === "published" ? "Publicada" : "Borrador"}</p></section><div class="section-title"><h2>Diseña la práctica</h2><span class="muted">4 ejercicios + 1 repaso</span></div>${[...lesson.questions, lesson.review].map((q, i) => `<fieldset class="card question-editor"><legend>${i + 1}. ${stages[i]}</legend>${field("q" + i + "-0", "Expresión o problema", q[0])}${field("q" + i + "-2", "Instrucción para el alumno", q[2], true)}<div class="editor-grid"><div>${field("q" + i + "-1", "Respuesta numérica correcta", q[1])}</div><div>${field("q" + i + "-3", "Primera pista", q[3])}</div></div>${field("q" + i + "-4", "Explicación de la solución", q[4], true)}</fieldset>`).join("")}<div class="editor-save actions"><button type="submit" class="primary">Guardar ${lesson.status === "published" ? "cambios" : "borrador"}</button><button type="button" data-admin="preview">Vista previa</button><button type="button" data-admin="back">Cancelar</button></div></form><div id="lesson-preview"></div>`;
+    app.innerHTML = `<button class="back" data-admin="back">← Biblioteca de contenido</button><div class="eyebrow">EDITOR DE LECCIONES</div><h1>${lesson.title ? "Editar lección" : "Una nueva oportunidad de aprender."}</h1><p class="intro">Completa cuatro ejercicios y un repaso diferente. Esta versión admite respuestas numéricas. Guardar conserva el estado actual de publicación.</p><div id="admin-message" class="feedback" role="status"></div><form id="lesson-editor"><section class="card">${field("title", "Título", lesson.title)}${field("description", "Descripción breve", lesson.description)}<div class="editor-grid"><div>${select("subject", "Materia", lesson.subject, { matematica: "📐 Matemática", lenguaje: "📖 Lenguaje" })}</div><div>${select("grade", "Curso", lesson.grade, GRADES)}</div></div>${field("concept", "Concepto que aprenderá el alumno", lesson.concept, true)}${field("examples", "Ejemplo resuelto para la segunda pista", lesson.examples, true)}<p class="muted">Identificador: ${esc(lesson.id)} · ${lesson.status === "published" ? "Publicada" : "Borrador"}</p></section><div class="section-title"><h2>Diseña la práctica</h2><span class="muted">4 ejercicios + 1 repaso</span></div>${[...lesson.questions, lesson.review].map((q, i) => `<fieldset class="card question-editor"><legend>${i + 1}. ${stages[i]}</legend>${field("q" + i + "-0", "Expresión o problema", q[0])}${field("q" + i + "-2", "Instrucción para el alumno", q[2], true)}<div class="editor-grid"><div>${field("q" + i + "-1", "Respuesta numérica correcta", q[1])}</div><div>${field("q" + i + "-3", "Primera pista", q[3])}</div></div>${field("q" + i + "-4", "Explicación de la solución", q[4], true)}</fieldset>`).join("")}<div class="editor-save actions"><button type="submit" class="primary">Guardar ${lesson.status === "published" ? "cambios" : "borrador"}</button><button type="button" data-admin="preview">Vista previa</button><button type="button" data-admin="back">Cancelar</button></div></form><div id="lesson-preview"></div>`;
     $("#lesson-editor").oninput = () => {
       dirty = true;
     };
@@ -132,7 +142,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
     const lesson = {
       ...editing,
       ...Object.fromEntries(
-        ["title", "description", "concept", "examples"].map((key) => [
+        ["title", "description", "subject", "grade", "concept", "examples"].map((key) => [
           key,
           data.get(key),
         ]),
