@@ -6,5 +6,5 @@ compatibility_date = "2025-11-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "socatres"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "5b170db4-bbdd-4471-854f-916fba37e5d5"
 migrations_dir = "migrations"
