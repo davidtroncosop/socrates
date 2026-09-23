@@ -60,3 +60,15 @@ test("CSV carries subject and grade, accepts labels and older templates without 
     .join("\r\n");
   assert.equal(importCSV(older).lessons[0].grade, "7b");
 });
+
+test("CSV carries optional videos with times in seconds", () => {
+  const c = seedCatalog();
+  c.lessons[0].video = { id: "dQw4w9WgXcQ", title: "La balanza", start: 90, end: 240 };
+  const csv = exportCSV(c);
+  assert.match(csv, /"90";"240"/);
+  const back = importCSV(csv).lessons;
+  assert.deepEqual(back[0].video, c.lessons[0].video);
+  assert.equal(back[1].video, undefined);
+  const broken = csv.replaceAll("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "https://vimeo.com/1");
+  assert.throws(() => importCSV(broken), /enlace de YouTube/);
+});

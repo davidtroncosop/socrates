@@ -1,5 +1,6 @@
 import { validateCatalog } from "./content.js";
 import { parseNumber, GRADES } from "./learning.js";
+import { videoFromFields } from "./video.js";
 export const columns = [
   "leccion_id",
   "titulo",
@@ -15,7 +16,14 @@ export const columns = [
   "explicacion",
 ];
 // Opcionales para que las plantillas anteriores sigan siendo válidas.
-export const optionalColumns = ["materia", "curso"];
+export const optionalColumns = [
+  "materia",
+  "curso",
+  "video_url",
+  "video_titulo",
+  "video_inicio",
+  "video_fin",
+];
 const gradeFromCell = (value) =>
   value in GRADES
     ? value
@@ -119,6 +127,10 @@ export function importCSV(raw) {
       ["ejemplo", "examples"],
       ["materia", "subject"],
       ["curso", "grade"],
+      ["video_url", "videoUrl"],
+      ["video_titulo", "videoTitle"],
+      ["video_inicio", "videoStart"],
+      ["video_fin", "videoEnd"],
     ]) {
       if (column === "curso" && record.curso)
         record.curso = gradeFromCell(record.curso);
@@ -158,6 +170,11 @@ export function importCSV(raw) {
       l.questions[index] = q;
     } else throw Error(`Fila ${line}: tipo debe ser ejercicio o repaso.`);
   });
+  for (const l of groups.values())
+    l.video = videoFromFields(
+      { url: l.videoUrl, title: l.videoTitle, start: l.videoStart, end: l.videoEnd },
+      `Lección ${l.id}`,
+    );
   return validateCatalog({ version: 1, lessons: [...groups.values()] });
 }
 export function exportCSV(catalog) {
@@ -179,6 +196,11 @@ export function exportCSV(catalog) {
         q[4],
         l.subject,
         l.grade,
+        l.video ? `https://www.youtube.com/watch?v=${l.video.id}` : "",
+        l.video?.title ?? "",
+        // En segundos: Excel convierte «1:30» en la hora 01:30.
+        l.video?.start ?? "",
+        l.video?.end ?? "",
       ]),
     );
   }

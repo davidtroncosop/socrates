@@ -550,6 +550,7 @@ export function freshState() {
     attempts: [],
     notes: [],
     reviews: [],
+    watched: [],
   };
 }
 export function loadState(
@@ -603,6 +604,10 @@ export function loadState(
             (r) => r && ids.has(r.lesson) && typeof r.due === "number",
           )
         : [],
+      // Lecciones cuyo video se reprodujo; informativo, no cuenta para el dominio.
+      watched: Array.isArray(s.watched)
+        ? [...new Set(s.watched.filter((id) => ids.has(id)))]
+        : [],
     };
   } catch {
     return freshState();
@@ -642,6 +647,7 @@ export function mergeStates(local, remote) {
       ...newer.reviews,
       ...older.reviews.filter((r) => !reviewed.has(r.lesson)),
     ],
+    watched: unique([...(local.watched ?? []), ...(remote.watched ?? [])], (id) => id),
   };
 }
 // Las fotos se quedan en el dispositivo; al servidor solo va el texto.

@@ -105,6 +105,7 @@ export function summarize(state) {
   return {
     completed: Array.isArray(state?.completed) ? state.completed : [],
     mastered: Array.isArray(state?.mastered) ? state.mastered : [],
+    videosWatched: Array.isArray(state?.watched) ? state.watched.length : 0,
     attemptsWeek: recent.length,
     accuracyWeek: recent.length
       ? Math.round((recent.filter((a) => a.correct).length / recent.length) * 100)

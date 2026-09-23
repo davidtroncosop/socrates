@@ -7,6 +7,7 @@ import {
   inferGrade,
   displayTitle,
 } from "./learning.js";
+import { validateVideo } from "./video.js";
 export const SUBJECTS = ["matematica", "lenguaje"];
 export const CONTENT_KEY = "socatres.content.v1";
 export const LEGACY_CONTENT_KEY = "tutorai.content.v1";
@@ -157,6 +158,7 @@ export function validateCatalog(input) {
       throw Error(
         `${prefix}: el curso debe ser ${Object.keys(GRADES).join(", ")}.`,
       );
+    const video = validateVideo(l.video, prefix);
     return {
       id: l.id,
       subject: l.subject ?? getSubject(l),
@@ -173,6 +175,7 @@ export function validateCatalog(input) {
       status: l.status,
       questions: l.questions.map((q, i) => question(q, `ejercicio ${i + 1}`)),
       review: question(l.review, "repaso"),
+      ...(video ? { video } : {}),
     };
   });
   return { version: 1, lessons };

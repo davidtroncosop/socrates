@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { solveLinear } from "../public/learning.js";
 // Lightweight DOM adapter for exercising real app handlers; visual QA remains separate.
-async function harness(saved, { session, key = "socatres.v1", fetch } = {}) {
+async function harness(saved, { session, key = "socatres.v1", fetch, catalog } = {}) {
   const nodes = new Map();
   const node = (key) => {
     if (!nodes.has(key))
@@ -28,6 +28,7 @@ async function harness(saved, { session, key = "socatres.v1", fetch } = {}) {
     return nodes.get(key);
   };
   const storage = new Map(saved ? [[key, JSON.stringify(saved)]] : []);
+  if (catalog) storage.set("socatres.content.v1", JSON.stringify(catalog));
   if (session) storage.set("socatres.demo-session.v1", JSON.stringify(session));
   globalThis.localStorage = {
     getItem: (k) => storage.get(k) || null,
@@ -518,4 +519,31 @@ test("accounts merge server progress on load and upload it without photos", asyn
   assert.equal("image" in put.body.state.notes[0], false, "photo never uploaded");
   assert.equal(h.storage.has("socatres.v1"), false, "demo progress untouched");
   assert.match(h.node("#sync-status").textContent, /sincronizado/);
+});
+
+test("lesson videos stay offline until played, are recorded, and never help in the final challenge", async () => {
+  const { seedCatalog } = await import("../public/content.js");
+  const catalog = seedCatalog();
+  catalog.lessons[0].video = { id: "dQw4w9WgXcQ", title: "La balanza en video", start: 30, end: 180 };
+  const h = await harness(null, { catalog });
+  assert.match(h.node("#app").innerHTML, /🎬 Video/);
+  h.click("lesson:equations");
+  let html = h.node("#app").innerHTML;
+  assert.match(html, /La balanza en video/);
+  assert.doesNotMatch(html, /<iframe/, "nothing loads before ▶");
+  h.click("play-video:equations");
+  assert.match(h.node("#video-slot").innerHTML, /youtube-nocookie\.com\/embed\/dQw4w9WgXcQ/);
+  assert.deepEqual(h.read().watched, ["equations"]);
+  h.click("begin-exercises");
+  h.click("hint");
+  h.click("hint");
+  assert.match(h.node("#hints").innerHTML, /video-facade/, "second hint offers the video");
+  for (const answer of ["7", "6", "6"]) {
+    h.answer(answer);
+    h.click("next");
+  }
+  h.node("#hints").innerHTML = "";
+  h.click("hint");
+  h.click("hint");
+  assert.doesNotMatch(h.node("#hints").innerHTML, /video-facade/, "no video in the autonomy challenge");
 });

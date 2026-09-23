@@ -7,6 +7,7 @@ import {
   seedCatalog,
 } from "./content.js";
 import { getSubject, GRADES } from "./learning.js";
+import { videoFromFields, videoPlayer, watchUrl, formatTime } from "./video.js";
 const esc = (s) =>
   String(s).replace(
     /[&<>"']/g,
@@ -109,10 +110,15 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
       )
       .join("")}</select>`;
   }
+  function videoFields(video) {
+    const input = (name, label, value, attrs = "") =>
+      `<label for="${name}">${label}</label><input id="${name}" name="${name}" value="${esc(value ?? "")}" ${attrs}>`;
+    return `<section class="card"><h2>Video explicativo <span class="muted">(opcional)</span></h2><p class="muted">Aparece en la lección inicial y como ayuda en la segunda pista, nunca en el desafío final ni en los repasos. Elige un tramo de 2 a 5 minutos. Revisa de vez en cuando que el video siga disponible.</p>${input("video-url", "Enlace de YouTube", video ? watchUrl({ id: video.id }) : "", 'type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"')}${input("video-title", "Título que verá el estudiante", video?.title, 'maxlength="150" placeholder="Resolver ecuaciones con la balanza"')}<div class="editor-grid"><div>${input("video-start", "Desde (opcional)", video?.start ? formatTime(video.start) : "", 'placeholder="1:30"')}</div><div>${input("video-end", "Hasta (opcional)", video?.end !== undefined ? formatTime(video.end) : "", 'placeholder="4:00"')}</div></div></section>`;
+  }
   function editor(lesson) {
     editing = structuredClone(lesson);
     dirty = false;
-    app.innerHTML = `<button class="back" data-admin="back">← Biblioteca de contenido</button><div class="eyebrow">EDITOR DE LECCIONES</div><h1>${lesson.title ? "Editar lección" : "Una nueva oportunidad de aprender."}</h1><p class="intro">Completa cuatro ejercicios y un repaso diferente. Esta versión admite respuestas numéricas. Guardar conserva el estado actual de publicación.</p><div id="admin-message" class="feedback" role="status"></div><form id="lesson-editor"><section class="card">${field("title", "Título", lesson.title)}${field("description", "Descripción breve", lesson.description)}<div class="editor-grid"><div>${select("subject", "Materia", lesson.subject, { matematica: "📐 Matemática", lenguaje: "📖 Lenguaje" })}</div><div>${select("grade", "Curso", lesson.grade, GRADES)}</div></div>${field("concept", "Concepto que aprenderá el alumno", lesson.concept, true)}${field("examples", "Ejemplo resuelto para la segunda pista", lesson.examples, true)}<p class="muted">Identificador: ${esc(lesson.id)} · ${lesson.status === "published" ? "Publicada" : "Borrador"}</p></section><div class="section-title"><h2>Diseña la práctica</h2><span class="muted">4 ejercicios + 1 repaso</span></div>${[...lesson.questions, lesson.review].map((q, i) => `<fieldset class="card question-editor"><legend>${i + 1}. ${stages[i]}</legend>${field("q" + i + "-0", "Expresión o problema", q[0])}${field("q" + i + "-2", "Instrucción para el alumno", q[2], true)}<div class="editor-grid"><div>${field("q" + i + "-1", "Respuesta numérica correcta", q[1])}</div><div>${field("q" + i + "-3", "Primera pista", q[3])}</div></div>${field("q" + i + "-4", "Explicación de la solución", q[4], true)}</fieldset>`).join("")}<div class="editor-save actions"><button type="submit" class="primary">Guardar ${lesson.status === "published" ? "cambios" : "borrador"}</button><button type="button" data-admin="preview">Vista previa</button><button type="button" data-admin="back">Cancelar</button></div></form><div id="lesson-preview"></div>`;
+    app.innerHTML = `<button class="back" data-admin="back">← Biblioteca de contenido</button><div class="eyebrow">EDITOR DE LECCIONES</div><h1>${lesson.title ? "Editar lección" : "Una nueva oportunidad de aprender."}</h1><p class="intro">Completa cuatro ejercicios y un repaso diferente. Esta versión admite respuestas numéricas. Guardar conserva el estado actual de publicación.</p><div id="admin-message" class="feedback" role="status"></div><form id="lesson-editor"><section class="card">${field("title", "Título", lesson.title)}${field("description", "Descripción breve", lesson.description)}<div class="editor-grid"><div>${select("subject", "Materia", lesson.subject, { matematica: "📐 Matemática", lenguaje: "📖 Lenguaje" })}</div><div>${select("grade", "Curso", lesson.grade, GRADES)}</div></div>${field("concept", "Concepto que aprenderá el alumno", lesson.concept, true)}${field("examples", "Ejemplo resuelto para la segunda pista", lesson.examples, true)}<p class="muted">Identificador: ${esc(lesson.id)} · ${lesson.status === "published" ? "Publicada" : "Borrador"}</p></section>${videoFields(lesson.video)}<div class="section-title"><h2>Diseña la práctica</h2><span class="muted">4 ejercicios + 1 repaso</span></div>${[...lesson.questions, lesson.review].map((q, i) => `<fieldset class="card question-editor"><legend>${i + 1}. ${stages[i]}</legend>${field("q" + i + "-0", "Expresión o problema", q[0])}${field("q" + i + "-2", "Instrucción para el alumno", q[2], true)}<div class="editor-grid"><div>${field("q" + i + "-1", "Respuesta numérica correcta", q[1])}</div><div>${field("q" + i + "-3", "Primera pista", q[3])}</div></div>${field("q" + i + "-4", "Explicación de la solución", q[4], true)}</fieldset>`).join("")}<div class="editor-save actions"><button type="submit" class="primary">Guardar ${lesson.status === "published" ? "cambios" : "borrador"}</button><button type="button" data-admin="preview">Vista previa</button><button type="button" data-admin="back">Cancelar</button></div></form><div id="lesson-preview"></div>`;
     $("#lesson-editor").oninput = () => {
       dirty = true;
     };
@@ -151,6 +157,12 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
         formQuestion(data, "q" + i),
       ),
       review: formQuestion(data, "q4"),
+      video: videoFromFields({
+        url: data.get("video-url"),
+        title: data.get("video-title"),
+        start: data.get("video-start"),
+        end: data.get("video-end"),
+      }),
     };
     return validateCatalog({ version: 1, lessons: [lesson] }).lessons[0];
   }
@@ -190,7 +202,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
         const sub = getSubject(l);
         const isLang = sub === "lenguaje";
         $("#lesson-preview").innerHTML =
-          `<section class="card import-preview"><div class="eyebrow">VISTA PREVIA · SIN GUARDAR</div><div class="lesson-tags" style="margin:8px 0;"><span class="subject-tag ${isLang ? "subject-lang" : "subject-math"}">${isLang ? "📖 Lenguaje" : "📐 Matemática"}</span></div><h2>${esc(l.title)}</h2><p>${esc(l.concept)}</p>${[...l.questions, l.review].map((q, i) => `<article class="note"><h3>${stages[i]}</h3><p>${esc(q[2])}</p><div class="equation">${esc(q[0])}</div><details><summary>Revisar respuesta y ayudas</summary><p>Respuesta: ${esc(q[1])}</p><p>Pista: ${esc(q[3])}</p><p>Ejemplo: ${esc(l.examples)}</p><p>${esc(q[4])}</p></details></article>`).join("")}</section>`;
+          `<section class="card import-preview"><div class="eyebrow">VISTA PREVIA · SIN GUARDAR</div><div class="lesson-tags" style="margin:8px 0;"><span class="subject-tag ${isLang ? "subject-lang" : "subject-math"}">${isLang ? "📖 Lenguaje" : "📐 Matemática"}</span></div><h2>${esc(l.title)}</h2><p>${esc(l.concept)}</p>${l.video ? `<h3>${esc(l.video.title)}</h3>${videoPlayer(l.video, false)}` : ""}${[...l.questions, l.review].map((q, i) => `<article class="note"><h3>${stages[i]}</h3><p>${esc(q[2])}</p><div class="equation">${esc(q[0])}</div><details><summary>Revisar respuesta y ayudas</summary><p>Respuesta: ${esc(q[1])}</p><p>Pista: ${esc(q[3])}</p><p>Ejemplo: ${esc(l.examples)}</p><p>${esc(q[4])}</p></details></article>`).join("")}</section>`;
         $("#lesson-preview").scrollIntoView({ behavior: "smooth" });
       } else if (["toggle", "up", "down"].includes(action)) {
         const next = structuredClone(getCatalog());

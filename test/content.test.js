@@ -147,3 +147,12 @@ test("legacy catalogs gain subject and grade from titles without duplicating the
   bad.lessons[0].grade = "9b";
   assert.throws(() => validateCatalog(bad), /curso/);
 });
+
+test("lesson videos are validated and optional", () => {
+  const c = seedCatalog();
+  c.lessons[0].video = { id: "dQw4w9WgXcQ", title: "La balanza", start: 0 };
+  assert.deepEqual(validateCatalog(c).lessons[0].video, { id: "dQw4w9WgXcQ", title: "La balanza" });
+  assert.equal("video" in validateCatalog(c).lessons[1], false);
+  c.lessons[0].video = { id: "x", title: "t" };
+  assert.throws(() => validateCatalog(c), /Lección 1: el enlace/);
+});

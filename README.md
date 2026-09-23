@@ -5,7 +5,7 @@ Espacio de aprendizaje de matemática y comprensión lectora alineado con las Ba
 ## Ejecutar
 
 ```sh
-npm test                 # 55 pruebas (Node 22+)
+npm test                 # 62 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
@@ -28,6 +28,7 @@ Módulos del cliente (`public/`):
 - `learning.js`: lecciones iniciales, validación numérica, resolución lineal, estado, fusión entre dispositivos y cursos (`GRADES`).
 - `curriculum.js`: lecciones de la ampliación curricular.
 - `generators.js`: ejercicios generados por lección y nivel.
+- `video.js`: enlaces de YouTube, tiempos y reproductor.
 - `content.js`, `csv.js`, `admin.js`: catálogo, importación y exportación CSV, mantenedor.
 - `app.js`: navegación, lecciones, repasos, cuaderno, sincronización.
 - `ui.js`, `units.js`, `stats.js`, `dialogs.js`: utilidades de interfaz, unidades de la ruta, métricas de motivación y diálogos.
@@ -43,6 +44,7 @@ Módulos del cliente (`public/`):
 - Validación de respuestas equivalentes (enteros, decimales, fracciones y `x = …`), resolución a mano con foto comprimida en el navegador y «Mi cuaderno».
 - Separación entre completar y dominar: el dominio se confirma en un repaso sin ayuda al menos 24 horas después.
 - «Trae tu ejercicio» para ecuaciones `ax + b = cx + d`.
+- **Videos de YouTube opcionales** por lección, con tramo de inicio y fin. Aparecen en la lección inicial y en la segunda pista de las tres primeras fases; nunca en el desafío de autonomía ni en los repasos, donde se confirma el dominio. Hasta que el estudiante pulsa ▶ la página no hace ninguna petición a Google (ni siquiera la miniatura); luego se usa `youtube-nocookie.com`. Si YouTube está bloqueado, la lección funciona igual y se ofrece un enlace directo. Ver el video queda registrado (`watched`), no cuenta para el dominio, y el profesor ve cuántos videos vio cada estudiante. Las lecciones con video llevan la etiqueta 🎬 en la ruta.
 
 ## Cuentas, progreso y clases
 
@@ -50,7 +52,7 @@ El acceso ofrece **Entrar**, **Crear cuenta** (estudiante o profesor/a) y **Prob
 
 - **Progreso sincronizado:** con cuenta, el progreso se guarda en el navegador (clave `socatres.v1.<id>`) y se envía al servidor en segundo plano. Al entrar desde otro dispositivo se fusiona: lecciones completadas, intentos y notas se suman; el dominio y los repasos se toman del dispositivo con la actividad más reciente. Sin conexión se sigue practicando y se sincroniza al volver. Al crear una cuenta se conserva lo practicado en la demo de ese navegador.
 - **Las fotos no salen del dispositivo:** el cliente las quita antes de sincronizar y el servidor rechaza cualquier foto.
-- **Clases:** el profesor crea una clase y comparte su código de 6 caracteres. El estudiante lo ingresa en «Mi clase». El profesor ve, por estudiante, lecciones completadas y dominadas, intentos y aciertos de los últimos 7 días y última actividad. No ve notas, fotos ni correos. Un profesor solo accede a sus propias clases y puede retirar estudiantes.
+- **Clases:** el profesor crea una clase y comparte su código de 6 caracteres. El estudiante lo ingresa en «Mi clase». El profesor ve, por estudiante, lecciones completadas y dominadas, videos vistos, intentos y aciertos de los últimos 7 días y última actividad. No ve notas, fotos ni correos. Un profesor solo accede a sus propias clases y puede retirar estudiantes.
 - **Mantenedor de contenido:** visible solo para profesores (cuenta o demo). El catálogo sigue guardándose en el navegador; todavía no se publica a las clases.
 - **Mis datos:** borrar el progreso lo elimina aquí y en la cuenta. «Eliminar mi cuenta» borra usuario, sesiones, progreso, clases y membresías.
 
@@ -89,7 +91,7 @@ Sin el paso 1 el sitio funciona, pero las cuentas responden «El servicio de cue
 
 ## Mantenedor de contenido
 
-Abre **Contenido** en el menú lateral (`#contenido`, solo profesores). Permite crear y editar lecciones (con materia y curso), previsualizar ejercicios, publicar o retirar lecciones de la ruta, buscar y reordenar. Cada lección tiene cuatro ejercicios con respuesta numérica y un repaso independiente.
+Abre **Contenido** en el menú lateral (`#contenido`, solo profesores). Permite crear y editar lecciones (con materia, curso y video opcional), previsualizar ejercicios, publicar o retirar lecciones de la ruta, buscar y reordenar. Cada lección tiene cuatro ejercicios con respuesta numérica y un repaso independiente.
 
 ### Cargar desde Excel / CSV
 
@@ -98,7 +100,7 @@ Abre **Contenido** en el menú lateral (`#contenido`, solo profesores). Permite 
 3. Guarda como **CSV UTF-8** y usa **Subir CSV o JSON**. No se admite `.xlsx`.
 4. Revisa la vista previa y confirma. Las lecciones importadas entran como borradores; usa **Publicar** para mostrarlas en la ruta.
 
-Columnas: `leccion_id`, `titulo`, `descripcion`, `concepto`, `ejemplo`, `tipo`, `orden`, `expresion`, `respuesta`, `instruccion`, `pista`, `explicacion` y, opcionales, `materia` (`matematica` o `lenguaje`) y `curso` (`7b` o «7° Básico»). Sin `materia` y `curso`, se infieren del título. Se admiten separadores coma, punto y coma o tabulación, celdas entre comillas y saltos de línea dentro de celdas. Las respuestas pueden ser decimales o fracciones.
+Columnas: `leccion_id`, `titulo`, `descripcion`, `concepto`, `ejemplo`, `tipo`, `orden`, `expresion`, `respuesta`, `instruccion`, `pista`, `explicacion` y, opcionales, `materia` (`matematica` o `lenguaje`), `curso` (`7b` o «7° Básico»), `video_url`, `video_titulo`, `video_inicio` y `video_fin`. Escribe los tiempos del video en segundos (`90`) o como `1m30s`: Excel convierte «1:30» en una hora del día. Sin `materia` y `curso`, se infieren del título. Se admiten separadores coma, punto y coma o tabulación, celdas entre comillas y saltos de línea dentro de celdas. Las respuestas pueden ser decimales o fracciones.
 
 La importación comprueba estructura, identificadores, ejercicios faltantes, respuestas numéricas, materia y curso. En modo **Añadir** no sobrescribe lecciones existentes. **Restaurar catálogo** reemplaza el contenido tras una advertencia. Límite: 1 MB por archivo y 100 lecciones por catálogo. El catálogo se guarda en `socatres.content.v1`.
 
@@ -106,6 +108,7 @@ La importación comprueba estructura, identificadores, ejercicios faltantes, res
 
 - No hay IA conectada ni OCR: el procedimiento en foto no se evalúa, solo el resultado final.
 - El catálogo del mantenedor es local y no se comparte con las clases.
+- Los videos pueden dejar de estar disponibles si su canal los borra o los hace privados; conviene revisarlos periódicamente desde la vista previa del mantenedor.
 - La demo no es una barrera de seguridad; el mantenedor en modo demo solo afecta ese navegador.
 - Si se borra el progreso en un dispositivo mientras otro sin conexión conserva el anterior, al reconectar ese otro dispositivo las lecciones completadas vuelven a sumarse.
 - Si un estudiante es menor de 14 años, su cuenta debe crearse con su apoderado. Antes de usarlo con colegios, revisa las obligaciones de la Ley 21.719 de protección de datos personales.

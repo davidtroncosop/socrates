@@ -190,6 +190,6 @@ test("deleting an account removes its sessions, progress and memberships", async
 
 test("summaries tolerate missing progress", () => {
   assert.deepEqual(summarize(null), {
-    completed: [], mastered: [], attemptsWeek: 0, accuracyWeek: null, lastActivity: null,
+    completed: [], mastered: [], videosWatched: 0, attemptsWeek: 0, accuracyWeek: null, lastActivity: null,
   });
 });

@@ -21,6 +21,7 @@ import { renderClassPage } from "./class-view.js";
 import { readCatalog, seedCatalog, writeCatalog } from "./content.js";
 import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
+import { videoFacade, videoPlayer } from "./video.js";
 import { $, escape, button, heading } from "./ui.js";
 import { getUnitsForLessons } from "./units.js";
 import { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
@@ -288,6 +289,7 @@ function route() {
                       ${badge}
                       ${subjectBadge}
                       ${beltBadge}
+                      ${l.video ? `<span class="video-tag" title="Incluye un video explicativo">🎬 Video</span>` : ""}
                     </div>
                     <h3 class="duo-node-title">${escape(displayTitle(l))}</h3>
                     <p class="duo-node-desc">${statusText}</p>
@@ -604,6 +606,12 @@ function renderIntroLesson(fromExercise = false) {
           </div>
         </div>
 
+        ${
+          l.video
+            ? `<section class="intro-video" aria-label="Video explicativo"><div class="intro-example-header"><span class="example-pill">Video explicativo · opcional</span><h3>Míralo explicado en video</h3></div>${videoFacade(l.video, l.id)}</section>`
+            : ""
+        }
+
         <div class="intro-example-card">
           <div class="intro-example-header">
             <span class="example-pill">Ejemplo modelo guiado</span>
@@ -761,6 +769,19 @@ function renderExercise() {
   attachPhotoListeners();
 }
 
+function playVideo(lessonId) {
+  const lesson =
+    session?.lesson?.id === lessonId
+      ? session.lesson
+      : lessons.find((l) => l.id === lessonId);
+  const slot = $("#video-slot");
+  if (!lesson?.video || !slot) return;
+  slot.innerHTML = videoPlayer(lesson.video);
+  if (!state.watched.includes(lessonId)) {
+    state.watched.push(lessonId);
+    save();
+  }
+}
 function hint() {
   const s = session;
   if (!s || s.answered) return;
@@ -782,6 +803,9 @@ function hint() {
   } else if (s.hints === 1) {
     title = "Pista 2 · Ejemplo modelo guiado";
     body = `<p>Fíjate en cómo se resuelve este modelo paso a paso:</p><div class="hint-example-box">${escape(l.examples)}</div>`;
+    // El video ayuda en la práctica guiada, no en el desafío de autonomía.
+    if (l.video && s.mode === "lesson" && s.index < 3)
+      body += `<p>¿Prefieres verlo explicado?</p>${videoFacade(l.video, l.id)}`;
   } else if (s.hints === 2) {
     title = "Pista 3 · Explicación completa y comprobación";
     const balanceCheck = isMath
@@ -1243,6 +1267,8 @@ app.addEventListener("click", (e) => {
   } else if (action === "remove-task-photo") {
     pendingTaskPhoto = null;
     task();
+  } else if (action === "play-video") {
+    playVideo(id);
   } else if (action === "unit-guide") {
     showUnitGuide(id, { lessons, state });
   } else if (action === "close-unit-guide") {
@@ -1268,7 +1294,7 @@ const contentLink = document.querySelector('[data-nav="contenido"]');
 if (contentLink) contentLink.hidden = !isTeacher;
 if (synced) {
   $("#privacy-summary").textContent =
-    "Tu progreso se guarda en este navegador y en tu cuenta, para continuar en otros dispositivos. Tus fotos quedan solo en este dispositivo. Si te uniste a una clase, tu profesor ve cuántas lecciones completas y dominas, no tus notas ni fotos.";
+    "Tu progreso se guarda en este navegador y en tu cuenta, para continuar en otros dispositivos. Tus fotos quedan solo en este dispositivo. Si te uniste a una clase, tu profesor ve cuántas lecciones completas y dominas y cuántos videos viste, no tus notas ni fotos.";
   $("#privacy-delete-note").textContent =
     "Borrar el progreso lo elimina aquí y en tu cuenta. Eliminar la cuenta borra además tus datos personales y tus clases.";
   $("#delete-account").hidden = false;
