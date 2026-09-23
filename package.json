@@ -1,0 +1,13 @@
+{
+  "name": "socatres",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Tutor de álgebra con ruta, práctica guiada y repaso local",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 .",
+    "test": "node --test",
+    "deploy": "wrangler pages deploy . --project-name=socatres --branch=main"
+  }
+}

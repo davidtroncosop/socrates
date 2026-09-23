@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#145ce6" />
+    <title>socatres · Tu espacio para aprender</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="session.js"></script>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="#ruta"
+          ><span class="brand-icon">s<span>↗</span></span
+          ><span class="brand-name">socatres</span></a
+        >
+        <div class="workspace-label">TU ESPACIO DE APRENDIZAJE</div>
+        <nav aria-label="Principal">
+          <a href="#ruta" data-nav="ruta">◈ <span>Mi ruta</span></a
+          ><a href="#repaso" data-nav="repaso"
+            >↺ <span>Mis repasos</span
+            ><span id="review-count" class="count">0</span></a
+          ><a href="#cuaderno" data-nav="cuaderno">▤ <span>Mi cuaderno</span></a
+          ><a href="#tarea" data-nav="tarea"
+            >＋ <span>Trae tu ejercicio</span></a
+          >
+          <a href="#contenido" data-nav="contenido">▦ <span>Contenido</span></a>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="edition">PRIMERA EDICIÓN</div>
+          <p>Pequeños pasos.<br />Grandes descubrimientos.</p>
+          <span class="muted">Currículum Nacional · 5° Básico a 1° Medio</span>
+        </div>
+      </aside>
+      <div class="main-wrap">
+        <header class="topbar">
+          <span>Mi aprendizaje <span class="crumb">/ Matemáticas y lectura</span></span
+          ><span class="profile"
+            ><span class="avatar">s</span> <span id="session-name">Demo</span>
+            <button id="logout">Salir</button></span
+          >
+        </header>
+        <main id="app" tabindex="-1"></main>
+        <footer>
+          Hecho para comprender, paso a paso.
+          <button id="privacy">Mis datos</button
+          ><span>Práctica local · Sin IA conectada</span>
+        </footer>
+      </div>
+    </div>
+    <dialog id="privacy-dialog">
+      <h2>Tú controlas tus datos</h2>
+      <p>
+        El progreso y tus notas se guardan solo en este navegador. No se envían
+        a un servidor y no se sincronizan entre dispositivos.
+      </p>
+      <p>
+        Borrar los datos elimina tus intentos, repasos y notas de este
+        dispositivo.
+      </p>
+      <div class="actions">
+        <button id="close-privacy">Volver</button
+        ><button id="delete-data" class="danger">Borrar mi progreso</button>
+      </div>
+    </dialog>
+    <dialog id="unit-guide-dialog" class="unit-guide-dialog">
+      <div id="unit-guide-content"></div>
+    </dialog>
+    <dialog id="parent-report-dialog" class="unit-guide-dialog">
+      <div id="parent-report-content"></div>
+    </dialog>
+    <dialog id="rewards-dialog" class="unit-guide-dialog">
+      <div id="rewards-content"></div>
+    </dialog>
+  </body>
+</html>

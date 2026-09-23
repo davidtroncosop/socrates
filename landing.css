@@ -1,0 +1,827 @@
+@import url("https://fonts.googleapis.com/css2?family=Fustat:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap");
+:root {
+  --ink: #192a43;
+  --blue: #145ce6;
+  --muted: #5c6b80;
+  --line: #dae1eb;
+  --paper: #fafbf8;
+  --lime: #deee9b;
+  font-family: Fustat, system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+}
+button:hover {
+  filter: brightness(0.94);
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #ed943f;
+  outline-offset: 5px;
+}
+.wrap {
+  width: min(1180px, calc(100% - 96px));
+  margin-inline: auto;
+}
+.nav {
+  height: 108px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+.logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue);
+  color: white;
+  width: 39px;
+  height: 39px;
+  border-radius: 12px;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -4px;
+  padding-right: 4px;
+}
+.beta {
+  font-size: 9px;
+  letter-spacing: 1px;
+  background: #e9eef4;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+.nav nav {
+  display: flex;
+  gap: 35px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.nav nav a:hover {
+  color: var(--blue);
+}
+.nav-login {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 20px;
+  background: transparent;
+  font-weight: 700;
+  color: var(--ink);
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 55px;
+  padding-top: 56px;
+  padding-bottom: 85px;
+  align-items: center;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.7px;
+  font-weight: 800;
+  margin: 0 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--blue);
+  border-radius: 50%;
+}
+h1 {
+  font-size: clamp(62px, 6.7vw, 91px);
+  line-height: 0.99;
+  letter-spacing: -5px;
+  margin: 0 0 26px;
+  font-weight: 800;
+}
+em {
+  font-family: "DM Serif Display", Georgia, serif;
+  font-weight: 400;
+  color: var(--blue);
+}
+h1 em {
+  font-size: 1.12em;
+}
+.spark {
+  color: var(--blue);
+  display: inline-block;
+  font-size: 80px;
+  vertical-align: middle;
+  margin-left: 40px;
+  transform: rotate(12deg);
+}
+.lead {
+  font-size: 18px;
+  line-height: 1.65;
+  max-width: 395px;
+  color: var(--muted);
+  margin-bottom: 27px;
+}
+.primary {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 26px;
+  padding: 17px 23px;
+  color: white;
+  background: var(--blue);
+  font-weight: 700;
+  border-radius: 8px;
+  font-size: 15px;
+  min-height: 54px;
+}
+.primary span {
+  font-size: 21px;
+}
+.micro {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 13px;
+}
+.hero-board {
+  background: #eaf0fa;
+  background-image:
+    linear-gradient(#145ce609 1px, transparent 1px),
+    linear-gradient(90deg, #145ce609 1px, transparent 1px);
+  background-size: 24px 24px;
+  border: 1px solid #dce5f2;
+  border-radius: 14px;
+  padding: 25px 26px 49px;
+  position: relative;
+  transform: rotate(1deg);
+}
+.board-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #657991;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+.exercise-paper {
+  background: #fff;
+  padding: 23px;
+  border: 1px solid #e2e7ef;
+  box-shadow: 0 14px 24px #2234510a;
+  transform: rotate(-3deg);
+  border-radius: 9px;
+}
+.paper-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.mini-icon {
+  background: #e8effe;
+  padding: 4px 8px;
+  color: var(--blue);
+  border-radius: 5px;
+}
+.lesson-tag {
+  font-size: 8px;
+  font-weight: 500;
+  margin-left: auto;
+  color: var(--muted);
+}
+.exercise-question {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 25px 0 10px;
+}
+.equation {
+  font-size: 45px;
+  letter-spacing: -2px;
+  text-align: center;
+  padding: 13px 0 24px;
+  font-family: "DM Serif Display", Georgia, serif;
+}
+.hint {
+  display: flex;
+  gap: 10px;
+  background: #f0f4fc;
+  border-radius: 7px;
+  padding: 14px 12px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.hint > span {
+  color: var(--blue);
+  font-size: 20px;
+}
+.hint p {
+  margin: 3px 0 0;
+  color: var(--muted);
+}
+.working {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  font-size: 24px;
+  padding: 24px 0;
+  font-family: "DM Serif Display", Georgia, serif;
+}
+.working > span {
+  color: #94a0b2;
+  font:
+    18px Fustat,
+    sans-serif;
+}
+.working strong {
+  background: #edf5d3;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-weight: 400;
+}
+.check {
+  font:
+    16px Fustat,
+    sans-serif;
+  color: #4b711a;
+}
+.paper-bottom {
+  border-top: 1px solid #edf0f4;
+  padding-top: 15px;
+  font-size: 9px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+}
+.progress-dots {
+  color: var(--blue);
+  letter-spacing: 3px;
+}
+.board-note {
+  font-size: 11px;
+  transform: rotate(-2deg);
+  margin: 25px 0 0 7px;
+}
+.sticker {
+  position: absolute;
+  right: -19px;
+  bottom: -22px;
+  background: var(--lime);
+  padding: 20px 23px;
+  transform: rotate(7deg);
+  font-size: 16px;
+  line-height: 1.3;
+  box-shadow: 0 5px 0 #192a4309;
+}
+.subject-strip {
+  border-block: 1px solid var(--line);
+  padding: 23px 0;
+}
+.subject-strip .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+}
+.subject-strip span {
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.subject-strip span:first-child {
+  font-size: 9px;
+  letter-spacing: 1.3px;
+  color: var(--muted);
+}
+.subject-strip b {
+  color: var(--blue);
+  margin-left: 16px;
+  font-size: 20px;
+}
+.method {
+  padding-block: 90px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+}
+h2 {
+  font-size: 44px;
+  line-height: 1.12;
+  letter-spacing: -1.8px;
+  margin: 0 0 20px;
+}
+.section-heading > p:last-child,
+.workspace-copy > p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 370px;
+}
+.steps article {
+  display: grid;
+  grid-template-columns: 35px 1fr;
+  column-gap: 20px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+.steps article:first-child {
+  padding-top: 0;
+}
+.step-number {
+  grid-row: span 2;
+  font-size: 12px;
+  color: var(--blue);
+  font-weight: 700;
+  padding-top: 5px;
+}
+h3 {
+  font-size: 20px;
+  margin: 0 0 7px;
+  letter-spacing: -0.5px;
+}
+.steps p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 345px;
+}
+.workspace {
+  border-top: 1px solid var(--line);
+  padding-block: 76px 95px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 110px;
+  align-items: center;
+}
+.notebook {
+  background:
+    linear-gradient(90deg, transparent 39px, #ebbbb9 40px, transparent 41px),
+    repeating-linear-gradient(#fff 0px, #fff 31px, #e1eaf4 32px);
+  padding: 28px 33px 27px 62px;
+  transform: rotate(-3deg);
+  box-shadow: 0 10px 40px #2437530c;
+  border: 1px solid #e1e6ed;
+  position: relative;
+}
+.notebook-tab {
+  position: absolute;
+  right: 20px;
+  top: -15px;
+  background: var(--lime);
+  font-size: 9px;
+  letter-spacing: 1px;
+  font-weight: 800;
+  padding: 9px 14px;
+}
+.notebook > p {
+  font-size: 11px;
+  color: var(--muted);
+}
+.handwritten {
+  font-family: "DM Serif Display", Georgia, serif;
+  font-style: italic;
+  font-size: 26px;
+  line-height: 1.3;
+  color: var(--blue);
+  margin-top: 25px;
+}
+.note-equation {
+  font-size: 28px;
+  font-family: "DM Serif Display", Georgia, serif;
+  line-height: 1.5;
+  padding: 20px 0 18px 37px;
+}
+.note-equation span {
+  font-size: 21px;
+  color: var(--blue);
+}
+.note-equation strong {
+  font-weight: 400;
+  background: var(--lime);
+}
+.note-bottom {
+  font-size: 10px;
+  color: var(--muted);
+}
+.workspace-copy ul {
+  padding: 0;
+  list-style: none;
+  margin-top: 27px;
+}
+.workspace-copy li {
+  font-size: 13px;
+  margin: 17px 0;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.workspace-copy li span {
+  color: var(--blue);
+  font-size: 19px;
+}
+.workspace-copy .local-note {
+  font-size: 11px !important;
+  margin-top: 25px;
+}
+.closing {
+  background: var(--blue);
+  color: white;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 48px 43px;
+}
+.closing-star {
+  color: var(--lime);
+  font-size: 85px;
+}
+.closing .eyebrow {
+  font-size: 9px;
+  color: #d7e4ff;
+  margin-bottom: 17px;
+}
+.closing h2 {
+  font-size: 35px;
+  margin: 0;
+}
+.light-button {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: white;
+  color: var(--blue);
+  border-radius: 8px;
+  padding: 17px 21px;
+  font-weight: 800;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+footer {
+  padding-block: 43px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+footer .logo {
+  font-size: 22px;
+}
+footer .logo-mark {
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  border-radius: 9px;
+}
+footer > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+dialog {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 36px;
+  width: min(460px, calc(100% - 32px));
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 25px 100px #192a4340;
+  max-height: 90dvh;
+  overflow: auto;
+}
+dialog::backdrop {
+  background: #13244170;
+  backdrop-filter: blur(5px);
+}
+.close {
+  position: absolute;
+  right: 17px;
+  top: 12px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 27px;
+  width: 36px;
+  height: 36px;
+}
+dialog > .eyebrow {
+  margin-top: 24px;
+  margin-bottom: 15px;
+}
+dialog h2 {
+  font-size: 37px;
+}
+dialog > p:not(.eyebrow) {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.demo-badge {
+  font-size: 10px;
+  background: #eaf0fd;
+  color: var(--blue);
+  padding: 9px 11px;
+  border-radius: 5px;
+  font-weight: 700;
+  margin: 23px 0 14px;
+}
+.demo-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 17px 0 24px;
+  font-size: 14px;
+}
+.account-avatar {
+  display: grid;
+  place-items: center;
+  background: var(--lime);
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-weight: 800;
+}
+.demo-account small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.demo-account > span:last-child {
+  margin-left: auto;
+  color: var(--blue);
+}
+dialog .primary {
+  width: 100%;
+  font-size: 14px;
+  padding-inline: 17px;
+}
+dialog .auth-disclaimer {
+  font-size: 11px !important;
+}
+.cancel {
+  display: block;
+  margin: auto;
+  padding: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+}
+#login-error {
+  color: #a02727;
+}
+.skip {
+  position: absolute;
+  top: -100px;
+  left: 20px;
+  background: white;
+  padding: 12px;
+  z-index: 10;
+}
+.skip:focus {
+  top: 10px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-copy,
+  .hero-board {
+    animation: arrive 0.65s ease-out both;
+  }
+  .hero-board {
+    animation-delay: 0.12s;
+  }
+  @keyframes arrive {
+    from {
+      opacity: 0;
+      translate: 0 15px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+@media (max-width: 1000px) {
+  .wrap {
+    width: calc(100% - 56px);
+  }
+  .hero {
+    gap: 32px;
+  }
+  .hero-board {
+    padding: 20px 18px 40px;
+  }
+  .exercise-paper {
+    padding: 18px;
+  }
+  .lesson-tag {
+    display: none;
+  }
+  .equation {
+    font-size: 37px;
+  }
+  .spark {
+    font-size: 62px;
+    margin-left: 25px;
+  }
+  .method,
+  .workspace {
+    gap: 50px;
+  }
+  .subject-strip span:first-child {
+    max-width: 130px;
+    white-space: normal;
+  }
+  .closing {
+    padding: 35px 28px;
+    gap: 20px;
+  }
+  .closing h2 {
+    font-size: 29px;
+  }
+  .closing-star {
+    font-size: 60px;
+  }
+}
+@media (max-width: 700px) {
+  .wrap {
+    width: calc(100% - 40px);
+  }
+  .nav {
+    height: 85px;
+    gap: 12px;
+  }
+  .logo {
+    font-size: 23px;
+  }
+  .beta {
+    display: none;
+  }
+  .nav nav {
+    display: none;
+  }
+  .nav-login {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 42px;
+    padding-top: 32px;
+    padding-bottom: 64px;
+  }
+  h1 {
+    font-size: 74px;
+    letter-spacing: -4px;
+  }
+  .hero-copy .eyebrow {
+    font-size: 9px;
+  }
+  .lead {
+    font-size: 16px;
+    max-width: 350px;
+  }
+  .hero-board {
+    margin-inline: 7px;
+    max-width: 460px;
+  }
+  .exercise-paper {
+    padding: 22px;
+  }
+  .lesson-tag {
+    display: block;
+  }
+  .equation {
+    font-size: 44px;
+  }
+  .sticker {
+    right: -10px;
+    padding: 15px 20px;
+    font-size: 14px;
+  }
+  .subject-strip .wrap {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 15px 28px;
+  }
+  .subject-strip span:first-child {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .subject-strip span {
+    font-size: 13px;
+  }
+  .subject-strip b {
+    font-size: 16px;
+    margin-left: 7px;
+  }
+  .method {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-block: 56px;
+  }
+  h2 {
+    font-size: 37px;
+  }
+  .workspace {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding-block: 52px;
+  }
+  .notebook {
+    margin-inline: 10px;
+    order: 2;
+  }
+  .workspace-copy {
+    order: 1;
+  }
+  .closing {
+    display: block;
+    padding: 30px;
+  }
+  .closing-star {
+    float: right;
+    font-size: 50px;
+    margin-top: 15px;
+  }
+  .closing .eyebrow {
+    font-size: 8px;
+    max-width: 190px;
+    line-height: 1.6;
+  }
+  .closing h2 {
+    font-size: 31px;
+  }
+  .light-button {
+    margin: 25px 0 0;
+  }
+  footer {
+    flex-wrap: wrap;
+    padding-block: 30px;
+    gap: 16px;
+  }
+  footer .logo {
+    flex-basis: 100%;
+  }
+  footer > span {
+    font-size: 10px;
+  }
+  dialog {
+    padding: 28px;
+  }
+  dialog h2 {
+    font-size: 33px;
+  }
+}
+@media (max-width: 370px) {
+  h1 {
+    font-size: 64px;
+  }
+  .spark {
+    font-size: 54px;
+    margin-left: 20px;
+  }
+  .primary {
+    font-size: 13px;
+    gap: 15px;
+  }
+  .working {
+    gap: 14px;
+  }
+  .lesson-tag {
+    display: none;
+  }
+  .exercise-paper {
+    padding: 16px;
+  }
+  .equation {
+    font-size: 38px;
+  }
+}

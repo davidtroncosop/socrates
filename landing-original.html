@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TutorAI — Domina las matemáticas, comprende cada paso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fustat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX for crystal-clear LaTeX math formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+
+  <!-- Tailwind CSS via official CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            fustat: ['Fustat', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#F0F7FF',
+              100: '#E0F0FE',
+              400: '#60B1FF',
+              500: '#319AFF',
+              600: '#0084FF',
+              700: '#006BD6',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Technical Specs: Antialiased smoothing for razor-sharp typography */
+    *, *::before, *::after {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #0F172A;
+      overflow-x: hidden;
+    }
+
+    /* Strong Liquid Glass Navbar Specification */
+    .liquid-glass-navbar {
+      backdrop-filter: blur(50px);
+      -webkit-backdrop-filter: blur(50px);
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: inset 0px 4px 4px 0px rgba(255, 255, 255, 0.25),
+                  0 12px 32px -8px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Primary CTA Liquid Glass Button */
+    .btn-primary-cta {
+      background: rgba(0, 132, 255, 0.8);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      border-radius: 16px;
+      box-shadow: inset 0px 4px 4px 0px rgba(255, 255, 255, 0.35),
+                  0 12px 28px -6px rgba(0, 132, 255, 0.35);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-primary-cta:hover {
+      transform: scale(1.02);
+      background: rgba(0, 132, 255, 0.9);
+      box-shadow: inset 0px 4px 4px 0px rgba(255, 255, 255, 0.45),
+                  0 16px 36px -6px rgba(0, 132, 255, 0.45);
+    }
+    .btn-primary-cta:active {
+      transform: scale(0.99);
+    }
+
+    /* Glassy SignUp Button in Navbar */
+    .btn-glass-signup {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: inset 0px 2px 3px 0px rgba(255, 255, 255, 0.6),
+                  0 4px 12px -2px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease-in-out;
+    }
+    .btn-glass-signup:hover {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(0, 0, 0, 0.12);
+      transform: translateY(-1px);
+      box-shadow: inset 0px 2px 4px 0px rgba(255, 255, 255, 0.8),
+                  0 6px 16px -2px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Floating Math Glass Cards */
+    .glass-card {
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      box-shadow: inset 0px 2px 3px 0px rgba(255, 255, 255, 0.8),
+                  0 16px 32px -8px rgba(0, 102, 255, 0.12);
+    }
+
+    /* Glass Orb Filters according to developer prompt specifications */
+    .glassy-orb-video {
+      filter: hue-rotate(-55deg) saturate(250%) brightness(1.2) contrast(1.1);
+      -webkit-filter: hue-rotate(-55deg) saturate(250%) brightness(1.2) contrast(1.1);
+    }
+
+    /* Floating subtle animation for orb container */
+    @keyframes orbFloat {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(1deg);
+      }
+    }
+    .orb-float-anim {
+      animation: orbFloat 10s ease-in-out infinite;
+    }
+
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .badge-float {
+      animation: floatBadge 6s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-slate-900 selection:bg-brand-500 selection:text-white">
+
+  <!-- ========================================================================= -->
+  <!-- RELATIVE WRAPPER FOR THE BACKGROUND GLOW (Core Layout Spec) -->
+  <!-- ========================================================================= -->
+  <div class="relative w-full overflow-hidden min-h-screen flex flex-col justify-between">
+    
+    <!-- TOP-LEFT LAYERED GRADIENT GLOW (Blurred Ellipses in #60B1FF and #319AFF) -->
+    <div class="pointer-events-none absolute -top-32 -left-32 w-[650px] h-[650px] rounded-full bg-[#60B1FF]/30 blur-[140px] -z-10 transform-gpu"></div>
+    <div class="pointer-events-none absolute top-20 left-24 w-[480px] h-[480px] rounded-full bg-[#319AFF]/25 blur-[120px] -z-10 transform-gpu"></div>
+    <div class="pointer-events-none absolute top-48 -left-10 w-[360px] h-[360px] rounded-full bg-[#60B1FF]/20 blur-[100px] -z-10 transform-gpu"></div>
+
+    <!-- Right Ambient Glow balance for the AI Orb -->
+    <div class="pointer-events-none absolute top-1/4 -right-40 w-[600px] h-[600px] rounded-full bg-[#319AFF]/15 blur-[150px] -z-10 transform-gpu"></div>
+
+    <!-- ========================================================================= -->
+    <!-- THE "STRONG LIQUID GLASS" NAVBAR -->
+    <!-- Sticky at top-[30px], centered, w-fit -->
+    <!-- ========================================================================= -->
+    <header class="sticky top-[30px] z-50 px-4 w-full flex justify-center">
+      <nav class="liquid-glass-navbar w-fit px-5 sm:px-7 py-3 flex items-center gap-6 sm:gap-10 transition-all duration-300">
+        
+        <!-- Brand Logo "TutorAI" (Fustat Bold) with Mathematical Liquid Icon -->
+        <a href="#" class="flex items-center gap-2.5 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500/50 rounded-lg" aria-label="TutorAI Inicio">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0084FF] to-[#60B1FF] flex items-center justify-center shadow-md shadow-brand-500/25 group-hover:scale-105 transition-transform duration-200">
+            <!-- Math Integral & Sparkle Symbol -->
+            <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v1"/>
+              <path d="M8 20H6a2 2 0 0 1-2-2v-1"/>
+              <path d="m14 10-4 4"/>
+              <path d="m10 10 4 4"/>
+            </svg>
+          </div>
+          <span class="font-fustat font-bold text-xl tracking-tight text-slate-900 group-hover:text-brand-600 transition-colors">
+            Tutor<span class="text-brand-600">AI</span>
+          </span>
+        </a>
+
+        <!-- Navigation Links -->
+        <ul class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600 font-inter">
+          <li>
+            <a href="#como-funciona" class="text-slate-900 hover:text-brand-600 transition-colors py-1">Cómo funciona</a>
+          </li>
+          <li>
+            <a href="#materias" class="hover:text-brand-600 transition-colors py-1">Materias</a>
+          </li>
+          <li>
+            <a href="#metodologia" class="hover:text-brand-600 transition-colors py-1">Método Socrático</a>
+          </li>
+          <li>
+            <a href="#precios" class="hover:text-brand-600 transition-colors py-1">Precios</a>
+          </li>
+        </ul>
+
+        <!-- Glassy "Probar Gratis" Button with Arrow Icon -->
+        <a href="#demo" class="btn-glass-signup px-4 sm:px-5 py-2 rounded-[12px] text-sm font-medium text-slate-900 flex items-center gap-2 group cursor-pointer">
+          <span>Probar Gratis</span>
+          <svg class="w-4 h-4 text-slate-700 group-hover:text-slate-950 group-hover:translate-x-0.5 transition-all duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/>
+            <path d="m12 5 7 7-7 7"/>
+          </svg>
+        </a>
+
+      </nav>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- Z-10 MAIN CONTAINER FOR THE CONTENT (1600px Max-Width Landing Page Hero) -->
+    <!-- ========================================================================= -->
+    <main class="relative z-10 w-full max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 pt-8 sm:pt-12 pb-16 lg:pb-24 flex-grow flex flex-col justify-center">
+      
+      <!-- HERO GRID: Responsive transition from single-column mobile to dual-column desktop -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-[580px] lg:min-h-[660px]">
+
+        <!-- ===================================================================== -->
+        <!-- HERO CONTENT (HERO LEFT - 7 Columns on Desktop) -->
+        <!-- ===================================================================== -->
+        <div class="lg:col-span-7 flex flex-col items-start text-left space-y-6 sm:space-y-7 pr-0 lg:pr-8">
+          
+          <!-- Social Proof Badge: "Rated 4.9/5 by 15,000+ students" with five orange #FF801E stars -->
+          <div class="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/70 backdrop-blur-md border border-black/[0.08] shadow-[0_2px_12px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.8)] hover:bg-white/90 transition-all cursor-default max-w-full">
+            <!-- 5 Orange #FF801E Stars -->
+            <div class="flex items-center gap-1 shrink-0" aria-label="5 out of 5 stars">
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-[#FF801E]" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-[#FF801E]" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-[#FF801E]" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-[#FF801E]" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-[#FF801E]" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <!-- Badge Text -->
+            <span class="text-[11px] sm:text-sm font-medium text-slate-700 font-inter truncate">
+              Calificado <strong class="text-slate-900 font-semibold">4.9/5</strong> (+15k estudiantes)
+            </span>
+          </div>
+
+          <!-- Hero Headline: "Domina las matemáticas, comprende cada paso" -->
+          <!-- Typography Specs: Fustat (Bold), 75px on desktop, 1.05 line-height, -2px tracking -->
+          <h1 class="font-fustat font-bold text-[30px] xs:text-4xl sm:text-5xl md:text-6xl lg:text-[75px] leading-[1.08] sm:leading-[1.05] tracking-[-1px] sm:tracking-[-2px] text-[#0A0D14] max-w-[850px]">
+            Domina las matemáticas,<br />comprende cada paso
+          </h1>
+
+          <!-- Subheadline -->
+          <!-- Typography Specs: 18px, Inter, -1px tracking -->
+          <p class="font-inter text-[18px] text-slate-600 leading-relaxed tracking-[-1px] max-w-[620px]">
+            Tu tutor de matemáticas personal 24/7 con IA. Sube una foto de tu cuaderno o escribe tu ecuación para recibir explicaciones socráticas paso a paso, no solo la respuesta final.
+          </p>
+
+          <!-- Primary Call To Action (CTA) -->
+          <!-- Specs: "Get Started Now", rgba(0,132,255,0.8), backdrop-blur-[2px], rounded-[16px], -->
+          <!-- white text, inner highlight shadow inset 0px 4px 4px 0px rgba(255,255,255,0.35), -->
+          <!-- white circular arrow icon, scale-1.02 on hover -->
+          <div class="pt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
+            <a href="#demo" class="btn-primary-cta px-8 py-4 sm:py-4.5 rounded-[16px] text-white font-inter font-medium text-base sm:text-lg inline-flex items-center gap-3.5 group cursor-pointer shadow-lg shadow-brand-500/25">
+              <span>Resolver Ejercicio Gratis</span>
+              <!-- White Circular Arrow Icon -->
+              <span class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                <svg class="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"/>
+                  <path d="m12 5 7 7-7 7"/>
+                </svg>
+              </span>
+            </a>
+
+            <!-- Subtext assurance -->
+            <span class="text-xs sm:text-sm text-slate-500 font-inter flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+              5 consultas gratis al día • Sin tarjeta de crédito
+            </span>
+          </div>
+
+          <!-- Quick Math Chips (Interactive Preview) -->
+          <div class="pt-2 w-full max-w-[620px]">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-2.5">
+              Prueba un ejercicio de ejemplo:
+            </span>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="selectProblem('integral')" class="px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 border border-slate-200 text-xs font-mono text-slate-700 transition-all cursor-pointer">
+                ∫ x·e^x dx (Cálculo)
+              </button>
+              <button onclick="selectProblem('algebra')" class="px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 border border-slate-200 text-xs font-mono text-slate-700 transition-all cursor-pointer">
+                2x² - 7x + 3 = 0 (Álgebra)
+              </button>
+              <button onclick="selectProblem('limite')" class="px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 border border-slate-200 text-xs font-mono text-slate-700 transition-all cursor-pointer">
+                lim (sin x)/x (Límites)
+              </button>
+              <button onclick="simulatePhotoUpload()" class="px-3.5 py-1.5 rounded-xl bg-brand-50/70 hover:bg-brand-100/70 border border-brand-200 text-xs font-medium text-brand-700 transition-all flex items-center gap-1.5 cursor-pointer">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Foto de cuaderno
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- THE GLASSY ORB & MATH AI CARDS (HERO RIGHT - 5 Columns on Desktop) -->
+        <!-- Specs: -->
+        <!-- Source URL: https://future.co/images/homepage/glassy-orb/orb-purple.webm -->
+        <!-- Blending Mode: mix-blend-screen -->
+        <!-- Scaling: scale-125 to make it massive and bleed slightly off-center -->
+        <!-- Exact Color Grade: hue-rotate(-55deg) saturate(250%) brightness(1.2) contrast(1.1) -->
+        <!-- Video Tag: autoPlay loop muted playsInline -->
+        <!-- ===================================================================== -->
+        <div class="lg:col-span-5 relative flex items-center justify-center lg:justify-end w-full">
+          
+          <!-- Liquid Orb Container with responsive sizing and bleed -->
+          <div class="orb-float-anim relative w-[340px] h-[340px] sm:w-[460px] sm:h-[460px] lg:w-[580px] lg:h-[580px] flex items-center justify-center lg:translate-x-10">
+            
+            <!-- Soft ethereal ambient backing glow -->
+            <div class="absolute w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] lg:w-[460px] lg:h-[460px] rounded-full bg-[radial-gradient(circle,rgba(6,16,36,0.95)_0%,rgba(0,84,214,0.6)_45%,rgba(96,177,255,0.18)_65%,transparent_75%)] blur-2xl pointer-events-none -z-10 transform-gpu"></div>
+
+            <!-- Developer Spec Video Tag -->
+            <video
+              id="glassOrbVideo"
+              autoplay
+              loop
+              muted
+              playsinline
+              class="glassy-orb-video relative z-10 w-full h-full object-contain mix-blend-screen scale-125 pointer-events-none select-none"
+              src="https://future.co/images/homepage/glassy-orb/orb-purple.webm"
+              aria-label="TutorAI Cognitive Core Animation"
+            ></video>
+
+            <!-- Ultra-High-Fidelity Canvas Overlay -->
+            <canvas
+              id="orbCanvas"
+              class="absolute inset-0 z-20 w-full h-full object-contain scale-125 pointer-events-none select-none"
+              style="display: none; filter: hue-rotate(-55deg) saturate(250%) brightness(1.2) contrast(1.1); -webkit-filter: hue-rotate(-55deg) saturate(250%) brightness(1.2) contrast(1.1);"
+            ></canvas>
+
+            <!-- FLOATING GLASS CARD 1: Socratic AI Badge (Top-Right) -->
+            <div class="badge-float absolute -top-4 right-2 sm:right-6 z-30 glass-card px-4 py-2.5 flex items-center gap-2.5 shadow-xl">
+              <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span class="text-xs font-semibold text-slate-800 font-inter">
+                ✨ Tutor Socrático Activo
+              </span>
+            </div>
+
+            <!-- FLOATING GLASS CARD 2: Live KaTeX Math Formula (Bottom-Left) -->
+            <div class="absolute -bottom-6 left-0 sm:left-4 z-30 glass-card p-4 sm:p-5 shadow-2xl max-w-[280px] sm:max-w-[320px] transition-all hover:scale-105">
+              <div class="flex items-center justify-between gap-3 mb-1.5">
+                <span class="text-[11px] font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 px-2 py-0.5 rounded-md">
+                  Cálculo Integral
+                </span>
+                <span class="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+                  ✓ Verificado
+                </span>
+              </div>
+              <div id="heroMathFormula" class="text-sm sm:text-base font-serif text-slate-900 py-1">
+                $$\int x e^x dx = e^x(x - 1) + C$$
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1 border-t border-slate-100 pt-1.5 flex items-center justify-between">
+                <span>Método: Por partes</span>
+                <span class="text-brand-600 font-medium cursor-pointer hover:underline" onclick="selectProblem('integral')">Ver desglose →</span>
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- INTERACTIVE TUTOR DEMO SECTION (Visual proof of SaaS value) -->
+      <!-- ===================================================================== -->
+      <section id="demo" class="mt-20 sm:mt-28 pt-8 w-full max-w-[1100px] mx-auto">
+        <div class="glass-card p-6 sm:p-10 border border-slate-200/80 shadow-[0_20px_50px_rgba(0,102,255,0.06)] relative overflow-hidden">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold mb-2">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m13 2-2 20"/><path d="M17 6h-6"/><path d="M15 18H9"/></svg>
+                Demo Interactiva del Tutor
+              </div>
+              <h2 class="font-fustat font-bold text-2xl sm:text-3xl text-slate-900">
+                Pruébalo ahora mismo
+              </h2>
+            </div>
+            
+            <div class="flex items-center gap-2 text-xs text-slate-500 font-inter">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+              Modelo de Razonamiento Matemático listo
+            </div>
+          </div>
+
+          <!-- Problem input & solver -->
+          <div class="mt-6 space-y-6">
+            <div class="relative flex flex-col sm:flex-row gap-3">
+              <div class="relative flex-grow">
+                <input 
+                  type="text" 
+                  id="problemInput" 
+                  value="\int x \cdot e^x dx"
+                  placeholder="Escribe una ecuación en LaTeX o texto simple..." 
+                  class="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all"
+                />
+              </div>
+              <button 
+                id="solveBtn"
+                onclick="solveCurrentProblem()"
+                class="btn-primary-cta px-6 py-3.5 rounded-xl text-white font-medium text-sm flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md shadow-brand-500/20"
+              >
+                <span>Resolver con TutorAI</span>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+
+            <!-- Step-by-step Socratic solution box -->
+            <div id="solutionBox" class="rounded-2xl bg-white border border-slate-100 p-5 sm:p-6 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-fustat font-bold text-lg text-slate-900 flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center text-xs font-bold">1</span>
+                  Identificación del Problema & Estrategia
+                </h3>
+                <span class="text-xs bg-emerald-50 text-emerald-700 font-medium px-2.5 py-1 rounded-full">
+                  Explicación Pedagógica
+                </span>
+              </div>
+
+              <div id="solutionContent" class="text-sm text-slate-700 space-y-3 leading-relaxed">
+                <p>
+                  Tenemos el producto de una función algebraica $x$ y una función exponencial $e^x$. La técnica óptima recomendada es la <strong>Integración por Partes</strong>, cuya fórmula general es:
+                </p>
+                <div class="p-3.5 bg-slate-50 rounded-xl font-serif text-center text-base sm:text-lg border border-slate-100">
+                  $$\int u \, dv = u \cdot v - \int v \, du$$
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <div class="p-3 bg-brand-50/50 rounded-xl border border-brand-100">
+                    <span class="text-xs font-semibold text-brand-700 block mb-1">Paso 1: Elección de variables (Regla LIATE)</span>
+                    <p class="text-xs font-mono text-slate-800">$u = x \implies du = dx$</p>
+                  </div>
+                  <div class="p-3 bg-brand-50/50 rounded-xl border border-brand-100">
+                    <span class="text-xs font-semibold text-brand-700 block mb-1">Paso 2: Diferencial restante</span>
+                    <p class="text-xs font-mono text-slate-800">$dv = e^x dx \implies v = e^x$</p>
+                  </div>
+                </div>
+                <div class="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 mt-2">
+                  <span class="text-xs font-semibold text-emerald-800 block mb-1">Resultado Final Simplificado:</span>
+                  <p class="text-base font-serif text-emerald-950 font-bold">$$\int x e^x dx = x e^x - e^x + C = e^x(x - 1) + C$$</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- FOOTER LOGOS SECTION (Universities & Academic Excellence) -->
+      <!-- Specs: 5 grayscale SVG logos spaced at gap-[100px] on desktop -->
+      <!-- ===================================================================== -->
+      <footer class="mt-16 sm:mt-24 lg:mt-32 pt-10 border-t border-slate-100 flex flex-col items-center">
+        
+        <h2 class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400 font-inter mb-8 sm:mb-10 text-center">
+          Estudiantes de más de 200+ universidades y colegios dominan matemáticas con TutorAI
+        </h2>
+
+        <!-- 5 Grayscale Logos spaced at gap-[100px] on desktop -->
+        <div class="w-full flex flex-wrap items-center justify-center gap-8 sm:gap-12 md:gap-16 lg:gap-[100px] transition-all">
+          
+          <!-- Institution 1: MIT -->
+          <div class="flex items-center gap-2.5 grayscale opacity-50 hover:opacity-100 hover:grayscale-0 transition-all duration-300 cursor-pointer" title="MIT Math Community">
+            <svg class="w-7 h-7 text-slate-800" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2 4h3v16H2V4zm5 0h3v10H7V4zm5 0h3v16h-3V4zm5 0h3v10h-3V4zm5 0h3v16h-3V4z"/>
+            </svg>
+            <span class="font-fustat font-bold text-lg sm:text-xl tracking-tight text-slate-800">MIT</span>
+          </div>
+
+          <!-- Institution 2: Stanford -->
+          <div class="flex items-center gap-2.5 grayscale opacity-50 hover:opacity-100 hover:grayscale-0 transition-all duration-300 cursor-pointer" title="Stanford University">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-slate-800" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L4 7v2h16V7L12 2zm-6 9v7h3v-7H6zm5 0v7h3v-7h-3zm5 0v7h3v-7h-3zM2 20v2h20v-2H2z"/>
+            </svg>
+            <span class="font-fustat font-bold text-lg sm:text-xl tracking-tight text-slate-800">Stanford</span>
+          </div>
+
+          <!-- Institution 3: Harvard -->
+          <div class="flex items-center gap-2.5 grayscale opacity-50 hover:opacity-100 hover:grayscale-0 transition-all duration-300 cursor-pointer" title="Harvard University">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-slate-800" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L2 6v6c0 5.55 3.84 10.74 10 12 6.16-1.26 10-6.45 10-12V6l-10-4zm0 4a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm4 11H8v-1.5c0-1.33 2.67-2 4-2s4 .67 4 2V17z"/>
+            </svg>
+            <span class="font-fustat font-bold text-lg sm:text-xl tracking-tight text-slate-800">Harvard</span>
+          </div>
+
+          <!-- Institution 4: Cambridge -->
+          <div class="flex items-center gap-2.5 grayscale opacity-50 hover:opacity-100 hover:grayscale-0 transition-all duration-300 cursor-pointer" title="University of Cambridge">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-slate-800" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
+            </svg>
+            <span class="font-fustat font-bold text-lg sm:text-xl tracking-tight text-slate-800">Cambridge</span>
+          </div>
+
+          <!-- Institution 5: Oxford -->
+          <div class="flex items-center gap-2.5 grayscale opacity-50 hover:opacity-100 hover:grayscale-0 transition-all duration-300 cursor-pointer" title="University of Oxford">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-slate-800" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+            <span class="font-fustat font-bold text-lg sm:text-xl tracking-tight text-slate-800">Oxford</span>
+          </div>
+
+        </div>
+
+      </footer>
+
+    </main>
+
+  </div>
+
+  <!-- Smart Progressive Enhancement Script -->
+  <script>
+    (function initLiquidGlassEnhancements() {
+      const video = document.getElementById('glassOrbVideo');
+      const canvas = document.getElementById('orbCanvas');
+      if (!video || !canvas) return;
+
+      video.play().catch(function(err) {
+        console.log("Autoplay waiting for user interaction or policy:", err);
+      });
+
+      try {
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (ctx) {
+          let isRendering = false;
+
+          function renderFrame() {
+            if (!video.paused && !video.ended) {
+              if (canvas.width !== video.videoWidth && video.videoWidth > 0) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.style.display = 'block';
+                video.style.opacity = '0.35';
+              }
+              if (canvas.width > 0) {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imgData.data;
+                const len = data.length;
+                for (let i = 0; i < len; i += 4) {
+                  const r = data[i];
+                  const g = data[i + 1];
+                  const b = data[i + 2];
+                  const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                  if (lum < 8) {
+                    data[i + 3] = 0;
+                  } else if (lum < 35) {
+                    data[i + 3] = Math.floor((lum - 8) * (255 / 27));
+                  }
+                }
+                ctx.putImageData(imgData, 0, 0);
+              }
+            }
+            requestAnimationFrame(renderFrame);
+          }
+
+          video.addEventListener('play', function() {
+            if (!isRendering) {
+              isRendering = true;
+              renderFrame();
+            }
+          });
+        }
+      } catch (e) {
+        console.warn("Using pure CSS mix-blend-screen fallback", e);
+      }
+    })();
+
+    // Interactive Demo Problem Selector
+    const problemDatabase = {
+      integral: {
+        input: "\\int x \\cdot e^x dx",
+        title: "Cálculo: Integración por Partes",
+        category: "Cálculo Integral",
+        badge: "Fórmula de Partes",
+        mathFormula: "\\int x e^x dx = e^x(x - 1) + C",
+        html: `
+          <p>Tenemos el producto de una función algebraica $x$ y una función exponencial $e^x$. La técnica óptima recomendada es la <strong>Integración por Partes</strong>, cuya fórmula general es:</p>
+          <div class="p-3.5 bg-slate-50 rounded-xl font-serif text-center text-base sm:text-lg border border-slate-100">
+            $$\\int u \\, dv = u \\cdot v - \\int v \\, du$$
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div class="p-3 bg-brand-50/50 rounded-xl border border-brand-100">
+              <span class="text-xs font-semibold text-brand-700 block mb-1">Paso 1: Elección de variables (Regla LIATE)</span>
+              <p class="text-xs font-mono text-slate-800">$u = x \\implies du = dx$</p>
+            </div>
+            <div class="p-3 bg-brand-50/50 rounded-xl border border-brand-100">
+              <span class="text-xs font-semibold text-brand-700 block mb-1">Paso 2: Diferencial restante</span>
+              <p class="text-xs font-mono text-slate-800">$dv = e^x dx \\implies v = e^x$</p>
+            </div>
+          </div>
+          <div class="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 mt-2">
+            <span class="text-xs font-semibold text-emerald-800 block mb-1">Resultado Final Simplificado:</span>
+            <p class="text-base font-serif text-emerald-950 font-bold">$$\\int x e^x dx = x e^x - e^x + C = e^x(x - 1) + C$$</p>
+          </div>
+        `
+      },
+      algebra: {
+        input: "2x^2 - 7x + 3 = 0",
+        title: "Álgebra: Ecuación Cuadrática",
+        category: "Álgebra Elemental",
+        badge: "Fórmula General",
+        mathFormula: "x_1 = 3, \\quad x_2 = \\frac{1}{2}",
+        html: `
+          <p>Identificamos los coeficientes de la ecuación de segundo grado $ax^2 + bx + c = 0$: $a = 2$, $b = -7$, $c = 3$.</p>
+          <div class="p-3.5 bg-slate-50 rounded-xl font-serif text-center text-base sm:text-lg border border-slate-100">
+            $$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div class="p-3 bg-brand-50/50 rounded-xl border border-brand-100">
+              <span class="text-xs font-semibold text-brand-700 block mb-1">Paso 1: Discriminante (Δ)</span>
+              <p class="text-xs font-mono text-slate-800">$\\Delta = (-7)^2 - 4(2)(3) = 49 - 24 = 25$</p>
+            </div>
+            <div class="p-3 bg-brand-50/50 rounded-xl border border-brand-100">
+              <span class="text-xs font-semibold text-brand-700 block mb-1">Paso 2: Raíces Reales</span>
+              <p class="text-xs font-mono text-slate-800">$x = \\frac{7 \\pm 5}{4} \\implies x_1 = 3, \\; x_2 = \\frac{1}{2}$</p>
+            </div>
+          </div>
+          <div class="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 mt-2">
+            <span class="text-xs font-semibold text-emerald-800 block mb-1">Soluciones:</span>
+            <p class="text-base font-serif text-emerald-950 font-bold">$$x \\in \\left\\{ \\frac{1}{2}, 3 \\right\\}$$</p>
+          </div>
+        `
+      },
+      limite: {
+        input: "\\lim_{x \\to 0} \\frac{\\sin x}{x}",
+        title: "Cálculo: Límite Notable Fundamental",
+        category: "Cálculo Diferencial",
+        badge: "Teorema del Sándwich",
+        mathFormula: "\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1",
+        html: `
+          <p>Al evaluar directamente en $x = 0$, obtenemos la forma indeterminada $\\frac{0}{0}$.</p>
+          <div class="p-3.5 bg-slate-50 rounded-xl font-serif text-center text-base sm:text-lg border border-slate-100">
+            $$\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1$$
+          </div>
+          <div class="p-3 bg-brand-50/50 rounded-xl border border-brand-100 mt-2">
+            <span class="text-xs font-semibold text-brand-700 block mb-1">Justificación Socrática:</span>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              Mediante el Teorema del Emparedado o la Regla de L'Hôpital: derivando numerador y denominador respecto a $x$, $\\frac{\\cos x}{1}$. Evaluando en $x=0$, $\\cos(0) = 1$.
+            </p>
+          </div>
+          <div class="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 mt-2">
+            <span class="text-xs font-semibold text-emerald-800 block mb-1">Resultado:</span>
+            <p class="text-base font-serif text-emerald-950 font-bold">$$\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1$$</p>
+          </div>
+        `
+      }
+    };
+
+    function selectProblem(key) {
+      const prob = problemDatabase[key];
+      if (!prob) return;
+      document.getElementById('problemInput').value = prob.input;
+      const content = document.getElementById('solutionContent');
+      content.innerHTML = prob.html;
+      
+      // Render KaTeX in newly inserted HTML
+      if (window.renderMathInElement) {
+        window.renderMathInElement(content, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+
+      // Scroll smoothly to demo section
+      document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function simulatePhotoUpload() {
+      const input = document.getElementById('problemInput');
+      input.value = "📸 [Foto de cuaderno procesada]: 2x² - 7x + 3 = 0";
+      setTimeout(() => {
+        selectProblem('algebra');
+      }, 400);
+    }
+
+    function solveCurrentProblem() {
+      const btn = document.getElementById('solveBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Razonando con TutorAI...</span>
+      `;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        selectProblem('integral');
+      }, 700);
+    }
+
+    // Auto-render math on initial load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Load auto-render extension for KaTeX
+      const script = document.createElement('script');
+      script.src = "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js";
+      script.onload = () => {
+        if (window.renderMathInElement) {
+          window.renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false}
+            ]
+          });
+        }
+      };
+      document.head.appendChild(script);
+    });
+  </script>
+
+</body>
+</html>
