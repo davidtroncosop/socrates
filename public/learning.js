@@ -552,10 +552,15 @@ export function freshState() {
     reviews: [],
   };
 }
-export function loadState(storage, availableLessons = lessons) {
+export function loadState(
+  storage,
+  availableLessons = lessons,
+  key = "socatres.v1",
+) {
   try {
     const s = JSON.parse(
-      storage.getItem("socatres.v1") ?? storage.getItem("tutorai.v1"),
+      storage.getItem(key) ??
+        (key === "socatres.v1" ? storage.getItem("tutorai.v1") : null),
     );
     if (s?.version !== 1) return freshState();
     const ids = new Set(availableLessons.map((l) => l.id));
@@ -603,6 +608,47 @@ export function loadState(storage, availableLessons = lessons) {
     return freshState();
   }
 }
+
+const lastActivity = (s) =>
+  Math.max(0, ...s.attempts.map((a) => a.at), ...s.notes.map((n) => n.at));
+const unique = (list, key) => {
+  const seen = new Map();
+  for (const item of list) if (!seen.has(key(item))) seen.set(key(item), item);
+  return [...seen.values()];
+};
+// Une el progreso de dos dispositivos. Lo acumulativo (lecciones completadas,
+// intentos, notas) se suma; el dominio y los repasos vienen del estado con la
+// actividad más reciente, porque un repaso fallido puede retirar un dominio.
+export function mergeStates(local, remote) {
+  if (!remote) return local;
+  const [newer, older] =
+    lastActivity(remote) > lastActivity(local) ? [remote, local] : [local, remote];
+  const reviewed = new Set(newer.reviews.map((r) => r.lesson));
+  return {
+    version: 1,
+    diagnosed: local.diagnosed || remote.diagnosed,
+    completed: unique([...local.completed, ...remote.completed], (id) => id),
+    mastered: [...newer.mastered],
+    attempts: unique(
+      [...local.attempts, ...remote.attempts],
+      (a) => `${a.lesson}|${a.at}|${a.correct}`,
+    ).sort((a, b) => a.at - b.at),
+    // Las notas locales van primero para conservar sus fotos.
+    notes: unique(
+      [...local.notes, ...remote.notes],
+      (n) => `${n.at}|${n.title}`,
+    ).sort((a, b) => b.at - a.at),
+    reviews: [
+      ...newer.reviews,
+      ...older.reviews.filter((r) => !reviewed.has(r.lesson)),
+    ],
+  };
+}
+// Las fotos se quedan en el dispositivo; al servidor solo va el texto.
+export const withoutPhotos = (state) => ({
+  ...state,
+  notes: state.notes.map(({ image, ...note }) => note),
+});
 
 export const GRADES = {
   "5b": "5° Básico",

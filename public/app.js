@@ -12,7 +12,12 @@ import {
   GRADES,
   inferGrade,
   displayTitle,
+  mergeStates,
+  withoutPhotos,
 } from "./learning.js";
+import { readSession, endSession, progressKey } from "./auth.js";
+import { api } from "./api.js";
+import { renderClassPage } from "./class-view.js";
 import { readCatalog, seedCatalog, writeCatalog } from "./content.js";
 import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
@@ -22,6 +27,13 @@ import { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
 import { showUnitGuide, showParentReport, showRewardsModal } from "./dialogs.js";
 export { UNIT_DEFINITIONS } from "./units.js";
 export { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
+let account = null;
+try {
+  account = readSession(localStorage);
+} catch {}
+const isTeacher = account?.role === "teacher";
+const synced = account?.mode === "account";
+const stateKey = progressKey(account);
 let catalog,
   catalogWarning = "";
 try {
@@ -57,7 +69,7 @@ const activeMastered = () =>
 const app = $("#app");
 let state;
 try {
-  state = loadState(localStorage, catalog.lessons);
+  state = loadState(localStorage, catalog.lessons, stateKey);
 } catch {
   state = freshState();
 }
@@ -67,10 +79,11 @@ let session = null,
   currentSubject = "all";
 function save() {
   try {
-    localStorage.setItem("socatres.v1", JSON.stringify(state));
+    localStorage.setItem(stateKey, JSON.stringify(state));
   } catch {
     storageFailed = true;
   }
+  scheduleSync();
   updateBadge();
   if (storageFailed && !$(".storage-warning")) {
     const n = document.createElement("div");
@@ -80,6 +93,54 @@ function save() {
     $(".topbar").after(n);
   }
 }
+// Sincronización: el dispositivo es la fuente inmediata y el servidor se
+// actualiza en segundo plano. Sin conexión se reintenta al volver.
+let syncTimer;
+function syncStatus(text) {
+  const el = $("#sync-status");
+  if (el) el.textContent = text;
+}
+function scheduleSync() {
+  if (!synced) return;
+  clearTimeout(syncTimer);
+  syncStatus("Guardando…");
+  syncTimer = setTimeout(pushProgress, 1500);
+}
+async function pushProgress() {
+  clearTimeout(syncTimer);
+  try {
+    await api.putProgress(withoutPhotos(state));
+    syncStatus("✓ Progreso sincronizado");
+  } catch (err) {
+    syncStatus(
+      err.status === 401
+        ? "Tu sesión terminó · vuelve a entrar para sincronizar"
+        : "Sin conexión · se sincronizará al volver",
+    );
+  }
+}
+async function pullProgress() {
+  syncStatus("Sincronizando…");
+  try {
+    const { state: remote } = await api.getProgress();
+    if (remote) {
+      // loadState valida y limpia lo recibido igual que lo guardado localmente.
+      const clean = loadState(
+        { getItem: () => JSON.stringify(remote) },
+        catalog.lessons,
+      );
+      state = mergeStates(state, clean);
+      try {
+        localStorage.setItem(stateKey, JSON.stringify(state));
+      } catch {}
+      // No se interrumpe un ejercicio en curso.
+      if (!session) navigate();
+    }
+    await pushProgress();
+  } catch {
+    syncStatus("Sin conexión · tu progreso se guarda en este dispositivo");
+  }
+}
 function updateBadge() {
   $("#review-count").textContent = activeReviews().filter(
     (r) => r.due <= Date.now(),
@@ -87,7 +148,10 @@ function updateBadge() {
 }
 function navigate() {
   session = null;
-  const page = location.hash.slice(1) || "ruta";
+  let page = location.hash.slice(1) || "ruta";
+  // El mantenedor es solo para profesores (cuenta o demo de profesor).
+  if (page === "contenido" && !isTeacher) page = "ruta";
+  if (app.dataset) app.dataset.view = page;
   document.querySelectorAll("[data-nav]").forEach((a) => {
     const active = a.dataset.nav === page;
     a.classList.toggle("active", active);
@@ -100,6 +164,7 @@ function navigate() {
       repaso: reviews,
       cuaderno: notebook,
       tarea: task,
+      clase: () => renderClassPage({ app, session: account, lessons }),
       contenido: contentManager,
     })[page] || route
   )();
@@ -115,8 +180,10 @@ function route() {
       heading(
         "TU RUTA",
         "Todavía no hay lecciones publicadas.",
-        "Publica contenido desde el mantenedor para comenzar.",
-      ) + button("Administrar contenido", "go:contenido", "primary");
+        isTeacher
+          ? "Publica contenido desde el mantenedor para comenzar."
+          : "Pide a tu profesor que publique lecciones.",
+      ) + (isTeacher ? button("Administrar contenido", "go:contenido", "primary") : "");
     return;
   }
   const next =
@@ -1197,6 +1264,33 @@ app.addEventListener("click", (e) => {
     if (dlg && typeof dlg.close === "function") dlg.close();
   }
 });
+const contentLink = document.querySelector('[data-nav="contenido"]');
+if (contentLink) contentLink.hidden = !isTeacher;
+if (synced) {
+  $("#privacy-summary").textContent =
+    "Tu progreso se guarda en este navegador y en tu cuenta, para continuar en otros dispositivos. Tus fotos quedan solo en este dispositivo. Si te uniste a una clase, tu profesor ve cuántas lecciones completas y dominas, no tus notas ni fotos.";
+  $("#privacy-delete-note").textContent =
+    "Borrar el progreso lo elimina aquí y en tu cuenta. Eliminar la cuenta borra además tus datos personales y tus clases.";
+  $("#delete-account").hidden = false;
+}
+$("#delete-account").onclick = async () => {
+  if (
+    !window.confirm(
+      "¿Eliminar tu cuenta? Se borran tu nombre, correo, progreso y clases. No se puede deshacer.",
+    )
+  )
+    return;
+  try {
+    await api.deleteAccount();
+    try {
+      localStorage.removeItem(stateKey);
+      endSession(localStorage);
+    } catch {}
+    location.replace("./");
+  } catch (err) {
+    $("#privacy-error").textContent = err.message;
+  }
+};
 $("#privacy").onclick = () => $("#privacy-dialog").showModal();
 $("#close-privacy").onclick = () => $("#privacy-dialog").close();
 $("#delete-data").onclick = () => {
@@ -1211,3 +1305,7 @@ $("#delete-data").onclick = () => {
 };
 window.addEventListener("hashchange", navigate);
 navigate();
+if (synced) {
+  pullProgress();
+  window.addEventListener("online", pushProgress);
+}

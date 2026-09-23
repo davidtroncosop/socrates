@@ -125,3 +125,47 @@ test("compressImage returns null gracefully in non-browser environments", async 
   const res = await compressImage(null);
   assert.equal(res, null);
 });
+
+test("merging two devices keeps all work and takes mastery from the latest activity", async () => {
+  const { mergeStates, withoutPhotos } = await import("../public/learning.js");
+  const base = { version: 1, diagnosed: false, completed: [], mastered: [], attempts: [], notes: [], reviews: [] };
+  const phone = {
+    ...base,
+    diagnosed: true,
+    completed: ["equations"],
+    mastered: ["equations"],
+    attempts: [{ lesson: "equations", correct: true, hints: 0, at: 100 }],
+    notes: [{ title: "a", text: "foto", at: 100, image: "data:x" }],
+    reviews: [{ lesson: "equations", due: 900 }],
+  };
+  const laptop = {
+    ...base,
+    completed: ["signs"],
+    attempts: [
+      { lesson: "equations", correct: true, hints: 0, at: 100 },
+      { lesson: "signs", correct: false, hints: 1, at: 200 },
+    ],
+    notes: [{ title: "a", text: "foto", at: 100 }, { title: "b", text: "t", at: 200 }],
+    reviews: [{ lesson: "signs", due: 300 }],
+  };
+  const merged = mergeStates(phone, laptop);
+  assert.equal(merged.diagnosed, true);
+  assert.deepEqual(merged.completed, ["equations", "signs"]);
+  assert.deepEqual(merged.mastered, [], "laptop activity is newer");
+  assert.equal(merged.attempts.length, 2);
+  assert.deepEqual(merged.notes.map((n) => n.title), ["b", "a"]);
+  assert.equal(merged.notes[1].image, "data:x", "local photo survives");
+  assert.deepEqual(merged.reviews.map((r) => r.lesson).sort(), ["equations", "signs"]);
+  assert.equal(mergeStates(phone, null), phone);
+  assert.equal("image" in withoutPhotos(phone).notes[0], false);
+  assert.equal(phone.notes[0].image, "data:x", "original untouched");
+});
+
+test("each account reads its own progress key", () => {
+  const values = new Map([
+    ["socatres.v1", JSON.stringify({ version: 1, completed: ["equations"] })],
+  ]);
+  const store = { getItem: (k) => values.get(k) ?? null };
+  assert.deepEqual(loadState(store).completed, ["equations"]);
+  assert.deepEqual(loadState(store, undefined, "socatres.v1.u1").completed, []);
+});

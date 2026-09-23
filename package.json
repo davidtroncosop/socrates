@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "npx serve -l 3000 .",
     "start": "npx serve -l 3000 .",
-    "test": "node --test",
+    "test": "node --experimental-sqlite --no-warnings=ExperimentalWarning --test",
     "deploy": "wrangler pages deploy public --project-name=socatres --branch=main"
   }
 }

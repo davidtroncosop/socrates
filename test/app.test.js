@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { solveLinear } from "../public/learning.js";
 // Lightweight DOM adapter for exercising real app handlers; visual QA remains separate.
-async function harness(saved) {
+async function harness(saved, { session, key = "socatres.v1", fetch } = {}) {
   const nodes = new Map();
   const node = (key) => {
     if (!nodes.has(key))
@@ -11,6 +11,10 @@ async function harness(saved) {
         innerHTML: "",
         textContent: "",
         disabled: false,
+        dataset: {},
+        querySelector: (s) => node(s),
+        querySelectorAll: () => [],
+        removeAttribute() {},
         addEventListener(type, fn) {
           this[type] = fn;
         },
@@ -23,23 +27,28 @@ async function harness(saved) {
       });
     return nodes.get(key);
   };
-  const storage = new Map(saved ? [["socatres.v1", JSON.stringify(saved)]] : []);
+  const storage = new Map(saved ? [[key, JSON.stringify(saved)]] : []);
+  if (session) storage.set("socatres.demo-session.v1", JSON.stringify(session));
   globalThis.localStorage = {
     getItem: (k) => storage.get(k) || null,
     setItem: (k, v) => storage.set(k, v),
+    removeItem: (k) => storage.delete(k),
   };
+  globalThis.fetch = fetch;
   globalThis.location = { hash: "#ruta" };
   globalThis.window = { addEventListener() {} };
   globalThis.document = {
     querySelector: (s) => (s === ".storage-warning" ? null : node(s)),
     querySelectorAll: () => [],
     createElement: () => node("created"),
+    addEventListener() {},
   };
   const mod = await import(`../public/app.js?test=${Math.random()}`);
   return {
     node,
     mod,
-    read: () => JSON.parse(storage.get("socatres.v1") ?? storage.get("tutorai.v1")),
+    storage,
+    read: () => JSON.parse(storage.get(key) ?? storage.get("tutorai.v1")),
     click(action) {
       node("#app").click({
         target: { closest: () => ({ dataset: { action }, disabled: false }) },
@@ -449,4 +458,64 @@ test("grade filters use lesson metadata, not titles", async () => {
   assert.doesNotMatch(html, /data-action="lesson:equations"/);
   h.click("filter:7b");
   assert.match(h.node("#app").innerHTML, /data-action="lesson:equations"/);
+});
+
+const later = Date.now() + 86400000;
+test("content manager is only reachable for teachers", async () => {
+  const student = await harness();
+  globalThis.location.hash = "#contenido";
+  student.click("go:contenido");
+  assert.doesNotMatch(student.node("#app").innerHTML, /ESTUDIO DE CONTENIDO/);
+  assert.equal(student.node('[data-nav="contenido"]').hidden, true);
+
+  const teacher = await harness(null, {
+    session: { mode: "demo", role: "teacher", name: "Profesor demo", expiresAt: later },
+  });
+  globalThis.location.hash = "#contenido";
+  teacher.click("go:contenido");
+  assert.match(teacher.node("#app").innerHTML, /ESTUDIO DE CONTENIDO/);
+  assert.equal(teacher.node('[data-nav="contenido"]').hidden, false);
+});
+
+test("demo users see why classes need an account", async () => {
+  const h = await harness();
+  globalThis.location.hash = "#clase";
+  h.click("go:clase");
+  assert.match(h.node("#app").innerHTML, /Necesitas una cuenta/);
+});
+
+test("accounts merge server progress on load and upload it without photos", async () => {
+  const calls = [];
+  const remote = {
+    version: 1, diagnosed: true, completed: ["signs"], mastered: [],
+    attempts: [{ lesson: "signs", correct: true, hints: 0, at: 50 }],
+    notes: [], reviews: [],
+  };
+  const fetch = async (path, init = {}) => {
+    calls.push({ path, method: init.method, body: init.body && JSON.parse(init.body) });
+    const body = init.method === "GET" ? { state: remote, updatedAt: 1 } : { updatedAt: 2 };
+    return { ok: true, status: 200, json: async () => body };
+  };
+  const h = await harness(
+    {
+      version: 1, diagnosed: true, completed: ["equations"], mastered: [],
+      attempts: [{ lesson: "equations", correct: true, hints: 0, at: 100 }],
+      notes: [{ title: "Mi nota", text: "foto", at: 100, image: "data:image/jpeg;base64,AA" }],
+      reviews: [],
+    },
+    {
+      key: "socatres.v1.u1",
+      session: { mode: "account", userId: "u1", name: "Ana", role: "student", expiresAt: later },
+      fetch,
+    },
+  );
+  await new Promise((r) => setTimeout(r, 20));
+  assert.deepEqual(h.read().completed.sort(), ["equations", "signs"]);
+  assert.equal(h.read().notes[0].image.startsWith("data:"), true, "photo kept locally");
+  const put = calls.find((c) => c.method === "PUT");
+  assert.equal(put.path, "/api/progress");
+  assert.deepEqual(put.body.state.completed.sort(), ["equations", "signs"]);
+  assert.equal("image" in put.body.state.notes[0], false, "photo never uploaded");
+  assert.equal(h.storage.has("socatres.v1"), false, "demo progress untouched");
+  assert.match(h.node("#sync-status").textContent, /sincronizado/);
 });

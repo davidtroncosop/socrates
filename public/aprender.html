@@ -28,7 +28,8 @@
           ><a href="#tarea" data-nav="tarea"
             >＋ <span>Trae tu ejercicio</span></a
           >
-          <a href="#contenido" data-nav="contenido">▦ <span>Contenido</span></a>
+          <a href="#clase" data-nav="clase">◎ <span>Mi clase</span></a>
+          <a href="#contenido" data-nav="contenido" hidden>▦ <span>Contenido</span></a>
         </nav>
         <div class="sidebar-bottom">
           <div class="edition">PRIMERA EDICIÓN</div>
@@ -48,24 +49,28 @@
         <footer>
           Hecho para comprender, paso a paso.
           <button id="privacy">Mis datos</button
-          ><span>Práctica local · Sin IA conectada</span>
+          ><span id="sync-status">Práctica local · Sin IA conectada</span>
         </footer>
       </div>
     </div>
     <dialog id="privacy-dialog">
       <h2>Tú controlas tus datos</h2>
-      <p>
+      <p id="privacy-summary">
         El progreso y tus notas se guardan solo en este navegador. No se envían
         a un servidor y no se sincronizan entre dispositivos.
       </p>
-      <p>
+      <p id="privacy-delete-note">
         Borrar los datos elimina tus intentos, repasos y notas de este
         dispositivo.
       </p>
       <div class="actions">
         <button id="close-privacy">Volver</button
-        ><button id="delete-data" class="danger">Borrar mi progreso</button>
+        ><button id="delete-data" class="danger">Borrar mi progreso</button
+        ><button id="delete-account" class="danger" hidden>
+          Eliminar mi cuenta
+        </button>
       </div>
+      <p id="privacy-error" role="alert" class="muted"></p>
     </dialog>
     <dialog id="unit-guide-dialog" class="unit-guide-dialog">
       <div id="unit-guide-content"></div>

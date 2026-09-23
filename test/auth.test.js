@@ -46,3 +46,20 @@ test("corrupt or inaccessible session storage fails closed", () => {
   assert.equal(readSession(blocked), null);
   assert.throws(() => startSession(blocked), /blocked/);
 });
+test("teacher demo and account sessions are recognized; tampered ones are not", async () => {
+  const { startAccountSession, progressKey } = await import("../public/auth.js");
+  const store = storage();
+  startSession(store, 100, "teacher");
+  assert.equal(readSession(store, 101).name, "Profesor demo");
+  assert.equal(readSession(store, 101).role, "teacher");
+  store.setItem(SESSION_KEY, '{"mode":"demo","name":"Estudiante demo","expiresAt":999}');
+  assert.equal(readSession(store, 101).role, "student", "older demo sessions stay valid");
+  store.setItem(SESSION_KEY, '{"mode":"demo","role":"teacher","name":"Estudiante demo","expiresAt":999}');
+  assert.equal(readSession(store, 101), null);
+  const account = startAccountSession(store, { id: "u1", name: "Ana", role: "student" }, 100);
+  assert.deepEqual(readSession(store, 101), account);
+  assert.equal(progressKey(account), "socatres.v1.u1");
+  assert.equal(progressKey(readSession(store, 100 + 31 * 86400000)), "socatres.v1");
+  store.setItem(SESSION_KEY, JSON.stringify({ ...account, role: "admin" }));
+  assert.equal(readSession(store, 101), null);
+});

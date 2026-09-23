@@ -158,7 +158,7 @@
             <li><span>↺</span> Repasos para reforzar lo aprendido</li>
           </ul>
           <p class="local-note">
-            En esta beta, tu progreso queda en este navegador.
+            Con tu cuenta, tu progreso te acompaña en cualquier dispositivo.
           </p>
         </div>
       </section>
@@ -176,7 +176,7 @@
     <footer class="wrap">
       <a class="logo" href="./"><span class="logo-mark">s↗</span>socatres</a
       ><span>Hecho para comprender, paso a paso.</span
-      ><span>Beta local · Sin IA conectada</span>
+      ><span>Beta · Sin IA conectada</span>
     </footer>
     <dialog
       id="login-dialog"
@@ -188,26 +188,57 @@
       <p class="eyebrow">TU ESPACIO TE ESPERA</p>
       <h2 id="login-title">Empieza con<br />un pequeño paso.</h2>
       <p id="login-description">
-        Prueba la experiencia de acceso con una cuenta ficticia. No necesitas
-        ingresar datos personales.
+        Con una cuenta tu progreso se guarda y te sigue a cualquier
+        dispositivo. También puedes probar sin registrarte.
       </p>
-      <div class="demo-badge">DEMO · Simulación de acceso OAuth</div>
-      <div class="demo-account">
-        <span class="account-avatar">E</span>
-        <div>
-          <strong>Estudiante demo</strong
-          ><small>Cuenta de prueba de socatres</small>
-        </div>
-        <span>✓</span>
+      <div class="auth-tabs" role="tablist" aria-label="Forma de acceso">
+        <button role="tab" id="tab-login" aria-controls="panel-login" aria-selected="true" data-tab="login">Entrar</button
+        ><button role="tab" id="tab-register" aria-controls="panel-register" aria-selected="false" data-tab="register" tabindex="-1">Crear cuenta</button
+        ><button role="tab" id="tab-demo" aria-controls="panel-demo" aria-selected="false" data-tab="demo" tabindex="-1">Probar demo</button>
       </div>
-      <button class="primary" id="demo-login">
-        Continuar con cuenta demo <span aria-hidden="true">↗</span>
-      </button>
-      <p class="auth-disclaimer">
-        No se conecta a Google ni a otro proveedor. La sesión dura 24 horas. El
-        progreso se guarda solo en este navegador y se comparte entre las
-        sesiones de prueba.
-      </p>
+      <form id="panel-login" role="tabpanel" aria-labelledby="tab-login" class="auth-form">
+        <label for="login-email">Correo</label>
+        <input id="login-email" name="email" type="email" autocomplete="email" required />
+        <label for="login-password">Contraseña</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required />
+        <button class="primary" type="submit">Entrar <span aria-hidden="true">↗</span></button>
+      </form>
+      <form id="panel-register" role="tabpanel" aria-labelledby="tab-register" class="auth-form" hidden>
+        <fieldset class="role-choice">
+          <legend>Soy</legend>
+          <label><input type="radio" name="role" value="student" checked /> Estudiante</label>
+          <label><input type="radio" name="role" value="teacher" /> Profesor/a</label>
+        </fieldset>
+        <label for="register-name">Tu nombre</label>
+        <input id="register-name" name="name" autocomplete="name" maxlength="60" required />
+        <label for="register-email">Correo</label>
+        <input id="register-email" name="email" type="email" autocomplete="email" required />
+        <label for="register-password">Contraseña (mínimo 8 caracteres)</label>
+        <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" required />
+        <p class="auth-disclaimer">
+          Si eres menor de 14 años, crea tu cuenta con tu apoderado. Guardamos
+          tu nombre, correo y progreso; tus fotos quedan en tu dispositivo.
+          Puedes borrar tu cuenta cuando quieras desde «Mis datos».
+        </p>
+        <button class="primary" type="submit">Crear mi cuenta <span aria-hidden="true">↗</span></button>
+      </form>
+      <div id="panel-demo" role="tabpanel" aria-labelledby="tab-demo" hidden>
+        <div class="demo-badge">DEMO · Sin registro</div>
+        <button class="demo-account" id="demo-login" data-role="student">
+          <span class="account-avatar">E</span>
+          <span><strong>Estudiante demo</strong><small>Practica la ruta de aprendizaje</small></span>
+          <span aria-hidden="true">↗</span>
+        </button>
+        <button class="demo-account" id="demo-teacher" data-role="teacher">
+          <span class="account-avatar">P</span>
+          <span><strong>Profesor demo</strong><small>Incluye el mantenedor de contenido</small></span>
+          <span aria-hidden="true">↗</span>
+        </button>
+        <p class="auth-disclaimer">
+          La sesión demo dura 24 horas y el progreso queda solo en este
+          navegador.
+        </p>
+      </div>
       <p id="login-error" role="alert"></p>
       <button class="cancel" id="cancel-login">Volver a explorar</button>
     </dialog>
