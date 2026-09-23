@@ -1,13 +1,15 @@
 {
   "name": "socatres",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "Tutor de álgebra con ruta, práctica guiada y repaso local",
+  "description": "Tutor de matemática y comprensión lectora con ruta, práctica guiada, repaso y clases",
   "scripts": {
-    "dev": "npx serve -l 3000 .",
-    "start": "npx serve -l 3000 .",
+    "dev": "wrangler pages dev --port 8788",
+    "dev:static": "npx serve -l 3000 public",
+    "db:migrate:local": "wrangler d1 migrations apply socatres --local",
+    "db:migrate": "wrangler d1 migrations apply socatres --remote",
     "test": "node --experimental-sqlite --no-warnings=ExperimentalWarning --test",
-    "deploy": "wrangler pages deploy public --project-name=socatres --branch=main"
+    "deploy": "wrangler pages deploy --branch=main"
   }
 }

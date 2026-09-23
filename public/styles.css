@@ -11,6 +11,10 @@
 * {
   box-sizing: border-box;
 }
+/* Las reglas de display de los componentes no deben anular el atributo hidden. */
+[hidden] {
+  display: none !important;
+}
 body {
   margin: 0;
 }
@@ -776,7 +780,8 @@ dialog::backdrop {
   .profile {
     font-size: 0;
   }
-  .avatar {
+  .avatar,
+  #logout {
     font-size: 13px;
   }
   main {
