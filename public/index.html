@@ -197,28 +197,33 @@
         ><button role="tab" id="tab-demo" aria-controls="panel-demo" aria-selected="false" data-tab="demo" tabindex="-1">Probar demo</button>
       </div>
       <form id="panel-login" role="tabpanel" aria-labelledby="tab-login" class="auth-form">
-        <label for="login-email">Correo</label>
-        <input id="login-email" name="email" type="email" autocomplete="email" required />
+        <label for="login-user">Correo o usuario</label>
+        <input id="login-user" name="login" autocomplete="username" autocapitalize="none" required />
         <label for="login-password">Contraseña</label>
         <input id="login-password" name="password" type="password" autocomplete="current-password" required />
         <button class="primary" type="submit">Entrar <span aria-hidden="true">↗</span></button>
+        <button type="button" class="link-button" data-show="panel-recover">¿Olvidaste tu contraseña?</button>
       </form>
       <form id="panel-register" role="tabpanel" aria-labelledby="tab-register" class="auth-form" hidden>
         <fieldset class="role-choice">
           <legend>Soy</legend>
           <label><input type="radio" name="role" value="student" checked /> Estudiante</label>
-          <label><input type="radio" name="role" value="teacher" /> Profesor/a</label>
+          <label><input type="radio" name="role" value="parent" /> Apoderado/a</label>
         </fieldset>
-        <label for="register-name">Tu nombre</label>
+        <label class="check-row" id="age-row"><input type="checkbox" name="age14" id="register-age14" /> Tengo 14 años o más</label>
+        <p class="auth-note" id="under14-note">
+          ¿Tienes menos de 14 años? Pide a tu apoderado que cree su cuenta
+          aquí: desde «Mi familia» creará la tuya.
+        </p>
+        <label for="register-name">Nombre</label>
         <input id="register-name" name="name" autocomplete="name" maxlength="60" required />
         <label for="register-email">Correo</label>
         <input id="register-email" name="email" type="email" autocomplete="email" required />
         <label for="register-password">Contraseña (mínimo 8 caracteres)</label>
         <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" required />
         <p class="auth-disclaimer">
-          Si eres menor de 14 años, crea tu cuenta con tu apoderado. Guardamos
-          tu nombre, correo y progreso; tus fotos quedan en tu dispositivo.
-          Puedes borrar tu cuenta cuando quieras desde «Mis datos».
+          Guardamos tu nombre, correo y progreso; tus fotos quedan en tu
+          dispositivo. Puedes borrar tu cuenta cuando quieras desde «Mis datos».
         </p>
         <button class="primary" type="submit">Crear mi cuenta <span aria-hidden="true">↗</span></button>
       </form>
@@ -229,15 +234,40 @@
           <span><strong>Estudiante demo</strong><small>Practica la ruta de aprendizaje</small></span>
           <span aria-hidden="true">↗</span>
         </button>
-        <button class="demo-account" id="demo-teacher" data-role="teacher">
-          <span class="account-avatar">P</span>
-          <span><strong>Profesor demo</strong><small>Incluye el mantenedor de contenido</small></span>
-          <span aria-hidden="true">↗</span>
-        </button>
         <p class="auth-disclaimer">
           La sesión demo dura 24 horas y el progreso queda solo en este
           navegador.
         </p>
+      </div>
+      <form id="panel-recover" class="auth-form" hidden aria-labelledby="recover-title">
+        <h3 id="recover-title">Recuperar tu contraseña</h3>
+        <p class="auth-note">
+          Usa el código de recuperación que guardaste al crear tu cuenta. Si
+          tu apoderado creó tu cuenta, pídele que cambie tu contraseña desde
+          «Mi familia».
+        </p>
+        <label for="recover-user">Correo o usuario</label>
+        <input id="recover-user" name="login" autocomplete="username" autocapitalize="none" required />
+        <label for="recover-code">Código de recuperación</label>
+        <input id="recover-code" name="code" autocomplete="off" autocapitalize="characters" placeholder="XXXX-XXXX-XXXX" required />
+        <label for="recover-password">Nueva contraseña (mínimo 8 caracteres)</label>
+        <input id="recover-password" name="password" type="password" autocomplete="new-password" minlength="8" required />
+        <button class="primary" type="submit">Cambiar contraseña <span aria-hidden="true">↗</span></button>
+        <button type="button" class="link-button" data-show="panel-login">Volver a entrar</button>
+      </form>
+      <div id="panel-code" hidden>
+        <h3>Guarda tu código de recuperación</h3>
+        <p class="auth-note">
+          Si olvidas tu contraseña, con este código podrás crear una nueva.
+          Anótalo o guárdalo en un lugar seguro: no lo volveremos a mostrar.
+        </p>
+        <output id="recovery-code" class="recovery-code"></output>
+        <div class="code-actions">
+          <button type="button" id="copy-code">Copiar</button>
+          <button type="button" id="download-code">Descargar</button>
+        </div>
+        <label class="check-row"><input type="checkbox" id="code-saved" /> Ya lo guardé</label>
+        <button class="primary" id="code-continue" disabled>Continuar <span aria-hidden="true">↗</span></button>
       </div>
       <p id="login-error" role="alert"></p>
       <button class="cancel" id="cancel-login">Volver a explorar</button>

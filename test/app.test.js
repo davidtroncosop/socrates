@@ -479,26 +479,28 @@ test("grade filters use lesson metadata, not titles", async () => {
 });
 
 const later = Date.now() + 86400000;
-test("content manager is only reachable for teachers", async () => {
+test("content manager is only reachable for admins", async () => {
   const student = await harness();
   globalThis.location.hash = "#contenido";
   student.click("go:contenido");
   assert.doesNotMatch(student.node("#app").innerHTML, /ESTUDIO DE CONTENIDO/);
   assert.equal(student.node('[data-nav="contenido"]').hidden, true);
 
-  const teacher = await harness(null, {
-    session: { mode: "demo", role: "teacher", name: "Profesor demo", expiresAt: later },
+  const admin = await harness(null, {
+    key: "socatres.v1.a1",
+    session: { mode: "account", userId: "a1", name: "Admin", role: "parent", isAdmin: true, expiresAt: later },
   });
   globalThis.location.hash = "#contenido";
-  teacher.click("go:contenido");
-  assert.match(teacher.node("#app").innerHTML, /ESTUDIO DE CONTENIDO/);
-  assert.equal(teacher.node('[data-nav="contenido"]').hidden, false);
+  admin.click("go:contenido");
+  assert.match(admin.node("#app").innerHTML, /ESTUDIO DE CONTENIDO/);
+  assert.match(admin.node("#app").innerHTML, /Catálogo central/);
+  assert.equal(admin.node('[data-nav="contenido"]').hidden, false);
 });
 
-test("demo users see why classes need an account", async () => {
+test("demo users see why a family needs an account", async () => {
   const h = await harness();
-  globalThis.location.hash = "#clase";
-  h.click("go:clase");
+  globalThis.location.hash = "#familia";
+  h.click("go:familia");
   assert.match(h.node("#app").innerHTML, /Necesitas una cuenta/);
 });
 
@@ -665,4 +667,18 @@ test("daily practice mixes skills, can confirm mastery and tracks the daily goal
   assert.deepEqual(s.mastered, ["equations"], "the review inside daily practice confirms mastery");
   assert.ok(s.reviews.find((r) => r.lesson === "equations").due > now + 6 * 86400000);
   assert.deepEqual(s.completed, ["equations"], "daily practice never completes new lessons");
+});
+
+test("the published catalog reaches every student, including the demo", async () => {
+  const published = seedCatalog();
+  published.lessons[0].title = "Lección publicada por la administración";
+  const fetch = async (path) => ({
+    ok: true,
+    status: 200,
+    json: async () => (path === "/api/catalog" ? { catalog: published, updatedAt: 42 } : {}),
+  });
+  const h = await harness(null, { fetch });
+  await new Promise((r) => setTimeout(r, 20));
+  assert.match(h.node("#app").innerHTML, /Lección publicada por la administración/);
+  assert.equal(h.storage.get("socatres.catalog.updatedAt"), "42");
 });

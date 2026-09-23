@@ -6,9 +6,11 @@ import {
   DEMO_PROGRESS_KEY,
 } from "./auth.js";
 import { api } from "./api.js";
-const dialog = document.querySelector("#login-dialog");
-const error = document.querySelector("#login-error");
+const $ = (s) => document.querySelector(s);
+const dialog = $("#login-dialog");
+const error = $("#login-error");
 const tabs = [...document.querySelectorAll("[data-tab]")];
+const panels = ["panel-login", "panel-register", "panel-demo", "panel-recover", "panel-code"];
 const getSession = () => {
   try {
     return readSession(localStorage);
@@ -16,85 +18,142 @@ const getSession = () => {
     return null;
   }
 };
-const destinations = ["#ruta", "#repaso", "#cuaderno", "#tarea", "#clase", "#contenido"];
+const destinations = ["#ruta", "#repaso", "#cuaderno", "#tarea", "#familia", "#contenido"];
 const destination = () =>
   "./aprender.html" +
   (destinations.includes(location.hash) ? location.hash : "#ruta");
 const storageError =
   "No pudimos guardar la sesión. Permite el almacenamiento del navegador e inténtalo de nuevo.";
 
-function selectTab(name, focus = false) {
+function show(panel, focus = false) {
+  for (const id of panels) $("#" + id).hidden = id !== panel;
   for (const tab of tabs) {
-    const selected = tab.dataset.tab === name;
+    const selected = tab.getAttribute("aria-controls") === panel;
     tab.setAttribute("aria-selected", selected);
     tab.tabIndex = selected ? 0 : -1;
-    document.querySelector("#" + tab.getAttribute("aria-controls")).hidden = !selected;
     if (selected && focus) tab.focus();
   }
+  // Recuperación y código no son pestañas: se ocultan las pestañas.
+  $(".auth-tabs").hidden = panel === "panel-code";
   error.textContent = "";
 }
 tabs.forEach((tab, i) => {
-  tab.onclick = () => selectTab(tab.dataset.tab);
+  tab.onclick = () => show(tab.getAttribute("aria-controls"));
   tab.onkeydown = (e) => {
     const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
-    if (step) selectTab(tabs[(i + step + tabs.length) % tabs.length].dataset.tab, true);
+    if (step)
+      show(tabs[(i + step + tabs.length) % tabs.length].getAttribute("aria-controls"), true);
   };
 });
+for (const link of document.querySelectorAll("[data-show]"))
+  link.onclick = () => show(link.dataset.show);
+
+// Estudiantes: solo desde los 14 años (Ley 21.719). Menores: su apoderado.
+const register = $("#panel-register");
+function syncRole() {
+  const student = register.elements.role.value === "student";
+  $("#age-row").hidden = !student;
+  $("#under14-note").hidden = !student;
+}
+for (const radio of register.elements.role) radio.onchange = syncRole;
+syncRole();
 
 document.querySelectorAll("[data-login]").forEach((button) => {
   if (getSession()) button.textContent = "Volver a mi ruta ↗";
   button.onclick = () => {
     if (getSession()) location.assign(destination());
     else {
-      error.textContent = "";
+      show("panel-login");
       dialog.showModal();
     }
   };
 });
-document.querySelector("#close-login").onclick = () => dialog.close();
-document.querySelector("#cancel-login").onclick = () => dialog.close();
+$("#close-login").onclick = () => dialog.close();
+$("#cancel-login").onclick = () => dialog.close();
 
-for (const button of document.querySelectorAll("#panel-demo [data-role]"))
-  button.onclick = () => {
-    try {
-      startSession(localStorage, Date.now(), button.dataset.role);
-      location.assign(destination());
-    } catch {
-      error.textContent = storageError;
-    }
-  };
+$("#demo-login").onclick = () => {
+  try {
+    startSession(localStorage, Date.now(), "student");
+    location.assign(destination());
+  } catch {
+    error.textContent = storageError;
+  }
+};
+
+// Tras registrarse o recuperar, se muestra el código antes de entrar.
+function showRecoveryCode(code) {
+  $("#recovery-code").textContent = code;
+  $("#code-saved").checked = false;
+  $("#code-continue").disabled = true;
+  show("panel-code");
+}
+$("#code-saved").onchange = (e) => ($("#code-continue").disabled = !e.target.checked);
+$("#code-continue").onclick = () => location.assign(destination());
+$("#copy-code").onclick = async () => {
+  try {
+    await navigator.clipboard.writeText($("#recovery-code").textContent);
+    $("#copy-code").textContent = "¡Copiado!";
+  } catch {
+    $("#copy-code").textContent = "Cópialo a mano";
+  }
+};
+$("#download-code").onclick = () => {
+  const text = `Código de recuperación de socatres: ${$("#recovery-code").textContent}\nÚsalo en «¿Olvidaste tu contraseña?» si no recuerdas tu contraseña.\n`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+  a.download = "socatres-codigo-de-recuperacion.txt";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
 
 async function submit(form, action) {
   const button = form.querySelector('button[type="submit"]');
   const data = Object.fromEntries(new FormData(form));
+  if (action === "register") {
+    data.age14 = data.role === "student" ? $("#register-age14").checked : undefined;
+    if (data.role === "student" && !data.age14) {
+      error.textContent =
+        "Si tienes menos de 14 años, tu apoderado debe crear tu cuenta desde la suya.";
+      return;
+    }
+  }
   error.textContent = "";
   button.disabled = true;
   try {
-    const { user } = await (action === "register" ? api.register(data) : api.login(data));
+    const { user, recoveryCode } = await api[action](data);
     const session = startAccountSession(localStorage, user);
     // Quien probó la demo y crea su cuenta conserva lo que ya practicó.
     const demo = localStorage.getItem(DEMO_PROGRESS_KEY);
-    if (action === "register" && demo && !localStorage.getItem(progressKey(session)))
+    if (action === "register" && user.role === "student" && demo && !localStorage.getItem(progressKey(session)))
       localStorage.setItem(progressKey(session), demo);
-    location.assign(destination());
+    if (recoveryCode) showRecoveryCode(recoveryCode);
+    else location.assign(destination());
   } catch (err) {
     error.textContent = err.status === undefined ? storageError : err.message;
+  } finally {
     button.disabled = false;
   }
 }
 for (const [id, action] of [
   ["#panel-login", "login"],
   ["#panel-register", "register"],
+  ["#panel-recover", "recover"],
 ]) {
-  const form = document.querySelector(id);
+  const form = $(id);
   form.onsubmit = (e) => {
     e.preventDefault();
     submit(form, action);
   };
 }
 
-if (new URLSearchParams(location.search).has("login")) dialog.showModal();
+if (new URLSearchParams(location.search).has("login")) {
+  show("panel-login");
+  dialog.showModal();
+}
 if (destinations.includes(location.hash)) {
   if (getSession()) location.replace(destination());
-  else if (!dialog.open) dialog.showModal();
+  else if (!dialog.open) {
+    show("panel-login");
+    dialog.showModal();
+  }
 }

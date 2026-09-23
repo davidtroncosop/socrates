@@ -1,15 +1,19 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import { handle, summarize } from "../functions/_lib/router.js";
 import { hashPassword, verifyPassword } from "../functions/_lib/crypto.js";
+import { seedCatalog } from "../public/content.js";
 
-// Adaptador mínimo con la interfaz de D1 sobre SQLite real, con el esquema de migrations/.
-function d1() {
+const migrations = readdirSync(new URL("../migrations/", import.meta.url)).filter((f) => f.endsWith(".sql")).sort();
+const migration = (name) => readFileSync(new URL(`../migrations/${name}`, import.meta.url), "utf8");
+
+// Adaptador mínimo con la interfaz de D1 sobre SQLite real, con las migraciones reales.
+function d1(upTo = migrations.length) {
   const db = new DatabaseSync(":memory:");
   db.exec("PRAGMA foreign_keys = ON;");
-  db.exec(readFileSync(new URL("../migrations/0001_init.sql", import.meta.url), "utf8"));
+  for (const name of migrations.slice(0, upTo)) db.exec(migration(name));
   const statement = (sql, params = []) => ({
     bind: (...next) => statement(sql, next),
     first: async () => {
@@ -21,6 +25,7 @@ function d1() {
   });
   return { prepare: (sql) => statement(sql), raw: db };
 }
+const env = (extra = {}) => ({ DB: d1(), ADMIN_EMAILS: "admin@socatres.cl", ...extra });
 
 function client(env) {
   let cookie = "";
@@ -44,8 +49,10 @@ function client(env) {
   return { call, get cookie() { return cookie; } };
 }
 
-const register = (c, name, email, role = "student") =>
-  c.call("POST", "/api/auth/register", { name, email, role, password: "clave-segura" });
+const student = (c, name, email) =>
+  c.call("POST", "/api/auth/register", { name, email, role: "student", age14: true, password: "clave-segura" });
+const parent = (c, name, email) =>
+  c.call("POST", "/api/auth/register", { name, email, role: "parent", password: "clave-segura" });
 const state = (extra = {}) => ({
   version: 1, diagnosed: true, completed: [], mastered: [], attempts: [], notes: [], reviews: [], ...extra,
 });
@@ -60,51 +67,72 @@ test("passwords are salted PBKDF2 hashes and verify only the right password", as
 });
 
 test("register, session cookie, me, logout and login", async () => {
-  const env = { DB: d1() };
-  const c = client(env);
-  const r = await register(c, "  Ana   Pérez ", "ANA@correo.cl");
+  const e = env();
+  const c = client(e);
+  const r = await student(c, "  Ana   Pérez ", "ANA@correo.cl");
   assert.equal(r.status, 200);
-  assert.deepEqual({ ...r.body.user, id: undefined }, { id: undefined, name: "Ana Pérez", email: "ana@correo.cl", role: "student" });
+  assert.equal(r.body.user.name, "Ana Pérez");
+  assert.equal(r.body.user.email, "ana@correo.cl");
+  assert.equal(r.body.user.role, "student");
+  assert.equal(r.body.user.isAdmin, false);
+  assert.match(r.body.recoveryCode, /^[A-HJKMNP-Z2-9]{4}-[A-HJKMNP-Z2-9]{4}-[A-HJKMNP-Z2-9]{4}$/);
   assert.match(r.setCookie, /HttpOnly; SameSite=Lax; Max-Age=\d+; Secure/);
   const token = c.cookie.split("=")[1];
-  const stored = env.DB.raw.prepare("SELECT token_hash FROM sessions").get().token_hash;
-  assert.notEqual(stored, token, "only the token hash is stored");
+  const row = e.DB.raw.prepare("SELECT s.token_hash, u.recovery_hash FROM sessions s JOIN users u ON u.id = s.user_id").get();
+  assert.notEqual(row.token_hash, token, "only the token hash is stored");
+  assert.ok(!row.recovery_hash.includes(r.body.recoveryCode.slice(0, 4)), "only the recovery hash is stored");
   assert.equal((await c.call("GET", "/api/me")).body.user.name, "Ana Pérez");
-  assert.equal((await register(c, "Otra", "ana@correo.cl")).status, 409);
+  assert.equal((await student(c, "Otra", "ana@correo.cl")).status, 409);
   await c.call("POST", "/api/auth/logout", {});
   assert.equal((await c.call("GET", "/api/me")).status, 401);
-  const bad = await c.call("POST", "/api/auth/login", { email: "ana@correo.cl", password: "incorrecta" });
-  const unknown = await c.call("POST", "/api/auth/login", { email: "nadie@correo.cl", password: "incorrecta" });
+  const bad = await c.call("POST", "/api/auth/login", { login: "ana@correo.cl", password: "incorrecta" });
+  const unknown = await c.call("POST", "/api/auth/login", { login: "nadie@correo.cl", password: "incorrecta" });
   assert.equal(bad.status, 401);
   assert.deepEqual(bad.body, unknown.body, "same message whether the account exists or not");
-  const ok = await c.call("POST", "/api/auth/login", { email: "Ana@Correo.cl", password: "clave-segura" });
-  assert.equal(ok.status, 200);
+  assert.equal((await c.call("POST", "/api/auth/login", { login: "Ana@Correo.cl", password: "clave-segura" })).status, 200);
   assert.equal((await c.call("GET", "/api/me")).status, 200);
 });
 
-test("registration validates input and never trusts unknown roles", async () => {
-  const c = client({ DB: d1() });
-  assert.equal((await c.call("POST", "/api/auth/register", { name: "A", email: "no-es-correo", password: "12345678" })).status, 400);
-  assert.equal((await c.call("POST", "/api/auth/register", { name: "A", email: "a@b.cl", password: "corta" })).status, 400);
-  assert.equal((await c.call("POST", "/api/auth/register", { name: "", email: "a@b.cl", password: "12345678" })).status, 400);
-  const admin = await c.call("POST", "/api/auth/register", { name: "A", email: "a@b.cl", password: "12345678", role: "admin" });
+test("students under 14 cannot register themselves; roles are never trusted", async () => {
+  const c = client(env());
+  const young = await c.call("POST", "/api/auth/register", { name: "A", email: "a@b.cl", password: "12345678", role: "student" });
+  assert.equal(young.status, 400);
+  assert.match(young.body.error, /apoderado/);
+  assert.equal((await c.call("POST", "/api/auth/register", { name: "A", email: "no-es-correo", password: "12345678", role: "parent" })).status, 400);
+  assert.equal((await c.call("POST", "/api/auth/register", { name: "A", email: "a@b.cl", password: "corta", role: "parent" })).status, 400);
+  const admin = await c.call("POST", "/api/auth/register", { name: "A", email: "a@b.cl", password: "12345678", role: "admin", age14: true });
   assert.equal(admin.body.user.role, "student");
 });
 
+test("recovery codes reset the password once and sign out other sessions", async () => {
+  const e = env();
+  const phone = client(e), laptop = client(e);
+  const { recoveryCode } = (await student(phone, "Ana", "ana@correo.cl")).body;
+  await laptop.call("POST", "/api/auth/login", { login: "ana@correo.cl", password: "clave-segura" });
+  assert.equal((await laptop.call("POST", "/api/auth/recover", { login: "ana@correo.cl", code: "AAAA-BBBB-CCCC", password: "nueva-clave" })).status, 401);
+  const ok = await laptop.call("POST", "/api/auth/recover", { login: "ana@correo.cl", code: recoveryCode.toLowerCase().replace(/-/g, " "), password: "nueva-clave" });
+  assert.equal(ok.status, 200);
+  assert.notEqual(ok.body.recoveryCode, recoveryCode, "a fresh code replaces the used one");
+  assert.equal((await phone.call("GET", "/api/me")).status, 401, "other sessions are closed");
+  assert.equal((await laptop.call("GET", "/api/me")).status, 200);
+  assert.equal((await laptop.call("POST", "/api/auth/recover", { login: "ana@correo.cl", code: recoveryCode, password: "otra-clave" })).status, 401, "used code is gone");
+  assert.equal((await phone.call("POST", "/api/auth/login", { login: "ana@correo.cl", password: "nueva-clave" })).status, 200);
+});
+
 test("mutations require JSON and expired sessions are rejected", async () => {
-  const env = { DB: d1() };
-  const c = client(env);
-  await register(c, "Ana", "ana@correo.cl");
+  const e = env();
+  const c = client(e);
+  await student(c, "Ana", "ana@correo.cl");
   const form = await c.call("PUT", "/api/progress", undefined, { "content-type": "application/x-www-form-urlencoded" });
   assert.equal(form.status, 415);
-  env.DB.raw.exec("UPDATE sessions SET expires_at = 0");
+  e.DB.raw.exec("UPDATE sessions SET expires_at = 0");
   assert.equal((await c.call("GET", "/api/me")).status, 401);
   assert.equal((await c.call("GET", "/api/nada")).status, 404);
 });
 
 test("progress round trips, rejects photos and malformed state", async () => {
-  const c = client({ DB: d1() });
-  await register(c, "Ana", "ana@correo.cl");
+  const c = client(env());
+  await student(c, "Ana", "ana@correo.cl");
   assert.deepEqual((await c.call("GET", "/api/progress")).body, { state: null, updatedAt: null });
   const saved = state({ completed: ["equations"] });
   const put = await c.call("PUT", "/api/progress", { state: saved });
@@ -119,73 +147,128 @@ test("progress round trips, rejects photos and malformed state", async () => {
   assert.equal((await c.call("PUT", "/api/progress", { state: huge })).status, 413);
 });
 
-test("teachers create classes, students join by code, teachers see only summaries", async () => {
-  const env = { DB: d1() };
-  const teacher = client(env), student = client(env), other = client(env), outsider = client(env);
-  await register(teacher, "Profe", "profe@colegio.cl", "teacher");
-  await register(student, "Ana", "ana@correo.cl");
-  await register(other, "Otro profe", "otro@colegio.cl", "teacher");
-  await register(outsider, "Beto", "beto@correo.cl");
-
-  assert.equal((await student.call("POST", "/api/classes", { name: "7°A" })).status, 403);
-  const created = await teacher.call("POST", "/api/classes", { name: "7° Básico A" });
+test("parents create child accounts, see summaries and reset passwords", async () => {
+  const e = env();
+  const mom = client(e), kid = client(e), other = client(e);
+  await parent(mom, "Carla", "carla@correo.cl");
+  await parent(other, "Otro", "otro@correo.cl");
+  const created = await mom.call("POST", "/api/family/children", { name: "Tomás", username: "Tomas.R", password: "clave-tomas" });
   assert.equal(created.status, 201);
-  const { id, code } = created.body.class;
-  assert.match(code, /^[A-HJKMNP-Z2-9]{6}$/);
+  assert.equal(created.body.child.username, "tomas.r");
+  assert.equal((await mom.call("POST", "/api/family/children", { name: "X", username: "tomas.r", password: "clave-tomas" })).status, 409);
+  assert.equal((await mom.call("POST", "/api/family/children", { name: "X", username: "con espacio", password: "clave-tomas" })).status, 400);
 
-  assert.equal((await student.call("POST", "/api/classes/join", { code: "ZZZZZZ" })).status, 404);
-  assert.equal((await teacher.call("POST", "/api/classes/join", { code })).status, 403);
-  const joined = await student.call("POST", "/api/classes/join", { code: code.toLowerCase() });
-  assert.equal(joined.body.class.name, "7° Básico A");
-  await student.call("POST", "/api/classes/join", { code }); // idempotente
-
+  const login = await kid.call("POST", "/api/auth/login", { login: "TOMAS.R", password: "clave-tomas" });
+  assert.equal(login.status, 200);
+  assert.equal(login.body.user.email, null);
+  assert.equal((await kid.call("POST", "/api/family/children", { name: "Y", username: "yy1", password: "clave-yyyy" })).status, 403);
   const now = Date.now();
-  await student.call("PUT", "/api/progress", {
+  await kid.call("PUT", "/api/progress", {
     state: state({
-      completed: ["equations", "signs"],
-      mastered: ["equations"],
+      completed: ["equations"], watched: ["equations"],
       attempts: [
         { lesson: "equations", correct: true, hints: 0, at: now - 1000 },
-        { lesson: "signs", correct: false, hints: 1, at: now - 500 },
-        { lesson: "signs", correct: true, hints: 0, at: now - 10 * 86400000 },
+        { lesson: "equations", correct: false, hints: 1, at: now - 500 },
       ],
       notes: [{ title: "privada", text: "mis ideas", at: now }],
     }),
   });
+  assert.deepEqual((await kid.call("GET", "/api/family")).body, { parents: ["Carla"] });
 
-  const detail = await teacher.call("GET", `/api/classes/${id}`);
-  assert.equal(detail.status, 200);
-  assert.equal(detail.body.students.length, 1);
-  const ana = detail.body.students[0];
-  assert.equal(ana.name, "Ana");
-  assert.deepEqual(ana.completed, ["equations", "signs"]);
-  assert.equal(ana.attemptsWeek, 2);
-  assert.equal(ana.accuracyWeek, 50);
-  assert.equal(ana.lastActivity, now - 500);
-  assert.doesNotMatch(JSON.stringify(detail.body), /mis ideas|email|correo/, "no notes or emails leak");
+  const family = (await mom.call("GET", "/api/family")).body.children;
+  assert.equal(family.length, 1);
+  assert.equal(family[0].name, "Tomás");
+  assert.equal(family[0].createdByMe, true);
+  assert.equal(family[0].accuracyWeek, 50);
+  assert.equal(family[0].videosWatched, 1);
+  assert.doesNotMatch(JSON.stringify(family), /mis ideas/, "notes stay private");
+  assert.deepEqual((await other.call("GET", "/api/family")).body.children, []);
 
-  assert.equal((await other.call("GET", `/api/classes/${id}`)).status, 404);
-  assert.equal((await student.call("GET", `/api/classes/${id}`)).status, 404);
-  assert.equal((await teacher.call("GET", "/api/classes")).body.classes[0].students, 1);
-  assert.equal((await student.call("GET", "/api/classes")).body.classes[0].teacher, "Profe");
-  assert.deepEqual((await outsider.call("GET", "/api/classes")).body.classes, []);
+  const id = family[0].id;
+  assert.equal((await other.call("POST", `/api/family/children/${id}/password`, { password: "hackeado1" })).status, 404);
+  assert.equal((await mom.call("POST", `/api/family/children/${id}/password`, { password: "nueva-tomas" })).status, 200);
+  assert.equal((await kid.call("GET", "/api/me")).status, 401, "the child's sessions are closed");
+  assert.equal((await kid.call("POST", "/api/auth/login", { login: "tomas.r", password: "nueva-tomas" })).status, 200);
+  assert.equal((await kid.call("POST", "/api/auth/recover", { login: "tomas.r", code: "", password: "x".repeat(9) })).status, 401, "child accounts recover through the parent");
 
-  const ids = (await teacher.call("GET", `/api/classes/${id}`)).body.students.map((s) => s.id);
-  assert.equal((await other.call("DELETE", `/api/classes/${id}/students/${ids[0]}`)).status, 404);
-  await teacher.call("DELETE", `/api/classes/${id}/students/${ids[0]}`);
-  assert.equal((await teacher.call("GET", `/api/classes/${id}`)).body.students.length, 0);
+  assert.equal((await other.call("DELETE", `/api/family/children/${id}`)).status, 404);
+  const removed = await mom.call("DELETE", `/api/family/children/${id}`);
+  assert.equal(removed.body.deleted, true, "accounts created by the parent are deleted with the link");
+  assert.equal(e.DB.raw.prepare("SELECT COUNT(*) AS n FROM users WHERE username = 'tomas.r'").get().n, 0);
 });
 
-test("deleting an account removes its sessions, progress and memberships", async () => {
-  const env = { DB: d1() };
-  const c = client(env);
-  await register(c, "Ana", "ana@correo.cl");
-  await c.call("PUT", "/api/progress", { state: state() });
-  const del = await c.call("DELETE", "/api/me");
-  assert.equal(del.status, 200);
-  for (const table of ["users", "sessions", "progress"])
-    assert.equal(env.DB.raw.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n, 0, table);
-  assert.equal((await c.call("GET", "/api/me")).status, 401);
+test("teens link their own account to a parent with a one-time code", async () => {
+  const e = env();
+  const teen = client(e), dad = client(e);
+  await student(teen, "Sofía", "sofia@correo.cl");
+  await parent(dad, "Pedro", "pedro@correo.cl");
+  assert.equal((await dad.call("POST", "/api/family/link-code")).status, 403);
+  const { code, expiresAt } = (await teen.call("POST", "/api/family/link-code")).body;
+  assert.match(code, /^[A-HJKMNP-Z2-9]{6}$/);
+  assert.ok(expiresAt > Date.now() + 23 * 3600000);
+  assert.equal((await teen.call("POST", "/api/family/link", { code })).status, 403);
+  assert.equal((await dad.call("POST", "/api/family/link", { code: "ZZZZZZ" })).status, 404);
+  const linked = await dad.call("POST", "/api/family/link", { code: code.toLowerCase() });
+  assert.equal(linked.body.child.name, "Sofía");
+  assert.equal((await dad.call("POST", "/api/family/link", { code })).status, 404, "codes are single use");
+  const [child] = (await dad.call("GET", "/api/family")).body.children;
+  assert.equal(child.createdByMe, false);
+  const removed = await dad.call("DELETE", `/api/family/children/${child.id}`);
+  assert.equal(removed.body.deleted, false, "unlinking never deletes a teen's own account");
+  assert.equal((await teen.call("GET", "/api/me")).status, 200);
+});
+
+test("deleting a parent removes the accounts they created, not linked teens", async () => {
+  const e = env();
+  const mom = client(e), teen = client(e);
+  await parent(mom, "Carla", "carla@correo.cl");
+  await mom.call("POST", "/api/family/children", { name: "Tomás", username: "tomas", password: "clave-tomas" });
+  await student(teen, "Sofía", "sofia@correo.cl");
+  const { code } = (await teen.call("POST", "/api/family/link-code")).body;
+  await mom.call("POST", "/api/family/link", { code });
+  await teen.call("PUT", "/api/progress", { state: state() });
+  assert.equal((await mom.call("DELETE", "/api/me")).status, 200);
+  const names = e.DB.raw.prepare("SELECT name FROM users ORDER BY name").all().map((r) => r.name);
+  assert.deepEqual(names, ["Sofía"]);
+  assert.equal(e.DB.raw.prepare("SELECT COUNT(*) AS n FROM family_links").get().n, 0);
+  assert.equal(e.DB.raw.prepare("SELECT COUNT(*) AS n FROM progress").get().n, 1);
+});
+
+test("only admins publish the shared catalog, which everyone can read", async () => {
+  const e = env();
+  const admin = client(e), user = client(e), anon = client(e);
+  const me = await parent(admin, "Admin", "admin@socatres.cl");
+  assert.equal(me.body.user.isAdmin, true);
+  await student(user, "Ana", "ana@correo.cl");
+  assert.deepEqual((await anon.call("GET", "/api/catalog")).body, { catalog: null, updatedAt: null });
+  const catalog = seedCatalog();
+  catalog.lessons[0].title = "Título publicado";
+  assert.equal((await user.call("PUT", "/api/catalog", { catalog })).status, 403);
+  assert.equal((await admin.call("PUT", "/api/catalog", { catalog: { version: 1, lessons: [{ id: "x" }] } })).status, 400);
+  const put = await admin.call("PUT", "/api/catalog", { catalog });
+  assert.equal(put.status, 200);
+  const got = (await anon.call("GET", "/api/catalog")).body;
+  assert.equal(got.catalog.lessons[0].title, "Título publicado");
+  assert.equal(got.updatedAt, put.body.updatedAt);
+});
+
+test("migration 0002 keeps existing users, sessions and progress", () => {
+  const db = new DatabaseSync(":memory:");
+  db.exec("PRAGMA foreign_keys = ON;");
+  db.exec(migration(migrations[0]));
+  db.exec(`INSERT INTO users VALUES ('u1','a@b.cl','Ana','student','h',1), ('u2','p@b.cl','Profe','teacher','h',1);
+           INSERT INTO sessions VALUES ('t1','u1',9999999999999);
+           INSERT INTO progress VALUES ('u1','{}',1);
+           INSERT INTO classes VALUES ('c1','u2','Clase','ABCDEF',1);
+           INSERT INTO class_members VALUES ('c1','u1',1);`);
+  db.exec(migration(migrations[1]));
+  assert.deepEqual(db.prepare("SELECT id, role FROM users ORDER BY id").all().map((r) => ({ ...r })), [
+    { id: "u1", role: "student" },
+    { id: "u2", role: "parent" },
+  ]);
+  assert.equal(db.prepare("SELECT COUNT(*) AS n FROM sessions").get().n, 1);
+  assert.equal(db.prepare("SELECT COUNT(*) AS n FROM progress").get().n, 1);
+  assert.deepEqual(db.prepare("PRAGMA foreign_key_check").all(), []);
 });
 
 test("summaries tolerate missing progress", () => {

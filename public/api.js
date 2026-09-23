@@ -34,13 +34,14 @@ export const api = {
   deleteAccount: () => request("DELETE", "/api/me"),
   getProgress: () => request("GET", "/api/progress"),
   putProgress: (state) => request("PUT", "/api/progress", { state }),
-  classes: () => request("GET", "/api/classes"),
-  createClass: (name) => request("POST", "/api/classes", { name }),
-  joinClass: (code) => request("POST", "/api/classes/join", { code }),
-  classDetail: (id) => request("GET", `/api/classes/${encodeURIComponent(id)}`),
-  removeStudent: (classId, studentId) =>
-    request(
-      "DELETE",
-      `/api/classes/${encodeURIComponent(classId)}/students/${encodeURIComponent(studentId)}`,
-    ),
+  recover: (data) => request("POST", "/api/auth/recover", data),
+  family: () => request("GET", "/api/family"),
+  createChild: (data) => request("POST", "/api/family/children", data),
+  linkCode: () => request("POST", "/api/family/link-code", {}),
+  linkChild: (code) => request("POST", "/api/family/link", { code }),
+  resetChildPassword: (id, password) =>
+    request("POST", `/api/family/children/${encodeURIComponent(id)}/password`, { password }),
+  removeChild: (id) => request("DELETE", `/api/family/children/${encodeURIComponent(id)}`),
+  catalog: () => request("GET", "/api/catalog"),
+  publishCatalog: (catalog) => request("PUT", "/api/catalog", { catalog }),
 };

@@ -18,7 +18,7 @@ import {
 } from "./learning.js";
 import { readSession, endSession, progressKey } from "./auth.js";
 import { api } from "./api.js";
-import { renderClassPage } from "./class-view.js";
+import { renderFamilyPage } from "./family-view.js";
 import { readCatalog, seedCatalog, writeCatalog } from "./content.js";
 import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
@@ -42,7 +42,8 @@ let account = null;
 try {
   account = readSession(localStorage);
 } catch {}
-const isTeacher = account?.role === "teacher";
+// El mantenedor es de la administración; el servidor valida cada publicación.
+const isAdmin = account?.mode === "account" && account.isAdmin === true;
 const synced = account?.mode === "account";
 const stateKey = progressKey(account);
 let catalog,
@@ -55,18 +56,49 @@ try {
     "No se pudo leer el catálogo guardado. Se muestra el contenido inicial; exporta un respaldo antes de guardar cambios.";
 }
 let lessons = catalog.lessons.filter((l) => l.status === "published");
+const CATALOG_VERSION_KEY = "socatres.catalog.updatedAt";
+function useCatalog(next, updatedAt) {
+  try {
+    catalog = writeCatalog(localStorage, next);
+    localStorage.setItem(CATALOG_VERSION_KEY, String(updatedAt));
+  } catch {
+    catalog = next;
+  }
+  lessons = catalog.lessons.filter((l) => l.status === "published");
+  updateBadge();
+}
+// El catálogo central llega a todos (también a la demo). Sin conexión o sin
+// servidor se usa la última copia guardada o el contenido inicial.
+async function refreshCatalog() {
+  let latest;
+  try {
+    latest = await api.catalog();
+  } catch {
+    return;
+  }
+  let known = null;
+  try {
+    known = localStorage.getItem(CATALOG_VERSION_KEY);
+  } catch {}
+  if (!latest.catalog || String(latest.updatedAt) === known) return;
+  try {
+    useCatalog(latest.catalog, latest.updatedAt);
+  } catch {
+    return;
+  }
+  if (!session) navigate();
+}
 let admin;
 function contentManager() {
   admin ??= createAdmin({
     app,
     getCatalog: () => catalog,
     warning: () => catalogWarning,
-    commit: (next) => {
-      const saved = writeCatalog(localStorage, next);
-      catalog = saved;
-      lessons = catalog.lessons.filter((l) => l.status === "published");
+    // Publica para todos y guarda la copia local solo si el servidor aceptó.
+    commit: async (next) => {
+      const { catalog: published, updatedAt } = await api.publishCatalog(next);
+      useCatalog(published, updatedAt);
       catalogWarning = "";
-      updateBadge();
     },
   });
   admin.render();
@@ -185,8 +217,7 @@ function updateBadge() {
 function navigate() {
   session = null;
   let page = location.hash.slice(1) || "ruta";
-  // El mantenedor es solo para profesores (cuenta o demo de profesor).
-  if (page === "contenido" && !isTeacher) page = "ruta";
+  if (page === "contenido" && !isAdmin) page = "ruta";
   if (app.dataset) app.dataset.view = page;
   document.querySelectorAll("[data-nav]").forEach((a) => {
     const active = a.dataset.nav === page;
@@ -200,7 +231,7 @@ function navigate() {
       repaso: reviews,
       cuaderno: notebook,
       tarea: task,
-      clase: () => renderClassPage({ app, session: account, lessons }),
+      familia: () => renderFamilyPage({ app, session: account, lessons }),
       contenido: contentManager,
     })[page] || route
   )();
@@ -248,10 +279,10 @@ function route() {
       heading(
         "TU RUTA",
         "Todavía no hay lecciones publicadas.",
-        isTeacher
+        isAdmin
           ? "Publica contenido desde el mantenedor para comenzar."
-          : "Pide a tu profesor que publique lecciones.",
-      ) + (isTeacher ? button("Administrar contenido", "go:contenido", "primary") : "");
+          : "Vuelve pronto: estamos preparando las lecciones.",
+      ) + (isAdmin ? button("Administrar contenido", "go:contenido", "primary") : "");
     return;
   }
   const next = nextLesson();
@@ -1515,18 +1546,18 @@ app.addEventListener("click", (e) => {
   }
 });
 const contentLink = document.querySelector('[data-nav="contenido"]');
-if (contentLink) contentLink.hidden = !isTeacher;
+if (contentLink) contentLink.hidden = !isAdmin;
 if (synced) {
   $("#privacy-summary").textContent =
-    "Tu progreso se guarda en este navegador y en tu cuenta, para continuar en otros dispositivos. Tus fotos quedan solo en este dispositivo. Si te uniste a una clase, tu profesor ve cuántas lecciones completas y dominas y cuántos videos viste, no tus notas ni fotos.";
+    "Tu progreso se guarda en este navegador y en tu cuenta, para continuar en otros dispositivos. Tus fotos quedan solo en este dispositivo. Si vinculaste a tu apoderado, ve cuántas lecciones completas y dominas, cuánto practicas y cuántos videos viste, no tus notas ni fotos.";
   $("#privacy-delete-note").textContent =
-    "Borrar el progreso lo elimina aquí y en tu cuenta. Eliminar la cuenta borra además tus datos personales y tus clases.";
+    "Borrar el progreso lo elimina aquí y en tu cuenta. Eliminar la cuenta borra además tus datos personales y tus vínculos familiares. Si eres apoderado, también se eliminan las cuentas de estudiantes que creaste.";
   $("#delete-account").hidden = false;
 }
 $("#delete-account").onclick = async () => {
   if (
     !window.confirm(
-      "¿Eliminar tu cuenta? Se borran tu nombre, correo, progreso y clases. No se puede deshacer.",
+      "¿Eliminar tu cuenta? Se borran tu nombre, correo, progreso y vínculos familiares (y las cuentas de estudiantes que creaste). No se puede deshacer.",
     )
   )
     return;
@@ -1555,6 +1586,7 @@ $("#delete-data").onclick = () => {
 };
 window.addEventListener("hashchange", navigate);
 navigate();
+refreshCatalog();
 if (synced) {
   pullProgress();
   window.addEventListener("online", pushProgress);

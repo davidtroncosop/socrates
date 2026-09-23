@@ -3103,3 +3103,50 @@ select {
     height: 76px;
   }
 }
+
+/* Mi familia */
+.family-forms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.auth-grid {
+  display: grid;
+  gap: 6px;
+}
+.auth-grid .primary {
+  margin-top: 10px;
+}
+.child-card {
+  margin-bottom: 14px;
+}
+.child-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.child-head h3 {
+  margin: 0;
+}
+.child-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.child-stats dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+.child-stats dd {
+  margin: 2px 0 0;
+  font-weight: 700;
+}
+.big-code {
+  display: inline-block;
+  font-size: 26px;
+  padding: 8px 14px;
+}

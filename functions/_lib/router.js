@@ -5,12 +5,15 @@ import {
   verifyPassword,
   classCode,
 } from "./crypto.js";
+import { validateCatalog } from "../../public/content.js";
 
 export const COOKIE = "socatres_session";
 const SESSION_DAYS = 30;
 const DAY = 86400000;
 const MAX_BODY = 256 * 1024;
-const MAX_CLASSES = 30;
+const MAX_CATALOG = 2 * 1024 * 1024;
+const MAX_CHILDREN = 10;
+const LINK_CODE_HOURS = 24;
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -44,11 +47,11 @@ function readCookie(request) {
 
 // Un formulario de otro sitio no puede enviar JSON sin preflight CORS; junto con
 // SameSite=Lax evita peticiones forjadas.
-async function readJson(request) {
+async function readJson(request, max = MAX_BODY) {
   if (!(request.headers.get("content-type") || "").startsWith("application/json"))
     fail(415, "Se espera JSON.");
   const text = await request.text();
-  if (text.length > MAX_BODY) fail(413, "La información enviada es demasiado grande.");
+  if (text.length > max) fail(413, "La información enviada es demasiado grande.");
   try {
     const value = JSON.parse(text);
     if (!value || typeof value !== "object") throw Error();
@@ -64,25 +67,52 @@ const cleanEmail = (value) => {
     fail(400, "Escribe un correo válido.");
   return email;
 };
+const cleanUsername = (value) => {
+  const username = String(value || "").trim().toLowerCase();
+  if (!/^[a-z0-9._-]{3,30}$/.test(username))
+    fail(400, "El usuario debe tener entre 3 y 30 letras, números, puntos o guiones, sin espacios ni tildes.");
+  return username;
+};
 const cleanName = (value, label = "tu nombre", max = 60) => {
   const name = String(value || "").trim().replace(/\s+/g, " ");
   if (!name || name.length > max) fail(400, `Escribe ${label} (máximo ${max} caracteres).`);
   return name;
 };
-let dummyHash;
-const publicUser = (u) => ({ id: u.id, name: u.name, email: u.email, role: u.role });
+const cleanPassword = (value) => {
+  const password = String(value || "");
+  if (password.length < 8 || password.length > 200)
+    fail(400, "La contraseña debe tener al menos 8 caracteres.");
+  return password;
+};
+// Código de recuperación legible: XXXX-XXXX-XXXX (sin 0/O ni 1/I/L).
+const recoveryCode = () => [classCode(4), classCode(4), classCode(4)].join("-");
+const normalizeCode = (code) => String(code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
 
-async function startSession(request, env, user) {
+const adminEmails = (env) =>
+  String(env.ADMIN_EMAILS || "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+const isAdmin = (env, user) => Boolean(user.email) && adminEmails(env).includes(user.email);
+const publicUser = (env, u) => ({
+  id: u.id,
+  name: u.name,
+  email: u.email ?? null,
+  username: u.username ?? null,
+  role: u.role,
+  isAdmin: isAdmin(env, u),
+});
+let dummyHash;
+
+async function startSession(request, env, user, extra = {}) {
   const token = randomToken();
-  await env.DB.prepare("DELETE FROM sessions WHERE expires_at < ?")
-    .bind(Date.now())
-    .run();
+  await env.DB.prepare("DELETE FROM sessions WHERE expires_at < ?").bind(Date.now()).run();
   await env.DB.prepare(
     "INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)",
   )
     .bind(await sha256(token), user.id, Date.now() + SESSION_DAYS * DAY)
     .run();
-  return json({ user: publicUser(user) }, 200, {
+  return json({ user: publicUser(env, user), ...extra }, 200, {
     "set-cookie": sessionCookie(request, token, SESSION_DAYS * 86400),
   });
 }
@@ -98,7 +128,14 @@ async function currentUser(request, env) {
     .first();
 }
 
-// Resumen para el profesor: solo cifras, no notas ni fotos del estudiante.
+const findByLogin = (env, login) => {
+  const value = String(login || "").trim().toLowerCase();
+  return env.DB.prepare("SELECT * FROM users WHERE email = ? OR username = ?")
+    .bind(value, value)
+    .first();
+};
+
+// Resumen para el apoderado: solo cifras, no notas ni fotos.
 export function summarize(state) {
   const attempts = Array.isArray(state?.attempts) ? state.attempts : [];
   const weekAgo = Date.now() - 7 * DAY;
@@ -125,80 +162,97 @@ function validateState(state) {
   return state;
 }
 
+async function childOf(env, parent, childId) {
+  const child = await env.DB.prepare(
+    `SELECT u.* FROM family_links f JOIN users u ON u.id = f.child_id
+     WHERE f.parent_id = ? AND f.child_id = ?`,
+  )
+    .bind(parent.id, childId)
+    .first();
+  // 404 también si no es su hijo: no se revela que la cuenta existe.
+  if (!child) fail(404, "No encontramos a ese estudiante en tu familia.");
+  return child;
+}
+const requireRole = (user, role, message) => {
+  if (user.role !== role) fail(403, message);
+};
+
 const routes = {
+  // Registro propio: apoderados y estudiantes de 14 años o más (Ley 21.719).
   async "POST /api/auth/register"({ request, env }) {
     const body = await readJson(request);
+    const role = body.role === "parent" ? "parent" : "student";
+    if (role === "student" && body.age14 !== true)
+      fail(400, "Si tienes menos de 14 años, tu apoderado debe crear tu cuenta.");
     const email = cleanEmail(body.email);
     const name = cleanName(body.name);
-    const role = body.role === "teacher" ? "teacher" : "student";
-    const password = String(body.password || "");
-    if (password.length < 8 || password.length > 200)
-      fail(400, "La contraseña debe tener al menos 8 caracteres.");
-    const exists = await env.DB.prepare("SELECT 1 FROM users WHERE email = ?")
-      .bind(email)
-      .first();
-    if (exists) fail(409, "Ya existe una cuenta con ese correo. Entra con tu contraseña.");
+    const password = cleanPassword(body.password);
+    if (await env.DB.prepare("SELECT 1 FROM users WHERE email = ?").bind(email).first())
+      fail(409, "Ya existe una cuenta con ese correo. Entra con tu contraseña.");
+    const code = recoveryCode();
     const user = { id: crypto.randomUUID(), email, name, role };
     await env.DB.prepare(
-      "INSERT INTO users (id, email, name, role, password_hash, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO users (id, email, name, role, password_hash, recovery_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
     )
-      .bind(user.id, email, name, role, await hashPassword(password), Date.now())
+      .bind(user.id, email, name, role, await hashPassword(password), await sha256(normalizeCode(code)), Date.now())
       .run();
-    return startSession(request, env, user);
+    return startSession(request, env, user, { recoveryCode: code });
   },
 
   async "POST /api/auth/login"({ request, env }) {
     const body = await readJson(request);
-    const email = cleanEmail(body.email);
-    const user = await env.DB.prepare("SELECT * FROM users WHERE email = ?")
-      .bind(email)
-      .first();
-    // Mismo mensaje y mismo trabajo exista o no la cuenta, para no revelar
-    // qué correos están registrados.
+    const user = await findByLogin(env, body.login ?? body.email);
+    // Mismo mensaje y mismo trabajo exista o no la cuenta.
     dummyHash ??= await hashPassword(randomToken());
-    const valid = await verifyPassword(
-      String(body.password || ""),
-      user ? user.password_hash : dummyHash,
-    );
-    if (!user || !valid) fail(401, "Correo o contraseña incorrectos.");
+    const valid = await verifyPassword(String(body.password || ""), user ? user.password_hash : dummyHash);
+    if (!user || !valid) fail(401, "Usuario o contraseña incorrectos.");
     return startSession(request, env, user);
+  },
+
+  // Recuperación sin correo: el código entregado al registrarse. Cambia la
+  // contraseña, cierra las demás sesiones y entrega un código nuevo.
+  async "POST /api/auth/recover"({ request, env }) {
+    const body = await readJson(request);
+    const user = await findByLogin(env, body.login);
+    const hash = await sha256(normalizeCode(body.code));
+    if (!user || !user.recovery_hash || user.recovery_hash !== hash)
+      fail(401, "El código de recuperación no coincide.");
+    const password = cleanPassword(body.password);
+    const code = recoveryCode();
+    await env.DB.prepare("UPDATE users SET password_hash = ?, recovery_hash = ? WHERE id = ?")
+      .bind(await hashPassword(password), await sha256(normalizeCode(code)), user.id)
+      .run();
+    await env.DB.prepare("DELETE FROM sessions WHERE user_id = ?").bind(user.id).run();
+    return startSession(request, env, user, { recoveryCode: code });
   },
 
   async "POST /api/auth/logout"({ request, env }) {
     const token = readCookie(request);
     if (token)
-      await env.DB.prepare("DELETE FROM sessions WHERE token_hash = ?")
-        .bind(await sha256(token))
-        .run();
+      await env.DB.prepare("DELETE FROM sessions WHERE token_hash = ?").bind(await sha256(token)).run();
     return json({ ok: true }, 200, { "set-cookie": sessionCookie(request, "", 0) });
   },
 
-  async "GET /api/me"({ user }) {
-    return json({ user: publicUser(user) });
+  async "GET /api/me"({ env, user }) {
+    return json({ user: publicUser(env, user) });
   },
 
   async "DELETE /api/me"({ request, env, user }) {
-    // ON DELETE CASCADE elimina sesiones, progreso, clases y membresías.
+    // ON DELETE CASCADE elimina sesiones, progreso, vínculos y las cuentas de
+    // menores que este apoderado creó.
     await env.DB.prepare("DELETE FROM users WHERE id = ?").bind(user.id).run();
     return json({ ok: true }, 200, { "set-cookie": sessionCookie(request, "", 0) });
   },
 
   async "GET /api/progress"({ env, user }) {
-    const row = await env.DB.prepare(
-      "SELECT state, updated_at FROM progress WHERE user_id = ?",
-    )
+    const row = await env.DB.prepare("SELECT state, updated_at FROM progress WHERE user_id = ?")
       .bind(user.id)
       .first();
-    return json(
-      row
-        ? { state: JSON.parse(row.state), updatedAt: row.updated_at }
-        : { state: null, updatedAt: null },
-    );
+    return json(row ? { state: JSON.parse(row.state), updatedAt: row.updated_at } : { state: null, updatedAt: null });
   },
 
   async "PUT /api/progress"({ request, env, user }) {
-    const body = await readJson(request);
-    const state = validateState(body.state);
+    const state = validateState((await readJson(request)).state);
     const updatedAt = Date.now();
     await env.DB.prepare(
       `INSERT INTO progress (user_id, state, updated_at) VALUES (?, ?, ?)
@@ -209,124 +263,156 @@ const routes = {
     return json({ updatedAt });
   },
 
-  async "GET /api/classes"({ env, user }) {
-    const { results } =
-      user.role === "teacher"
-        ? await env.DB.prepare(
-            `SELECT c.id, c.name, c.code, c.created_at AS createdAt,
-               (SELECT COUNT(*) FROM class_members m WHERE m.class_id = c.id) AS students
-             FROM classes c WHERE c.teacher_id = ? ORDER BY c.created_at DESC`,
-          )
-            .bind(user.id)
-            .all()
-        : await env.DB.prepare(
-            `SELECT c.id, c.name, u.name AS teacher, m.joined_at AS joinedAt
-             FROM class_members m JOIN classes c ON c.id = m.class_id
-             JOIN users u ON u.id = c.teacher_id
-             WHERE m.student_id = ? ORDER BY m.joined_at DESC`,
-          )
-            .bind(user.id)
-            .all();
-    return json({ classes: results });
-  },
-
-  async "POST /api/classes"({ request, env, user }) {
-    if (user.role !== "teacher") fail(403, "Solo un profesor puede crear clases.");
-    const name = cleanName((await readJson(request)).name, "el nombre de la clase", 80);
-    const { count } = await env.DB.prepare(
-      "SELECT COUNT(*) AS count FROM classes WHERE teacher_id = ?",
+  // Familia ------------------------------------------------------------------
+  async "GET /api/family"({ env, user }) {
+    if (user.role === "parent") {
+      const { results } = await env.DB.prepare(
+        `SELECT u.id, u.name, u.username, u.consent_by = ? AS createdByMe, p.state
+         FROM family_links f JOIN users u ON u.id = f.child_id
+         LEFT JOIN progress p ON p.user_id = u.id
+         WHERE f.parent_id = ? ORDER BY u.name`,
+      )
+        .bind(user.id, user.id)
+        .all();
+      return json({
+        children: results.map(({ state, createdByMe, ...child }) => ({
+          ...child,
+          createdByMe: Boolean(createdByMe),
+          ...summarize(state ? JSON.parse(state) : null),
+        })),
+      });
+    }
+    const { results } = await env.DB.prepare(
+      `SELECT u.name FROM family_links f JOIN users u ON u.id = f.parent_id
+       WHERE f.child_id = ? ORDER BY u.name`,
     )
       .bind(user.id)
-      .first();
-    if (count >= MAX_CLASSES) fail(400, `Puedes tener hasta ${MAX_CLASSES} clases.`);
-    for (let attempt = 0; attempt < 5; attempt++) {
-      const created = { id: crypto.randomUUID(), name, code: classCode() };
-      try {
-        await env.DB.prepare(
-          "INSERT INTO classes (id, teacher_id, name, code, created_at) VALUES (?, ?, ?, ?, ?)",
-        )
-          .bind(created.id, user.id, name, created.code, Date.now())
-          .run();
-        return json({ class: { ...created, students: 0 } }, 201);
-      } catch (err) {
-        if (!/UNIQUE/i.test(String(err?.message))) throw err;
-      }
-    }
-    fail(503, "No se pudo generar un código. Inténtalo de nuevo.");
-  },
-
-  async "POST /api/classes/join"({ request, env, user }) {
-    if (user.role !== "student") fail(403, "Solo un estudiante puede unirse a una clase.");
-    const code = String((await readJson(request)).code || "")
-      .trim()
-      .toUpperCase();
-    const found = await env.DB.prepare("SELECT id, name FROM classes WHERE code = ?")
-      .bind(code)
-      .first();
-    if (!found) fail(404, "No encontramos una clase con ese código.");
-    await env.DB.prepare(
-      "INSERT OR IGNORE INTO class_members (class_id, student_id, joined_at) VALUES (?, ?, ?)",
-    )
-      .bind(found.id, user.id, Date.now())
-      .run();
-    return json({ class: found });
-  },
-
-  async "GET /api/classes/:id"({ env, user, params }) {
-    const found = await env.DB.prepare(
-      "SELECT id, name, code FROM classes WHERE id = ? AND teacher_id = ?",
-    )
-      .bind(params.id, user.id)
-      .first();
-    // 404 también si la clase es de otro profesor: no se revela que existe.
-    if (!found) fail(404, "Clase no encontrada.");
-    const { results } = await env.DB.prepare(
-      `SELECT u.id, u.name, m.joined_at AS joinedAt, p.state
-       FROM class_members m JOIN users u ON u.id = m.student_id
-       LEFT JOIN progress p ON p.user_id = u.id
-       WHERE m.class_id = ? ORDER BY u.name`,
-    )
-      .bind(found.id)
       .all();
-    const students = results.map(({ state, ...student }) => ({
-      ...student,
-      ...summarize(state ? JSON.parse(state) : null),
-    }));
-    return json({ class: found, students });
+    return json({ parents: results.map((r) => r.name) });
   },
 
-  async "DELETE /api/classes/:id/students/:studentId"({ env, user, params }) {
-    const owned = await env.DB.prepare(
-      "SELECT 1 FROM classes WHERE id = ? AND teacher_id = ?",
-    )
-      .bind(params.id, user.id)
+  // El apoderado crea la cuenta de un menor: su consentimiento queda registrado.
+  async "POST /api/family/children"({ request, env, user }) {
+    requireRole(user, "parent", "Solo un apoderado puede crear cuentas de estudiantes.");
+    const body = await readJson(request);
+    const name = cleanName(body.name, "el nombre del estudiante");
+    const username = cleanUsername(body.username);
+    const password = cleanPassword(body.password);
+    const { count } = await env.DB.prepare("SELECT COUNT(*) AS count FROM family_links WHERE parent_id = ?")
+      .bind(user.id)
       .first();
-    if (!owned) fail(404, "Clase no encontrada.");
+    if (count >= MAX_CHILDREN) fail(400, `Puedes tener hasta ${MAX_CHILDREN} estudiantes.`);
+    if (await env.DB.prepare("SELECT 1 FROM users WHERE username = ?").bind(username).first())
+      fail(409, "Ese usuario ya existe. Prueba con otro.");
+    const child = { id: crypto.randomUUID(), name, username };
+    const now = Date.now();
     await env.DB.prepare(
-      "DELETE FROM class_members WHERE class_id = ? AND student_id = ?",
+      "INSERT INTO users (id, username, name, role, password_hash, consent_by, created_at) VALUES (?, ?, ?, 'student', ?, ?, ?)",
     )
-      .bind(params.id, params.studentId)
+      .bind(child.id, username, name, await hashPassword(password), user.id, now)
       .run();
+    await env.DB.prepare("INSERT INTO family_links (parent_id, child_id, created_at) VALUES (?, ?, ?)")
+      .bind(user.id, child.id, now)
+      .run();
+    return json({ child }, 201);
+  },
+
+  // Un estudiante con cuenta propia genera un código para su apoderado.
+  async "POST /api/family/link-code"({ env, user }) {
+    requireRole(user, "student", "Solo un estudiante puede generar un código de vinculación.");
+    await env.DB.prepare("DELETE FROM link_codes WHERE child_id = ? OR expires_at < ?")
+      .bind(user.id, Date.now())
+      .run();
+    const code = classCode(6);
+    const expiresAt = Date.now() + LINK_CODE_HOURS * 3600000;
+    await env.DB.prepare("INSERT INTO link_codes (code, child_id, expires_at) VALUES (?, ?, ?)")
+      .bind(code, user.id, expiresAt)
+      .run();
+    return json({ code, expiresAt });
+  },
+
+  async "POST /api/family/link"({ request, env, user }) {
+    requireRole(user, "parent", "Solo un apoderado puede vincular estudiantes.");
+    const code = normalizeCode((await readJson(request)).code);
+    const found = await env.DB.prepare("SELECT child_id FROM link_codes WHERE code = ? AND expires_at > ?")
+      .bind(code, Date.now())
+      .first();
+    if (!found) fail(404, "El código no existe o ya venció. Pide uno nuevo.");
+    await env.DB.prepare("INSERT OR IGNORE INTO family_links (parent_id, child_id, created_at) VALUES (?, ?, ?)")
+      .bind(user.id, found.child_id, Date.now())
+      .run();
+    await env.DB.prepare("DELETE FROM link_codes WHERE code = ?").bind(code).run();
+    const child = await env.DB.prepare("SELECT id, name FROM users WHERE id = ?").bind(found.child_id).first();
+    return json({ child });
+  },
+
+  async "POST /api/family/children/:id/password"({ request, env, user, params }) {
+    requireRole(user, "parent", "Solo un apoderado puede cambiar esta contraseña.");
+    const child = await childOf(env, user, params.id);
+    const password = cleanPassword((await readJson(request)).password);
+    await env.DB.prepare("UPDATE users SET password_hash = ? WHERE id = ?")
+      .bind(await hashPassword(password), child.id)
+      .run();
+    await env.DB.prepare("DELETE FROM sessions WHERE user_id = ?").bind(child.id).run();
     return json({ ok: true });
+  },
+
+  // Quita el vínculo; si el apoderado creó la cuenta, la elimina.
+  async "DELETE /api/family/children/:id"({ env, user, params }) {
+    requireRole(user, "parent", "Solo un apoderado puede hacer esto.");
+    const child = await childOf(env, user, params.id);
+    if (child.consent_by === user.id)
+      await env.DB.prepare("DELETE FROM users WHERE id = ?").bind(child.id).run();
+    else
+      await env.DB.prepare("DELETE FROM family_links WHERE parent_id = ? AND child_id = ?")
+        .bind(user.id, child.id)
+        .run();
+    return json({ ok: true, deleted: child.consent_by === user.id });
+  },
+
+  // Catálogo central ------------------------------------------------------------
+  async "GET /api/catalog"({ env }) {
+    const row = await env.DB.prepare("SELECT data, updated_at FROM catalog WHERE id = 1").first();
+    return json(row ? { catalog: JSON.parse(row.data), updatedAt: row.updated_at } : { catalog: null, updatedAt: null });
+  },
+
+  async "PUT /api/catalog"({ request, env, user }) {
+    if (!isAdmin(env, user)) fail(403, "Solo la administración puede publicar contenido.");
+    let catalog;
+    try {
+      catalog = validateCatalog((await readJson(request, MAX_CATALOG)).catalog);
+    } catch (err) {
+      if (err instanceof HttpError) throw err;
+      fail(400, err.message);
+    }
+    const updatedAt = Date.now();
+    await env.DB.prepare(
+      `INSERT INTO catalog (id, data, updated_at) VALUES (1, ?, ?)
+       ON CONFLICT(id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`,
+    )
+      .bind(JSON.stringify(catalog), updatedAt)
+      .run();
+    return json({ catalog, updatedAt });
   },
 };
 
-const PUBLIC = new Set(["POST /api/auth/register", "POST /api/auth/login", "POST /api/auth/logout"]);
+const PUBLIC = new Set([
+  "POST /api/auth/register",
+  "POST /api/auth/login",
+  "POST /api/auth/recover",
+  "POST /api/auth/logout",
+  "GET /api/catalog",
+]);
 
 function match(method, pathname) {
   for (const key of Object.keys(routes)) {
     const [m, pattern] = key.split(" ");
     if (m !== method) continue;
     const names = [];
-    const re = new RegExp(
-      "^" + pattern.replace(/:(\w+)/g, (_, n) => (names.push(n), "([^/]+)")) + "$",
-    );
+    const re = new RegExp("^" + pattern.replace(/:(\w+)/g, (_, n) => (names.push(n), "([^/]+)")) + "$");
     const found = pathname.match(re);
     if (found)
-      return {
-        key,
-        params: Object.fromEntries(names.map((n, i) => [n, decodeURIComponent(found[i + 1])])),
-      };
+      return { key, params: Object.fromEntries(names.map((n, i) => [n, decodeURIComponent(found[i + 1])])) };
   }
   return null;
 }

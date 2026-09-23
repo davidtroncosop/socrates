@@ -52,7 +52,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
     pending = null;
     dirty = false;
     const catalog = getCatalog();
-    app.innerHTML = `<div class="eyebrow">ESTUDIO DE CONTENIDO</div><h1>Lo que enseñas empieza aquí.</h1><p class="intro">Crea lecciones, prepara las pistas y decide cuándo están listas para tu ruta.</p><div class="callout">Contenido local · Se guarda en este navegador. Exporta un respaldo para trasladarlo. Publicar lo hace visible en esta ruta, no en otros dispositivos.</div><div class="admin-toolbar"><button class="primary" data-admin="new">＋ Nueva lección</button><button data-admin="import">Subir CSV o JSON</button><button data-admin="export">Respaldo JSON</button><button data-admin="export-csv">Exportar CSV</button><button data-admin="template">Plantilla para Excel (CSV)</button><input id="content-file" type="file" accept=".csv,.json,text/csv,application/json" hidden></div><div id="admin-message" role="status" class="feedback ${warning() ? "" : "good"}">${esc(warning() || notice)}</div><label for="import-mode">Al importar</label><select id="import-mode"><option value="add">Añadir lecciones nuevas como borradores</option><option value="replace">Restaurar catálogo: reemplazar el contenido actual</option></select><p class="muted">En Excel, guarda la plantilla como CSV UTF-8. Usa cuatro filas de tipo ejercicio (orden 1–4) y una de tipo repaso por lección. No se admiten archivos .xlsx directamente.</p><div id="import-preview"></div><div class="section-title"><h2>Biblioteca de lecciones</h2><span class="muted">${catalog.lessons.length} lecciones · ${catalog.lessons.filter((l) => l.status === "published").length} publicadas</span></div><label for="content-search">Buscar por título</label><input id="content-search" type="search" placeholder="Busca una lección…"><div id="content-list"></div>`;
+    app.innerHTML = `<div class="eyebrow">ESTUDIO DE CONTENIDO</div><h1>Lo que enseñas empieza aquí.</h1><p class="intro">Crea lecciones, prepara las pistas y decide cuándo están listas para tu ruta.</p><div class="callout">Catálogo central · Cada cambio que guardas se publica para todos los estudiantes. Las lecciones en borrador no se muestran. Exporta un respaldo JSON antes de cambios grandes.</div><div class="admin-toolbar"><button class="primary" data-admin="new">＋ Nueva lección</button><button data-admin="import">Subir CSV o JSON</button><button data-admin="export">Respaldo JSON</button><button data-admin="export-csv">Exportar CSV</button><button data-admin="template">Plantilla para Excel (CSV)</button><input id="content-file" type="file" accept=".csv,.json,text/csv,application/json" hidden></div><div id="admin-message" role="status" class="feedback ${warning() ? "" : "good"}">${esc(warning() || notice)}</div><label for="import-mode">Al importar</label><select id="import-mode"><option value="add">Añadir lecciones nuevas como borradores</option><option value="replace">Restaurar catálogo: reemplazar el contenido actual</option></select><p class="muted">En Excel, guarda la plantilla como CSV UTF-8. Usa cuatro filas de tipo ejercicio (orden 1–4) y una de tipo repaso por lección. No se admiten archivos .xlsx directamente.</p><div id="import-preview"></div><div class="section-title"><h2>Biblioteca de lecciones</h2><span class="muted">${catalog.lessons.length} lecciones · ${catalog.lessons.filter((l) => l.status === "published").length} publicadas</span></div><label for="content-search">Buscar por título</label><input id="content-search" type="search" placeholder="Busca una lección…"><div id="content-list"></div>`;
     list("");
     $("#content-search").oninput = (e) => list(e.target.value);
     $("#content-file").onchange = async (e) => {
@@ -123,7 +123,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
     $("#lesson-editor").oninput = () => {
       dirty = true;
     };
-    $("#lesson-editor").onsubmit = (e) => {
+    $("#lesson-editor").onsubmit = async (e) => {
       e.preventDefault();
       try {
         const lesson = collect();
@@ -131,7 +131,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
         const i = next.lessons.findIndex((l) => l.id === lesson.id);
         if (i < 0) next.lessons.push(lesson);
         else next.lessons[i] = lesson;
-        commit(next);
+        await commit(next);
         dirty = false;
         render(
           "Lección guardada. " +
@@ -167,7 +167,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
     };
     return validateCatalog({ version: 1, lessons: [lesson] }).lessons[0];
   }
-  function handle(e) {
+  async function handle(e) {
     const b = e.target.closest("[data-admin]");
     if (!b || b.disabled) return;
     const action = b.dataset.admin,
@@ -194,7 +194,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
         $("#import-preview").innerHTML = "";
         message("Importación cancelada.");
       } else if (action === "confirm-import" && pending) {
-        commit(replaceImport ? pending : mergeCatalog(getCatalog(), pending));
+        await commit(replaceImport ? pending : mergeCatalog(getCatalog(), pending));
         render(
           "Importación completada. Revisa las lecciones y su estado antes de continuar.",
         );
@@ -220,7 +220,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
             next.lessons[i],
           ];
         }
-        commit(next);
+        await commit(next);
         render("Contenido actualizado.");
       }
     } catch (err) {

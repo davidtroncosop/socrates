@@ -1,8 +1,8 @@
 // Sesión local. El modo demo no verifica identidad; en el modo cuenta la
 // identidad la valida el servidor (cookie HttpOnly) y esto solo la recuerda.
 export const SESSION_KEY = "socatres.demo-session.v1";
-export const DEMO_NAMES = { student: "Estudiante demo", teacher: "Profesor demo" };
-const ROLES = ["student", "teacher"];
+export const DEMO_NAMES = { student: "Estudiante demo" };
+const ROLES = ["student", "parent"];
 const DAY = 86400000;
 export function readSession(storage, now = Date.now()) {
   try {
@@ -40,6 +40,8 @@ export function startAccountSession(storage, user, now = Date.now()) {
     userId: user.id,
     name: user.name,
     role: user.role,
+    // Solo para mostrar u ocultar el mantenedor; el servidor valida cada cambio.
+    isAdmin: user.isAdmin === true,
     expiresAt: now + 30 * DAY,
   };
   storage.setItem(SESSION_KEY, JSON.stringify(session));

@@ -1,4 +1,4 @@
-import { readSession, endSession } from "./auth.js";
+import { readSession, endSession, startAccountSession } from "./auth.js";
 import { api } from "./api.js";
 const getSession = () => {
   try {
@@ -34,12 +34,21 @@ else {
   });
   setTimeout(check, Math.max(0, session.expiresAt - Date.now()));
   // Sin conexión se sigue practicando; solo una sesión rechazada obliga a entrar.
+  // También refresca nombre, rol y permisos guardados en el dispositivo.
   if (session.mode === "account")
-    api.me().catch((err) => {
-      if (err.status === 401) {
-        endSession(localStorage);
-        location.replace("./?login=1");
-      }
-    });
+    api.me().then(
+      ({ user }) => {
+        const changed =
+          user.isAdmin !== session.isAdmin || user.role !== session.role;
+        startAccountSession(localStorage, user);
+        if (changed) location.reload();
+      },
+      (err) => {
+        if (err.status === 401) {
+          endSession(localStorage);
+          location.replace("./?login=1");
+        }
+      },
+    );
   await import("./app.js");
 }

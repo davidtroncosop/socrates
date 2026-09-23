@@ -915,3 +915,67 @@ dialog .auth-disclaimer {
     font-size: 38px;
   }
 }
+.link-button {
+  background: transparent;
+  color: var(--blue);
+  font-size: 13px;
+  padding: 8px 0 0;
+  text-decoration: underline;
+  justify-self: start;
+}
+.auth-form .check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+#panel-code .check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.auth-note {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 2px 0 4px;
+}
+#panel-recover h3,
+#panel-code h3 {
+  margin: 8px 0 4px;
+  font-size: 20px;
+}
+.recovery-code {
+  display: block;
+  margin: 14px 0 10px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #eaf0fd;
+  color: var(--blue);
+  font: 700 22px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+.code-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.code-actions button {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: white;
+  color: var(--ink);
+  font-weight: 700;
+}
+#panel-code .primary {
+  margin-top: 12px;
+  width: 100%;
+}
+#panel-code .primary[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
