@@ -3039,3 +3039,13 @@ select {
     min-height: 150px;
   }
 }
+
+/* Elección de curso del diagnóstico */
+.grade-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.grade-picker button {
+  flex: 1 1 120px;
+}

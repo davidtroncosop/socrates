@@ -169,3 +169,23 @@ test("each account reads its own progress key", () => {
   assert.deepEqual(loadState(store).completed, ["equations"]);
   assert.deepEqual(loadState(store, undefined, "socatres.v1.u1").completed, []);
 });
+
+test("alternatives are reshuffled without losing the correct one", async () => {
+  const { shuffleAlternatives, isMultipleChoice } = await import("../public/learning.js");
+  const q = ["Un texto.\n\n1. Primera\n2. Correcta\n3. Tercera", 2, "Elige", "pista", "expl"];
+  const seen = new Set();
+  for (let i = 0; i < 200; i++) {
+    const [text, answer, ...rest] = shuffleAlternatives(q);
+    const lines = text.split("\n");
+    assert.equal(lines[0], "Un texto.");
+    assert.deepEqual(lines.slice(2).map((l) => l.slice(0, 2)), ["1.", "2.", "3."]);
+    assert.equal(lines.find((l) => l.startsWith(answer + ".")), `${answer}. Correcta`);
+    assert.deepEqual(rest, ["Elige", "pista", "expl"]);
+    seen.add(answer);
+  }
+  assert.deepEqual([...seen].sort(), [1, 2, 3], "the correct option moves around");
+  assert.equal(isMultipleChoice(q), true);
+  const math = ["2x + 3 = 15", 6, "a", "b", "c"];
+  assert.equal(shuffleAlternatives(math), math);
+  assert.equal(isMultipleChoice(math), false);
+});

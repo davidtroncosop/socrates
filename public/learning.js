@@ -604,6 +604,7 @@ export function loadState(
             (r) => r && ids.has(r.lesson) && typeof r.due === "number",
           )
         : [],
+      grade: s.grade in GRADES ? s.grade : undefined,
       // Lecciones cuyo video se reprodujo; informativo, no cuenta para el dominio.
       watched: Array.isArray(s.watched)
         ? [...new Set(s.watched.filter((id) => ids.has(id)))]
@@ -632,6 +633,7 @@ export function mergeStates(local, remote) {
   return {
     version: 1,
     diagnosed: local.diagnosed || remote.diagnosed,
+    grade: newer.grade ?? older.grade,
     completed: unique([...local.completed, ...remote.completed], (id) => id),
     mastered: [...newer.mastered],
     attempts: unique(
@@ -655,6 +657,40 @@ export const withoutPhotos = (state) => ({
   ...state,
   notes: state.notes.map(({ image, ...note }) => note),
 });
+
+// Preguntas de alternativas: texto, línea en blanco y opciones «1. …», «2. …».
+const OPTION = /^(\d+)\.\s+(.*)$/;
+function splitAlternatives(text) {
+  const lines = String(text).split("\n");
+  let first = lines.length;
+  while (first > 0 && OPTION.test(lines[first - 1])) first--;
+  const options = lines.slice(first).map((line) => line.match(OPTION)[2]);
+  const numbered = lines
+    .slice(first)
+    .every((line, i) => Number(line.match(OPTION)[1]) === i + 1);
+  return options.length >= 2 && numbered
+    ? { stem: lines.slice(0, first).join("\n"), options }
+    : null;
+}
+export const isMultipleChoice = (q) =>
+  Boolean(splitAlternatives(q[0])) && Number.isInteger(q[1]);
+
+// Cambia el orden de las alternativas para que el número correcto no se pueda
+// recordar ni adivinar por costumbre. Las pistas no mencionan números.
+export function shuffleAlternatives(q, rng = Math.random) {
+  const parsed = splitAlternatives(q[0]);
+  if (!parsed || !Number.isInteger(q[1]) || !parsed.options[q[1] - 1]) return q;
+  const order = parsed.options.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  const text =
+    parsed.stem +
+    "\n" +
+    order.map((from, i) => `${i + 1}. ${parsed.options[from]}`).join("\n");
+  return [text, order.indexOf(q[1] - 1) + 1, ...q.slice(2)];
+}
 
 export const GRADES = {
   "5b": "5° Básico",

@@ -88,7 +88,7 @@ export function showParentReport({ state, completedCount, masteredCount }) {
   const weeklyDays = Math.max(1, recentDates.size);
   const estimatedMins = weeklyDays * 11;
 
-  const whatsappMsg = `*Reporte de Progreso en Tutorai 🚀*\n` +
+  const whatsappMsg = `*Reporte de Progreso en socatres 🚀*\n` +
     `• Días de práctica esta semana: ${weeklyDays} de 7 días (~${estimatedMins} min totales)\n` +
     `• Racha activa: ${streakInfo.streak} días seguidos 🔥\n` +
     `• Lecciones completadas: ${completedCount} lecciones\n` +
@@ -166,7 +166,7 @@ export function showRewardsModal(state) {
 
   const xpInfo = getXpAndFichas(state);
   const claimMsg = `*¡Canje de Fichas de Premio en Casa! 🪙*\n` +
-    `Hola Papá/Mamá, he ganado ${xpInfo.fichas} fichas en Tutorai practicando (${xpInfo.totalXP} XP totales) 🚀\n` +
+    `Hola Papá/Mamá, he ganado ${xpInfo.fichas} fichas en socatres practicando (${xpInfo.totalXP} XP totales) 🚀\n` +
     `¿Podemos canjear mis fichas por un premio acordado de la semana? 🎮🍕🎬`;
 
   content.innerHTML = `

@@ -6,7 +6,7 @@ export const curriculumLessons = [
     "subject": "matematica",
     "grade": "7b",
     "description": "MA07 OA 04 · Números",
-    "concept": "Un porcentaje expresa una cantidad por cada cien. Para calcular p % de una cantidad, multiplícala por p y divide entre 100.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70515.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "Un porcentaje expresa una cantidad por cada cien. Para calcular p % de una cantidad, multiplícala por p y divide entre 100.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70515.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "El 25 % de 80 es 80 × 25 ÷ 100 = 20.",
     "status": "published",
     "questions": [
@@ -53,7 +53,7 @@ export const curriculumLessons = [
     "subject": "matematica",
     "grade": "7b",
     "description": "MA07 OA 11 · Geometría",
-    "concept": "El diámetro es dos veces el radio. La longitud de la circunferencia es 2πr y el área del círculo es πr². En esta lección usa π ≈ 3,14.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-11\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "El diámetro es dos veces el radio. La longitud de la circunferencia es 2πr y el área del círculo es πr². En esta lección usa π ≈ 3,14.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-11\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Con radio 2 cm: diámetro 4 cm, perímetro 12,56 cm y área 12,56 cm².",
     "status": "published",
     "questions": [
@@ -100,7 +100,7 @@ export const curriculumLessons = [
     "subject": "matematica",
     "grade": "8b",
     "description": "MA08 OA 12 · Geometría",
-    "concept": "En un triángulo rectángulo, a² + b² = c². Los catetos a y b forman el ángulo recto; la hipotenusa c está enfrente y es el lado más largo.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70561.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "En un triángulo rectángulo, a² + b² = c². Los catetos a y b forman el ángulo recto; la hipotenusa c está enfrente y es el lado más largo.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70561.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Con catetos 3 y 4: c² = 9 + 16 = 25; c = 5.",
     "status": "published",
     "questions": [
@@ -147,7 +147,7 @@ export const curriculumLessons = [
     "subject": "matematica",
     "grade": "7b",
     "description": "MA07 OA 18 · Probabilidad y estadística",
-    "concept": "La frecuencia relativa es el número de veces que ocurre un evento dividido por el total de ensayos. Permite estimar probabilidades; una estimación no garantiza el resultado siguiente.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-18\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "La frecuencia relativa es el número de veces que ocurre un evento dividido por el total de ensayos. Permite estimar probabilidades; una estimación no garantiza el resultado siguiente.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-18\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Si sale cara 12 veces en 20 lanzamientos, su frecuencia relativa es 12/20 = 0,6.",
     "status": "published",
     "questions": [
@@ -194,7 +194,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "7b",
     "description": "LE07 OA 03 · Comprensión lectora",
-    "concept": "Para comprender una narración, identifica el conflicto, las acciones y sus consecuencias. Toda inferencia debe apoyarse en indicios del relato.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70382.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "Para comprender una narración, identifica el conflicto, las acciones y sus consecuencias. Toda inferencia debe apoyarse en indicios del relato.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70382.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Si un personaje guarda un paraguas al ver que salió el sol, podemos inferir que ya no espera lluvia inmediata.",
     "status": "published",
     "questions": [
@@ -241,7 +241,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "7b",
     "description": "LE07 OA 07 · Comprensión lectora",
-    "concept": "Interpretar implica proponer un sentido y sostenerlo con detalles del texto. Un dilema enfrenta opciones con consecuencias o valores en tensión.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70386.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "Interpretar implica proponer un sentido y sostenerlo con detalles del texto. Un dilema enfrenta opciones con consecuencias o valores en tensión.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70386.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Si alguien comparte su única colación, el gesto puede expresar solidaridad porque renuncia a algo propio para ayudar.",
     "status": "published",
     "questions": [
@@ -288,7 +288,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "7b",
     "description": "LE07 OA 08 · Comprensión lectora",
-    "concept": "La postura expresa lo que el autor defiende. Un argumento ofrece una razón para sostenerla. Evalúa si esa razón es pertinente y si se apoya en información comprobable.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70387.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "La postura expresa lo que el autor defiende. Un argumento ofrece una razón para sostenerla. Evalúa si esa razón es pertinente y si se apoya en información comprobable.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70387.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "«Debemos ampliar el horario de biblioteca porque muchos salen tarde de clases»: la propuesta es ampliar el horario; la razón es facilitar el acceso.",
     "status": "published",
     "questions": [
@@ -335,7 +335,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "7b",
     "description": "LE07 OA 09 · Comprensión lectora",
-    "concept": "Al leer medios, distingue información comprobable, opiniones y propósitos. Pregunta qué quiere lograr el mensaje y si sus afirmaciones están respaldadas.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/lengua-literatura/7-basico/le07-oa-09\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "Al leer medios, distingue información comprobable, opiniones y propósitos. Pregunta qué quiere lograr el mensaje y si sus afirmaciones están respaldadas.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/lengua-literatura/7-basico/le07-oa-09\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "«Ven hoy y compra dos por el precio de uno» busca promover una compra; no es una noticia.",
     "status": "published",
     "questions": [
@@ -382,7 +382,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "5b",
     "description": "LE05 OA 02 · Estrategias de lectura y síntesis",
-    "concept": "Resumir consiste en extraer las ideas esenciales descartando detalles secundarios o redundantes. Pregúntate: ¿de qué habla el texto y qué es lo más importante que comunica?\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70335.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "Resumir consiste en extraer las ideas esenciales descartando detalles secundarios o redundantes. Pregúntate: ¿de qué habla el texto y qué es lo más importante que comunica?\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70335.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "En un texto sobre la fotosíntesis, la idea principal es la transformación de luz en energía; el color de la maceta es un detalle secundario.",
     "status": "published",
     "questions": [
@@ -429,7 +429,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "6b",
     "description": "LE06 OA 06 · Propósito, emisor y confiabilidad de fuentes",
-    "concept": "Al leer textos informativos o normativos, identifica al emisor, su propósito (informar, convencer o promover) y verifica si los datos se sustentan en fuentes comprobables o responden a intereses comerciales.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70360.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "Al leer textos informativos o normativos, identifica al emisor, su propósito (informar, convencer o promover) y verifica si los datos se sustentan en fuentes comprobables o responden a intereses comerciales.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70360.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Un boletín del Ministerio de Salud sobre vacunación tiene un propósito sanitario e informativo avalado científicamente, a diferencia de un anuncio publicitario.",
     "status": "published",
     "questions": [
@@ -476,7 +476,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "8b",
     "description": "LE08 OA 04 · Lenguaje figurado, metáforas y recursos estilísticos",
-    "concept": "El lenguaje figurado sugiere asociaciones creativas entre realidades distintas. La metáfora traslada el significado de un término a otro por afinidad («el oro de sus cabellos»); la personificación confiere rasgos humanos a objetos («el viento aullaba de dolor») y la hipérbole magnifica una cualidad para enfatizar un impacto emocional.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70438.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "El lenguaje figurado sugiere asociaciones creativas entre realidades distintas. La metáfora traslada el significado de un término a otro por afinidad («el oro de sus cabellos»); la personificación confiere rasgos humanos a objetos («el viento aullaba de dolor») y la hipérbole magnifica una cualidad para enfatizar un impacto emocional.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70438.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "En «el invierno muerde las esquinas», la personificación del frío resalta su dureza inclemente.",
     "status": "published",
     "questions": [
@@ -523,7 +523,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "8b",
     "description": "LE08 OA 03 · Dilemas morales, motivaciones y conflicto narrativo",
-    "concept": "En una narración, los personajes actúan movidos por valores, lealtades o miedos. El conflicto surge cuando un obstáculo o dilema ético pone a prueba sus convicciones. Comprender las motivaciones permite interpretar el sentido profundo de la historia y juzgar críticamente sus desenlaces.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70437.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "En una narración, los personajes actúan movidos por valores, lealtades o miedos. El conflicto surge cuando un obstáculo o dilema ético pone a prueba sus convicciones. Comprender las motivaciones permite interpretar el sentido profundo de la historia y juzgar críticamente sus desenlaces.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70437.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Cuando un personaje admite una falta para proteger la verdad colectiva, su motivación prioriza la justicia sobre la comodidad personal.",
     "status": "published",
     "questions": [
@@ -570,7 +570,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "1m",
     "description": "LE01 OA 02 · Interpretación literaria, alegorías y contexto cultural",
-    "concept": "Un símbolo literario condensa ideas abstractas en objetos, personajes o espacios físicos (un pájaro enjaulado como anhelo de libertad; una tempestad como quiebre interior). Interpretar implica decodificar estos símbolos a la luz de los valores y la cosmovisión plasmados en la obra.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70487.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "Un símbolo literario condensa ideas abstractas en objetos, personajes o espacios físicos (un pájaro enjaulado como anhelo de libertad; una tempestad como quiebre interior). Interpretar implica decodificar estos símbolos a la luz de los valores y la cosmovisión plasmados en la obra.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70487.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Una senda que se bifurca en un bosque brumoso simboliza la encrucijada existencial ante decisiones irreversibles.",
     "status": "published",
     "questions": [
@@ -617,7 +617,7 @@ export const curriculumLessons = [
     "subject": "lenguaje",
     "grade": "1m",
     "description": "LE01 OA 10 · Argumentación, validez de razones y falacias en medios",
-    "concept": "La lectura crítica evalúa la consistencia de los razonamientos. Una falacia es un argumento defectuoso que aparenta validez: el ataque personal (ad hominem), apelar al consenso masivo (ad populum) o forzar un falso dilema («o todo o nada»). Detectarlas permite discernir afirmaciones rigurosas de intentos de manipulación.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70495.html\nActividad original de Tutorai; practica aspectos del objetivo, no su cobertura completa.",
+    "concept": "La lectura crítica evalúa la consistencia de los razonamientos. Una falacia es un argumento defectuoso que aparenta validez: el ataque personal (ad hominem), apelar al consenso masivo (ad populum) o forzar un falso dilema («o todo o nada»). Detectarlas permite discernir afirmaciones rigurosas de intentos de manipulación.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70495.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Decir «no le crean a ese economista porque es muy joven» es una falacia ad hominem: ataca la edad del expositor en lugar de examinar sus cifras y argumentos.",
     "status": "published",
     "questions": [

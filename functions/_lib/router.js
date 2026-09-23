@@ -27,6 +27,7 @@ const json = (data, status = 200, headers = {}) =>
     headers: {
       "content-type": "application/json; charset=utf-8",
       "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
       ...headers,
     },
   });

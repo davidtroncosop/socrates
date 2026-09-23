@@ -5,13 +5,13 @@ Espacio de aprendizaje de matemática y comprensión lectora alineado con las Ba
 ## Ejecutar
 
 ```sh
-npm test                 # 62 pruebas (Node 22+)
+npm test                 # 66 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
 ```
 
-`npm run dev` y el deploy usan `wrangler` (`npx wrangler …` si no está instalado).
+La base local se identifica por el `database_id` de `wrangler.toml`: si lo cambias, vuelve a correr `npm run db:migrate:local`. `npm run dev` y el deploy usan `wrangler` (`npx wrangler …` si no está instalado).
 
 ## Estructura
 
@@ -37,12 +37,14 @@ Módulos del cliente (`public/`):
 
 ## Qué incluye
 
-- Diagnóstico inicial, ruta por unidades y filtros por materia y curso (5° Básico a 1° Medio).
+- **Diagnóstico adaptativo por curso:** el estudiante elige su curso y responde hasta 4 preguntas de matemática y 4 de lectura de ese curso. Cada materia se detiene en su primer tropiezo, así que suele tomar menos de 5 minutos. Lo resuelto antes del tropiezo queda completado y pendiente de confirmar en un repaso (nunca como dominio); el tropiezo es el punto de partida sugerido. El curso se guarda y la ruta se abre filtrada en él.
+- Ruta por unidades y filtros por materia y curso (5° Básico a 1° Medio). Las lecciones se desbloquean en orden **dentro de su curso y materia**; la primera de cada curso está abierta.
 - 26 lecciones con cuatro ejercicios, repaso independiente, lección conceptual previa y pistas escalonadas.
 - **Metadatos explícitos:** cada lección declara `subject` (`matematica`, `lenguaje`) y `grade` (`5b`, `6b`, `7b`, `8b`, `1m`, `2m`). Los filtros y distintivos usan esos campos, no el título. Los catálogos y CSV anteriores se migran: el curso se infiere del prefijo del título («7° Básico · …») y el prefijo se quita.
 - **Ejercicios generados:** 13 lecciones de matemática tienen generador. La primera vez se usan los ejercicios curados. Al volver a practicar una lección completada y en cada repaso, se generan ejercicios nuevos del mismo tipo y dificultad, con respuesta, pista y explicación calculadas. Las lecciones sin generador (lectura, círculos, probabilidad, modelamiento) mantienen su contenido curado.
 - Validación de respuestas equivalentes (enteros, decimales, fracciones y `x = …`), resolución a mano con foto comprimida en el navegador y «Mi cuaderno».
 - Separación entre completar y dominar: el dominio se confirma en un repaso sin ayuda al menos 24 horas después.
+- **Lectura sin adivinar:** en cada sesión se mezcla el orden de las alternativas, así el número correcto no se memoriza ni se puede adivinar respondiendo siempre lo mismo. El repaso de lectura pide dos respuestas correctas (el repaso y el desafío final), lo que baja la probabilidad de confirmar el dominio al azar de 1/3 a 1/9.
 - «Trae tu ejercicio» para ecuaciones `ax + b = cx + d`.
 - **Videos de YouTube opcionales** por lección, con tramo de inicio y fin. Aparecen en la lección inicial y en la segunda pista de las tres primeras fases; nunca en el desafío de autonomía ni en los repasos, donde se confirma el dominio. Hasta que el estudiante pulsa ▶ la página no hace ninguna petición a Google (ni siquiera la miniatura); luego se usa `youtube-nocookie.com`. Si YouTube está bloqueado, la lección funciona igual y se ofrece un enlace directo. Ver el video queda registrado (`watched`), no cuenta para el dominio, y el profesor ve cuántos videos vio cada estudiante. Las lecciones con video llevan la etiqueta 🎬 en la ruta.
 
@@ -58,6 +60,7 @@ El acceso ofrece **Entrar**, **Crear cuenta** (estudiante o profesor/a) y **Prob
 
 ### Seguridad
 
+- `public/_headers` aplica Content-Security-Policy (`script-src 'self'`, sin scripts en línea; estilos solo como atributo; iframes solo de `youtube-nocookie.com`), `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy` y `Permissions-Policy`. Si agregas un recurso externo, añade su origen a la política.
 - Contraseñas con PBKDF2-SHA-256 (100 000 iteraciones, sal por usuario), mínimo 8 caracteres.
 - Sesión en cookie `HttpOnly; SameSite=Lax` (y `Secure` en HTTPS) de 30 días. En la base solo se guarda el hash SHA-256 del token.
 - Las peticiones que modifican datos exigen `Content-Type: application/json`; junto con `SameSite=Lax`, eso bloquea peticiones forjadas desde otros sitios.

@@ -1,0 +1,11 @@
+# Cabeceras de seguridad para el sitio estático (Cloudflare Pages).
+# - Sin scripts en línea ni manejadores on…=: script-src 'self' es suficiente.
+# - Las plantillas usan atributos style="…": se permiten solo como atributo.
+# - Fotos del cuaderno: data: y blob:. Videos: solo youtube-nocookie.com.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin

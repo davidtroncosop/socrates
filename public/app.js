@@ -14,6 +14,7 @@ import {
   displayTitle,
   mergeStates,
   withoutPhotos,
+  shuffleAlternatives,
 } from "./learning.js";
 import { readSession, endSession, progressKey } from "./auth.js";
 import { api } from "./api.js";
@@ -61,6 +62,30 @@ function contentManager() {
   });
   admin.render();
 }
+// Las lecciones se desbloquean en orden dentro de su curso y materia; la
+// primera de cada curso queda abierta para que el diagnóstico pueda ubicar ahí.
+function isLocked(l) {
+  if (independentLessons.has(l.id)) return false;
+  const i = lessons.findIndex((x) => x.id === l.id);
+  const prev = lessons
+    .slice(0, i)
+    .findLast(
+      (x) =>
+        inferGrade(x) === inferGrade(l) && getSubject(x) === getSubject(l),
+    );
+  return Boolean(prev) && !state.completed.includes(prev.id);
+}
+// Siguiente paso sugerido: primero el curso del estudiante.
+function nextLesson() {
+  const open = (l) => !state.completed.includes(l.id) && !isLocked(l);
+  return (
+    (state.grade && lessons.find((l) => inferGrade(l) === state.grade && open(l))) ||
+    lessons.find(open) ||
+    lessons[0]
+  );
+}
+// Mezcla las alternativas de lectura en cada sesión.
+const prepare = (questions) => questions.map((q) => shuffleAlternatives(q));
 const activeReviews = () =>
   state.reviews.filter((r) => lessons.some((l) => l.id === r.lesson));
 const activeCompleted = () =>
@@ -76,7 +101,8 @@ try {
 }
 let session = null,
   storageFailed = false,
-  currentLevel = "all",
+  // La ruta se abre en el curso del estudiante; puede cambiarlo con el filtro.
+  currentLevel = state.grade ?? "all",
   currentSubject = "all";
 function save() {
   try {
@@ -187,8 +213,7 @@ function route() {
       ) + (isTeacher ? button("Administrar contenido", "go:contenido", "primary") : "");
     return;
   }
-  const next =
-    lessons.find((l) => !state.completed.includes(l.id)) || lessons[0];
+  const next = nextLesson();
   const countMath = lessons.filter((l) => getSubject(l) === "matematica").length;
   const countLang = lessons.filter((l) => getSubject(l) === "lenguaje").length;
   const gradeCount = (grade) =>
@@ -235,13 +260,9 @@ function route() {
 
         const nodesHTML = unit.lessons
           .map((l, nodeIndex) => {
-            const originalIndex = lessons.findIndex((x) => x.id === l.id);
             const done = state.completed.includes(l.id);
             const mastered = state.mastered.includes(l.id);
-            const locked =
-              !independentLessons.has(l.id) &&
-              originalIndex > 0 &&
-              !state.completed.includes(lessons[originalIndex - 1].id);
+            const locked = isLocked(l);
             const isNext = next.id === l.id;
             const offset = S_OFFSETS[nodeIndex % S_OFFSETS.length];
             const belt = getBeltInfo(l.id, state);
@@ -385,9 +406,9 @@ function route() {
         <section class="hero">
           <span class="eyebrow">${state.diagnosed ? "TU SIGUIENTE PASO" : "ENCONTREMOS TU PUNTO DE PARTIDA"}</span>
           <h2>${state.diagnosed ? escape(next.title) : "¿Qué sabes ya de matemáticas y lectura?"}</h2>
-          <p>${state.diagnosed ? "Practica, explica tu procedimiento en papel y termina con un desafío para resolver por tu cuenta." : `${lessons.length} preguntas breves para orientar tu recorrido según las Bases Curriculares del MINEDUC (5° Básico a 1° Medio). No es una prueba: puedes pedir ayuda.`}</p>
+          <p>${state.diagnosed ? "Practica, explica tu procedimiento en papel y termina con un desafío para resolver por tu cuenta." : `Hasta ${MAX_PER_SUBJECT * 2} preguntas breves de tu curso para orientar tu recorrido según las Bases Curriculares del MINEDUC. No es una prueba: puedes pedir ayuda.`}</p>
           <div class="hero-meta">
-            <span>◷ ${state.diagnosed ? "10" : String(lessons.length)} minutos aprox.</span>
+            <span>◷ ${state.diagnosed ? "10" : "5"} minutos aprox.</span>
             <span>◇ ${state.diagnosed ? "4 ejercicios" : "Sin calificación"}</span>
           </div>
           ${button(state.diagnosed ? "Continuar mi ruta →" : "Descubrir mi punto de partida →", state.diagnosed ? "lesson:" + next.id : "diagnostic", "primary")}
@@ -516,6 +537,50 @@ const phases = [
   "Aplicación",
   "Desafío de autonomía",
 ];
+const MAX_PER_SUBJECT = 4;
+function diagnosticPicker() {
+  const grades = Object.entries(GRADES).filter(([g]) =>
+    lessons.some((l) => inferGrade(l) === g),
+  );
+  app.innerHTML =
+    button("← Volver a mi ruta", "exit", "back") +
+    heading(
+      "PUNTO DE PARTIDA",
+      "¿En qué curso estás?",
+      `Te haremos hasta ${MAX_PER_SUBJECT} preguntas de matemática y ${MAX_PER_SUBJECT} de lectura de tu curso. Cuando algo cueste, pasamos a la otra materia: no es una prueba.`,
+    ) +
+    `<section class="card"><div class="grade-picker">${grades
+      .map(([g, label]) =>
+        button(label, "diagnostic-grade:" + g, g === state.grade ? "primary" : ""),
+      )
+      .join("")}</div></section>`;
+}
+function startDiagnostic(grade) {
+  if (!(grade in GRADES)) return;
+  const plan = ["matematica", "lenguaje"].flatMap((subject) =>
+    lessons
+      .filter((l) => inferGrade(l) === grade && getSubject(l) === subject)
+      .slice(0, MAX_PER_SUBJECT),
+  );
+  if (!plan.length) return;
+  session = {
+    mode: "diagnostic",
+    grade,
+    plan,
+    stopped: new Set(),
+    lesson: plan[0],
+    questions: prepare(plan.map((l) => l.questions[1])),
+    index: 0,
+    hints: 0,
+    wrong: 0,
+    results: [],
+    answered: false,
+    workPhoto: null,
+    lastPhoto: null,
+    lastWork: null,
+  };
+  renderExercise();
+}
 function start(id, mode = "lesson") {
   if (!lessons.length) return;
   const l = lessons.find((l) => l.id === id) || lessons[0];
@@ -527,8 +592,12 @@ function start(id, mode = "lesson") {
     generated = generateQuestions(l.id, [0, 1, 2, 3]);
   if (mode === "review") generated = generateQuestions(l.id, [3]);
   if (generated) questions = generated;
-  else if (mode === "review") questions = [l.review];
-  if (mode === "diagnostic") questions = lessons.map((x) => x.questions[1]);
+  // En lectura una sola pregunta de 3 alternativas se acierta al azar 1 de 3
+  // veces: el repaso pide también el desafío final, con alternativas mezcladas.
+  else if (mode === "review")
+    questions =
+      getSubject(l) === "lenguaje" ? [l.review, l.questions[3]] : [l.review];
+  questions = prepare(questions);
   session = {
     canConfirm:
       mode === "review" &&
@@ -720,7 +789,7 @@ function updatePhotoContainer() {
 function renderExercise() {
   const s = session,
     q = s.questions[s.index],
-    l = s.mode === "diagnostic" ? lessons[s.index] : s.lesson,
+    l = s.mode === "diagnostic" ? s.plan[s.index] : s.lesson,
     isMath = getSubject(l) === "matematica";
   app.innerHTML = `${button("← Volver a mi ruta", "exit", "back")}${heading(
     s.mode === "diagnostic"
@@ -740,7 +809,7 @@ function renderExercise() {
       : s.mode === "review"
         ? "RECUPERA LO APRENDIDO"
         : "EXPLORACIÓN"
-  } · ${s.index + 1} DE ${s.questions.length}</div><div class="steps">${s.questions
+  } · ${s.mode === "diagnostic" ? `PREGUNTA ${s.results.length + 1} · HASTA ${s.questions.length}` : `${s.index + 1} DE ${s.questions.length}`}</div><div class="steps">${s.questions
     .map((_, i) => `<span class="${i <= s.index ? "on" : ""}"></span>`)
     .join("")}</div><p>${escape(q[2])}</p><div class="equation ${
     q[0].includes("\n") ? "reading-passage" : ""
@@ -786,7 +855,7 @@ function hint() {
   const s = session;
   if (!s || s.answered) return;
   const q = s.questions[s.index],
-    l = s.mode === "diagnostic" ? lessons[s.index] : s.lesson;
+    l = s.mode === "diagnostic" ? s.plan[s.index] : s.lesson;
   const isMath = getSubject(l) === "matematica";
 
   let title = "";
@@ -837,7 +906,7 @@ function check(e) {
     return;
   }
   const correct = isCorrect(raw, q[1]),
-    lesson = s.mode === "diagnostic" ? lessons[s.index].id : s.lesson.id;
+    lesson = s.mode === "diagnostic" ? s.plan[s.index].id : s.lesson.id;
   state.attempts.push({ lesson, correct, hints: s.hints, at: Date.now() });
   const work = $("#work") ? $("#work").value.trim() : "";
   const photo = s.workPhoto || null;
@@ -864,7 +933,7 @@ function check(e) {
     return;
   }
   s.answered = true;
-  s.results.push({ independent: s.hints === 0 && s.wrong === 0 });
+  s.results.push({ lesson, independent: s.hints === 0 && s.wrong === 0 });
   f.textContent =
     s.hints === 0 && s.wrong === 0
       ? "¡Lo resolviste sin ayuda! " + q[4]
@@ -886,7 +955,16 @@ function check(e) {
 function next() {
   const s = session;
   if (!s?.answered) return;
+  if (s.mode === "diagnostic" && !s.results.at(-1).independent)
+    s.stopped.add(getSubject(s.plan[s.index]));
   s.index++;
+  // Diagnóstico adaptativo: una materia se detiene en su primer tropiezo.
+  if (s.mode === "diagnostic")
+    while (
+      s.index < s.questions.length &&
+      s.stopped.has(getSubject(s.plan[s.index]))
+    )
+      s.index++;
   if (s.index === s.questions.length) {
     finish();
     return;
@@ -910,18 +988,43 @@ function finish() {
     desc = "";
   if (s.mode === "diagnostic") {
     state.diagnosed = true;
-    const firstGap = s.results.findIndex((r) => !r.independent);
-    const startIndex = firstGap === -1 ? lessons.length - 1 : firstGap;
-    for (let i = 0; i < startIndex; i++)
-      if (!state.completed.includes(lessons[i].id)) {
-        state.completed.push(lessons[i].id);
-        state.reviews.push({
-          lesson: lessons[i].id,
-          due: Date.now() + 86400000,
-        });
-      }
+    state.grade = s.grade;
+    currentLevel = s.grade;
+    const solved = new Set(
+      s.results.filter((r) => r.independent).map((r) => r.lesson),
+    );
+    const proposals = [];
+    for (const [subject, label] of [
+      ["matematica", "Matemática"],
+      ["lenguaje", "Lenguaje"],
+    ]) {
+      const planned = s.plan.filter((l) => getSubject(l) === subject);
+      if (!planned.length) continue;
+      const gap = planned.findIndex((l) => !solved.has(l.id));
+      // Lo resuelto antes del primer tropiezo se da por completado, pendiente
+      // de confirmar en un repaso; nunca se certifica dominio aquí.
+      for (const l of gap === -1 ? planned : planned.slice(0, gap))
+        if (!state.completed.includes(l.id)) {
+          state.completed.push(l.id);
+          state.reviews.push({ lesson: l.id, due: Date.now() + 86400000 });
+        }
+      const start =
+        gap === -1
+          ? lessons.find(
+              (l) =>
+                inferGrade(l) === s.grade &&
+                getSubject(l) === subject &&
+                !state.completed.includes(l.id),
+            )
+          : planned[gap];
+      proposals.push(
+        start
+          ? `En ${label}, empieza por «${displayTitle(start)}».`
+          : `En ${label} respondiste todo: prueba lecciones del curso siguiente.`,
+      );
+    }
     title = "Ya tienes un punto de partida.";
-    desc = `Te proponemos empezar por «${lessons[startIndex].title}». Las habilidades anteriores quedan pendientes de confirmar en un repaso.`;
+    desc = `${proposals.join(" ")} Lo que resolviste queda pendiente de confirmar en un repaso.`;
   } else {
     if (s.mode === "lesson" && !state.completed.includes(s.lesson.id))
       state.completed.push(s.lesson.id);
@@ -950,7 +1053,7 @@ function finish() {
     ? "¡Punto de partida completado!" 
     : (title === "¡Dominio confirmado!" ? "👑 ¡Dominio de Oro Confirmado!" : "🎉 ¡Misión de Hoy Cumplida!");
 
-  const whatsappAchieveMsg = `*¡Completé mi sesión de hoy en Tutorai! 🚀*\n` +
+  const whatsappAchieveMsg = `*¡Completé mi sesión de hoy en socatres! 🚀*\n` +
     `• Habilidad practicada: ${s.lesson ? s.lesson.title : "Diagnóstico inicial"}\n` +
     `• Racha activa: ${streakInfo.streak} días consecutivos 🔥\n` +
     `• Fichas ganadas: ${xpInfo.fichasHabitribu} fichas acumuladas 🪙 (${xpInfo.totalXP} XP)\n` +
@@ -1216,17 +1319,21 @@ app.addEventListener("click", (e) => {
   if (!b || b.disabled) return;
   const [action, id] = b.dataset.action.split(":");
   if (action === "lesson") {
-    const i = lessons.findIndex((l) => l.id === id);
-    if (!independentLessons.has(id) && i > 0 && !state.completed.includes(lessons[i - 1].id)) return;
+    const lesson = lessons.find((l) => l.id === id);
+    if (!lesson || isLocked(lesson)) return;
     start(id);
-  } else if (action === "diagnostic") start("equations", "diagnostic");
+  } else if (action === "diagnostic") diagnosticPicker();
+  else if (action === "diagnostic-grade") startDiagnostic(id);
   else if (action === "review") {
     if (state.reviews.some((r) => r.lesson === id && r.due <= Date.now()))
       start(id, "review");
   } else if (action === "hint") hint();
   else if (action === "next") next();
   else if (action === "skip" && session && !session.answered) {
-    session.results.push({ independent: false });
+    session.results.push({
+      lesson: (session.plan?.[session.index] ?? session.lesson).id,
+      independent: false,
+    });
     session.answered = true;
     next();
   } else if (action === "exit") {

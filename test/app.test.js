@@ -1,6 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { solveLinear } from "../public/learning.js";
+import { solveLinear, getSubject, inferGrade } from "../public/learning.js";
+import { seedCatalog } from "../public/content.js";
+import { escape } from "../public/ui.js";
+const catalogLessons = seedCatalog().lessons;
+// Texto de la alternativa correcta en el contenido original.
+const correctText = (q) =>
+  q[0].split("\n").find((line) => line.startsWith(q[1] + ". ")).slice(3);
+const lessonById = (id) => catalogLessons.find((l) => l.id === id);
 // Lightweight DOM adapter for exercising real app handlers; visual QA remains separate.
 async function harness(saved, { session, key = "socatres.v1", fetch, catalog } = {}) {
   const nodes = new Map();
@@ -55,6 +62,12 @@ async function harness(saved, { session, key = "socatres.v1", fetch, catalog } =
         target: { closest: () => ({ dataset: { action }, disabled: false }) },
       });
     },
+    // Las alternativas se mezclan en cada sesión: se busca su número en pantalla.
+    optionNumber(text) {
+      const shown = node("#app").innerHTML.match(/class="equation[^"]*">([^<]+)</)[1];
+      const line = shown.split("\n").find((l) => l.slice(3) === escape(text));
+      return line[0];
+    },
     // Los repasos son generados: se lee la ecuación en pantalla y se resuelve.
     shownAnswer() {
       const expr = node("#app").innerHTML.match(/class="equation[^"]*">([^<]+)</)[1];
@@ -94,7 +107,9 @@ test("guided completion persists work, unlocks next lesson, schedules review wit
 test("diagnostic skipping never unlocks unearned lessons", async () => {
   const h = await harness();
   h.click("diagnostic");
-  for (let i = 0; i < 26; i++) h.click("skip");
+  assert.match(h.node("#app").innerHTML, /¿En qué curso estás\?/);
+  h.click("diagnostic-grade:7b");
+  for (let i = 0; i < 8; i++) h.click("skip");
   assert.equal(h.read().diagnosed, true);
   assert.deepEqual(h.read().completed, []);
 });
@@ -150,10 +165,12 @@ test("reading lessons can be practiced directly and save progress", async () => 
   h.click("begin-exercises");
   assert.match(h.node("#app").innerHTML, /reading-passage/);
   assert.match(h.node("#app").innerHTML, /Alternativa: 1, 2 o 3/);
-  h.answer("1");
+  const questions = lessonById("lectura-narraciones").questions;
+  const right = h.optionNumber(correctText(questions[0]));
+  h.answer(right === "1" ? "2" : "1");
   assert.match(h.node("#feedback").textContent, /Todavía/);
-  for (const answer of ["2", "1", "3", "2"]) {
-    h.answer(answer);
+  for (const q of questions) {
+    h.answer(h.optionNumber(correctText(q)));
     h.click("next");
   }
   assert.deepEqual(h.read().completed, ["lectura-narraciones"]);
@@ -546,4 +563,64 @@ test("lesson videos stay offline until played, are recorded, and never help in t
   h.click("hint");
   h.click("hint");
   assert.doesNotMatch(h.node("#hints").innerHTML, /video-facade/, "no video in the autonomy challenge");
+});
+
+test("diagnostic asks only the student's grade and stops a subject at its first stumble", async () => {
+  const h = await harness();
+  h.click("diagnostic");
+  h.click("diagnostic-grade:7b");
+  const math = catalogLessons.filter((l) => inferGrade(l) === "7b" && getSubject(l) === "matematica").slice(0, 4);
+  const reading = catalogLessons.filter((l) => inferGrade(l) === "7b" && getSubject(l) === "lenguaje").slice(0, 4);
+  assert.match(h.node("#app").innerHTML, /PREGUNTA 1 · HASTA 8/);
+  // Matemática: dos correctas y un tropiezo; la cuarta ya no se pregunta.
+  h.answer(String(math[0].questions[1][1]));
+  h.click("next");
+  h.answer(String(math[1].questions[1][1]));
+  h.click("next");
+  h.click("skip");
+  // Lectura: todo correcto.
+  for (const l of reading) {
+    assert.match(h.node("#app").innerHTML, /reading-passage/, "math stopped after the stumble");
+    h.answer(h.optionNumber(correctText(l.questions[1])));
+    h.click("next");
+  }
+  const s = h.read();
+  assert.equal(s.grade, "7b");
+  assert.equal(s.attempts.length, 6, "only 6 questions were needed");
+  assert.deepEqual(s.completed, [math[0].id, math[1].id, ...reading.map((l) => l.id)]);
+  assert.deepEqual(s.mastered, [], "the diagnostic never certifies mastery");
+  assert.match(h.node("#app").innerHTML, new RegExp(`empieza por «${math[2].title}»`));
+  h.click("exit");
+  const html = h.node("#app").innerHTML;
+  assert.match(html, /data-action="filter:7b">/);
+  assert.match(html, /class="filter-btn active" data-action="filter:7b"/, "route opens on the student's grade");
+  assert.doesNotMatch(html, /data-action="lesson:signs"/);
+});
+
+test("the first lesson of each grade is open; later ones unlock within grade and subject", async () => {
+  const h = await harness();
+  h.click("filter:8b");
+  const html = h.node("#app").innerHTML;
+  assert.match(html, /data-action="lesson:signs" >Empezar/, "8° starts open without 7° lessons");
+  assert.match(html, /data-action="lesson:both" disabled>Bloqueada/);
+  h.click("lesson:both");
+  assert.doesNotMatch(h.node("#app").innerHTML, /LECCIÓN INICIAL/, "locked lessons cannot be opened");
+});
+
+test("reading reviews need two correct answers with reshuffled alternatives", async () => {
+  const now = Date.now();
+  const h = await harness({
+    version: 1, diagnosed: true, completed: ["lectura-narraciones"], mastered: [], notes: [],
+    attempts: [{ lesson: "lectura-narraciones", at: now - 2 * 86400000, correct: true }],
+    reviews: [{ lesson: "lectura-narraciones", due: now - 1000 }],
+  });
+  h.click("review:lectura-narraciones");
+  assert.match(h.node("#app").innerHTML, /1 DE 2/);
+  const l = lessonById("lectura-narraciones");
+  h.answer(h.optionNumber(correctText(l.review)));
+  h.click("next");
+  assert.deepEqual(h.read().mastered, [], "one lucky answer is not enough");
+  h.answer(h.optionNumber(correctText(l.questions[3])));
+  h.click("next");
+  assert.deepEqual(h.read().mastered, ["lectura-narraciones"]);
 });
