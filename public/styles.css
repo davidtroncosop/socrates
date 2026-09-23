@@ -3049,3 +3049,57 @@ select {
 .grade-picker button {
   flex: 1 1 120px;
 }
+
+/* Meta diaria */
+.goal-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 10px 0 16px;
+}
+.goal-row h2 {
+  margin: 0 0 6px;
+}
+.goal-ring {
+  --p: 0;
+  flex: none;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, white 78%, transparent 80%),
+    conic-gradient(#f59e0b calc(var(--p) * 1%), #e2e8f1 0);
+}
+.goal-ring strong {
+  font-size: 24px;
+  line-height: 1;
+}
+.goal-ring small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.goal-ring.met {
+  background:
+    radial-gradient(closest-side, white 78%, transparent 80%),
+    conic-gradient(#10b981 100%, #10b981 0);
+}
+.goal-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13px;
+}
+@media (max-width: 640px) {
+  .goal-row {
+    align-items: flex-start;
+  }
+  .goal-ring {
+    width: 76px;
+    height: 76px;
+  }
+}

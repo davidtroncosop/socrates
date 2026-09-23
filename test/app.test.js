@@ -636,3 +636,33 @@ test("wrong answers explain the likely mistake", async () => {
   h.answer("54");
   assert.match(h.node("#feedback").textContent, /Multiplicaste por 3/);
 });
+
+test("daily practice mixes skills, can confirm mastery and tracks the daily goal", async () => {
+  const now = Date.now();
+  const h = await harness({
+    version: 1, diagnosed: true, completed: ["equations"], mastered: [], notes: [],
+    attempts: [{ lesson: "equations", correct: true, hints: 0, at: now - 2 * 86400000 }],
+    reviews: [{ lesson: "equations", due: now - 1000 }],
+  });
+  let html = h.node("#app").innerHTML;
+  assert.match(html, /TU META DE HOY/);
+  assert.match(html, /aria-label="0 de 50 XP hoy"/);
+  assert.match(html, /data-action="daily"/);
+  h.click("goal:30");
+  assert.equal(h.read().dailyGoal, 30);
+  assert.match(h.node("#app").innerHTML, /aria-label="0 de 30 XP hoy"/);
+  h.click("daily");
+  assert.match(h.node("#app").innerHTML, /PRÁCTICA DEL DÍA/);
+  assert.match(h.node("#app").innerHTML, /REPASO · 1 DE 3/);
+  for (let i = 0; i < 3; i++) {
+    h.answer(h.shownAnswer());
+    h.click("next");
+  }
+  html = h.node("#app").innerHTML;
+  assert.match(html, /Meta del día cumplida/);
+  assert.match(html, /data-action="lesson:signs"/, "offers the next lesson");
+  const s = h.read();
+  assert.deepEqual(s.mastered, ["equations"], "the review inside daily practice confirms mastery");
+  assert.ok(s.reviews.find((r) => r.lesson === "equations").due > now + 6 * 86400000);
+  assert.deepEqual(s.completed, ["equations"], "daily practice never completes new lessons");
+});

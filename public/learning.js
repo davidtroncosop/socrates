@@ -605,6 +605,7 @@ export function loadState(
           )
         : [],
       grade: s.grade in GRADES ? s.grade : undefined,
+      dailyGoal: [30, 50, 80].includes(s.dailyGoal) ? s.dailyGoal : undefined,
       // Lecciones cuyo video se reprodujo; informativo, no cuenta para el dominio.
       watched: Array.isArray(s.watched)
         ? [...new Set(s.watched.filter((id) => ids.has(id)))]
@@ -634,6 +635,7 @@ export function mergeStates(local, remote) {
     version: 1,
     diagnosed: local.diagnosed || remote.diagnosed,
     grade: newer.grade ?? older.grade,
+    dailyGoal: newer.dailyGoal ?? older.dailyGoal,
     completed: unique([...local.completed, ...remote.completed], (id) => id),
     mastered: [...newer.mastered],
     attempts: unique(

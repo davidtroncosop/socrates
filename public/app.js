@@ -24,6 +24,14 @@ import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
 import { videoFacade, videoPlayer } from "./video.js";
 import { diagnoseMistake } from "./mistakes.js";
+import {
+  buildDailyPlan,
+  canConfirm,
+  xpToday,
+  GOALS,
+  DEFAULT_GOAL,
+  XP_PER_CORRECT,
+} from "./daily.js";
 import { $, escape, button, heading } from "./ui.js";
 import { getUnitsForLessons } from "./units.js";
 import { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
@@ -202,6 +210,38 @@ function navigate() {
 
 
 
+function dailyHero(next) {
+  const goal = dailyGoal();
+  const today = xpToday(state);
+  const pending = buildDailyPlan({ lessons, state }).length;
+  const met = today >= goal;
+  return `<section class="hero daily-hero">
+    <span class="eyebrow">TU META DE HOY</span>
+    <div class="goal-row">
+      <div class="goal-ring${met ? " met" : ""}" style="--p:${Math.min(100, Math.round((today / goal) * 100))}" role="img" aria-label="${today} de ${goal} XP hoy">
+        <strong>${met ? "🔥" : today}</strong><small>${met ? "¡Cumplida!" : `de ${goal} XP`}</small>
+      </div>
+      <div>
+        <h2>${met ? "¡Meta cumplida! Puedes seguir si quieres." : "Práctica del día"}</h2>
+        <p>${
+          pending
+            ? `${pending} ejercicios de unos minutos: lo que toca repasar, lo que más te cuesta y lo que no quieres olvidar.`
+            : "Completa tu primera lección y desde mañana tendrás una práctica diaria a tu medida."
+        }</p>
+      </div>
+    </div>
+    <div class="actions">
+      ${pending ? button("Empezar práctica del día →", "daily", "primary") : ""}
+      ${button(`Siguiente lección: ${escape(displayTitle(next))}`, "lesson:" + next.id, pending ? "" : "primary")}
+    </div>
+    <div class="goal-picker" role="group" aria-label="Meta diaria">
+      <span class="muted">Meta diaria:</span>
+      ${GOALS.map((g) =>
+        `<button class="filter-btn ${g.xp === goal ? "active" : ""}" data-action="goal:${g.xp}" aria-pressed="${g.xp === goal}">${g.label} · ${g.minutes} min</button>`,
+      ).join("")}
+    </div>
+  </section>`;
+}
 function route() {
   if (!lessons.length) {
     app.innerHTML =
@@ -404,16 +444,16 @@ function route() {
 
     <div class="dashboard">
       <div>
-        <section class="hero">
-          <span class="eyebrow">${state.diagnosed ? "TU SIGUIENTE PASO" : "ENCONTREMOS TU PUNTO DE PARTIDA"}</span>
-          <h2>${state.diagnosed ? escape(next.title) : "¿Qué sabes ya de matemáticas y lectura?"}</h2>
-          <p>${state.diagnosed ? "Practica, explica tu procedimiento en papel y termina con un desafío para resolver por tu cuenta." : `Hasta ${MAX_PER_SUBJECT * 2} preguntas breves de tu curso para orientar tu recorrido según las Bases Curriculares del MINEDUC. No es una prueba: puedes pedir ayuda.`}</p>
+        ${state.diagnosed ? dailyHero(next) : `<section class="hero">
+          <span class="eyebrow">ENCONTREMOS TU PUNTO DE PARTIDA</span>
+          <h2>¿Qué sabes ya de matemáticas y lectura?</h2>
+          <p>Hasta ${MAX_PER_SUBJECT * 2} preguntas breves de tu curso para orientar tu recorrido según las Bases Curriculares del MINEDUC. No es una prueba: puedes pedir ayuda.</p>
           <div class="hero-meta">
-            <span>◷ ${state.diagnosed ? "10" : "5"} minutos aprox.</span>
-            <span>◇ ${state.diagnosed ? "4 ejercicios" : "Sin calificación"}</span>
+            <span>◷ 5 minutos aprox.</span>
+            <span>◇ Sin calificación</span>
           </div>
-          ${button(state.diagnosed ? "Continuar mi ruta →" : "Descubrir mi punto de partida →", state.diagnosed ? "lesson:" + next.id : "diagnostic", "primary")}
-        </section>
+          ${button("Descubrir mi punto de partida →", "diagnostic", "primary")}
+        </section>`}
 
         <div class="section-title">
           <h2>Rutas de Aprendizaje · Bases Curriculares</h2>
@@ -571,6 +611,32 @@ function startDiagnostic(grade) {
     stopped: new Set(),
     lesson: plan[0],
     questions: prepare(plan.map((l) => l.questions[1])),
+    index: 0,
+    hints: 0,
+    wrong: 0,
+    results: [],
+    answered: false,
+    workPhoto: null,
+    lastPhoto: null,
+    lastWork: null,
+  };
+  renderExercise();
+}
+// Sesiones con varias lecciones (diagnóstico, práctica del día) llevan un plan.
+const lessonAt = (s) => (s.plan ? s.plan[s.index] : s.lesson);
+const dailyGoal = () => state.dailyGoal ?? DEFAULT_GOAL;
+function startDaily() {
+  const items = buildDailyPlan({ lessons, state });
+  if (!items.length) return;
+  const plan = items.map((i) => i.lesson);
+  session = {
+    mode: "daily",
+    plan,
+    origins: items.map((i) => i.origin),
+    // Se decide al inicio, antes de registrar los intentos de esta sesión.
+    confirmable: new Set(plan.filter((l) => canConfirm(state, l.id)).map((l) => l.id)),
+    lesson: plan[0],
+    questions: prepare(items.map((i) => i.question)),
     index: 0,
     hints: 0,
     wrong: 0,
@@ -790,17 +856,21 @@ function updatePhotoContainer() {
 function renderExercise() {
   const s = session,
     q = s.questions[s.index],
-    l = s.mode === "diagnostic" ? s.plan[s.index] : s.lesson,
+    l = lessonAt(s),
     isMath = getSubject(l) === "matematica";
   app.innerHTML = `${button("← Volver a mi ruta", "exit", "back")}${heading(
     s.mode === "diagnostic"
       ? "PUNTO DE PARTIDA"
-      : s.mode === "review"
+      : s.mode === "daily"
+        ? "PRÁCTICA DEL DÍA"
+        : s.mode === "review"
         ? "REPASO ESPACIADO"
         : "TU SESIÓN DE HOY",
     s.mode === "diagnostic"
       ? "Veamos desde dónde partimos."
-      : s.lesson.title,
+      : s.mode === "daily"
+        ? displayTitle(l)
+        : s.lesson.title,
     s.mode === "diagnostic"
       ? "Prueba lo que sabes. Si aún no lo ves, puedes continuar sin responder."
       : "Tómate tu tiempo. Lo importante es comprender el siguiente paso.",
@@ -809,7 +879,9 @@ function renderExercise() {
       ? phases[s.index]
       : s.mode === "review"
         ? "RECUPERA LO APRENDIDO"
-        : "EXPLORACIÓN"
+        : s.mode === "daily"
+          ? { review: "REPASO", weak: "LO QUE MÁS CUESTA", recall: "PARA NO OLVIDAR" }[s.origins[s.index]]
+          : "EXPLORACIÓN"
   } · ${s.mode === "diagnostic" ? `PREGUNTA ${s.results.length + 1} · HASTA ${s.questions.length}` : `${s.index + 1} DE ${s.questions.length}`}</div><div class="steps">${s.questions
     .map((_, i) => `<span class="${i <= s.index ? "on" : ""}"></span>`)
     .join("")}</div><p>${escape(q[2])}</p><div class="equation ${
@@ -856,7 +928,7 @@ function hint() {
   const s = session;
   if (!s || s.answered) return;
   const q = s.questions[s.index],
-    l = s.mode === "diagnostic" ? s.plan[s.index] : s.lesson;
+    l = lessonAt(s);
   const isMath = getSubject(l) === "matematica";
 
   let title = "";
@@ -907,7 +979,7 @@ function check(e) {
     return;
   }
   const correct = isCorrect(raw, q[1]),
-    lesson = s.mode === "diagnostic" ? s.plan[s.index].id : s.lesson.id;
+    lesson = lessonAt(s).id;
   state.attempts.push({ lesson, correct, hints: s.hints, at: Date.now() });
   const work = $("#work") ? $("#work").value.trim() : "";
   const photo = s.workPhoto || null;
@@ -937,7 +1009,11 @@ function check(e) {
     return;
   }
   s.answered = true;
-  s.results.push({ lesson, independent: s.hints === 0 && s.wrong === 0 });
+  s.results.push({
+    lesson,
+    origin: s.origins?.[s.index],
+    independent: s.hints === 0 && s.wrong === 0,
+  });
   f.textContent =
     s.hints === 0 && s.wrong === 0
       ? "¡Lo resolviste sin ayuda! " + q[4]
@@ -1029,6 +1105,30 @@ function finish() {
     }
     title = "Ya tienes un punto de partida.";
     desc = `${proposals.join(" ")} Lo que resolviste queda pendiente de confirmar en un repaso.`;
+  } else if (s.mode === "daily") {
+    // Los repasos dentro de la práctica siguen la misma regla de dominio.
+    const confirmed = [];
+    for (const id of new Set(
+      s.results.filter((r) => r.origin === "review").map((r) => r.lesson),
+    )) {
+      const mine = s.results.filter((r) => r.lesson === id && r.origin === "review");
+      const mastered = s.confirmable.has(id) && mine.every((r) => r.independent);
+      state.mastered = state.mastered.filter((x) => x !== id);
+      if (mastered) {
+        state.mastered.push(id);
+        confirmed.push(id);
+      }
+      state.reviews = state.reviews.filter((r) => r.lesson !== id);
+      state.reviews.push({ lesson: id, due: Date.now() + (mastered ? 7 : 1) * 86400000 });
+    }
+    const today = xpToday(state);
+    title = today >= dailyGoal() ? "¡Meta del día cumplida!" : "Práctica del día lista.";
+    desc =
+      `Llevas ${today} de ${dailyGoal()} XP hoy.` +
+      (confirmed.length
+        ? ` Confirmaste el dominio de ${confirmed.length === 1 ? "una habilidad" : confirmed.length + " habilidades"}.`
+        : "") +
+      ` Siguiente paso: «${displayTitle(nextLesson())}».`;
   } else {
     if (s.mode === "lesson" && !state.completed.includes(s.lesson.id))
       state.completed.push(s.lesson.id);
@@ -1050,15 +1150,23 @@ function finish() {
 
   const streakInfo = getStreakInfo(state);
   const xpInfo = getXpAndFichas(state);
-  const beltInfo = s.lesson ? getBeltInfo(s.lesson.id, state) : null;
+  const beltInfo = s.lesson && !s.plan ? getBeltInfo(s.lesson.id, state) : null;
   const isMath = s.lesson ? getSubject(s.lesson) === "matematica" : false;
-  const sessionXpGained = (s.mode === "diagnostic" ? 30 : 20) + (independent * 10);
-  const celebrationTitle = s.mode === "diagnostic" 
-    ? "¡Punto de partida completado!" 
-    : (title === "¡Dominio confirmado!" ? "👑 ¡Dominio de Oro Confirmado!" : "🎉 ¡Misión de Hoy Cumplida!");
+  const sessionXpGained =
+    s.mode === "daily"
+      ? s.results.length * XP_PER_CORRECT
+      : (s.mode === "diagnostic" ? 30 : 20) + independent * 10;
+  const celebrationTitle =
+    s.mode === "diagnostic"
+      ? "¡Punto de partida completado!"
+      : s.mode === "daily"
+        ? (title === "¡Meta del día cumplida!" ? "🔥 ¡Meta del día cumplida!" : "✅ Práctica del día lista")
+        : title === "¡Dominio confirmado!"
+          ? "👑 ¡Dominio de Oro Confirmado!"
+          : "🎉 ¡Misión de Hoy Cumplida!";
 
   const whatsappAchieveMsg = `*¡Completé mi sesión de hoy en socatres! 🚀*\n` +
-    `• Habilidad practicada: ${s.lesson ? s.lesson.title : "Diagnóstico inicial"}\n` +
+    `• ${s.mode === "daily" ? "Práctica del día" : s.mode === "diagnostic" ? "Diagnóstico inicial" : "Habilidad practicada: " + s.lesson.title}\n` +
     `• Racha activa: ${streakInfo.streak} días consecutivos 🔥\n` +
     `• Fichas ganadas: ${xpInfo.fichasHabitribu} fichas acumuladas 🪙 (${xpInfo.totalXP} XP)\n` +
     `¡Todo resuelto por mi cuenta sin discusiones! 🙌`;
@@ -1114,7 +1222,7 @@ function finish() {
       </div>
 
       <div class="callout">
-        ${s.mode === "diagnostic" ? "Puedes volver a practicar cualquier lección desbloqueada." : escape(s.lesson.concept)}
+        ${s.mode === "diagnostic" ? "Puedes volver a practicar cualquier lección desbloqueada." : s.mode === "daily" ? `Meta de hoy: ${xpToday(state)} de ${dailyGoal()} XP. Mañana tendrás una práctica nueva.` : escape(s.lesson.concept)}
       </div>
 
       <div class="triumphant-share-box">
@@ -1124,7 +1232,7 @@ function finish() {
       </div>
 
       <div class="actions">
-        ${button("Volver a mi ruta →", "exit", "primary")}
+        ${s.mode === "daily" ? button(`Siguiente lección: ${escape(displayTitle(nextLesson()))} →`, "lesson:" + nextLesson().id, "primary") + button("Volver a mi ruta", "exit") : button("Volver a mi ruta →", "exit", "primary")}
         ${button("Ver mi cuaderno", "go:cuaderno")}
       </div>
     </section>
@@ -1326,6 +1434,11 @@ app.addEventListener("click", (e) => {
     const lesson = lessons.find((l) => l.id === id);
     if (!lesson || isLocked(lesson)) return;
     start(id);
+  } else if (action === "daily") startDaily();
+  else if (action === "goal") {
+    state.dailyGoal = Number(id);
+    save();
+    route();
   } else if (action === "diagnostic") diagnosticPicker();
   else if (action === "diagnostic-grade") startDiagnostic(id);
   else if (action === "review") {
