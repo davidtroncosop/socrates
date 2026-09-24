@@ -69,7 +69,7 @@ export function validateVideo(video, prefix = "Video") {
   };
 }
 
-// Construye un video desde los campos que escribe el profesor.
+// Construye un video desde los campos que escribe quien edita la lección.
 export function videoFromFields({ url, title, start, end }, prefix = "Video") {
   if (!String(url ?? "").trim()) return undefined;
   const parsed = parseYouTube(url);
