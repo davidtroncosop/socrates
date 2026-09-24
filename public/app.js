@@ -19,6 +19,7 @@ import {
 import { readSession, endSession, progressKey } from "./auth.js";
 import { api } from "./api.js";
 import { renderFamilyPage } from "./family-view.js";
+import { hydrateReminderCard } from "./notify.js";
 import { readCatalog, seedCatalog, writeCatalog } from "./content.js";
 import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
@@ -475,7 +476,7 @@ function route() {
 
     <div class="dashboard">
       <div>
-        ${state.diagnosed ? dailyHero(next) : `<section class="hero">
+        ${state.diagnosed || state.completed.length ? dailyHero(next) : `<section class="hero">
           <span class="eyebrow">ENCONTREMOS TU PUNTO DE PARTIDA</span>
           <h2>¿Qué sabes ya de matemáticas y lectura?</h2>
           <p>Hasta ${MAX_PER_SUBJECT * 2} preguntas breves de tu curso para orientar tu recorrido según las Bases Curriculares del MINEDUC. No es una prueba: puedes pedir ayuda.</p>
@@ -521,6 +522,10 @@ function route() {
       </div>
 
       <aside class="stack">
+        <section class="card reminder-card">
+          <div class="mini-label">RECORDATORIO DIARIO</div>
+          <div id="reminder-body"><p class="muted">Cargando…</p></div>
+        </section>
         <section class="card duo-side-progress">
           <div class="mini-label">ASÍ VAS AVANZANDO</div>
           <div class="stat">${activeCompleted().length}<span class="muted"> / ${lessons.length}</span></div>
@@ -602,6 +607,7 @@ function route() {
         </div>
       </aside>
     </div>`;
+  hydrateReminderCard($("#reminder-body"), account);
 }
 const phases = [
   "Calentamiento",
@@ -1587,6 +1593,11 @@ $("#delete-data").onclick = () => {
 window.addEventListener("hashchange", navigate);
 navigate();
 refreshCatalog();
+// Quien deja la app abierta recibe el contenido nuevo al volver a ella.
+if (typeof document.addEventListener === "function")
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) refreshCatalog();
+  });
 if (synced) {
   pullProgress();
   window.addEventListener("online", pushProgress);

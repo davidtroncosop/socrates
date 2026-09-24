@@ -3150,3 +3150,20 @@ select {
   font-size: 26px;
   padding: 8px 14px;
 }
+
+/* Recordatorio diario */
+.reminder-card select {
+  flex: 1;
+  min-width: 0;
+}
+.link-button {
+  background: transparent;
+  border: 0;
+  color: var(--blue);
+  font-size: 13px;
+  padding: 8px 0 0;
+  text-decoration: underline;
+}
+.link-button:hover {
+  background: transparent;
+}

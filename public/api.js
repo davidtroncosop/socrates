@@ -42,6 +42,9 @@ export const api = {
   resetChildPassword: (id, password) =>
     request("POST", `/api/family/children/${encodeURIComponent(id)}/password`, { password }),
   removeChild: (id) => request("DELETE", `/api/family/children/${encodeURIComponent(id)}`),
+  pushKey: () => request("GET", "/api/push/key"),
+  savePush: (data) => request("PUT", "/api/push", data),
+  deletePush: (endpoint) => request("DELETE", "/api/push", { endpoint }),
   catalog: () => request("GET", "/api/catalog"),
   publishCatalog: (catalog) => request("PUT", "/api/catalog", { catalog }),
 };

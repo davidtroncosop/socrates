@@ -6,6 +6,8 @@ import {
   classCode,
 } from "./crypto.js";
 import { validateCatalog } from "../../public/content.js";
+import { isPushEndpoint } from "./push.js";
+import { reminderText, isTimeZone } from "./reminders.js";
 
 export const COOKIE = "socatres_session";
 const SESSION_DAYS = 30;
@@ -370,6 +372,40 @@ const routes = {
     return json({ ok: true, deleted: child.consent_by === user.id });
   },
 
+  // Recordatorio diario ----------------------------------------------------------
+  async "GET /api/push/key"({ env }) {
+    return json({ key: env.VAPID_PUBLIC_KEY || null });
+  },
+
+  async "PUT /api/push"({ request, env, user }) {
+    const body = await readJson(request);
+    if (!isPushEndpoint(body.endpoint)) fail(400, "Este navegador no es compatible con los recordatorios.");
+    const hour = Number(body.hour);
+    if (!Number.isInteger(hour) || hour < 0 || hour > 23) fail(400, "Elige una hora válida.");
+    if (!isTimeZone(body.timeZone)) fail(400, "Zona horaria inválida.");
+    await env.DB.prepare(
+      `INSERT INTO push_subscriptions (endpoint, user_id, remind_hour, time_zone, created_at) VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT(endpoint) DO UPDATE SET user_id = excluded.user_id, remind_hour = excluded.remind_hour, time_zone = excluded.time_zone`,
+    )
+      .bind(body.endpoint, user.id, hour, body.timeZone, Date.now())
+      .run();
+    return json({ ok: true });
+  },
+
+  async "DELETE /api/push"({ request, env, user }) {
+    const { endpoint } = await readJson(request);
+    await env.DB.prepare("DELETE FROM push_subscriptions WHERE endpoint = ? AND user_id = ?")
+      .bind(String(endpoint || ""), user.id)
+      .run();
+    return json({ ok: true });
+  },
+
+  // Texto que muestra el service worker al recibir el aviso.
+  async "GET /api/reminder"({ env, user }) {
+    const row = await env.DB.prepare("SELECT state FROM progress WHERE user_id = ?").bind(user.id).first();
+    return json(reminderText(row ? JSON.parse(row.state) : null));
+  },
+
   // Catálogo central ------------------------------------------------------------
   async "GET /api/catalog"({ env }) {
     const row = await env.DB.prepare("SELECT data, updated_at FROM catalog WHERE id = 1").first();
@@ -402,6 +438,7 @@ const PUBLIC = new Set([
   "POST /api/auth/recover",
   "POST /api/auth/logout",
   "GET /api/catalog",
+  "GET /api/push/key",
 ]);
 
 function match(method, pathname) {

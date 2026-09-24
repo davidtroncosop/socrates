@@ -6,6 +6,7 @@ import {
   DEMO_PROGRESS_KEY,
 } from "./auth.js";
 import { api } from "./api.js";
+import { registerServiceWorker } from "./notify.js";
 const $ = (s) => document.querySelector(s);
 const dialog = $("#login-dialog");
 const error = $("#login-error");
@@ -20,7 +21,7 @@ const getSession = () => {
 };
 const destinations = ["#ruta", "#repaso", "#cuaderno", "#tarea", "#familia", "#contenido"];
 const destination = () =>
-  "./aprender.html" +
+  "./aprender" +
   (destinations.includes(location.hash) ? location.hash : "#ruta");
 const storageError =
   "No pudimos guardar la sesión. Permite el almacenamiento del navegador e inténtalo de nuevo.";
@@ -146,6 +147,7 @@ for (const [id, action] of [
   };
 }
 
+registerServiceWorker();
 if (new URLSearchParams(location.search).has("login")) {
   show("panel-login");
   dialog.showModal();

@@ -1,0 +1,16 @@
+{
+  "name": "socatres · Matemática y lectura",
+  "short_name": "socatres",
+  "description": "Practica matemática y comprensión lectora a tu ritmo, con la práctica del día y repasos.",
+  "lang": "es-CL",
+  "start_url": "/aprender#ruta",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#145ce6",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

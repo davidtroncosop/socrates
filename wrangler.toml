@@ -8,3 +8,8 @@ binding = "DB"
 database_name = "socatres"
 database_id = "5b170db4-bbdd-4471-854f-916fba37e5d5"
 migrations_dir = "migrations"
+
+# ADMIN_EMAILS (quién publica el catálogo) se configura como secreto:
+#   npx wrangler pages secret put ADMIN_EMAILS --project-name=socatres
+[vars]
+VAPID_PUBLIC_KEY = ""

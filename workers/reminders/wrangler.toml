@@ -1,0 +1,17 @@
+# Worker que envía el recordatorio diario (Pages no ejecuta tareas programadas).
+# Secreto necesario: npx wrangler secret put VAPID_PRIVATE_KEY -c workers/reminders/wrangler.toml
+name = "socatres-reminders"
+main = "index.js"
+compatibility_date = "2025-11-01"
+
+[triggers]
+crons = ["0 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "socatres"
+database_id = "5b170db4-bbdd-4471-854f-916fba37e5d5"
+
+[vars]
+VAPID_SUBJECT = "https://socatres.pages.dev"
+VAPID_PUBLIC_KEY = ""

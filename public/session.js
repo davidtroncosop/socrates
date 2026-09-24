@@ -1,5 +1,6 @@
 import { readSession, endSession, startAccountSession } from "./auth.js";
 import { api } from "./api.js";
+import { registerServiceWorker } from "./notify.js";
 const getSession = () => {
   try {
     return readSession(localStorage);
@@ -50,5 +51,6 @@ else {
         }
       },
     );
+  registerServiceWorker();
   await import("./app.js");
 }
