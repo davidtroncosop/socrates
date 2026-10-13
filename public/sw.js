@@ -12,7 +12,7 @@ const SHELL = [
   "/styles.css",
   "/landing.css",
   "/manifest.webmanifest",
-  "/favicon.svg",
+  "/favicon-32x32.png",
   "/icon-192.png",
   ...[
     "admin", "api", "app", "auth", "content", "csv", "curriculum", "daily",
@@ -83,7 +83,7 @@ self.addEventListener("push", (event) => {
         self.registration.showNotification(title, {
           body,
           icon: "/icon-192.png",
-          badge: "/icon-192.png",
+          badge: "/badge-96.png",
           tag: "daily-reminder",
           lang: "es-CL",
           data: { url: "/aprender#ruta" },

@@ -21,10 +21,10 @@ Para probar el mantenedor y los recordatorios en local, crea `.dev.vars` (no se 
 | `functions/` | API (`/api/*`). `api/[[path]].js` delega en `_lib/router.js`. |
 | `migrations/` | Esquema D1. |
 | `workers/reminders/` | Worker con cron que envía el recordatorio diario (Pages no ejecuta tareas programadas). |
-| `scripts/` | `vapid-keys.mjs` genera las claves de notificaciones. |
+| `scripts/` | `vapid-keys.mjs` genera las claves de notificaciones; `iconos.py` genera los íconos de la app desde `docs/marca/buho-original.png` (`python3 scripts/iconos.py docs/marca/buho-original.png public`, requiere Pillow). |
 | `video/` | Videos de las lecciones: guiones, narración (Fish Audio), animación (Remotion) y subida a R2. No se publica; ver `video/README.md`. |
 | `test/` | Pruebas con `node --test`; las del backend corren sobre SQLite real con el mismo esquema. |
-| `docs/` | Progresión curricular, datos de referencia, capturas y la landing anterior. No se publica. |
+| `docs/` | Ilustración original del búho (`docs/marca/`), progresión curricular, datos de referencia, capturas y la landing anterior. No se publica. |
 
 Módulos del cliente (`public/`):
 

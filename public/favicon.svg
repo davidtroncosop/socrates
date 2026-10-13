@@ -1,4 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="16" fill="#145ce6"/>
-  <text x="32" y="46" text-anchor="middle" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="800" fill="#ffffff" letter-spacing="-4">s<tspan font-size="26" dy="-12" dx="1">↗</tspan></text>
-</svg>
