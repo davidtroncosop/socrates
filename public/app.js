@@ -509,16 +509,31 @@ function route() {
 
     <div class="dashboard">
       <div>
-        ${state.diagnosed || state.completed.length ? dailyHero(next) : `<section class="hero">
+        ${
+          state.diagnosed || state.completed.length
+            ? dailyHero(next)
+            : !state.attempts.length
+              ? `<section class="hero">
+          <span class="eyebrow">TU PRIMER PASO</span>
+          <h2>Empecemos con algo fácil.</h2>
+          <p>Dos preguntas cortas para entrar en calor. Sin notas y sin apuro.</p>
+          <div class="hero-meta">
+            <span>◷ 1 minuto</span>
+            <span>◇ Sin calificación</span>
+          </div>
+          ${button("Empezar →", "warmup", "primary")}
+        </section>`
+              : `<section class="hero">
           <span class="eyebrow">ENCONTREMOS TU PUNTO DE PARTIDA</span>
-          <h2>¿Qué sabes ya de ${bothSubjects ? "matemáticas y lectura" : "matemáticas"}?</h2>
-          <p>Hasta ${DIAGNOSTIC_BASE.length + MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length} preguntas breves, primero de base y después de tu curso, para saber por dónde te conviene empezar. No es una prueba: puedes pedir ayuda.</p>
+          <h2>¿Por dónde te conviene seguir?</h2>
+          <p>${DIAGNOSTIC_BASE.length + MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length} preguntas cortas, primero de base y después de tu curso. No es una prueba: puedes saltar las que no sepas y pedir ayuda.</p>
           <div class="hero-meta">
             <span>◷ 5 minutos aprox.</span>
             <span>◇ Sin calificación</span>
           </div>
-          ${button("Descubrir mi punto de partida →", "diagnostic", "primary")}
-        </section>`}
+          ${button("Buscar mi punto de partida →", "diagnostic", "primary")}
+        </section>`
+        }
 
         <div class="section-title">
           <h2>Tu ruta</h2>
@@ -648,7 +663,7 @@ const phases = [
   "Aplicación",
   "Desafío de autonomía",
 ];
-const MAX_PER_SUBJECT = 4;
+const MAX_PER_SUBJECT = 3;
 // El diagnóstico revisa primero la base: muchos vacíos vienen de cursos
 // anteriores. Va de lo más simple a lo más difícil y se detiene al tropezar.
 const DIAGNOSTIC_BASE = ["base-suma-resta", "base-multiplicar", "base-fracciones"];
@@ -948,14 +963,18 @@ function renderExercise() {
     l = lessonAt(s),
     isMath = getSubject(l) === "matematica";
   app.innerHTML = `${button("← Volver a mi ruta", "exit", "back")}${heading(
-    s.mode === "diagnostic"
+    s.mode === "warmup"
+      ? "TU PRIMER PASO"
+      : s.mode === "diagnostic"
       ? "PUNTO DE PARTIDA"
       : s.mode === "daily"
         ? "PRÁCTICA DEL DÍA"
         : s.mode === "review"
         ? "REPASO ESPACIADO"
         : "TU SESIÓN DE HOY",
-    s.mode === "diagnostic"
+    s.mode === "warmup"
+      ? "Para entrar en calor"
+      : s.mode === "diagnostic"
       ? "Veamos desde dónde partimos."
       : s.mode === "daily"
         ? displayTitle(l)
@@ -966,6 +985,8 @@ function renderExercise() {
   )}<div class="lesson-layout"><section class="card exercise-card"><div class="mini-label">${
     s.mode === "lesson"
       ? phases[s.index]
+      : s.mode === "warmup"
+        ? "CALENTAMIENTO"
       : s.mode === "review"
         ? "RECUPERA LO APRENDIDO"
         : s.mode === "daily"
@@ -1148,7 +1169,8 @@ function check(e) {
     f.textContent = why
       ? `Todavía no. ${why} Inténtalo otra vez.`
       : "Todavía no coincide. Revisa el enunciado y tu respuesta; puedes probar otra vez o pedir una pista.";
-    if (!state.reviews.some((r) => r.lesson === lesson))
+    // El calentamiento no agenda repasos: esas lecciones aún no se ven.
+    if (s.mode !== "warmup" && !state.reviews.some((r) => r.lesson === lesson))
       state.reviews.push({ lesson, due: Date.now() });
     // Trabarse no debe ser un callejón sin salida: tras dos intentos se puede
     // ver la solución y seguir (queda registrado como «con ayuda»).
@@ -1207,9 +1229,56 @@ function next() {
   s.lastPhoto = null;
   renderExercise();
 }
+// Primera vez: dos preguntas fáciles y concretas antes de cualquier
+// diagnóstico, para empezar con algo que sale bien.
+const WARMUP = [
+  ["base-suma-resta", ["500 + 300", 800, "Tienes $500 y te regalan $300. ¿Cuánto dinero tienes ahora?", "Suma los cientos: 5 + 3 = 8. Son 8 monedas de $100.", "500 + 300 = 800. ¡Tienes $800!"]],
+  ["base-multiplicar", ["4 · 10", 40, "Compras 4 sobres con 10 láminas cada uno. ¿Cuántas láminas tienes?", "Cuenta de 10 en 10: 10, 20, 30, 40.", "4 · 10 = 40 láminas."]],
+];
+function startWarmup() {
+  const items = WARMUP.map(([id, q]) => [lessons.find((l) => l.id === id), q]).filter(([l]) => l);
+  if (!items.length) return diagnosticPicker();
+  const plan = items.map(([l]) => l);
+  session = {
+    mode: "warmup",
+    plan,
+    lesson: plan[0],
+    questions: items.map(([, q]) => q),
+    index: 0,
+    hints: 0,
+    wrong: 0,
+    results: [],
+    answered: false,
+    workPhoto: null,
+    lastPhoto: null,
+    lastWork: null,
+  };
+  renderExercise();
+}
+function finishWarmup() {
+  const s = session;
+  const alone = s.results.filter((r) => r.independent).length;
+  save();
+  session = null;
+  app.innerHTML = `<section class="card summary warmup-done">
+    <div class="eyebrow">TU PRIMER PASO</div>
+    <h1>${alone === s.questions.length ? "¡Lo lograste! 🎉" : "¡Buen comienzo! 💪"}</h1>
+    <p class="intro">${
+      alone === s.questions.length
+        ? "Resolviste las dos sin ayuda. Ganaste tus primeros XP."
+        : "Llegaste al final, y eso es lo que cuenta. Ganaste tus primeros XP."
+    }</p>
+    <p>Ahora veamos por dónde te conviene seguir: son ${DIAGNOSTIC_BASE.length + MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length} preguntas cortas y puedes saltar las que no sepas.</p>
+    <div class="actions">${button("Buscar mi punto de partida →", "diagnostic", "primary")}${button("Prefiero ir a mi ruta", "exit")}</div>
+  </section>`;
+}
 function finish() {
   if (session?.mode === "task") {
     finishTask();
+    return;
+  }
+  if (session?.mode === "warmup") {
+    finishWarmup();
     return;
   }
   const s = session,
@@ -1644,6 +1713,8 @@ app.addEventListener("click", (e) => {
   } else if (action === "remove-task-photo") {
     pendingTaskPhoto = null;
     task();
+  } else if (action === "warmup") {
+    startWarmup();
   } else if (action === "reveal") {
     reveal();
   } else if (action === "key") {

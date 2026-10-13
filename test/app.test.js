@@ -622,10 +622,10 @@ test("diagnostic asks only the student's grade and stops a subject at its first 
   const base = ["base-suma-resta", "base-multiplicar", "base-fracciones"].map(lessonById);
   const math = [
     ...base,
-    ...catalogLessons.filter((l) => inferGrade(l) === "7b" && getSubject(l) === "matematica" && !l.id.startsWith("base-") && l.id !== "jerarquia-enteros").slice(0, 4),
+    ...catalogLessons.filter((l) => inferGrade(l) === "7b" && getSubject(l) === "matematica" && !l.id.startsWith("base-") && l.id !== "jerarquia-enteros").slice(0, 3),
   ];
-  const reading = catalogLessons.filter((l) => inferGrade(l) === "7b" && getSubject(l) === "lenguaje").slice(0, 4);
-  assert.match(h.node("#app").innerHTML, /PREGUNTA 1 · HASTA 11/);
+  const reading = catalogLessons.filter((l) => inferGrade(l) === "7b" && getSubject(l) === "lenguaje").slice(0, 3);
+  assert.match(h.node("#app").innerHTML, /PREGUNTA 1 · HASTA 9/);
   // Matemática: dos correctas y un tropiezo; la cuarta ya no se pregunta.
   h.answer(String(math[0].questions[1][1]));
   h.click("next");
@@ -640,7 +640,7 @@ test("diagnostic asks only the student's grade and stops a subject at its first 
   }
   const s = h.read();
   assert.equal(s.grade, "7b");
-  assert.equal(s.attempts.length, 6, "only 6 questions were needed");
+  assert.equal(s.attempts.length, 5, "only 5 questions were needed");
   assert.deepEqual(s.completed, [math[0].id, math[1].id, ...reading.map((l) => l.id)]);
   assert.deepEqual(s.mastered, [], "the diagnostic never certifies mastery");
   assert.equal(s.focus, math[2].id, "remembers where to start, even below the student's grade");
@@ -825,4 +825,28 @@ test("touch screens get a number keypad instead of the phone keyboard", async ()
   desktop.click("lesson:base-suma-resta");
   desktop.click("begin-exercises");
   assert.doesNotMatch(desktop.node("#app").innerHTML, /class="keypad"/, "computers keep the normal input");
+});
+
+test("a brand-new student starts with two easy wins, then is invited to the diagnostic", async () => {
+  const h = await harness();
+  let html = h.node("#app").innerHTML;
+  assert.match(html, /Empecemos con algo fácil/);
+  assert.doesNotMatch(html, /data-action="diagnostic"/, "no test before a first win");
+  h.click("warmup");
+  assert.match(h.node("#app").innerHTML, /CALENTAMIENTO · 1 DE 2/);
+  h.answer("800");
+  assert.match(h.node("#feedback").textContent, /sin ayuda/);
+  h.click("next");
+  h.answer("40");
+  h.click("next");
+  html = h.node("#app").innerHTML;
+  assert.match(html, /¡Lo lograste! 🎉/);
+  assert.match(html, /data-action="diagnostic"/);
+  assert.match(html, /data-action="exit"/, "the diagnostic is optional");
+  const s = h.read();
+  assert.equal(s.attempts.filter((a) => a.correct).length, 2, "the first wins count as XP");
+  assert.deepEqual(s.completed, [], "warming up doesn't complete lessons");
+  assert.deepEqual(s.reviews, [], "nor schedules reviews");
+  h.click("exit");
+  assert.match(h.node("#app").innerHTML, /¿Por dónde te conviene seguir\?/, "next time, the diagnostic is the next step");
 });
