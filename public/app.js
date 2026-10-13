@@ -1368,94 +1368,36 @@ function finish() {
   }
   save();
 
-  const streakInfo = getStreakInfo(state);
-  const xpInfo = getXpAndFichas(state);
-  const beltInfo = s.lesson && !s.plan ? getBeltInfo(s.lesson.id, state) : null;
-  const isMath = s.lesson ? getSubject(s.lesson) === "matematica" : false;
-  const sessionXpGained =
-    s.mode === "daily"
-      ? s.results.length * XP_PER_CORRECT
-      : (s.mode === "diagnostic" ? 30 : 20) + independent * 10;
-  const celebrationTitle =
+  // Resumen simple: qué logró, cuánto avanzó y un solo botón para seguir.
+  const streak = getStreakInfo(state).streak;
+  const gained = s.results.filter((r) => !r.revealed).length * XP_PER_CORRECT;
+  const reviewMastered = title === "¡Dominio confirmado!";
+  const heading =
     s.mode === "diagnostic"
-      ? "¡Punto de partida completado!"
+      ? "🧭 ¡Ya tienes un punto de partida!"
       : s.mode === "daily"
-        ? (title === "¡Meta del día cumplida!" ? "🔥 ¡Meta del día cumplida!" : "✅ Práctica del día lista")
-        : title === "¡Dominio confirmado!"
-          ? "👑 ¡Dominio de Oro Confirmado!"
-          : "🎉 ¡Misión de Hoy Cumplida!";
-
-  const whatsappAchieveMsg = `*¡Completé mi sesión de hoy en socatres! 🚀*\n` +
-    `• ${s.mode === "daily" ? "Práctica del día" : s.mode === "diagnostic" ? "Diagnóstico inicial" : "Habilidad practicada: " + s.lesson.title}\n` +
-    `• Racha activa: ${streakInfo.streak} días consecutivos 🔥\n` +
-    `• Fichas ganadas: ${xpInfo.fichasHabitribu} fichas acumuladas 🪙 (${xpInfo.totalXP} XP)\n` +
-    `¡Todo resuelto por mi cuenta sin discusiones! 🙌`;
-
+        ? xpToday(state) >= dailyGoal() ? "🔥 ¡Meta del día cumplida!" : "✅ Práctica del día lista"
+        : reviewMastered
+          ? "👑 ¡Ya lo dominas!"
+          : s.mode === "review"
+            ? "💪 Buen repaso"
+            : "🎉 ¡Lección terminada!";
+  const alone =
+    independent === s.questions.length
+      ? `Resolviste los ${s.questions.length} sin ayuda.`
+      : independent
+        ? `Resolviste ${independent} de ${s.questions.length} sin ayuda. Lo demás lo volveremos a practicar.`
+        : "Llegaste al final, y eso es lo que cuenta. Lo volveremos a practicar.";
+  const upcoming = (s.mode === "diagnostic" && lessons.find((l) => l.id === state.focus)) || nextLesson();
   app.innerHTML = `
-    <section class="card summary triumphant-summary">
-      <div class="triumphant-header">
-        <div class="eyebrow">TU SESIÓN, EN PERSPECTIVA · MISIÓN CUMPLIDA</div>
-        <h1>${celebrationTitle}</h1>
-        <p class="triumphant-subtitle">${escape(desc || title)}</p>
-      </div>
-
-      <div class="triumphant-stats-grid">
-        <div class="triumphant-stat-card t-card-streak">
-          <span class="t-stat-icon">🔥</span>
-          <div class="t-stat-val">${streakInfo.streak} día${streakInfo.streak > 1 ? "s" : ""}</div>
-          <div class="t-stat-lbl">Racha activa ${streakInfo.hasFreeze ? "🛡️" : ""}</div>
-        </div>
-        <div class="triumphant-stat-card t-card-xp">
-          <span class="t-stat-icon">⭐</span>
-          <div class="t-stat-val">+${sessionXpGained} XP</div>
-          <div class="t-stat-lbl">${xpInfo.totalXP} XP totales</div>
-        </div>
-        <div class="triumphant-stat-card t-card-habitribu">
-          <span class="t-stat-icon">🪙</span>
-          <div class="t-stat-val">${xpInfo.fichasHabitribu} fichas</div>
-          <div class="t-stat-lbl">Premios en casa</div>
-        </div>
-        ${beltInfo ? `
-        <div class="triumphant-stat-card t-card-belt">
-          <span class="t-stat-icon">${beltInfo.icon}</span>
-          <div class="t-stat-val">${beltInfo.name.replace("Cinturón ", "")}</div>
-          <div class="t-stat-lbl">${beltInfo.desc}</div>
-        </div>
-        ` : ""}
-      </div>
-
-      <div class="stat">${independent} / ${s.questions.length}</div>
-      <p class="muted">Ejercicios resueltos al primer intento y sin pistas</p>
-
-      <div class="pedagogical-coach-box">
-        <span class="coach-avatar">${isMath ? "⚖️" : "💡"}</span>
-        <div class="coach-text">
-          <strong>Mensaje de tu tutor pedagógico:</strong>
-          <p>${
-            s.mode === "diagnostic"
-              ? "Cada error nos da el mapa exacto de lo que necesitas practicar. Lo valioso es tu persistencia."
-              : (BALANCE_LESSONS.has(s.lesson?.id)
-                  ? "Recuerda: en una ecuación mantenemos la balanza en equilibrio realizando la misma operación a ambos lados. ¡Gran trabajo pensando el procedimiento!"
-                  : isMath
-                  ? "Recuerda: avanza paso a paso y revisa cada operación antes de seguir. ¡Gran trabajo pensando el procedimiento!"
-                  : "Recuerda: en comprensión lectora, volver al texto y localizar las pistas te da la certeza absoluta.")
-          }</p>
-        </div>
-      </div>
-
-      <div class="callout">
-        ${s.mode === "diagnostic" ? "Puedes volver a practicar cualquier lección desbloqueada." : s.mode === "daily" ? `Meta de hoy: ${xpToday(state)} de ${dailyGoal()} XP. Mañana tendrás una práctica nueva.` : escape(s.lesson.concept)}
-      </div>
-
-      <div class="triumphant-share-box">
-        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappAchieveMsg)}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-hero">
-          <span>📲 Compartir logro con mis papás por WhatsApp</span>
-        </a>
-      </div>
-
+    <section class="card summary simple-summary">
+      <h1>${heading}</h1>
+      <p class="intro">${escape(s.mode === "diagnostic" ? desc : alone)}</p>
+      ${s.mode === "diagnostic" ? "" : `<p class="muted">${escape(desc)}</p>`}
+      <p class="summary-stats"><span>⭐ +${gained} XP</span><span>🔥 ${streak} día${streak > 1 ? "s" : ""} seguido${streak > 1 ? "s" : ""}</span></p>
       <div class="actions">
-        ${s.mode === "daily" ? button(`Siguiente lección: ${escape(displayTitle(nextLesson()))} →`, "lesson:" + nextLesson().id, "primary") + button("Volver a mi ruta", "exit") : button("Volver a mi ruta →", "exit", "primary")}
-        ${button("Ver mi cuaderno", "go:cuaderno")}
+        ${upcoming ? button(`${s.mode === "diagnostic" ? "Empezar" : "Seguir"}: ${escape(displayTitle(upcoming))} →`, "lesson:" + upcoming.id, "primary") : ""}
+        ${button("Volver a mi ruta", "exit")}
       </div>
     </section>
   `;

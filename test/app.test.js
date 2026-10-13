@@ -443,17 +443,15 @@ test("Engagement mechanics: effort XP, reward tokens, streak shield, belts, triu
   }
 
   const finishHtml = h.node("#app").innerHTML;
-  assert.match(finishHtml, /triumphant-summary/);
-  assert.match(finishHtml, /MISIÓN CUMPLIDA/);
-  assert.match(finishHtml, /t-card-streak/);
-  assert.match(finishHtml, /t-card-xp/);
-  assert.match(finishHtml, /t-card-habitribu/);
-  assert.match(finishHtml, /pedagogical-coach-box/);
-  assert.match(finishHtml, /Mensaje de tu tutor pedagógico/);
-  assert.match(finishHtml, /balanza en equilibrio/);
-  assert.match(finishHtml, /btn-whatsapp-hero/);
+  // Resumen simple: celebración, cuánto resolvió solo, XP y racha, y seguir.
+  assert.match(finishHtml, /simple-summary/);
+  assert.match(finishHtml, /🎉 ¡Lección terminada!/);
+  assert.match(finishHtml, /Resolviste los 4 sin ayuda/);
+  assert.match(finishHtml, /⭐ \+40 XP/);
+  assert.match(finishHtml, /🔥 \d+ días? seguidos?/);
+  assert.match(finishHtml, /data-action="lesson:enteros"[^>]*>Seguir: /, "one clear next step");
   assert.match(finishHtml, /Volver a mi ruta/);
-  assert.match(finishHtml, /Ver mi cuaderno/);
+  assert.doesNotMatch(finishHtml, /whatsapp|Cinturón|fichas|tutor pedagógico/i, "no extra systems at the end");
 });
 
 

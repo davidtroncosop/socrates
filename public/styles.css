@@ -5,7 +5,7 @@
   background: #f5f7fb;
   font-synthesis: none;
   --blue: #145ce6;
-  --muted: #69778b;
+  --muted: #536173;
   --line: #e2e8f1;
 }
 * {
@@ -97,10 +97,10 @@ button:disabled {
   height: 100%;
 }
 .workspace-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.3px;
-  color: #8793a4;
+  color: #5b6678;
   margin: 48px 8px 15px;
 }
 nav {
@@ -134,7 +134,7 @@ nav a.active {
 }
 .edition,
 .eyebrow {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 1.5px;
   font-weight: 800;
   color: var(--blue);
@@ -231,7 +231,7 @@ p {
 }
 .oa-badge {
   display: inline-block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.03em;
   padding: 3px 8px;
@@ -244,7 +244,7 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.03em;
   padding: 3px 8px;
@@ -486,7 +486,7 @@ p {
   color: var(--muted);
 }
 .mini-label {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   font-weight: 700;
   text-transform: uppercase;
@@ -624,14 +624,14 @@ footer {
   display: flex;
   gap: 18px;
   align-items: center;
-  font-size: 11px;
-  color: #7d8a9e;
+  font-size: 13px;
+  color: #5b6678;
   flex-wrap: wrap;
 }
 footer button {
   border: 0;
   background: none;
-  font-size: 11px;
+  font-size: 13px;
   padding: 0;
   color: #66768d;
 }
@@ -807,7 +807,7 @@ dialog::backdrop {
   }
   .lesson button {
     padding: 8px;
-    font-size: 11px;
+    font-size: 13px;
   }
   .node {
     width: 36px;
@@ -853,7 +853,7 @@ dialog::backdrop {
 }
 .status-tag {
   display: inline-block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 5px;
@@ -980,7 +980,7 @@ select {
 }
 
 .handwritten-section:hover {
-  border-color: #94a3b8;
+  border-color: #5b6678;
 }
 
 .handwritten-title-row {
@@ -1169,7 +1169,7 @@ select {
 }
 
 .note-photo-tag {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: #4338ca;
   background: #e0e7ff;
@@ -1349,7 +1349,7 @@ select {
 
 .example-pill {
   display: inline-block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1628,7 +1628,7 @@ select {
 }
 
 .duo-chip-label {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   font-weight: 600;
   text-transform: uppercase;
@@ -1682,7 +1682,7 @@ select {
 
 .duo-banner-tag {
   display: inline-block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1820,7 +1820,7 @@ select {
   color: #ffffff;
   padding: 5px 12px;
   border-radius: 12px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 900;
   letter-spacing: 0.06em;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
@@ -1955,7 +1955,7 @@ select {
 .duo-stone-locked {
   background: #e2e8f0;
   box-shadow: 0 6px 0 #cbd5e1;
-  color: #94a3b8;
+  color: #5b6678;
   cursor: not-allowed;
   opacity: 0.85;
 }
@@ -2040,7 +2040,7 @@ select {
 
 .duo-card-btn:disabled {
   background: #f8fafc;
-  color: #94a3b8;
+  color: #5b6678;
   border-color: #e2e8f0;
   box-shadow: none;
   cursor: not-allowed;
@@ -2147,7 +2147,7 @@ select {
 
 .unit-guide-badge {
   display: inline-block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -2245,7 +2245,7 @@ select {
 }
 
 .unit-guide-lesson-list small {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -2302,7 +2302,7 @@ select {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 6px;
@@ -2500,7 +2500,7 @@ select {
 }
 
 .t-stat-lbl {
-  font-size: 11px;
+  font-size: 13px;
   color: #64748b;
   margin-top: 2px;
 }
@@ -2602,7 +2602,7 @@ select {
 .rewards-badge,
 .habitribu-badge {
   display: inline-block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -2680,7 +2680,7 @@ select {
 }
 
 .pm-lbl {
-  font-size: 11px;
+  font-size: 13px;
   color: #64748b;
   margin-top: 2px;
 }
@@ -2845,7 +2845,7 @@ select {
 }
 
 .ht-reward-item small {
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .ht-r-cost {
@@ -3023,7 +3023,7 @@ select {
   font-size: 14px;
 }
 .video-tag {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 999px;
@@ -3075,7 +3075,7 @@ select {
   line-height: 1;
 }
 .goal-ring small {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .goal-ring.met {
@@ -3270,4 +3270,95 @@ details.handwritten-section[open] .handwritten-toggle {
 .key-wide {
   grid-column: span 2;
   font-size: 18px;
+}
+
+/* Resumen al terminar: simple */
+.simple-summary {
+  text-align: center;
+  padding: 36px 24px;
+}
+.simple-summary .actions {
+  justify-content: center;
+}
+.summary-stats {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 18px;
+  font-weight: 700;
+}
+.summary-stats span {
+  background: #fef3c7;
+  border-radius: 999px;
+  padding: 8px 16px;
+}
+
+/* Celular: una sola barra arriba (logo y salir) y la navegación abajo, al
+   alcance del pulgar. La racha y los XP en una fila compacta. */
+@media (max-width: 620px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-direction: row;
+    align-items: center;
+    height: 60px;
+    padding: 0 16px;
+    background: #ffffff;
+  }
+  .topbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 21;
+    height: 60px;
+    padding: 0 16px;
+    border: 0;
+    background: transparent;
+  }
+  .topbar > span:first-child {
+    display: none;
+  }
+  nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    margin: 0;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 0;
+    overflow: visible;
+    background: #ffffff;
+    border-top: 1px solid var(--line);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  nav a {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 2px;
+    font-size: 20px;
+    line-height: 1.1;
+    text-align: center;
+    white-space: normal;
+  }
+  nav a > span:not(.count) {
+    font-size: 12px;
+  }
+  body {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+  main {
+    padding-top: 18px;
+  }
+  .duo-stats-left {
+    display: none;
+  }
+  .duo-stats-bar {
+    padding: 8px 12px;
+  }
 }
