@@ -10,6 +10,10 @@ const js = (expr) =>
     .replace(/[·×]/g, "*")
     .replace(/÷/g, "/")
     .replace(/\^/g, "**")
+    .replace(/²/g, "**2")
+    .replace(/³/g, "**3")
+    .replace(/\[/g, "(")
+    .replace(/\]/g, ")")
     .replace(/(\d)\s*(x|\()/g, "$1*$2")
     .replace(/\)\s*\(/g, ")*(")
     .replace(/(^|[^\w)])-x/g, "$1-1*x");

@@ -1,6 +1,7 @@
 import { $, escape } from "./ui.js";
 import { getUnitsForLessons } from "./units.js";
 import { getStreakInfo, getXpAndFichas } from "./stats.js";
+import { ACTIVE_SUBJECTS } from "./subjects.js";
 
 export function showUnitGuide(unitId, { lessons, state }) {
   const allUnits = getUnitsForLessons(lessons);
@@ -130,7 +131,7 @@ export function showParentReport({ state, completedCount, masteredCount }) {
 
         <div class="parent-report-box pedagogical-box">
           <h3>⚖️ Enfoque pedagógico y hábito de estudio en papel</h3>
-          <p>Tu hijo practica resolviendo a mano en su cuaderno y subiendo fotos de su desarrollo. En matemática aplica el <strong>Principio de la Balanza en Equilibrio</strong> y en lenguaje estrategias de inferencia y comprensión basadas en las <strong>Bases Curriculares del MINEDUC</strong>.</p>
+          <p>Tu hijo practica resolviendo a mano en su cuaderno y subiendo fotos de su desarrollo. En matemática aplica el <strong>Principio de la Balanza en Equilibrio</strong>${ACTIVE_SUBJECTS.includes("lenguaje") ? " y en lenguaje estrategias de inferencia y comprensión" : ""}, según las <strong>Bases Curriculares del MINEDUC</strong>.</p>
         </div>
 
         <div class="parent-report-box habitribu-box rewards-box">

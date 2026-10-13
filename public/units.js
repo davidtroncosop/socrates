@@ -1,10 +1,23 @@
 export const UNIT_DEFINITIONS = [
   {
-    id: "unit-math-1",
+    id: "unit-math-jerarquia",
     unitNumber: 1,
     subject: "matematica",
+    theme: "theme-amber",
+    subtitle: "Unidad 1 · 5° a 8° Básico",
+    title: "Jerarquía de Operaciones (PAPOMUDAS)",
+    description: "Multiplicar y dividir antes de sumar y restar, paréntesis, enteros y potencias en expresiones combinadas.",
+    concepts: "Cuando hay varias operaciones, no se calcula de izquierda a derecha sin más: hay un orden de prioridad. Se recuerda con PAPOMUDAS (en inglés, PEMDAS): Paréntesis, Potencias, Multiplicación y División, Adición y Sustracción.",
+    rule: "🪜 Orden PAPOMUDAS: primero Paréntesis, luego Potencias, después Multiplicación y División (de izquierda a derecha) y al final Adición y Sustracción (de izquierda a derecha).",
+    notebookTip: "Resuelve una operación por línea y subraya la que vas a calcular antes de escribir el resultado: así no te saltas la jerarquía.",
+    lessonIds: ["jerarquia-mult", "jerarquia-parentesis", "jerarquia-enteros", "jerarquia-potencias"],
+  },
+  {
+    id: "unit-math-1",
+    unitNumber: 2,
+    subject: "matematica",
     theme: "theme-emerald",
-    subtitle: "Unidad 1 · 7° Básico",
+    subtitle: "Unidad 2 · 7° Básico",
     title: "Álgebra y el Principio de la Balanza",
     description: "Despeje de incógnitas manteniendo la igualdad, suma de enteros en Z y términos semejantes.",
     concepts: "Una ecuación es una balanza en equilibrio perfecto: el signo igual (=) expresa que ambos platillos pesan lo mismo. Para despejar la incógnita x, se aplican operaciones inversas a ambos lados.",
@@ -14,10 +27,10 @@ export const UNIT_DEFINITIONS = [
   },
   {
     id: "unit-math-2",
-    unitNumber: 2,
+    unitNumber: 3,
     subject: "matematica",
     theme: "theme-blue",
-    subtitle: "Unidad 2 · 8° Básico",
+    subtitle: "Unidad 3 · 8° Básico",
     title: "Distribución, Signos y Racionales",
     description: "Paréntesis, regla de los signos, incógnitas en ambos miembros y ecuaciones fraccionarias.",
     concepts: "Al distribuir factores con paréntesis, el término exterior multiplica a cada término interior: a(b + c) = ab + ac. Recuerda que (-) × (-) = (+) y (-) × (+) = (-).",
@@ -27,10 +40,10 @@ export const UNIT_DEFINITIONS = [
   },
   {
     id: "unit-math-3",
-    unitNumber: 3,
+    unitNumber: 4,
     subject: "matematica",
     theme: "theme-purple",
-    subtitle: "Unidad 3 · 7° y 8° Básico",
+    subtitle: "Unidad 4 · 7° y 8° Básico",
     title: "Geometría, Círculos y Probabilidad",
     description: "Perímetros, áreas de círculos con π, Teorema de Pitágoras y frecuencias relativas.",
     concepts: "La circunferencia es el contorno (longitud 2πr) y el círculo es la superficie interior (área πr²). En triángulos rectángulos, el Teorema de Pitágoras (a² + b² = c²) relaciona catetos con hipotenusa.",
@@ -40,10 +53,10 @@ export const UNIT_DEFINITIONS = [
   },
   {
     id: "unit-math-4",
-    unitNumber: 4,
+    unitNumber: 5,
     subject: "matematica",
     theme: "theme-rose",
-    subtitle: "Unidad 4 · 8° y 1° Medio",
+    subtitle: "Unidad 5 · 8° y 1° Medio",
     title: "Potencias, Funciones y Modelamiento",
     description: "Propiedades de exponentes, pendiente y función afín, productos notables y problemas reales.",
     concepts: "Las potencias representan multiplicaciones reiteradas de una base. La función afín f(x) = mx + n modela fenómenos con tasa de cambio constante (m) y punto de partida (n).",
@@ -91,6 +104,17 @@ export const UNIT_DEFINITIONS = [
     lessonIds: ["lectura-argumentos", "lectura-medios", "lectura-simbolos-1m", "lectura-critica-1m"],
   },
 ];
+
+// Lecciones que necesitan otra antes, aunque estén en otra unidad.
+export const PREREQUISITES = {
+  // Usa sumas y restas con negativos.
+  "jerarquia-enteros": ["enteros"],
+};
+
+// Orden de la ruta, el mismo que ve el estudiante: unidad por unidad. Es el
+// orden en que se desbloquean y se sugieren las lecciones.
+export const routeOrder = (lessonsList) =>
+  getUnitsForLessons(lessonsList).flatMap((u) => u.lessons);
 
 export function getUnitsForLessons(lessonsList) {
   const assignedLessonIds = new Set();

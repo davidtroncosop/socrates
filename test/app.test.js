@@ -3,13 +3,17 @@ import assert from "node:assert/strict";
 import { solveLinear, getSubject, inferGrade } from "../public/learning.js";
 import { seedCatalog } from "../public/content.js";
 import { escape } from "../public/ui.js";
+import { ACTIVE_SUBJECTS } from "../public/subjects.js";
 const catalogLessons = seedCatalog().lessons;
+// Lo que se publica hoy; las pruebas activan ambas materias salvo que pidan otra cosa.
+const PUBLISHED_SUBJECTS = [...ACTIVE_SUBJECTS];
 // Texto de la alternativa correcta en el contenido original.
 const correctText = (q) =>
   q[0].split("\n").find((line) => line.startsWith(q[1] + ". ")).slice(3);
 const lessonById = (id) => catalogLessons.find((l) => l.id === id);
 // Lightweight DOM adapter for exercising real app handlers; visual QA remains separate.
-async function harness(saved, { session, key = "socatres.v1", fetch, catalog } = {}) {
+async function harness(saved, { session, key = "socatres.v1", fetch, catalog, subjects = ["matematica", "lenguaje"] } = {}) {
+  ACTIVE_SUBJECTS.splice(0, ACTIVE_SUBJECTS.length, ...subjects);
   const nodes = new Map();
   const node = (key) => {
     if (!nodes.has(key))
@@ -468,7 +472,7 @@ test("practicing a completed lesson again uses new generated exercises", async (
 
 test("grade filters use lesson metadata, not titles", async () => {
   const h = await harness();
-  assert.match(h.node("#app").innerHTML, /data-action="filter:5b">5° Básico \(1\)/);
+  assert.match(h.node("#app").innerHTML, /data-action="filter:5b">5° Básico \(2\)/);
   h.click("filter:1m");
   const html = h.node("#app").innerHTML;
   assert.match(html, /data-action="lesson:notables"/);
@@ -531,7 +535,9 @@ test("accounts merge server progress on load and upload it without photos", asyn
   );
   await new Promise((r) => setTimeout(r, 20));
   assert.deepEqual(h.read().completed.sort(), ["equations", "signs"]);
-  assert.equal(h.read().notes[0].image.startsWith("data:"), true, "photo kept locally");
+  assert.equal("image" in h.read().notes[0], false, "progress is stored without photos");
+  const photos = JSON.parse(h.storage.get("socatres.v1.u1.photos"));
+  assert.equal(photos["100|Mi nota"], "data:image/jpeg;base64,AA", "photo kept locally, in its own key");
   const put = calls.find((c) => c.method === "PUT");
   assert.equal(put.path, "/api/progress");
   assert.deepEqual(put.body.state.completed.sort(), ["equations", "signs"]);
@@ -543,8 +549,13 @@ test("accounts merge server progress on load and upload it without photos", asyn
 test("lesson videos stay offline until played, are recorded, and never help in the final challenge", async () => {
   const { seedCatalog } = await import("../public/content.js");
   const catalog = seedCatalog();
+  // Sin video propio, se usa el de YouTube del catálogo (los propios tienen prioridad).
+  const { lessonVideos } = await import("../public/lesson-videos.js");
+  const own = lessonVideos.equations;
+  delete lessonVideos.equations;
   catalog.lessons[0].video = { id: "dQw4w9WgXcQ", title: "La balanza en video", start: 30, end: 180 };
   const h = await harness(null, { catalog });
+  if (own) lessonVideos.equations = own;
   assert.match(h.node("#app").innerHTML, /🎬 Video/);
   h.click("lesson:equations");
   let html = h.node("#app").innerHTML;
@@ -565,6 +576,33 @@ test("lesson videos stay offline until played, are recorded, and never help in t
   h.click("hint");
   h.click("hint");
   assert.doesNotMatch(h.node("#hints").innerHTML, /video-facade/, "no video in the autonomy challenge");
+});
+
+test("only the published subjects reach students", async () => {
+  const h = await harness(null, { subjects: PUBLISHED_SUBJECTS });
+  const html = h.node("#app").innerHTML;
+  const shown = (l) => html.includes(`lesson:${l.id}"`);
+  const hidden = catalogLessons.filter((l) => !PUBLISHED_SUBJECTS.includes(getSubject(l)));
+  if (hidden.length) {
+    assert.ok(!hidden.some(shown), "hidden subjects never appear in the route");
+    assert.doesNotMatch(html, /data-action="subject:/, "no subject filter with a single subject");
+  }
+  assert.ok(catalogLessons.filter((l) => PUBLISHED_SUBJECTS.includes(getSubject(l))).every(shown));
+  h.click("diagnostic");
+  if (!PUBLISHED_SUBJECTS.includes("lenguaje"))
+    assert.doesNotMatch(h.node("#app").innerHTML, /lectura/i, "the diagnostic only promises math");
+});
+
+const { lessonVideos } = await import("../public/lesson-videos.js");
+test("lessons play their own animated video from our domain", { skip: !lessonVideos.equations && "sin videos subidos" }, async () => {
+  const h = await harness();
+  h.click("lesson:equations");
+  const html = h.node("#app").innerHTML;
+  assert.match(html, /Video animado de socatres/);
+  assert.doesNotMatch(html, /<video|youtube/i, "nothing loads before ▶");
+  h.click("play-video:equations");
+  assert.match(h.node("#video-slot").innerHTML, /<video src="\/media\/lessons\/equations-[0-9a-f]+\.mp4"/);
+  assert.deepEqual(h.read().watched, ["equations"]);
 });
 
 test("diagnostic asks only the student's grade and stops a subject at its first stumble", async () => {
@@ -662,7 +700,7 @@ test("daily practice mixes skills, can confirm mastery and tracks the daily goal
   }
   html = h.node("#app").innerHTML;
   assert.match(html, /Meta del día cumplida/);
-  assert.match(html, /data-action="lesson:signs"/, "offers the next lesson");
+  assert.match(html, /data-action="lesson:enteros"/, "offers the next lesson of the same grade");
   const s = h.read();
   assert.deepEqual(s.mastered, ["equations"], "the review inside daily practice confirms mastery");
   assert.ok(s.reviews.find((r) => r.lesson === "equations").due > now + 6 * 86400000);
@@ -681,4 +719,29 @@ test("the published catalog reaches every student, including the demo", async ()
   await new Promise((r) => setTimeout(r, 20));
   assert.match(h.node("#app").innerHTML, /Lección publicada por la administración/);
   assert.equal(h.storage.get("socatres.catalog.updatedAt"), "42");
+});
+
+test("the route unlocks in the order students see, with prerequisites and no relocking", async () => {
+  const fresh = (completed = []) => ({ version: 1, diagnosed: true, completed, mastered: [], attempts: [], notes: [], reviews: [] });
+  // Jerarquía con enteros necesita la suma y resta de enteros.
+  let h = await harness(fresh());
+  let html = h.node("#app").innerHTML;
+  assert.match(html, /🔒 Se abre al completar «Suma y resta de enteros en Z»/);
+  h.click("lesson:jerarquia-enteros");
+  assert.match(h.node("#app").innerHTML, /Rutas de Aprendizaje/, "locked lessons don't open: the route stays");
+  // En 1° Medio la ruta muestra Productos notables antes que Modelamiento: se
+  // desbloquean en ese mismo orden (antes mandaba el orden del catálogo).
+  h.click("filter:1m");
+  html = h.node("#app").innerHTML;
+  assert.match(html, /🔒 Se abre al completar «Productos notables y binomios»/);
+  assert.doesNotMatch(html, /Se abre al completar «Modelamiento/);
+  // Lo completado nunca vuelve a bloquearse, aunque falte la anterior.
+  h = await harness(fresh(["enteros"]));
+  html = h.node("#app").innerHTML;
+  assert.doesNotMatch(html, /🔒 Se abre al completar «Suma y resta/);
+  h.click("lesson:enteros");
+  assert.match(h.node("#app").innerHTML, /Suma y resta de enteros/);
+  h = await harness(fresh(["enteros"]));
+  h.click("lesson:jerarquia-enteros");
+  assert.match(h.node("#app").innerHTML, /Jerarquía con números enteros/, "opens once its prerequisite is done");
 });

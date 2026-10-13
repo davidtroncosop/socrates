@@ -657,5 +657,353 @@ export const curriculumLessons = [
       "Distingue un caso particular o experiencia anecdótica de una regla médica general.",
       "Extrapolar una certeza general a partir de un único testimonio carece de validez científica."
     ]
+  },
+  {
+    "id": "jerarquia-mult",
+    "since": "2026-10-12",
+    "title": "Primero multiplicar y dividir",
+    "subject": "matematica",
+    "grade": "5b",
+    "description": "MA05 OA 05 · Operaciones combinadas",
+    "concept": "En una expresión con varias operaciones, primero se resuelven las multiplicaciones y divisiones, de izquierda a derecha, y después las sumas y restas, también de izquierda a derecha. Piensa en cada multiplicación como un paquete cerrado: primero cuentas lo que trae el paquete y después juntas todo.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "3 + 4 · 2: primero el paquete, 4 · 2 = 8, y después 3 + 8 = 11. No es 14.",
+    "status": "published",
+    "questions": [
+      [
+        "3 + 4 · 2",
+        11,
+        "Calcula respetando la jerarquía de operaciones.",
+        "📦 Primero el paquete: 4 · 2. Después suma lo suelto.",
+        "4 · 2 = 8; 3 + 8 = 11.",
+        [
+          [
+            14,
+            "Sumaste primero (3 + 4 = 7) y después multiplicaste. La multiplicación va antes: 4 · 2 = 8, y luego 3 + 8 = 11."
+          ]
+        ]
+      ],
+      [
+        "20 − 12 ÷ 4",
+        17,
+        "Calcula respetando la jerarquía de operaciones.",
+        "La división va antes que la resta: calcula 12 ÷ 4.",
+        "12 ÷ 4 = 3; 20 − 3 = 17.",
+        [
+          [
+            2,
+            "Restaste primero (20 − 12 = 8) y después dividiste. La división va antes: 12 ÷ 4 = 3, y luego 20 − 3 = 17."
+          ]
+        ]
+      ],
+      [
+        "5 · 3 + 2 · 6",
+        27,
+        "Hay dos multiplicaciones: resuélvelas antes de sumar.",
+        "Calcula cada paquete por separado: 5 · 3 y 2 · 6.",
+        "5 · 3 = 15; 2 · 6 = 12; 15 + 12 = 27.",
+        [
+          [
+            102,
+            "Operaste de izquierda a derecha: (5 · 3 + 2) · 6. Primero las dos multiplicaciones: 15 y 12."
+          ]
+        ]
+      ],
+      [
+        "500 + 3 · 800",
+        2900,
+        "Un lápiz cuesta $500 y cada cuaderno $800. Compras un lápiz y 3 cuadernos. ¿Cuánto pagas en total?",
+        "Primero el costo de los 3 cuadernos (3 · 800); después agrega el lápiz.",
+        "3 · 800 = 2400; 500 + 2400 = 2900. Pagas $2 900.",
+        [
+          [
+            402400,
+            "Sumaste 500 + 3 antes de multiplicar. Primero calcula los cuadernos: 3 · 800 = 2400."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "18 − 2 · 5 + 4",
+      12,
+      "Calcula respetando la jerarquía de operaciones.",
+      "Primero la multiplicación; después resta y suma, de izquierda a derecha.",
+      "2 · 5 = 10; 18 − 10 = 8; 8 + 4 = 12.",
+      [
+        [
+          84,
+          "Operaste de izquierda a derecha sin respetar la jerarquía: primero va 2 · 5 = 10."
+        ],
+        [
+          4,
+          "Después de multiplicar, la resta y la suma van de izquierda a derecha: 18 − 10 = 8 y luego 8 + 4 = 12."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "jerarquia-parentesis",
+    "since": "2026-10-12",
+    "title": "Los paréntesis mandan",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 05 · Paréntesis y operaciones combinadas",
+    "concept": "Los paréntesis cambian el orden: lo que está adentro se resuelve primero, aunque sea una suma. Si hay un paréntesis dentro de un corchete, empieza por el de más adentro, como abrir cajas guardadas una dentro de otra. El orden completo se recuerda con PAPOMUDAS (en inglés, PEMDAS): Paréntesis, Potencias, Multiplicación y División, Adición y Sustracción.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "(3 + 4) · 2 = 7 · 2 = 14, mientras que 3 + 4 · 2 = 11.",
+    "status": "published",
+    "questions": [
+      [
+        "(3 + 4) · 2",
+        14,
+        "Calcula respetando la jerarquía de operaciones.",
+        "📦 Primero lo que está dentro del paréntesis: 3 + 4.",
+        "3 + 4 = 7; 7 · 2 = 14.",
+        [
+          [
+            11,
+            "Ignoraste el paréntesis. Lo de adentro va primero: 3 + 4 = 7, y luego 7 · 2 = 14."
+          ]
+        ]
+      ],
+      [
+        "36 ÷ (2 + 4)",
+        6,
+        "Calcula respetando la jerarquía de operaciones.",
+        "Resuelve el paréntesis antes de dividir.",
+        "2 + 4 = 6; 36 ÷ 6 = 6.",
+        [
+          [
+            22,
+            "Dividiste antes de resolver el paréntesis (36 ÷ 2 + 4). Primero 2 + 4 = 6."
+          ]
+        ]
+      ],
+      [
+        "5 · (10 − 4) + 2",
+        32,
+        "Calcula respetando la jerarquía de operaciones.",
+        "Paréntesis, después la multiplicación y al final la suma.",
+        "10 − 4 = 6; 5 · 6 = 30; 30 + 2 = 32.",
+        [
+          [
+            48,
+            "Ignoraste el paréntesis: primero 10 − 4 = 6."
+          ],
+          [
+            40,
+            "El + 2 está fuera del paréntesis: se suma al final, después de multiplicar."
+          ]
+        ]
+      ],
+      [
+        "2 · [3 + (8 − 2)]",
+        18,
+        "Hay un paréntesis dentro de un corchete. Calcula desde adentro hacia afuera.",
+        "Abre las cajas desde la más chica: primero 8 − 2, después el corchete.",
+        "8 − 2 = 6; 3 + 6 = 9; 2 · 9 = 18.",
+        [
+          [
+            12,
+            "El 2 multiplica a todo el corchete. Primero 8 − 2 = 6, luego 3 + 6 = 9, y al final 2 · 9 = 18."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "(15 − 3) ÷ 4 + 1",
+      4,
+      "Calcula respetando la jerarquía de operaciones.",
+      "Primero el paréntesis; después la división; al final la suma.",
+      "15 − 3 = 12; 12 ÷ 4 = 3; 3 + 1 = 4.",
+      [
+        [
+          2.4,
+          "El + 1 está fuera del paréntesis: primero 12 ÷ 4 = 3 y después suma 1."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "jerarquia-enteros",
+    "since": "2026-10-12",
+    "title": "Jerarquía con números enteros",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 01 · Operaciones combinadas con números enteros",
+    "concept": "Con números negativos la jerarquía es la misma: primero los paréntesis, después las multiplicaciones y divisiones, y al final las sumas y restas, de izquierda a derecha. Para sumar y restar enteros usa la recta numérica, como un ascensor: sumar es subir y restar es bajar.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-01\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "−8 + 2 · 6 = −8 + 12 = 4.",
+    "status": "published",
+    "questions": [
+      [
+        "−8 + 2 · 6",
+        4,
+        "Calcula respetando la jerarquía de operaciones.",
+        "📦 Primero el paquete 2 · 6; después sube desde el −8.",
+        "2 · 6 = 12; −8 + 12 = 4.",
+        [
+          [
+            -36,
+            "Sumaste −8 + 2 antes de multiplicar. Primero el paquete: 2 · 6 = 12."
+          ]
+        ]
+      ],
+      [
+        "10 − 3 · 5",
+        -5,
+        "Calcula respetando la jerarquía de operaciones.",
+        "Multiplica primero: 3 · 5 = 15. ¿Qué pasa si al 10 le quitas 15?",
+        "3 · 5 = 15; 10 − 15 = −5.",
+        [
+          [
+            35,
+            "Restaste primero (10 − 3 = 7). La multiplicación va antes: 3 · 5 = 15, y 10 − 15 = −5."
+          ],
+          [
+            5,
+            "10 − 15 queda bajo cero: es −5. Si estás en el piso 10 y bajas 15, llegas al subterráneo −5."
+          ]
+        ]
+      ],
+      [
+        "−6 − (4 − 9)",
+        -1,
+        "Calcula respetando la jerarquía de operaciones.",
+        "Primero el paréntesis: 4 − 9 = −5. Después, restar −5 es quitar una deuda.",
+        "4 − 9 = −5; −6 − (−5) = −6 + 5 = −1.",
+        [
+          [
+            -11,
+            "Restar un negativo es sumar: −6 − (−5) = −6 + 5 = −1."
+          ],
+          [
+            -19,
+            "Revisa el paréntesis: 4 − 9 = −5, no 13."
+          ]
+        ]
+      ],
+      [
+        "(−3 + 7) · 2 − 10",
+        -2,
+        "Calcula respetando la jerarquía de operaciones.",
+        "Paréntesis, multiplicación y al final la resta.",
+        "−3 + 7 = 4; 4 · 2 = 8; 8 − 10 = −2.",
+        [
+          [
+            1,
+            "Ignoraste el paréntesis: primero −3 + 7 = 4."
+          ],
+          [
+            2,
+            "8 − 10 queda bajo cero: es −2."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "−12 + 18 ÷ 3",
+      -6,
+      "Calcula respetando la jerarquía de operaciones.",
+      "Divide primero: 18 ÷ 3.",
+      "18 ÷ 3 = 6; −12 + 6 = −6.",
+      [
+        [
+          2,
+          "Sumaste antes de dividir: (−12 + 18) ÷ 3. Primero 18 ÷ 3 = 6."
+        ],
+        [
+          6,
+          "−12 + 6 queda bajo cero: es −6."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "jerarquia-potencias",
+    "since": "2026-10-12",
+    "title": "Las potencias en la fila",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 03 · Potencias en operaciones combinadas",
+    "concept": "Las potencias van justo después de los paréntesis: antes que multiplicar, dividir, sumar o restar. La potencia está pegada a su base: en 2 + 3², solo el 3 se eleva al cuadrado. Orden completo, PAPOMUDAS (en inglés, PEMDAS): Paréntesis, Potencias, Multiplicación y División, Adición y Sustracción.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-03\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "2 + 3² = 2 + 9 = 11; en cambio, (2 + 3)² = 5² = 25.",
+    "status": "published",
+    "questions": [
+      [
+        "2 + 3²",
+        11,
+        "Calcula respetando la jerarquía de operaciones.",
+        "La potencia va antes que la suma: 3² = 3 · 3.",
+        "3² = 9; 2 + 9 = 11.",
+        [
+          [
+            25,
+            "Sumaste antes de elevar: (2 + 3)². La potencia solo afecta al 3: 3² = 9."
+          ],
+          [
+            8,
+            "3² no es 3 · 2: es 3 · 3 = 9."
+          ]
+        ]
+      ],
+      [
+        "4 · 2³",
+        32,
+        "Calcula respetando la jerarquía de operaciones.",
+        "Primero la potencia: 2³ = 2 · 2 · 2.",
+        "2³ = 8; 4 · 8 = 32.",
+        [
+          [
+            512,
+            "Multiplicaste antes de elevar: (4 · 2)³. Primero 2³ = 8."
+          ],
+          [
+            24,
+            "2³ no es 2 · 3: es 2 · 2 · 2 = 8."
+          ]
+        ]
+      ],
+      [
+        "(1 + 2)³ − 5",
+        22,
+        "Calcula respetando la jerarquía de operaciones.",
+        "Paréntesis, potencia y al final la resta.",
+        "1 + 2 = 3; 3³ = 27; 27 − 5 = 22.",
+        [
+          [
+            4,
+            "Revisa dos cosas: el paréntesis va primero (1 + 2 = 3) y 3³ es 3 · 3 · 3 = 27."
+          ]
+        ]
+      ],
+      [
+        "3 · 2² − (6 − 1)",
+        7,
+        "Calcula paso a paso con PAPOMUDAS.",
+        "Paréntesis (6 − 1), potencia (2²), multiplicación y al final la resta.",
+        "6 − 1 = 5; 2² = 4; 3 · 4 = 12; 12 − 5 = 7.",
+        [
+          [
+            31,
+            "Multiplicaste antes de elevar: (3 · 2)² = 36. Primero 2² = 4."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "5² − 4 · 3 + 1",
+      14,
+      "Calcula respetando la jerarquía de operaciones.",
+      "Potencia, multiplicación y después resta y suma de izquierda a derecha.",
+      "5² = 25; 4 · 3 = 12; 25 − 12 = 13; 13 + 1 = 14.",
+      [
+        [
+          64,
+          "Operaste de izquierda a derecha: primero va la multiplicación, 4 · 3 = 12."
+        ],
+        [
+          12,
+          "La resta y la suma van de izquierda a derecha: 25 − 12 = 13 y después 13 + 1 = 14."
+        ]
+      ]
+    ]
   }
 ];

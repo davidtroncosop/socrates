@@ -3001,7 +3001,8 @@ select {
   overflow: hidden;
   background: #0b1320;
 }
-.video-frame iframe {
+.video-frame iframe,
+.video-frame video {
   position: absolute;
   inset: 0;
   width: 100%;

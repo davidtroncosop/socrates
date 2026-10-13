@@ -98,7 +98,7 @@ export function renderFamilyPage({ app, session, lessons }) {
               <details><summary>Detalle y ajustes</summary>
                 <p><strong>Dominadas:</strong> ${mastered.length ? mastered.map(escape).join(", ") : "ninguna todavía"}</p>
                 <p><strong>Completadas:</strong> ${completed.length ? completed.map(escape).join(", ") : "ninguna todavía"}</p>
-                <form class="inline-form" data-reset="${escape(c.id)}"><label for="reset-${escape(c.id)}">Nueva contraseña para ${escape(c.name)}</label><div class="inline-row"><input id="reset-${escape(c.id)}" type="password" minlength="8" autocomplete="new-password" required><button type="submit">Cambiar</button></div></form>
+                ${c.createdByMe ? `<form class="inline-form" data-reset="${escape(c.id)}"><label for="reset-${escape(c.id)}">Nueva contraseña para ${escape(c.name)}</label><div class="inline-row"><input id="reset-${escape(c.id)}" type="password" minlength="8" autocomplete="new-password" required><button type="submit">Cambiar</button></div></form>` : ""}
                 <button class="danger" data-remove="${escape(c.id)}" data-name="${escape(c.name)}" data-created="${c.createdByMe}">${c.createdByMe ? "Eliminar su cuenta" : "Desvincular"}</button>
               </details>
             </section>`;

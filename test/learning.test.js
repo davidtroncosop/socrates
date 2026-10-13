@@ -189,3 +189,72 @@ test("alternatives are reshuffled without losing the correct one", async () => {
   assert.equal(shuffleAlternatives(math), math);
   assert.equal(isMultipleChoice(math), false);
 });
+
+test("old attempts are folded into an archive that keeps streak, XP and belts", async () => {
+  const { compactAttempts } = await import("../public/learning.js");
+  const { getStreakInfo, getXpAndFichas, getBeltInfo } = await import("../public/stats.js");
+  const DAY = 86400000;
+  const now = Date.now();
+  const base = { version: 1, completed: [], mastered: [], notes: [], reviews: [] };
+  // 40 días seguidos de práctica, dos intentos por día (uno correcto).
+  const attempts = [];
+  for (let d = 39; d >= 0; d--) {
+    attempts.push({ lesson: "equations", correct: true, hints: 0, at: now - d * DAY });
+    attempts.push({ lesson: d > 35 ? "signs" : "equations", correct: false, hints: 1, at: now - d * DAY + 1 });
+  }
+  const state = { ...base, attempts };
+  const compact = compactAttempts(state, now);
+  assert.ok(compact.attempts.length < attempts.length);
+  assert.ok(compact.attempts.every((a) => a.at > now - 30 * DAY));
+  assert.equal(getXpAndFichas(compact).correctXP, getXpAndFichas(state).correctXP);
+  assert.equal(getStreakInfo(compact).streak, getStreakInfo(state).streak);
+  assert.equal(getBeltInfo("signs", compact).level, "bronce", "archived practice still counts");
+  assert.equal(compactAttempts(compact, now), compact, "idempotent");
+  // Un dispositivo atrasado trae intentos ya resumidos: no se cuentan dos veces.
+  const { mergeStates } = await import("../public/learning.js");
+  const merged = compactAttempts(mergeStates(compact, state), now);
+  assert.equal(getXpAndFichas(merged).correctXP, getXpAndFichas(state).correctXP);
+  assert.equal(merged.attempts.length, compact.attempts.length);
+});
+
+test("raw attempts are capped so progress always fits on the server", async () => {
+  const { compactAttempts } = await import("../public/learning.js");
+  const now = Date.now();
+  const attempts = Array.from({ length: 2500 }, (_, i) => ({
+    lesson: "equations", correct: i % 2 === 0, hints: 0, at: now - 2500 + i,
+  }));
+  const compact = compactAttempts({ version: 1, completed: [], mastered: [], notes: [], reviews: [], attempts }, now);
+  assert.equal(compact.attempts.length, 2000);
+  assert.equal(compact.archive.correct, 250);
+  assert.ok(JSON.stringify(compact).length < 256 * 1024);
+});
+
+test("archives survive loading and photos are stored apart from progress", async () => {
+  const { saveState, photosKey } = await import("../public/learning.js");
+  const values = new Map();
+  let full = false;
+  const store = {
+    getItem: (k) => values.get(k) ?? null,
+    setItem: (k, v) => {
+      if (full && k.endsWith(".photos")) throw new Error("QuotaExceededError");
+      values.set(k, v);
+    },
+    removeItem: (k) => values.delete(k),
+  };
+  const state = {
+    version: 1, completed: ["equations"], mastered: [], attempts: [], reviews: [],
+    notes: [{ title: "t", text: "x", at: 5, image: "data:image/jpeg;base64,AA" }],
+    archive: { until: 10, correct: 3, days: ["2026-01-01", "bad"], last: { equations: 9, unknown: 1 } },
+  };
+  assert.equal(saveState(store, "k", state), true);
+  assert.doesNotMatch(values.get("k"), /data:image/);
+  const loaded = loadState(store, undefined, "k");
+  assert.equal(loaded.notes[0].image, "data:image/jpeg;base64,AA");
+  assert.deepEqual(loaded.archive, { until: 10, correct: 3, days: ["2026-01-01"], last: { equations: 9 } });
+  // Sin espacio para fotos: el progreso se guarda igual y se avisa.
+  full = true;
+  const more = { ...state, completed: ["equations", "signs"], notes: [...state.notes, { title: "u", text: "y", at: 6, image: "data:image/jpeg;base64,BB" }] };
+  assert.equal(saveState(store, "k", more), false);
+  assert.deepEqual(JSON.parse(values.get("k")).completed, ["equations", "signs"]);
+  assert.equal(JSON.parse(values.get(photosKey("k")))["6|u"], undefined);
+});

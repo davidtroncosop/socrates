@@ -15,6 +15,8 @@ export function getStreakInfo(state) {
       }
     }
   }
+  // Días de práctica de los intentos ya resumidos.
+  for (const day of state?.archive?.days ?? []) datesSet.add(day);
 
   const todayStr = new Date().toISOString().slice(0, 10);
   const yesterdayStr = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
@@ -53,7 +55,10 @@ export function getStreakInfo(state) {
 export function getXpAndFichas(state) {
   const completedXP = (state?.completed ? state.completed.length : 0) * 20;
   const masteredXP = (state?.mastered ? state.mastered.length : 0) * 25;
-  const correctXP = (state?.attempts ? state.attempts.filter((a) => a.correct).length : 0) * 10;
+  const correctXP =
+    ((state?.attempts ? state.attempts.filter((a) => a.correct).length : 0) +
+      (state?.archive?.correct ?? 0)) *
+    10;
   const notesXP = (state?.notes ? state.notes.length : 0) * 15;
   const totalXP = completedXP + masteredXP + correctXP + notesXP;
 
@@ -79,7 +84,7 @@ export function getBeltInfo(lessonId, state) {
   if (state?.completed?.includes(lessonId)) {
     return { level: "plata", name: "Cinturón Plata", icon: "🥈", badgeClass: "belt-plata", desc: "Completada · lista para consolidar" };
   }
-  if (state?.attempts?.some((a) => a.lesson === lessonId)) {
+  if (state?.attempts?.some((a) => a.lesson === lessonId) || state?.archive?.last?.[lessonId]) {
     return { level: "bronce", name: "Cinturón Bronce", icon: "🥉", badgeClass: "belt-bronce", desc: "En entrenamiento activo" };
   }
   return { level: "blanco", name: "Cinturón Blanco", icon: "⚪", badgeClass: "belt-blanco", desc: "Por iniciar" };

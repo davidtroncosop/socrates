@@ -105,9 +105,11 @@ export function seedCatalog() {
       ...structuredClone(l),
       status: "published",
       review: reviews[i],
-    })), ...structuredClone(curriculumLessons)],
+    })), ...curriculumLessons.map(withoutSince)],
   };
 }
+// `since` solo sirve para actualizar catálogos centrales antiguos; no se guarda.
+const withoutSince = ({ since, ...lesson }) => structuredClone(lesson);
 export function validateCatalog(input) {
   if (!input || input.version !== 1 || !Array.isArray(input.lessons))
     throw Error(
@@ -203,25 +205,40 @@ export function validateCatalog(input) {
   });
   return { version: 1, lessons };
 }
+// Marca de la última vez que se agregaron lecciones nuevas del currículo a un
+// catálogo ya guardado. Al sumar lecciones, cambia la fecha: se agregan una
+// vez, sin tocar lo que el administrador editó.
+const CURRICULUM_KEY = "socatres.curriculum.2026-10";
 export function readCatalog(storage) {
   const raw = storage.getItem(CONTENT_KEY) ?? storage.getItem(LEGACY_CONTENT_KEY);
   if (raw === null) return seedCatalog();
   const catalog = validateCatalog(JSON.parse(raw));
-  if (storage.getItem("socatres.curriculum.2026-09") === null && catalog.lessons.length) {
+  if (storage.getItem(CURRICULUM_KEY) === null && catalog.lessons.length) {
     const ids = new Set(catalog.lessons.map((l) => l.id));
     const added = curriculumLessons.filter((l) => !ids.has(l.id));
     if (catalog.lessons.length + added.length <= 100) {
-      catalog.lessons.push(...structuredClone(added));
+      catalog.lessons.push(...added.map(withoutSince));
       // Persist the complete upgrade before marking it applied; never overwrite edits.
       return writeCatalog(storage, catalog);
     }
   }
   return catalog;
 }
+// Un catálogo central publicado antes de que existiera una lección del
+// currículo (campo `since`) la recibe; si se publicó después sin ella, es que
+// la administración la quitó y se respeta.
+export function withNewCurriculum(catalog, updatedAt) {
+  const ids = new Set(catalog.lessons.map((l) => l.id));
+  const added = curriculumLessons.filter(
+    (l) => l.since && !ids.has(l.id) && Date.parse(l.since) > Number(updatedAt),
+  );
+  if (!added.length || catalog.lessons.length + added.length > 100) return catalog;
+  return validateCatalog({ ...catalog, lessons: [...catalog.lessons, ...added.map(withoutSince)] });
+}
 export function writeCatalog(storage, catalog) {
   const validated = validateCatalog(catalog);
   storage.setItem(CONTENT_KEY, JSON.stringify(validated));
-  storage.setItem("socatres.curriculum.2026-09", "1");
+  storage.setItem(CURRICULUM_KEY, "1");
   return validated;
 }
 export function mergeCatalog(current, incoming) {

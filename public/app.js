@@ -15,15 +15,19 @@ import {
   mergeStates,
   withoutPhotos,
   shuffleAlternatives,
+  saveState,
+  compactAttempts,
+  photosKey,
 } from "./learning.js";
 import { readSession, endSession, progressKey } from "./auth.js";
 import { api } from "./api.js";
 import { renderFamilyPage } from "./family-view.js";
 import { hydrateReminderCard } from "./notify.js";
-import { readCatalog, seedCatalog, writeCatalog } from "./content.js";
+import { readCatalog, seedCatalog, writeCatalog, withNewCurriculum } from "./content.js";
 import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
-import { videoFacade, videoPlayer } from "./video.js";
+import { videoFacade, videoPlayer, withLessonVideos } from "./video.js";
+import { ACTIVE_SUBJECTS } from "./subjects.js";
 import { diagnoseMistake } from "./mistakes.js";
 import {
   buildDailyPlan,
@@ -34,7 +38,7 @@ import {
   XP_PER_CORRECT,
 } from "./daily.js";
 import { $, escape, button, heading } from "./ui.js";
-import { getUnitsForLessons } from "./units.js";
+import { getUnitsForLessons, routeOrder, PREREQUISITES } from "./units.js";
 import { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
 import { showUnitGuide, showParentReport, showRewardsModal } from "./dialogs.js";
 export { UNIT_DEFINITIONS } from "./units.js";
@@ -56,7 +60,15 @@ try {
   catalogWarning =
     "No se pudo leer el catálogo guardado. Se muestra el contenido inicial; exporta un respaldo antes de guardar cambios.";
 }
-let lessons = catalog.lessons.filter((l) => l.status === "published");
+// Lecciones publicadas de las materias activas, con su video propio cuando lo
+// tienen.
+const publishedLessons = (c) =>
+  withLessonVideos(
+    c.lessons.filter((l) => l.status === "published" && ACTIVE_SUBJECTS.includes(getSubject(l))),
+  );
+// Con una sola materia no se muestran el filtro ni el progreso por materia.
+const bothSubjects = ACTIVE_SUBJECTS.length > 1;
+let lessons = publishedLessons(catalog);
 const CATALOG_VERSION_KEY = "socatres.catalog.updatedAt";
 function useCatalog(next, updatedAt) {
   try {
@@ -65,7 +77,7 @@ function useCatalog(next, updatedAt) {
   } catch {
     catalog = next;
   }
-  lessons = catalog.lessons.filter((l) => l.status === "published");
+  lessons = publishedLessons(catalog);
   updateBadge();
 }
 // El catálogo central llega a todos (también a la demo). Sin conexión o sin
@@ -83,7 +95,7 @@ async function refreshCatalog() {
   } catch {}
   if (!latest.catalog || String(latest.updatedAt) === known) return;
   try {
-    useCatalog(latest.catalog, latest.updatedAt);
+    useCatalog(withNewCurriculum(latest.catalog, latest.updatedAt), latest.updatedAt);
   } catch {
     return;
   }
@@ -104,28 +116,44 @@ function contentManager() {
   });
   admin.render();
 }
-// Las lecciones se desbloquean en orden dentro de su curso y materia; la
-// primera de cada curso queda abierta para que el diagnóstico pueda ubicar ahí.
-function isLocked(l) {
-  if (independentLessons.has(l.id)) return false;
-  const i = lessons.findIndex((x) => x.id === l.id);
-  const prev = lessons
-    .slice(0, i)
+// Las lecciones se desbloquean en el orden de la ruta, dentro de su curso y
+// materia; la primera de cada curso queda abierta para que el diagnóstico
+// pueda ubicar ahí. Las del currículo ampliado son libres, salvo que necesiten
+// otra antes (PREREQUISITES). Lo ya completado nunca se bloquea.
+function lockedBy(l) {
+  if (state.completed.includes(l.id)) return null;
+  const missing = (PREREQUISITES[l.id] ?? [])
+    .map((id) => lessons.find((x) => x.id === id))
+    .find((x) => x && !state.completed.includes(x.id));
+  if (missing) return missing;
+  if (independentLessons.has(l.id)) return null;
+  const route = routeOrder(lessons);
+  const prev = route
+    .slice(0, route.findIndex((x) => x.id === l.id))
     .findLast(
       (x) =>
-        inferGrade(x) === inferGrade(l) && getSubject(x) === getSubject(l),
+        !independentLessons.has(x.id) &&
+        inferGrade(x) === inferGrade(l) &&
+        getSubject(x) === getSubject(l),
     );
-  return Boolean(prev) && !state.completed.includes(prev.id);
+  return prev && !state.completed.includes(prev.id) ? prev : null;
 }
+const isLocked = (l) => Boolean(lockedBy(l));
 // Siguiente paso sugerido: primero el curso del estudiante.
 function nextLesson() {
   const open = (l) => !state.completed.includes(l.id) && !isLocked(l);
+  const route = routeOrder(lessons);
+  // Sin diagnóstico, el curso de lo último que completó.
+  const last = lessons.find((l) => l.id === state.completed.at(-1));
+  const grade = state.grade ?? (last && inferGrade(last));
   return (
-    (state.grade && lessons.find((l) => inferGrade(l) === state.grade && open(l))) ||
-    lessons.find(open) ||
-    lessons[0]
+    (grade && route.find((l) => inferGrade(l) === grade && open(l))) ||
+    route.find(open) ||
+    route[0]
   );
 }
+// Lecciones que se resuelven con el principio de la balanza.
+const BALANCE_LESSONS = new Set(["equations", "both", "racionales", "combinadas", "problemas"]);
 // Mezcla las alternativas de lectura en cada sesión.
 const prepare = (questions) => questions.map((q) => shuffleAlternatives(q));
 const activeReviews = () =>
@@ -143,22 +171,25 @@ try {
 }
 let session = null,
   storageFailed = false,
+  photosFailed = false,
   // La ruta se abre en el curso del estudiante; puede cambiarlo con el filtro.
   currentLevel = state.grade ?? "all",
   currentSubject = "all";
 function save() {
+  Object.assign(state, compactAttempts(state));
   try {
-    localStorage.setItem(stateKey, JSON.stringify(state));
+    if (!saveState(localStorage, stateKey, state)) photosFailed = true;
   } catch {
     storageFailed = true;
   }
   scheduleSync();
   updateBadge();
-  if (storageFailed && !$(".storage-warning")) {
+  if ((storageFailed || photosFailed) && !$(".storage-warning")) {
     const n = document.createElement("div");
     n.className = "storage-warning";
-    n.textContent =
-      "El navegador no permite guardar. Tu progreso se conservará solo mientras esta página esté abierta.";
+    n.textContent = storageFailed
+      ? "El navegador no permite guardar. Tu progreso se conservará solo mientras esta página esté abierta."
+      : "No queda espacio para más fotos en este dispositivo: las nuevas no se guardarán. Tu progreso sí se guarda.";
     $(".topbar").after(n);
   }
 }
@@ -184,7 +215,9 @@ async function pushProgress() {
     syncStatus(
       err.status === 401
         ? "Tu sesión terminó · vuelve a entrar para sincronizar"
-        : "Sin conexión · se sincronizará al volver",
+        : err.status
+          ? `No se pudo sincronizar: ${err.message}`
+          : "Sin conexión · se sincronizará al volver",
     );
   }
 }
@@ -198,9 +231,9 @@ async function pullProgress() {
         { getItem: () => JSON.stringify(remote) },
         catalog.lessons,
       );
-      state = mergeStates(state, clean);
+      state = compactAttempts(mergeStates(state, clean));
       try {
-        localStorage.setItem(stateKey, JSON.stringify(state));
+        saveState(localStorage, stateKey, state);
       } catch {}
       // No se interrumpe un ejercicio en curso.
       if (!session) navigate();
@@ -335,7 +368,8 @@ function route() {
           .map((l, nodeIndex) => {
             const done = state.completed.includes(l.id);
             const mastered = state.mastered.includes(l.id);
-            const locked = isLocked(l);
+            const blocker = lockedBy(l);
+            const locked = Boolean(blocker);
             const isNext = next.id === l.id;
             const offset = S_OFFSETS[nodeIndex % S_OFFSETS.length];
             const belt = getBeltInfo(l.id, state);
@@ -365,7 +399,9 @@ function route() {
               ? "Dominio confirmado en un repaso"
               : done
                 ? "Completada · por consolidar"
-                : escape(l.description);
+                : locked
+                  ? `🔒 Se abre al completar «${escape(displayTitle(blocker))}»`
+                  : escape(l.description);
 
             return `
               <div class="duo-node-wrapper" style="--x-offset: ${offset}px;">
@@ -431,8 +467,8 @@ function route() {
     <div class="duo-stats-bar">
       <div class="duo-stats-left">
         <div class="duo-course-badge">
-          <span class="duo-flag">${currentSubject === "lenguaje" ? "📖" : currentSubject === "matematica" ? "📐" : "✦"}</span>
-          <strong>${currentSubject === "lenguaje" ? "Lenguaje y Comunicación" : currentSubject === "matematica" ? "Matemática" : "Rutas Mineduc"}</strong>
+          <span class="duo-flag">${currentSubject === "lenguaje" ? "📖" : currentSubject === "matematica" || !bothSubjects ? "📐" : "✦"}</span>
+          <strong>${currentSubject === "lenguaje" ? "Lenguaje y Comunicación" : currentSubject === "matematica" || !bothSubjects ? "Matemática" : "Rutas Mineduc"}</strong>
         </div>
       </div>
       <div class="duo-stats-right">
@@ -478,8 +514,8 @@ function route() {
       <div>
         ${state.diagnosed || state.completed.length ? dailyHero(next) : `<section class="hero">
           <span class="eyebrow">ENCONTREMOS TU PUNTO DE PARTIDA</span>
-          <h2>¿Qué sabes ya de matemáticas y lectura?</h2>
-          <p>Hasta ${MAX_PER_SUBJECT * 2} preguntas breves de tu curso para orientar tu recorrido según las Bases Curriculares del MINEDUC. No es una prueba: puedes pedir ayuda.</p>
+          <h2>¿Qué sabes ya de ${bothSubjects ? "matemáticas y lectura" : "matemáticas"}?</h2>
+          <p>Hasta ${MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length} preguntas breves de tu curso para orientar tu recorrido según las Bases Curriculares del MINEDUC. No es una prueba: puedes pedir ayuda.</p>
           <div class="hero-meta">
             <span>◷ 5 minutos aprox.</span>
             <span>◇ Sin calificación</span>
@@ -493,14 +529,14 @@ function route() {
         </div>
 
         <div class="route-filter-container">
-          <div class="route-filter-row">
+          ${bothSubjects ? `<div class="route-filter-row">
             <span class="filter-label">Materia:</span>
             <div class="route-filters">
               <button class="filter-btn ${currentSubject === "all" ? "active" : ""}" data-action="subject:all">Todas (${lessons.length})</button>
               <button class="filter-btn subject-math-btn ${currentSubject === "matematica" ? "active" : ""}" data-action="subject:matematica">📐 Matemática (${countMath})</button>
               <button class="filter-btn subject-lang-btn ${currentSubject === "lenguaje" ? "active" : ""}" data-action="subject:lenguaje">📖 Lenguaje (${countLang})</button>
             </div>
-          </div>
+          </div>` : ""}
           <div class="route-filter-row">
             <span class="filter-label">Curso:</span>
             <div class="route-filters">
@@ -531,7 +567,7 @@ function route() {
           <div class="stat">${activeCompleted().length}<span class="muted"> / ${lessons.length}</span></div>
           <p class="muted">Lecciones completadas</p>
           <div class="bar"><span style="width:${lessons.length ? (activeCompleted().length / lessons.length) * 100 : 0}%"></span></div>
-          <div class="subject-progress-grid">
+${bothSubjects ? `<div class="subject-progress-grid">
             <div class="subject-progress-item math">
               <div class="subject-progress-header">
                 <span>📐 Matemática</span>
@@ -546,7 +582,7 @@ function route() {
               </div>
               <div class="bar mini-bar"><span style="width:${countLang ? (langCompleted / countLang) * 100 : 0}%"></span></div>
             </div>
-          </div>
+          </div>` : ""}
           <div class="duo-mastered-stat">
             <span class="crown-icon">👑</span>
             <span><strong>${activeMastered().length}</strong> habilidades con dominio confirmado</span>
@@ -625,7 +661,9 @@ function diagnosticPicker() {
     heading(
       "PUNTO DE PARTIDA",
       "¿En qué curso estás?",
-      `Te haremos hasta ${MAX_PER_SUBJECT} preguntas de matemática y ${MAX_PER_SUBJECT} de lectura de tu curso. Cuando algo cueste, pasamos a la otra materia: no es una prueba.`,
+      bothSubjects
+        ? `Te haremos hasta ${MAX_PER_SUBJECT} preguntas de matemática y ${MAX_PER_SUBJECT} de lectura de tu curso. Cuando algo cueste, pasamos a la otra materia: no es una prueba.`
+        : `Te haremos hasta ${MAX_PER_SUBJECT} preguntas de matemática de tu curso. Cuando algo cueste, nos detenemos: no es una prueba.`,
     ) +
     `<section class="card"><div class="grade-picker">${grades
       .map(([g, label]) =>
@@ -635,9 +673,10 @@ function diagnosticPicker() {
 }
 function startDiagnostic(grade) {
   if (!(grade in GRADES)) return;
-  const plan = ["matematica", "lenguaje"].flatMap((subject) =>
-    lessons
-      .filter((l) => inferGrade(l) === grade && getSubject(l) === subject)
+  const plan = ACTIVE_SUBJECTS.flatMap((subject) =>
+    routeOrder(lessons)
+      // Las lecciones que dependen de otra no ubican a nadie: se llega a ellas.
+      .filter((l) => inferGrade(l) === grade && getSubject(l) === subject && !PREREQUISITES[l.id])
       .slice(0, MAX_PER_SUBJECT),
   );
   if (!plan.length) return;
@@ -936,7 +975,7 @@ function renderExercise() {
       ? '<button type="button" data-action="skip">Todavía no lo sé</button>'
       : ""
   }</div></form><div id="next-area"></div></section><aside class="stack"><section class="card pedagogical-aside-card"><div class="mini-label">💡 ENFOQUE PEDAGÓGICO</div><h3>${
-    isMath ? "⚖️ Mantener el equilibrio" : "📖 Estrategia clave"
+    BALANCE_LESSONS.has(l.id) ? "⚖️ Mantener el equilibrio" : isMath ? "💡 Idea clave" : "📖 Estrategia clave"
   }</h3><p class="muted" style="line-height:1.55;margin:8px 0 10px 0;">${escape(
     l.concept,
   )}</p><button type="button" class="btn-link-help" data-action="view-intro">📖 Ver lección inicial completa</button></section><section class="card"><div class="mini-icon">✧</div><h3>Tu espacio de ayuda</h3><p class="muted">Las pistas explican el porqué pedagógico de cada paso.</p><div id="hints" aria-live="polite"></div></section><section class="callout">${
@@ -1571,6 +1610,7 @@ $("#delete-account").onclick = async () => {
     await api.deleteAccount();
     try {
       localStorage.removeItem(stateKey);
+      localStorage.removeItem(photosKey(stateKey));
       endSession(localStorage);
     } catch {}
     location.replace("./");

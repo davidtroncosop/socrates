@@ -365,9 +365,9 @@ export const lessons = [
     title: "Potencias y propiedades de exponentes",
     subject: "matematica",
     grade: "8b",
-    description: "MA08 OA 02 · Multiplicación y división de potencias de igual base en Z",
+    description: "MA08 OA 03 · Multiplicación y división de potencias de igual base",
     concept:
-      "Al multiplicar potencias de igual base se suman los exponentes: a^n · a^m = a^(n+m). Al dividir se restan: a^n ÷ a^m = a^(n-m) (Mineduc MA08 OA 02).",
+      "Al multiplicar potencias de igual base se suman los exponentes: a^n · a^m = a^(n+m). Al dividir se restan: a^n ÷ a^m = a^(n-m) (Mineduc MA08 OA 03).",
     examples: "2^3 · 2^2 = 2^(3+2) = 2^5 = 32. Y 3^4 ÷ 3^2 = 3^2 = 9.",
     questions: [
       [
@@ -565,7 +565,7 @@ export function loadState(
     );
     if (s?.version !== 1) return freshState();
     const ids = new Set(availableLessons.map((l) => l.id));
-    return {
+    const state = {
       version: 1,
       diagnosed: s.diagnosed === true,
       completed: Array.isArray(s.completed)
@@ -610,14 +610,119 @@ export function loadState(
       watched: Array.isArray(s.watched)
         ? [...new Set(s.watched.filter((id) => ids.has(id)))]
         : [],
+      ...(cleanArchive(s.archive, ids) ? { archive: cleanArchive(s.archive, ids) } : {}),
     };
+    return withStoredPhotos(state, storage, key);
   } catch {
     return freshState();
   }
 }
 
+// Las fotos se guardan en una clave aparte: si el navegador se queda sin
+// espacio, se pierde la foto nueva, nunca el progreso.
+export const photosKey = (key) => `${key}.photos`;
+const noteKey = (n) => `${n.at}|${n.title}`;
+function withStoredPhotos(state, storage, key) {
+  let photos;
+  try {
+    photos = JSON.parse(storage.getItem(photosKey(key)));
+  } catch {
+    return state;
+  }
+  if (!photos || typeof photos !== "object") return state;
+  return {
+    ...state,
+    notes: state.notes.map((n) => {
+      const image = photos[noteKey(n)];
+      return n.image || typeof image !== "string" || !image.startsWith("data:image/")
+        ? n
+        : { ...n, image };
+    }),
+  };
+}
+// Devuelve false si el progreso se guardó pero las fotos no cupieron. Si no
+// se puede guardar el progreso, lanza el error.
+export function saveState(storage, key, state) {
+  storage.setItem(key, JSON.stringify(withoutPhotos(state)));
+  const photos = Object.fromEntries(
+    state.notes.filter((n) => n.image).map((n) => [noteKey(n), n.image]),
+  );
+  try {
+    if (Object.keys(photos).length)
+      storage.setItem(photosKey(key), JSON.stringify(photos));
+    else storage.removeItem(photosKey(key));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Intentos: se guardan uno a uno los de los últimos 30 días (máximo 2000),
+// que es lo que usan la práctica del día, la meta y el resumen familiar. Los
+// anteriores se resumen en `archive` con lo que se sigue mostrando: días de
+// práctica (racha), aciertos (XP) y última práctica de cada lección. Así el
+// progreso no crece sin límite y siempre cabe en el servidor.
+const ARCHIVE_AFTER = 30 * 86400000;
+const MAX_ATTEMPTS = 2000;
+const utcDay = (ms) => new Date(ms).toISOString().slice(0, 10);
+function cleanArchive(a, ids) {
+  if (!a || typeof a !== "object" || !Number.isFinite(a.until)) return null;
+  return {
+    until: a.until,
+    correct: Number.isInteger(a.correct) && a.correct >= 0 ? a.correct : 0,
+    days: Array.isArray(a.days)
+      ? [...new Set(a.days.filter((d) => typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d)))].sort()
+      : [],
+    last: Object.fromEntries(
+      Object.entries(a.last && typeof a.last === "object" ? a.last : {}).filter(
+        ([id, at]) => ids.has(id) && Number.isFinite(at),
+      ),
+    ),
+  };
+}
+export function compactAttempts(state, now = Date.now()) {
+  const archive = state.archive;
+  // Lo anterior a `until` ya está resumido (p. ej. llegó de otro dispositivo).
+  const live = archive ? state.attempts.filter((a) => a.at > archive.until) : state.attempts;
+  let cutoff = now - ARCHIVE_AFTER;
+  if (live.length > MAX_ATTEMPTS)
+    cutoff = Math.max(cutoff, [...live].sort((a, b) => a.at - b.at)[live.length - MAX_ATTEMPTS - 1].at);
+  const old = live.filter((a) => a.at <= cutoff);
+  if (!old.length) return live.length === state.attempts.length ? state : { ...state, attempts: live };
+  const last = { ...(archive?.last ?? {}) };
+  for (const a of old) last[a.lesson] = Math.max(last[a.lesson] ?? 0, a.at);
+  return {
+    ...state,
+    attempts: live.filter((a) => a.at > cutoff),
+    archive: {
+      until: Math.max(archive?.until ?? 0, cutoff),
+      correct: (archive?.correct ?? 0) + old.filter((a) => a.correct).length,
+      days: [...new Set([...(archive?.days ?? []), ...old.map((a) => utcDay(a.at))])].sort(),
+      last,
+    },
+  };
+}
+// Se queda con el resumen más avanzado (ya incluye lo que el otro resumió)
+// y suma los días y las últimas prácticas, que no se duplican.
+function mergeArchives(a, b) {
+  if (!a || !b) return a ?? b;
+  const [main, other] = a.until >= b.until ? [a, b] : [b, a];
+  const last = { ...other.last };
+  for (const [id, at] of Object.entries(main.last)) last[id] = Math.max(last[id] ?? 0, at);
+  return {
+    ...main,
+    days: [...new Set([...main.days, ...other.days])].sort(),
+    last,
+  };
+}
+
 const lastActivity = (s) =>
-  Math.max(0, ...s.attempts.map((a) => a.at), ...s.notes.map((n) => n.at));
+  Math.max(
+    0,
+    ...s.attempts.map((a) => a.at),
+    ...s.notes.map((n) => n.at),
+    ...Object.values(s.archive?.last ?? {}),
+  );
 const unique = (list, key) => {
   const seen = new Map();
   for (const item of list) if (!seen.has(key(item))) seen.set(key(item), item);
@@ -631,7 +736,7 @@ export function mergeStates(local, remote) {
   const [newer, older] =
     lastActivity(remote) > lastActivity(local) ? [remote, local] : [local, remote];
   const reviewed = new Set(newer.reviews.map((r) => r.lesson));
-  return {
+  const merged = {
     version: 1,
     diagnosed: local.diagnosed || remote.diagnosed,
     grade: newer.grade ?? older.grade,
@@ -653,6 +758,10 @@ export function mergeStates(local, remote) {
     ],
     watched: unique([...(local.watched ?? []), ...(remote.watched ?? [])], (id) => id),
   };
+  const archive = mergeArchives(local.archive, remote.archive);
+  return archive
+    ? { ...merged, archive, attempts: merged.attempts.filter((a) => a.at > archive.until) }
+    : merged;
 }
 // Las fotos se quedan en el dispositivo; al servidor solo va el texto.
 export const withoutPhotos = (state) => ({
@@ -768,15 +877,16 @@ export function compressImage(file, maxDimension = 800, quality = 0.72) {
           const canvas = document.createElement("canvas");
           canvas.width = width;
           canvas.height = height;
+          // Sin comprimir, una foto de varios MB llenaría el almacenamiento.
           const ctx = canvas.getContext ? canvas.getContext("2d") : null;
           if (!ctx) {
-            return resolve(e.target.result);
+            return resolve(null);
           }
           ctx.drawImage(img, 0, 0, width, height);
           const dataUrl = canvas.toDataURL("image/jpeg", quality);
           resolve(dataUrl);
         } catch {
-          resolve(e.target.result);
+          resolve(null);
         }
       };
       img.src = e.target.result;

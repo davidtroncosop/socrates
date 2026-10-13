@@ -1,7 +1,7 @@
 {
-  "name": "socatres · Matemática y lectura",
+  "name": "socatres · Matemática",
   "short_name": "socatres",
-  "description": "Practica matemática y comprensión lectora a tu ritmo, con la práctica del día y repasos.",
+  "description": "Practica matemática a tu ritmo, con la práctica del día y repasos.",
   "lang": "es-CL",
   "start_url": "/aprender#ruta",
   "scope": "/",

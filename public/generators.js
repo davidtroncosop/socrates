@@ -377,6 +377,195 @@ function pitagoras(rng, level) {
   ];
 }
 
+// Jerarquía de operaciones (PAPOMUDAS). El error típico es operar de
+// izquierda a derecha sin respetar la prioridad: se anticipa en cada nivel.
+const SUP = { 2: "²", 3: "³" };
+const order = "Calcula respetando la jerarquía de operaciones.";
+const ifInt = (value, message) => (Number.isInteger(value) ? [[value, message]] : []);
+
+function jerarquiaMult(rng, level) {
+  if (level === 0) {
+    const [a, b, c] = [int(rng, 2, 20), int(rng, 2, 9), int(rng, 2, 9)];
+    return [
+      `${a} + ${b} · ${c}`, a + b * c, order,
+      `📦 Primero el paquete: ${b} · ${c}. Después suma lo suelto.`,
+      `${b} · ${c} = ${b * c}; ${a} + ${b * c} = ${a + b * c}.`,
+      [[(a + b) * c, `Sumaste primero (${a} + ${b}). La multiplicación va antes: ${b} · ${c} = ${b * c}.`]],
+    ];
+  }
+  if (level === 1) {
+    const c = int(rng, 2, 9);
+    const q = int(rng, 2, 9);
+    const a = q + int(rng, 1, 20);
+    return [
+      `${a} − ${c * q} ÷ ${c}`, a - q, order,
+      `La división va antes que la resta: calcula ${c * q} ÷ ${c}.`,
+      `${c * q} ÷ ${c} = ${q}; ${a} − ${q} = ${a - q}.`,
+      ifInt((a - c * q) / c, `Restaste antes de dividir. Primero ${c * q} ÷ ${c} = ${q}.`),
+    ];
+  }
+  if (level === 2) {
+    const [a, b, c, d] = [int(rng, 2, 9), int(rng, 2, 9), int(rng, 2, 9), int(rng, 2, 9)];
+    return [
+      `${a} · ${b} + ${c} · ${d}`, a * b + c * d,
+      "Hay dos multiplicaciones: resuélvelas antes de sumar.",
+      `Calcula cada paquete por separado: ${a} · ${b} y ${c} · ${d}.`,
+      `${a * b} + ${c * d} = ${a * b + c * d}.`,
+      [[(a * b + c) * d, `Operaste de izquierda a derecha. Primero las dos multiplicaciones: ${a * b} y ${c * d}.`]],
+    ];
+  }
+  const [b, c, d] = [int(rng, 2, 6), int(rng, 2, 6), int(rng, 1, 9)];
+  const a = b * c + int(rng, 2, 15);
+  return [
+    `${a} − ${b} · ${c} + ${d}`, a - b * c + d, order,
+    "Primero la multiplicación; después resta y suma, de izquierda a derecha.",
+    `${b} · ${c} = ${b * c}; ${a} − ${b * c} = ${a - b * c}; ${a - b * c} + ${d} = ${a - b * c + d}.`,
+    [
+      [(a - b) * c + d, `Operaste de izquierda a derecha: primero va ${b} · ${c} = ${b * c}.`],
+      [a - (b * c + d), `La resta y la suma van de izquierda a derecha: ${a} − ${b * c} = ${a - b * c} y después + ${d}.`],
+    ],
+  ];
+}
+
+function jerarquiaParentesis(rng, level) {
+  if (level === 0) {
+    const [a, b, c] = [int(rng, 2, 9), int(rng, 2, 9), int(rng, 2, 9)];
+    return [
+      `(${a} + ${b}) · ${c}`, (a + b) * c, order,
+      `📦 Primero lo que está dentro del paréntesis: ${a} + ${b}.`,
+      `${a} + ${b} = ${a + b}; ${a + b} · ${c} = ${(a + b) * c}.`,
+      [[a + b * c, `Ignoraste el paréntesis. Lo de adentro va primero: ${a} + ${b} = ${a + b}.`]],
+    ];
+  }
+  if (level === 1) {
+    const b = int(rng, 1, 5);
+    const c = int(rng, 1, 5);
+    const q = int(rng, 2, 9);
+    const a = (b + c) * q;
+    return [
+      `${a} ÷ (${b} + ${c})`, q, order,
+      "Resuelve el paréntesis antes de dividir.",
+      `${b} + ${c} = ${b + c}; ${a} ÷ ${b + c} = ${q}.`,
+      ifInt(a / b + c, `Dividiste antes de resolver el paréntesis. Primero ${b} + ${c} = ${b + c}.`),
+    ];
+  }
+  if (level === 2) {
+    const [a, c, d] = [int(rng, 2, 9), int(rng, 1, 6), int(rng, 1, 9)];
+    const b = c + int(rng, 2, 8);
+    return [
+      `${a} · (${b} − ${c}) + ${d}`, a * (b - c) + d, order,
+      "Paréntesis, después la multiplicación y al final la suma.",
+      `${b} − ${c} = ${b - c}; ${a} · ${b - c} = ${a * (b - c)}; ${a * (b - c)} + ${d} = ${a * (b - c) + d}.`,
+      [
+        [a * b - c + d, `Ignoraste el paréntesis: primero ${b} − ${c} = ${b - c}.`],
+        [a * (b - c + d), `El + ${d} está fuera del paréntesis: se suma al final.`],
+      ],
+    ];
+  }
+  const [a, b, d] = [int(rng, 2, 5), int(rng, 1, 9), int(rng, 1, 6)];
+  const c = d + int(rng, 1, 8);
+  return [
+    `${a} · [${b} + (${c} − ${d})]`, a * (b + c - d),
+    "Hay un paréntesis dentro de un corchete. Calcula desde adentro hacia afuera.",
+    `Abre las cajas desde la más chica: primero ${c} − ${d}, después el corchete.`,
+    `${c} − ${d} = ${c - d}; ${b} + ${c - d} = ${b + c - d}; ${a} · ${b + c - d} = ${a * (b + c - d)}.`,
+    [[a * b + c - d, `El ${a} multiplica a todo el corchete, no solo al ${b}.`]],
+  ];
+}
+
+function jerarquiaEnteros(rng, level) {
+  if (level === 0) {
+    const [a, b, c] = [int(rng, 5, 20), int(rng, 2, 6), int(rng, 2, 6)];
+    return [
+      `−${a} + ${b} · ${c}`, -a + b * c, order,
+      `📦 Primero el paquete ${b} · ${c}; después sube desde el −${a}.`,
+      `${b} · ${c} = ${b * c}; −${a} + ${b * c} = ${num(-a + b * c)}.`,
+      [[(-a + b) * c, `Sumaste −${a} + ${b} antes de multiplicar. Primero ${b} · ${c} = ${b * c}.`]],
+    ];
+  }
+  if (level === 1) {
+    const [b, c] = [int(rng, 2, 6), int(rng, 3, 7)];
+    const a = int(rng, 1, b * c - 1);
+    return [
+      `${a} − ${b} · ${c}`, a - b * c, order,
+      `Multiplica primero: ${b} · ${c} = ${b * c}. ¿Qué pasa si al ${a} le quitas ${b * c}?`,
+      `${b} · ${c} = ${b * c}; ${a} − ${b * c} = ${num(a - b * c)}.`,
+      [
+        [(a - b) * c, `Restaste primero. La multiplicación va antes: ${b} · ${c} = ${b * c}.`],
+        [b * c - a, `${a} − ${b * c} queda bajo cero: es ${num(a - b * c)}.`],
+      ],
+    ];
+  }
+  if (level === 2) {
+    const [a, b] = [int(rng, 2, 12), int(rng, 1, 8)];
+    const c = b + int(rng, 1, 9);
+    return [
+      `−${a} − (${b} − ${c})`, -a - (b - c), order,
+      `Primero el paréntesis: ${b} − ${c} = ${num(b - c)}. Después, restar un negativo es quitar una deuda.`,
+      `${b} − ${c} = ${num(b - c)}; −${a} − (${num(b - c)}) = −${a} + ${c - b} = ${num(-a - (b - c))}.`,
+      [[-a + (b - c), `Restar un negativo es sumar: −${a} − (${num(b - c)}) = −${a} + ${c - b}.`]],
+    ];
+  }
+  const [a, c] = [int(rng, 2, 9), int(rng, 2, 4)];
+  const b = a + int(rng, 1, 6);
+  const d = (b - a) * c + int(rng, 1, 8);
+  return [
+    `(−${a} + ${b}) · ${c} − ${d}`, (b - a) * c - d, order,
+    "Paréntesis, multiplicación y al final la resta.",
+    `−${a} + ${b} = ${b - a}; ${b - a} · ${c} = ${(b - a) * c}; ${(b - a) * c} − ${d} = ${num((b - a) * c - d)}.`,
+    [
+      [-a + b * c - d, `Ignoraste el paréntesis: primero −${a} + ${b} = ${b - a}.`],
+      [d - (b - a) * c, `${(b - a) * c} − ${d} queda bajo cero: es ${num((b - a) * c - d)}.`],
+    ],
+  ];
+}
+
+function jerarquiaPotencias(rng, level) {
+  if (level === 0) {
+    const [a, b] = [int(rng, 1, 9), int(rng, 2, 6)];
+    return [
+      `${a} + ${b}²`, a + b * b, order,
+      `La potencia va antes que la suma: ${b}² = ${b} · ${b}.`,
+      `${b}² = ${b * b}; ${a} + ${b * b} = ${a + b * b}.`,
+      [
+        [(a + b) ** 2, `Sumaste antes de elevar. La potencia solo afecta al ${b}: ${b}² = ${b * b}.`],
+        [a + 2 * b, `${b}² no es ${b} · 2: es ${b} · ${b} = ${b * b}.`],
+      ],
+    ];
+  }
+  if (level === 1) {
+    const [a, b] = [int(rng, 2, 5), int(rng, 2, 4)];
+    return [
+      `${a} · ${b}³`, a * b ** 3, order,
+      `Primero la potencia: ${b}³ = ${b} · ${b} · ${b}.`,
+      `${b}³ = ${b ** 3}; ${a} · ${b ** 3} = ${a * b ** 3}.`,
+      [
+        [(a * b) ** 3, `Multiplicaste antes de elevar. Primero ${b}³ = ${b ** 3}.`],
+        [a * b * 3, `${b}³ no es ${b} · 3: es ${b} · ${b} · ${b} = ${b ** 3}.`],
+      ],
+    ];
+  }
+  if (level === 2) {
+    const [a, b] = [int(rng, 1, 4), int(rng, 1, 4)];
+    const c = int(rng, 1, 9);
+    return [
+      `(${a} + ${b})${SUP[2]} − ${c}`, (a + b) ** 2 - c, order,
+      "Paréntesis, potencia y al final la resta.",
+      `${a} + ${b} = ${a + b}; ${a + b}² = ${(a + b) ** 2}; ${(a + b) ** 2} − ${c} = ${num((a + b) ** 2 - c)}.`,
+      [[a + b * b - c, `El exponente afecta a todo el paréntesis: primero ${a} + ${b} = ${a + b}.`]],
+    ];
+  }
+  const [a, b, d] = [int(rng, 2, 4), int(rng, 2, 3), int(rng, 1, 4)];
+  const c = d + int(rng, 1, 5);
+  return [
+    `${a} · ${b}² − (${c} − ${d})`, a * b * b - (c - d),
+    "Calcula paso a paso con PAPOMUDAS.",
+    `Paréntesis (${c} − ${d}), potencia (${b}²), multiplicación y al final la resta.`,
+    `${c} − ${d} = ${c - d}; ${b}² = ${b * b}; ${a} · ${b * b} = ${a * b * b}; ${a * b * b} − ${c - d} = ${num(a * b * b - (c - d))}.`,
+    [[(a * b) ** 2 - (c - d), `Multiplicaste antes de elevar. Primero ${b}² = ${b * b}.`]],
+  ];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -391,6 +580,10 @@ export const generators = {
   notables,
   porcentajes,
   pitagoras,
+  "jerarquia-mult": jerarquiaMult,
+  "jerarquia-parentesis": jerarquiaParentesis,
+  "jerarquia-enteros": jerarquiaEnteros,
+  "jerarquia-potencias": jerarquiaPotencias,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);

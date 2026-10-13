@@ -12,7 +12,7 @@ import {
 import { loadState } from "../public/learning.js";
 test("initial catalog supplies complete independent reviews", () => {
   const catalog = validateCatalog(seedCatalog());
-  assert.equal(catalog.lessons.length, 26);
+  assert.equal(catalog.lessons.length, 30);
   for (const l of catalog.lessons) {
     assert.equal(l.questions.length, 4);
     assert.notEqual(l.review[0], l.questions[3][0]);
@@ -24,9 +24,9 @@ test("imports merge as drafts without overwriting current lessons", () => {
   incoming.lessons = incoming.lessons.slice(0, 1);
   incoming.lessons[0].id = "new-lesson";
   const merged = mergeCatalog(current, incoming);
-  assert.equal(merged.lessons.length, 27);
-  assert.equal(merged.lessons[26].status, "draft");
-  assert.equal(current.lessons.length, 26);
+  assert.equal(merged.lessons.length, current.lessons.length + 1);
+  assert.equal(merged.lessons.at(-1).status, "draft");
+  assert.equal(current.lessons.length, seedCatalog().lessons.length);
   assert.throws(() => mergeCatalog(current, seedCatalog()), /Ya existe/);
 });
 test("invalid import data is rejected before writing storage", () => {
@@ -120,7 +120,7 @@ test("existing catalogs receive new lessons once, preserving edits and withdrawa
   const memory = new Map([[CONTENT_KEY, JSON.stringify(old)]]);
   const storage = { getItem: k => memory.get(k) ?? null, setItem: (k, v) => memory.set(k, v) };
   const upgraded = readCatalog(storage);
-  assert.equal(upgraded.lessons.length, 26);
+  assert.equal(upgraded.lessons.length, seedCatalog().lessons.length);
   assert.equal(upgraded.lessons[0].title, "Mi título editado");
   upgraded.lessons = upgraded.lessons.filter(l => l.id !== "circulos");
   upgraded.lessons.find(l => l.id === "lectura-medios").status = "draft";
@@ -155,4 +155,36 @@ test("lesson videos are validated and optional", () => {
   assert.equal("video" in validateCatalog(c).lessons[1], false);
   c.lessons[0].video = { id: "x", title: "t" };
   assert.throws(() => validateCatalog(c), /Lección 1: el enlace/);
+});
+
+test("catalogs saved before the order-of-operations unit receive it once", () => {
+  const before = seedCatalog();
+  before.lessons = before.lessons.filter((l) => !l.id.startsWith("jerarquia-"));
+  const memory = new Map([
+    [CONTENT_KEY, JSON.stringify(before)],
+    ["socatres.curriculum.2026-09", "1"],
+  ]);
+  const storage = { getItem: (k) => memory.get(k) ?? null, setItem: (k, v) => memory.set(k, v) };
+  const upgraded = readCatalog(storage);
+  assert.deepEqual(
+    upgraded.lessons.filter((l) => l.id.startsWith("jerarquia-")).map((l) => l.id),
+    ["jerarquia-mult", "jerarquia-parentesis", "jerarquia-enteros", "jerarquia-potencias"],
+  );
+  // Si el administrador retira una, no vuelve a aparecer.
+  upgraded.lessons = upgraded.lessons.filter((l) => l.id !== "jerarquia-enteros");
+  writeCatalog(storage, upgraded);
+  assert.equal(readCatalog(storage).lessons.some((l) => l.id === "jerarquia-enteros"), false);
+});
+
+test("central catalogs published before new curriculum lessons receive them", async () => {
+  const { withNewCurriculum } = await import("../public/content.js");
+  const old = seedCatalog();
+  old.lessons = old.lessons.filter((l) => !l.id.startsWith("jerarquia-"));
+  const before = Date.parse("2026-10-01");
+  const ids = (c) => c.lessons.map((l) => l.id).filter((id) => id.startsWith("jerarquia-"));
+  assert.equal(ids(withNewCurriculum(old, before)).length, 4, "published before: added");
+  const after = Date.parse("2026-11-01");
+  assert.equal(ids(withNewCurriculum(old, after)).length, 0, "published after without them: the admin removed them");
+  const full = seedCatalog();
+  assert.equal(withNewCurriculum(full, before).lessons.length, full.lessons.length, "never duplicates");
 });

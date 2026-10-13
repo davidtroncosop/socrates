@@ -33,7 +33,7 @@ const practicedOn = (state, date, timeZone) =>
 export function reminderText(state, now = Date.now()) {
   const due = (state?.reviews ?? []).filter((r) => r.due <= now).length;
   const { streak, practicedToday } = getStreakInfo(state ?? {});
-  const hasHistory = (state?.attempts ?? []).length > 0;
+  const hasHistory = (state?.attempts ?? []).length > 0 || (state?.archive?.days ?? []).length > 0;
   if (practicedToday)
     return { title: "¡Bien hecho hoy!", body: "Ya practicaste. Si quieres, sigue con la siguiente lección." };
   if (hasHistory && streak > 1)

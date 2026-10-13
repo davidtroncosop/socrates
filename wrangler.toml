@@ -13,3 +13,8 @@ migrations_dir = "migrations"
 #   npx wrangler pages secret put ADMIN_EMAILS --project-name=socatres
 [vars]
 VAPID_PUBLIC_KEY = "BJVGOCH1jLyYA55HxteAGsg5TLhBF_bXoEdOKs7JMtrLgUeq_DL7MYbY0o9NIeTIJVPdLB6IwgemJglO142CkKo"
+
+# Videos de las lecciones (los genera y sube video/, ver video/README.md).
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "socatres-videos"

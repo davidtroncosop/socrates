@@ -79,7 +79,10 @@ export function buildDailyPlan({ lessons, state, now = Date.now(), rng = Math.ra
 
   // 3. Recuerdo: lo practicado hace más tiempo.
   const lastSeen = (id) =>
-    Math.max(0, ...state.attempts.filter((a) => a.lesson === id).map((a) => a.at));
+    Math.max(
+      state.archive?.last?.[id] ?? 0,
+      ...state.attempts.filter((a) => a.lesson === id).map((a) => a.at),
+    );
   const pool = done.filter((id) => !used.has(id)).sort((a, b) => lastSeen(a) - lastSeen(b));
   for (const level of [1, 2, 0])
     for (const id of pool)

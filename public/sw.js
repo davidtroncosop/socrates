@@ -2,6 +2,7 @@
 // - Páginas: primero la red y, sin conexión, la última copia guardada.
 // - Archivos del sitio: la copia guardada al instante y se actualiza detrás.
 // - /api/*: siempre la red (el progreso se sincroniza desde la app).
+// - /media/*: siempre la red; los videos se piden por rangos y no se guardan.
 const CACHE = "socatres-v1";
 const SHELL = [
   "/",
@@ -13,7 +14,7 @@ const SHELL = [
   "/icon-192.png",
   ...[
     "admin", "api", "app", "auth", "content", "csv", "curriculum", "daily",
-    "dialogs", "family-view", "generators", "landing", "learning", "mistakes",
+    "dialogs", "family-view", "generators", "landing", "learning", "lesson-videos", "mistakes", "subjects",
     "notify", "session", "stats", "ui", "units", "video",
   ].map((name) => `/${name}.js`),
 ];
@@ -39,7 +40,7 @@ const pageKey = (url) => (url.pathname.endsWith(".html") ? url.pathname.slice(0,
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
-  if (request.method !== "GET" || url.origin !== location.origin || url.pathname.startsWith("/api/")) return;
+  if (request.method !== "GET" || url.origin !== location.origin || url.pathname.startsWith("/api/") || url.pathname.startsWith("/media/")) return;
 
   if (request.mode === "navigate") {
     event.respondWith(

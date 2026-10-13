@@ -150,7 +150,11 @@ export function summarize(state) {
     accuracyWeek: recent.length
       ? Math.round((recent.filter((a) => a.correct).length / recent.length) * 100)
       : null,
-    lastActivity: attempts.reduce((max, a) => Math.max(max, a.at || 0), 0) || null,
+    lastActivity:
+      Math.max(
+        attempts.reduce((max, a) => Math.max(max, a.at || 0), 0),
+        ...Object.values(state?.archive?.last ?? {}).filter(Number.isFinite),
+      ) || null,
   };
 }
 
@@ -159,7 +163,8 @@ function validateState(state) {
   if (!state || state.version !== 1) fail(400, "Formato de progreso inválido.");
   for (const key of ["completed", "mastered", "attempts", "notes", "reviews"])
     if (!Array.isArray(state[key])) fail(400, `Falta la lista ${key}.`);
-  if (state.notes.some((n) => n && "image" in n))
+  if (state.notes.some((n) => !n || typeof n !== "object")) fail(400, "Formato de progreso inválido.");
+  if (state.notes.some((n) => "image" in n))
     fail(400, "Las fotos no se sincronizan; quítalas antes de enviar.");
   return state;
 }
@@ -348,9 +353,13 @@ const routes = {
     return json({ child });
   },
 
+  // Solo para cuentas que el apoderado creó: un estudiante con cuenta propia
+  // la recupera con su código, y vincularse no da acceso a ella.
   async "POST /api/family/children/:id/password"({ request, env, user, params }) {
     requireRole(user, "parent", "Solo un apoderado puede cambiar esta contraseña.");
     const child = await childOf(env, user, params.id);
+    if (child.consent_by !== user.id)
+      fail(403, "Este estudiante tiene cuenta propia: recupera su contraseña con su código de recuperación.");
     const password = cleanPassword((await readJson(request)).password);
     await env.DB.prepare("UPDATE users SET password_hash = ? WHERE id = ?")
       .bind(await hashPassword(password), child.id)

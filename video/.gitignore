@@ -1,0 +1,5 @@
+node_modules/
+out/
+# Generados por `npm run narrate`
+public/audio/
+src/generated/

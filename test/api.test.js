@@ -143,6 +143,8 @@ test("progress round trips, rejects photos and malformed state", async () => {
   const photo = state({ notes: [{ title: "t", text: "x", at: 1, image: "data:image/jpeg;base64,AAAA" }] });
   assert.equal((await c.call("PUT", "/api/progress", { state: photo })).status, 400);
   assert.equal((await c.call("PUT", "/api/progress", { state: { version: 2 } })).status, 400);
+  for (const note of [5, "texto", null])
+    assert.equal((await c.call("PUT", "/api/progress", { state: state({ notes: [note] }) })).status, 400);
   const huge = state({ notes: [{ title: "t", text: "x".repeat(300000), at: 1 }] });
   assert.equal((await c.call("PUT", "/api/progress", { state: huge })).status, 413);
 });
@@ -213,6 +215,12 @@ test("teens link their own account to a parent with a one-time code", async () =
   assert.equal((await dad.call("POST", "/api/family/link", { code })).status, 404, "codes are single use");
   const [child] = (await dad.call("GET", "/api/family")).body.children;
   assert.equal(child.createdByMe, false);
+  assert.equal(
+    (await dad.call("POST", `/api/family/children/${child.id}/password`, { password: "tomada-1234" })).status,
+    403,
+    "linking never gives access to a teen's own account",
+  );
+  assert.equal((await teen.call("GET", "/api/me")).status, 200, "teen sessions stay open");
   const removed = await dad.call("DELETE", `/api/family/children/${child.id}`);
   assert.equal(removed.body.deleted, false, "unlinking never deletes a teen's own account");
   assert.equal((await teen.call("GET", "/api/me")).status, 200);
