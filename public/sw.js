@@ -1,6 +1,8 @@
 // Service worker: la app funciona sin conexión y recibe el recordatorio diario.
 // - Páginas: primero la red y, sin conexión, la última copia guardada.
-// - Archivos del sitio: la copia guardada al instante y se actualiza detrás.
+// - Archivos del sitio: también primero la red, para que cada visita use la
+//   versión publicada (con «copia primero» la primera visita tras publicar
+//   mezclaba código viejo y nuevo); sin conexión, la copia guardada.
 // - /api/*: siempre la red (el progreso se sincroniza desde la app).
 // - /media/*: siempre la red; los videos se piden por rangos y no se guardan.
 const CACHE = "socatres-v1";
@@ -58,20 +60,14 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.open(CACHE).then(async (cache) => {
-      const hit = await cache.match(request, { ignoreSearch: true });
-      const update = fetch(request)
+    caches.open(CACHE).then((cache) =>
+      fetch(request)
         .then((response) => {
-          if (response.ok) cache.put(request, response.clone());
+          if (response.ok && response.status === 200) cache.put(request, response.clone());
           return response;
         })
-        .catch(() => hit);
-      if (hit) {
-        event.waitUntil(update);
-        return hit;
-      }
-      return update;
-    }),
+        .catch(() => cache.match(request, { ignoreSearch: true }).then((hit) => hit || Response.error())),
+    ),
   );
 });
 
