@@ -745,3 +745,19 @@ test("the route unlocks in the order students see, with prerequisites and no rel
   h.click("lesson:jerarquia-enteros");
   assert.match(h.node("#app").innerHTML, /Jerarquía con números enteros/, "opens once its prerequisite is done");
 });
+
+test("only equation lessons talk about the balance; others show their unit's rule", async () => {
+  const h = await harness();
+  h.click("lesson:jerarquia-mult");
+  let html = h.node("#app").innerHTML;
+  assert.match(html, /La idea clave/);
+  assert.match(html, /Orden PAPOMUDAS/);
+  assert.doesNotMatch(html, /Balanza|balanza|equilibrio/);
+  h.click("begin-exercises");
+  h.click("hint");
+  assert.match(h.node("#hints").innerHTML, /PAPOMUDAS/);
+  assert.doesNotMatch(h.node("#hints").innerHTML, /balanza/);
+  const eq = await harness();
+  eq.click("lesson:equations");
+  assert.match(eq.node("#app").innerHTML, /El Principio de la Balanza en Equilibrio/);
+});

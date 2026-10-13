@@ -38,7 +38,7 @@ import {
   XP_PER_CORRECT,
 } from "./daily.js";
 import { $, escape, button, heading } from "./ui.js";
-import { getUnitsForLessons, routeOrder, PREREQUISITES } from "./units.js";
+import { getUnitsForLessons, routeOrder, PREREQUISITES, UNIT_DEFINITIONS } from "./units.js";
 import { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
 import { showUnitGuide, showParentReport, showRewardsModal } from "./dialogs.js";
 export { UNIT_DEFINITIONS } from "./units.js";
@@ -152,8 +152,12 @@ function nextLesson() {
     route[0]
   );
 }
-// Lecciones que se resuelven con el principio de la balanza.
+// Lecciones que se resuelven con el principio de la balanza; las demás de
+// matemática muestran la regla de su unidad.
 const BALANCE_LESSONS = new Set(["equations", "both", "racionales", "combinadas", "problemas"]);
+const unitRule = (l) =>
+  UNIT_DEFINITIONS.find((u) => u.lessonIds.includes(l.id))?.rule ??
+  "🧠 Paso a paso: escribe cada operación en una línea y revisa tu resultado al final.";
 // Mezcla las alternativas de lectura en cada sesión.
 const prepare = (questions) => questions.map((q) => shuffleAlternatives(q));
 const activeReviews = () =>
@@ -800,17 +804,22 @@ function renderIntroLesson(fromExercise = false) {
         </div>
 
         <div class="pedagogical-banner ${isMath ? "math-balance" : "lang-strategy"}">
-          <div class="pedagogical-banner-icon">${isMath ? "⚖️" : "💡"}</div>
+          <div class="pedagogical-banner-icon">${BALANCE_LESSONS.has(l.id) ? "⚖️" : isMath ? "🧠" : "💡"}</div>
           <div class="pedagogical-banner-body">
-            <h3>${isMath ? "El Principio de la Balanza en Equilibrio" : "Estrategia de Comprensión Lectora"}</h3>
+            <h3>${BALANCE_LESSONS.has(l.id) ? "El Principio de la Balanza en Equilibrio" : isMath ? "La idea clave" : "Estrategia de Comprensión Lectora"}</h3>
             <p class="pedagogical-banner-text">${escape(l.concept)}</p>
             ${
-              isMath
+              BALANCE_LESSONS.has(l.id)
                 ? `<div class="balance-rule-highlight">
                     <strong>⚖️ Regla de oro del equilibrio:</strong>
                     <span>Una ecuación es una balanza. Cualquier operación que apliques al lado izquierdo, debes aplicarla <em>exactamente igual al lado derecho</em> para mantener el equilibrio y no alterar la igualdad.</span>
                   </div>`
-                : `<div class="balance-rule-highlight">
+                : isMath
+                  ? `<div class="balance-rule-highlight">
+                    <strong>Regla de la unidad:</strong>
+                    <span>${escape(unitRule(l))}</span>
+                  </div>`
+                  : `<div class="balance-rule-highlight">
                     <strong>🎯 Clave de comprensión:</strong>
                     <span>Lee con calma, identifica las pistas explícitas e implícitas en el texto y fundamenta tu respuesta antes de elegir una opción.</span>
                   </div>`
@@ -832,7 +841,7 @@ function renderIntroLesson(fromExercise = false) {
           <div class="intro-example-content">
             <p class="intro-example-text">${escape(l.examples)}</p>
             ${
-              isMath
+              BALANCE_LESSONS.has(l.id)
                 ? `<div class="intro-balance-demo">
                     <span class="demo-box">Lado izquierdo (=)</span>
                     <span class="demo-scale">⚖️ Balanza en equilibrio</span>
@@ -874,7 +883,7 @@ function renderIntroLesson(fromExercise = false) {
             <li><span class="phase-num">4</span> <div><strong>Desafío de autonomía</strong><small>Ponte a prueba por tu cuenta</small></div></li>
           </ol>
           <div class="intro-help-promise">
-            <span>✧</span> Las pistas explican el porqué pedagógico y te enseñan a mantener el equilibrio.
+            <span>✧</span> ${BALANCE_LESSONS.has(l.id) ? "Las pistas explican el porqué pedagógico y te enseñan a mantener el equilibrio." : "Las pistas explican el porqué y te guían paso a paso."}
           </div>
         </section>
       </aside>
@@ -1011,12 +1020,17 @@ function hint() {
   let body = "";
 
   if (s.hints === 0) {
-    title = isMath
+    const balance = BALANCE_LESSONS.has(l.id);
+    title = balance
       ? "Pista 1 · Enfoque pedagógico y equilibrio"
-      : "Pista 1 · Clave de lectura";
-    const balanceAdvice = isMath
+      : isMath
+        ? "Pista 1 · Enfoque pedagógico"
+        : "Pista 1 · Clave de lectura";
+    const balanceAdvice = balance
       ? `<div class="hint-pedagogy-tip"><strong>⚖️ Mantén el equilibrio:</strong> Recuerda que una ecuación es una balanza. La operación que apliques a un lado debes aplicarla exactamente igual al otro para no romper la igualdad.</div>`
-      : `<div class="hint-pedagogy-tip"><strong>📖 Clave de lectura:</strong> Localiza las palabras clave o ideas principales en el texto antes de deducir tu respuesta.</div>`;
+      : isMath
+        ? `<div class="hint-pedagogy-tip">${escape(unitRule(l))}</div>`
+        : `<div class="hint-pedagogy-tip"><strong>📖 Clave de lectura:</strong> Localiza las palabras clave o ideas principales en el texto antes de deducir tu respuesta.</div>`;
     body = `<p>${escape(q[3])}</p>${balanceAdvice}`;
   } else if (s.hints === 1) {
     title = "Pista 2 · Ejemplo modelo guiado";
@@ -1026,7 +1040,7 @@ function hint() {
       body += `<p>¿Prefieres verlo explicado?</p>${videoFacade(l.video, l.id)}`;
   } else if (s.hints === 2) {
     title = "Pista 3 · Explicación completa y comprobación";
-    const balanceCheck = isMath
+    const balanceCheck = BALANCE_LESSONS.has(l.id)
       ? `<div class="hint-pedagogy-tip"><strong>✓ Comprobación de la balanza:</strong> Al sustituir el valor obtenido en la ecuación original, ambos lados dan exactamente lo mismo y la igualdad se mantiene en equilibrio.</div>`
       : "";
     body = `<p>${escape(q[4])}</p>${balanceCheck}`;
@@ -1290,8 +1304,10 @@ function finish() {
           <p>${
             s.mode === "diagnostic"
               ? "Cada error nos da el mapa exacto de lo que necesitas practicar. Lo valioso es tu persistencia."
-              : (isMath
+              : (BALANCE_LESSONS.has(s.lesson?.id)
                   ? "Recuerda: en una ecuación mantenemos la balanza en equilibrio realizando la misma operación a ambos lados. ¡Gran trabajo pensando el procedimiento!"
+                  : isMath
+                  ? "Recuerda: avanza paso a paso y revisa cada operación antes de seguir. ¡Gran trabajo pensando el procedimiento!"
                   : "Recuerda: en comprensión lectora, volver al texto y localizar las pistas te da la certeza absoluta.")
           }</p>
         </div>
