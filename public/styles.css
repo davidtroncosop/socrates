@@ -3196,3 +3196,43 @@ select {
 .statement-row .speak-btn {
   margin-top: 0;
 }
+
+/* Ejercicio: primero la respuesta; las pistas justo debajo; el desarrollo a
+   mano es opcional y va plegado. */
+.answer-section {
+  margin-top: 18px;
+}
+.answer-section label {
+  font-weight: 700;
+}
+.answer-section input {
+  font-size: 22px;
+  padding: 14px 16px;
+}
+.hints-inline:empty {
+  display: none;
+}
+.hints-inline {
+  margin-top: 16px;
+  display: grid;
+  gap: 12px;
+  background: #eff6ff;
+  border-radius: 14px;
+  padding: 4px 16px 14px;
+}
+.hints-inline .hint {
+  font-size: 16px;
+}
+details.handwritten-section {
+  border-style: solid;
+  padding: 12px 16px;
+}
+.handwritten-toggle {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 15px;
+  color: #334155;
+}
+details.handwritten-section[open] .handwritten-toggle {
+  margin-bottom: 8px;
+}

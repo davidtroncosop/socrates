@@ -499,31 +499,12 @@ function route() {
           <span class="duo-chip-value">${xp}</span>
           <span class="duo-chip-label">XP</span>
         </div>
-        <button class="duo-stat-chip duo-chip-rewards duo-chip-habitribu duo-chip-clickable" data-action="rewards-modal" title="Fichas para premios en casa">
-          <span class="duo-chip-icon">🪙</span>
-          <span class="duo-chip-value">${fichas}</span>
-          <span class="duo-chip-label">fichas</span>
-        </button>
-        <button class="duo-stat-chip duo-chip-clickable" data-action="go:cuaderno" title="Desarrollos a mano en tu cuaderno">
-          <span class="duo-chip-icon">▤</span>
-          <span class="duo-chip-value">${notesCount}</span>
-          <span class="duo-chip-label">cuaderno</span>
-        </button>
-        <button class="duo-stat-chip duo-chip-clickable ${dueCount > 0 ? "duo-chip-alert" : ""}" data-action="go:repaso" title="Repasos espaciados listos para consolidar">
+        ${dueCount > 0 ? `<button class="duo-stat-chip duo-chip-clickable duo-chip-alert" data-action="go:repaso" title="Repasos listos">
           <span class="duo-chip-icon">↺</span>
           <span class="duo-chip-value">${dueCount}</span>
-          <span class="duo-chip-label">repasos</span>
-        </button>
-        <button class="duo-stat-chip duo-chip-parent duo-chip-clickable" data-action="parent-report" title="Informe semanal de progreso para papás">
-          <span class="duo-chip-icon">👨‍👩‍👦</span>
-          <span class="duo-chip-label">Papás</span>
-        </button>
+          <span class="duo-chip-label">repaso${dueCount > 1 ? "s" : ""}</span>
+        </button>` : ""}
       </div>
-    </div>
-
-    <div class="welcome-row">
-      <div>${heading("UN POCO CADA DÍA", "Aprender empieza con un paso.", "Este es tu espacio para preguntar, equivocarte y volver a intentarlo.")}</div>
-      <span class="pill">✦ Bases Curriculares</span>
     </div>
 
     <div class="dashboard">
@@ -531,7 +512,7 @@ function route() {
         ${state.diagnosed || state.completed.length ? dailyHero(next) : `<section class="hero">
           <span class="eyebrow">ENCONTREMOS TU PUNTO DE PARTIDA</span>
           <h2>¿Qué sabes ya de ${bothSubjects ? "matemáticas y lectura" : "matemáticas"}?</h2>
-          <p>Hasta ${DIAGNOSTIC_BASE.length + MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length} preguntas breves, primero de base y después de tu curso, para orientar tu recorrido según las Bases Curriculares del MINEDUC. No es una prueba: puedes pedir ayuda.</p>
+          <p>Hasta ${DIAGNOSTIC_BASE.length + MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length} preguntas breves, primero de base y después de tu curso, para saber por dónde te conviene empezar. No es una prueba: puedes pedir ayuda.</p>
           <div class="hero-meta">
             <span>◷ 5 minutos aprox.</span>
             <span>◇ Sin calificación</span>
@@ -540,7 +521,7 @@ function route() {
         </section>`}
 
         <div class="section-title">
-          <h2>Rutas de Aprendizaje · Bases Curriculares</h2>
+          <h2>Tu ruta</h2>
           <span class="muted">${activeCompleted().length} de ${lessons.length} lecciones</span>
         </div>
 
@@ -981,7 +962,7 @@ function renderExercise() {
         : s.lesson.title,
     s.mode === "diagnostic"
       ? "Prueba lo que sabes. Si aún no lo ves, puedes continuar sin responder."
-      : "Tómate tu tiempo. Lo importante es comprender el siguiente paso.",
+      : "Tómate tu tiempo.",
   )}<div class="lesson-layout"><section class="card exercise-card"><div class="mini-label">${
     s.mode === "lesson"
       ? phases[s.index]
@@ -994,11 +975,7 @@ function renderExercise() {
     .map((_, i) => `<span class="${i <= s.index ? "on" : ""}"></span>`)
     .join("")}</div><div class="statement-row"><p class="exercise-statement">${escape(q[2])}</p>${speakButton("question")}</div><div class="equation ${
     q[0].includes("\n") ? "reading-passage" : ""
-  }">${escape(q[0])}</div><form id="answer-form"><div class="handwritten-section"><div class="handwritten-title-row"><span class="handwritten-badge">✍️ Paso 1: Resuelve a mano</span><span class="muted">En tu cuaderno o papel</span></div><p class="handwritten-instruction">Haz el desarrollo con lápiz y papel. Sube la foto de tu cuaderno o escribe tus pasos:</p><div id="work-photo-container" class="work-photo-container">${
-    s.workPhoto
-      ? `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${s.workPhoto}" alt="Foto de tu desarrollo a mano" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu desarrollo adjunta</span><p class="muted" style="margin:4px 0 8px 0; font-size:12px;">Se guardará en tu cuaderno al comprobar.</p><button type="button" data-action="remove-photo" class="btn-remove-photo">✕ Eliminar o cambiar foto</button></div></div>`
-      : `<label for="work-photo-input" class="photo-upload-box" id="photo-dropzone"><span class="photo-icon">📷</span><div class="photo-upload-text"><strong>Subir foto de tu desarrollo a mano</strong><span>Toma una foto con tu cámara o elige una imagen</span></div><span class="photo-tag-pill">Sube tu foto</span></label><input type="file" id="work-photo-input" accept="image/*" capture="environment" class="visually-hidden">`
-  }</div><details class="work-text-details"${s.lastWork ? " open" : ""}><summary class="work-text-toggle">O escribe tus pasos en texto (opcional)</summary><div style="margin-top:8px;"><label for="work" class="visually-hidden">Tu procedimiento</label><textarea id="work" placeholder="¿Qué harías primero? Escribe tus pasos aquí…">${escape(s.lastWork || "")}</textarea></div></details><div class="muted note-save-expl">Tu desarrollo y foto se guardan automáticamente en tu cuaderno al comprobar.</div></div><div class="answer-section"><div class="handwritten-title-row"><span class="handwritten-badge answer-badge">🎯 Paso 2: Tu respuesta final</span></div><label for="answer">${
+  }">${escape(q[0])}</div><form id="answer-form"><div class="answer-section"><label for="answer">${
     q[0] === "5x − 2x" ? "Coeficiente" : "Tu respuesta"
   }</label><input id="answer" autocomplete="off" placeholder="${
     q[0].includes("\n") ? "Alternativa: 1, 2 o 3" : "Ej.: 7, x = 7 o 14/2"
@@ -1006,14 +983,18 @@ function renderExercise() {
     s.mode === "diagnostic"
       ? '<button type="button" data-action="skip">Todavía no lo sé</button>'
       : ""
-  }</div></form><div id="next-area"></div></section><aside class="stack"><section class="card pedagogical-aside-card"><div class="mini-label">💡 ENFOQUE PEDAGÓGICO</div><h3>${
+  }</div><div id="hints" class="hints-inline" aria-live="polite"></div><details class="handwritten-section"${s.workPhoto || s.lastWork ? " open" : ""}><summary class="handwritten-toggle">✍️ Mostrar cómo lo resolví <span class="muted">(opcional)</span></summary><p class="handwritten-instruction">Si lo hiciste en tu cuaderno, sácale una foto o escribe tus pasos. Queda guardado en Mi cuaderno.</p><div id="work-photo-container" class="work-photo-container">${
+    s.workPhoto
+      ? `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${s.workPhoto}" alt="Foto de tu desarrollo a mano" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu desarrollo adjunta</span><p class="muted" style="margin:4px 0 8px 0; font-size:12px;">Se guardará en tu cuaderno al comprobar.</p><button type="button" data-action="remove-photo" class="btn-remove-photo">✕ Eliminar o cambiar foto</button></div></div>`
+      : `<label for="work-photo-input" class="photo-upload-box" id="photo-dropzone"><span class="photo-icon">📷</span><div class="photo-upload-text"><strong>Subir foto de tu desarrollo a mano</strong><span>Toma una foto con tu cámara o elige una imagen</span></div><span class="photo-tag-pill">Sube tu foto</span></label><input type="file" id="work-photo-input" accept="image/*" capture="environment" class="visually-hidden">`
+  }</div><details class="work-text-details"${s.lastWork ? " open" : ""}><summary class="work-text-toggle">O escribe tus pasos en texto (opcional)</summary><div style="margin-top:8px;"><label for="work" class="visually-hidden">Tu procedimiento</label><textarea id="work" placeholder="¿Qué harías primero? Escribe tus pasos aquí…">${escape(s.lastWork || "")}</textarea></div></details><div class="muted note-save-expl">Tu desarrollo y foto se guardan automáticamente en tu cuaderno al comprobar.</div></details></form><div id="next-area"></div></section><aside class="stack"><section class="card pedagogical-aside-card"><div class="mini-label">💡 SI TE PIERDES</div><h3>${
     BALANCE_LESSONS.has(l.id) ? "⚖️ Mantener el equilibrio" : isMath ? "💡 Idea clave" : "📖 Estrategia clave"
   }</h3><p class="muted" style="line-height:1.55;margin:8px 0 10px 0;">${escape(
     forStudent(l.concept),
-  )}</p><button type="button" class="btn-link-help" data-action="view-intro">📖 Ver lección inicial completa</button></section><section class="card"><div class="mini-icon">✧</div><h3>Tu espacio de ayuda</h3><p class="muted">Las pistas explican el porqué pedagógico de cada paso.</p><div id="hints" aria-live="polite"></div></section><section class="callout">${
+  )}</p><button type="button" class="btn-link-help" data-action="view-intro">📖 Volver a ver la explicación</button></section><section class="callout">${
     s.mode === "diagnostic"
-      ? "El diagnóstico orienta tu ruta. No certifica dominio ni bloquea tu aprendizaje."
-      : "Primero comprende. Después comprueba si puedes hacerlo sin ayuda."
+      ? "Esto no es una prueba: solo busca dónde te conviene empezar."
+      : "Primero entiende. Después intenta hacerlo sin ayuda."
   }</section></aside></div>`;
   $("#answer-form").addEventListener("submit", check);
   attachPhotoListeners();
@@ -1059,9 +1040,9 @@ function hint() {
   if (s.hints === 0) {
     const balance = BALANCE_LESSONS.has(l.id);
     title = balance
-      ? "Pista 1 · Enfoque pedagógico y equilibrio"
+      ? "Pista 1 · La balanza"
       : isMath
-        ? "Pista 1 · Enfoque pedagógico"
+        ? "Pista 1 · Una ayuda"
         : "Pista 1 · Clave de lectura";
     const balanceAdvice = balance
       ? `<div class="hint-pedagogy-tip"><strong>⚖️ Mantén el equilibrio:</strong> Recuerda que una ecuación es una balanza. La operación que apliques a un lado debes aplicarla exactamente igual al otro para no romper la igualdad.</div>`
@@ -1070,13 +1051,13 @@ function hint() {
         : `<div class="hint-pedagogy-tip"><strong>📖 Clave de lectura:</strong> Localiza las palabras clave o ideas principales en el texto antes de deducir tu respuesta.</div>`;
     body = `<p>${escape(q[3])}</p>${balanceAdvice}`;
   } else if (s.hints === 1) {
-    title = "Pista 2 · Ejemplo modelo guiado";
-    body = `<p>Fíjate en cómo se resuelve este modelo paso a paso:</p><div class="hint-example-box">${escape(l.examples)}</div>`;
+    title = "Pista 2 · Un ejemplo";
+    body = `<p>Mira cómo se resuelve uno parecido:</p><div class="hint-example-box">${escape(l.examples)}</div>`;
     // El video ayuda en la práctica guiada, no en el desafío de autonomía.
     if (l.video && s.mode === "lesson" && s.index < 3)
       body += `<p>¿Prefieres verlo explicado?</p>${videoFacade(l.video, l.id)}`;
   } else if (s.hints === 2) {
-    title = "Pista 3 · Explicación completa y comprobación";
+    title = "Pista 3 · La solución explicada";
     const balanceCheck = BALANCE_LESSONS.has(l.id)
       ? `<div class="hint-pedagogy-tip"><strong>✓ Comprobación de la balanza:</strong> Al sustituir el valor obtenido en la ecuación original, ambos lados dan exactamente lo mismo y la igualdad se mantiene en equilibrio.</div>`
       : "";

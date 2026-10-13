@@ -229,7 +229,11 @@ test("handwritten exercise solving UI renders and displays uploaded photos in no
 
   // Begin exercises and check handwritten section
   h.click("begin-exercises");
-  assert.match(h.node("#app").innerHTML, /Resuelve a mano/);
+  assert.match(h.node("#app").innerHTML, /Mostrar cómo lo resolví/);
+  // La respuesta va antes que el desarrollo opcional, y las pistas junto a ella.
+  const exercise = h.node("#app").innerHTML;
+  assert.ok(exercise.indexOf('id="answer"') < exercise.indexOf("Mostrar cómo lo resolví"), "answer comes first");
+  assert.ok(exercise.indexOf('id="hints"') < exercise.indexOf("<aside"), "hints sit next to the answer, not in the sidebar");
   assert.match(h.node("#app").innerHTML, /work-photo-input/);
   assert.match(h.node("#app").innerHTML, /Subir foto de tu desarrollo a mano/);
 
@@ -260,7 +264,7 @@ test("initial lesson presents pedagogical concept and balance principle before e
 
   // Step 2: Transition to exercises
   h.click("begin-exercises");
-  assert.match(h.node("#app").innerHTML, /ENFOQUE PEDAGÓGICO/);
+  assert.match(h.node("#app").innerHTML, /SI TE PIERDES/);
   assert.match(h.node("#app").innerHTML, /Mantener el equilibrio/);
 
   // Step 3: Pedagogical hints teach maintaining the balance
@@ -273,7 +277,7 @@ test("initial lesson presents pedagogical concept and balance principle before e
   assert.match(h.node("#app").innerHTML, /LECCIÓN INICIAL/);
   assert.match(h.node("#app").innerHTML, /data-action="return-exercise"/);
   h.click("return-exercise");
-  assert.match(h.node("#app").innerHTML, /ENFOQUE PEDAGÓGICO/);
+  assert.match(h.node("#app").innerHTML, /SI TE PIERDES/);
 });
 
 test("Duolingo-style learning path renders thematic units, winding path, stats bar and guidebook", async () => {
@@ -393,8 +397,9 @@ test("Engagement mechanics: effort XP, reward tokens, streak shield, belts, triu
   // 4. Verify Route UI:
   const appHtml = h.node("#app").innerHTML;
   // Stats bar chips:
-  assert.match(appHtml, /duo-stat-chip duo-chip-rewards/);
-  assert.match(appHtml, /duo-stat-chip duo-chip-parent/);
+  // La barra superior solo muestra racha y XP; premios y papás van al costado.
+  assert.doesNotMatch(appHtml, /duo-stat-chip duo-chip-rewards/);
+  assert.doesNotMatch(appHtml, /duo-stat-chip duo-chip-parent/);
   assert.match(appHtml, /data-action="rewards-modal"/);
   assert.match(appHtml, /data-action="parent-report"/);
 
@@ -738,7 +743,7 @@ test("the route unlocks in the order students see, with prerequisites and no rel
   let html = h.node("#app").innerHTML;
   assert.match(html, /🔒 Se abre al completar «Suma y resta de enteros en Z»/);
   h.click("lesson:jerarquia-enteros");
-  assert.match(h.node("#app").innerHTML, /Rutas de Aprendizaje/, "locked lessons don't open: the route stays");
+  assert.match(h.node("#app").innerHTML, /<h2>Tu ruta<\/h2>/, "locked lessons don't open: the route stays");
   // En 1° Medio la ruta muestra Productos notables antes que Modelamiento: se
   // desbloquean en ese mismo orden (antes mandaba el orden del catálogo).
   h.click("filter:1m");
