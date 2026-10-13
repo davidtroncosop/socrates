@@ -59,17 +59,13 @@ a:focus-visible {
 }
 .logo-mark {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--blue);
-  color: white;
-  width: 39px;
-  height: 39px;
-  border-radius: 12px;
-  font-size: 25px;
-  font-weight: 800;
-  letter-spacing: -4px;
-  padding-right: 4px;
+  flex: none;
+  width: 40px;
+  height: 40px;
+}
+.logo-mark img {
+  width: 100%;
+  height: 100%;
 }
 .beta {
   font-size: 9px;
@@ -501,8 +497,6 @@ footer .logo {
 footer .logo-mark {
   width: 30px;
   height: 30px;
-  font-size: 20px;
-  border-radius: 9px;
 }
 footer > span {
   font-size: 11px;

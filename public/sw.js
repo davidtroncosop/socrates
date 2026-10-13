@@ -13,6 +13,7 @@ const SHELL = [
   "/landing.css",
   "/manifest.webmanifest",
   "/favicon-32x32.png",
+  "/logo-buho.png",
   "/icon-192.png",
   ...[
     "admin", "api", "app", "auth", "content", "csv", "curriculum", "daily",
