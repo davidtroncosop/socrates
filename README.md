@@ -5,7 +5,7 @@ Espacio de aprendizaje autónomo, al estilo Duolingo, de matemática y comprensi
 ## Ejecutar
 
 ```sh
-npm test                 # 95 pruebas (Node 22+)
+npm test                 # 101 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
@@ -50,17 +50,21 @@ Módulos del cliente (`public/`):
 - **App instalable y sin conexión:** manifiesto, íconos y service worker. Sin conexión se abre la última versión y se sigue practicando; el progreso se sincroniza al volver.
 - **Recordatorio diario:** notificación a la hora que elige el estudiante, solo si ese día no ha practicado. En iPhone requiere agregar la app a la pantalla de inicio (iOS 16.4+).
 - **Diagnóstico adaptativo por curso:** el estudiante elige su curso y responde hasta 4 preguntas de matemática y 4 de lectura de ese curso. Cada materia se detiene en su primer tropiezo, así que suele tomar menos de 5 minutos. Lo resuelto antes del tropiezo queda completado y pendiente de confirmar en un repaso (nunca como dominio); el tropiezo es el punto de partida sugerido. El curso se guarda y la ruta se abre filtrada en él.
+- **Pensado para estudiantes con dificultades de aprendizaje (6° Básico a 4° Medio):** explicaciones con frases cortas y sin tecnicismos; los códigos de objetivos y enlaces del MINEDUC no se le muestran al estudiante (`forStudent`), solo en el mantenedor.
+- **Escuchar (🔊):** la explicación, cada ejercicio y cada pista se pueden oír con la voz del navegador (`public/speak.js`), sin enviar nada a internet. Los símbolos se dicen con palabras: «3 + 4 · 2» suena «tres más cuatro por dos».
+- **Bases para avanzar:** la primera unidad, visible en cualquier curso, repasa valor posicional, sumar y restar con canje, multiplicar con atajos, dividir, fracciones y decimales (3° a 5° Básico). El diagnóstico empieza por la base y recuerda la lección donde conviene partir (`focus`).
+- **Respuestas a la chilena:** se aceptan miles con punto o espacio y el signo $ («2.900», «$2 900»).
 - **Jerarquía de operaciones (PAPOMUDAS):** la primera unidad de matemática recorre el orden de las operaciones de 5° a 8° Básico (MA05 OA 05, MA07 OA 01, MA08 OA 03): multiplicar y dividir antes de sumar y restar, paréntesis y corchetes, enteros y potencias. Cada ejercicio anticipa el error típico de operar de izquierda a derecha.
 - **Materias visibles:** por ahora solo Matemática (`public/subjects.js`). Las lecciones de Lenguaje siguen en el catálogo, en el mantenedor y con sus videos; para mostrarlas basta agregar `"lenguaje"` a `ACTIVE_SUBJECTS`. Con una sola materia se ocultan el filtro y el progreso por materia, y el diagnóstico pregunta solo matemática.
 - Ruta por unidades y filtros por materia y curso (5° Básico a 1° Medio). Las lecciones se desbloquean en orden **dentro de su curso y materia**; la primera de cada curso está abierta.
-- 30 lecciones con cuatro ejercicios, repaso independiente, lección conceptual previa y pistas escalonadas.
+- 36 lecciones con cuatro ejercicios, repaso independiente, lección conceptual previa y pistas escalonadas.
 - **Metadatos explícitos:** cada lección declara `subject` (`matematica`, `lenguaje`) y `grade` (`5b`, `6b`, `7b`, `8b`, `1m`, `2m`). Los filtros y distintivos usan esos campos, no el título. Los catálogos y CSV anteriores se migran: el curso se infiere del prefijo del título («7° Básico · …») y el prefijo se quita.
-- **Ejercicios generados:** 17 lecciones de matemática tienen generador. La primera vez se usan los ejercicios curados. Al volver a practicar una lección completada y en cada repaso, se generan ejercicios nuevos del mismo tipo y dificultad, con respuesta, pista y explicación calculadas. Las lecciones sin generador (lectura, círculos, probabilidad, modelamiento) mantienen su contenido curado.
+- **Ejercicios generados:** 23 lecciones de matemática tienen generador. La primera vez se usan los ejercicios curados. Al volver a practicar una lección completada y en cada repaso, se generan ejercicios nuevos del mismo tipo y dificultad, con respuesta, pista y explicación calculadas. Las lecciones sin generador (lectura, círculos, probabilidad, modelamiento) mantienen su contenido curado.
 - Validación de respuestas equivalentes (enteros, decimales, fracciones y `x = …`), resolución a mano con foto comprimida en el navegador y «Mi cuaderno».
 - Separación entre completar y dominar: el dominio se confirma en un repaso sin ayuda al menos 24 horas después.
 - **Lectura sin adivinar:** en cada sesión se mezcla el orden de las alternativas, así el número correcto no se memoriza ni se puede adivinar respondiendo siempre lo mismo. El repaso de lectura pide dos respuestas correctas (el repaso y el desafío final), lo que baja la probabilidad de confirmar el dominio al azar de 1/3 a 1/9.
 - «Trae tu ejercicio» para ecuaciones `ax + b = cx + d`.
-- **Video animado de cada lección:** las 30 lecciones tienen un video propio, animado y narrado, con subtítulos y metáforas visuales (la balanza y la bolsa misteriosa, el ascensor de los enteros, la cabra del círculo, las baldosas de Pitágoras…). Se guarda en R2 y se sirve desde el mismo sitio (`/media/…`), así que no depende de YouTube ni carga nada de terceros. Tiene prioridad sobre el video de YouTube que defina el catálogo y sigue las mismas reglas de dónde aparece.
+- **Video animado de cada lección:** las 36 lecciones tienen un video propio, animado y narrado, con subtítulos y metáforas visuales (la balanza y la bolsa misteriosa, el ascensor de los enteros, la cabra del círculo, las baldosas de Pitágoras…). Se guarda en R2 y se sirve desde el mismo sitio (`/media/…`), así que no depende de YouTube ni carga nada de terceros. Tiene prioridad sobre el video de YouTube que defina el catálogo y sigue las mismas reglas de dónde aparece.
 - **Videos de YouTube opcionales** por lección, con tramo de inicio y fin. Aparecen en la lección inicial y en la segunda pista de las tres primeras fases; nunca en el desafío de autonomía ni en los repasos, donde se confirma el dominio. Hasta que el estudiante pulsa ▶ la página no hace ninguna petición a Google (ni siquiera la miniatura); luego se usa `youtube-nocookie.com`. Si YouTube está bloqueado, la lección funciona igual y se ofrece un enlace directo. Ver el video queda registrado (`watched`), no cuenta para el dominio, y el apoderado ve cuántos videos vio. Las lecciones con video llevan la etiqueta 🎬 en la ruta.
 
 ## Cuentas, familia y catálogo

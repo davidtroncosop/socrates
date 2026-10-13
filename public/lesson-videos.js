@@ -31,4 +31,10 @@ export const lessonVideos = {
   "jerarquia-parentesis": {"src":"/media/lessons/jerarquia-parentesis-c2b1af4306.mp4","title":"Los paréntesis mandan: explicado en video","duration":84},
   "jerarquia-enteros": {"src":"/media/lessons/jerarquia-enteros-f57e63cf76.mp4","title":"Jerarquía con números enteros: explicado en video","duration":81},
   "jerarquia-potencias": {"src":"/media/lessons/jerarquia-potencias-a75244b528.mp4","title":"Las potencias en la fila: explicado en video","duration":81},
+  "base-valor-posicional": {"src":"/media/lessons/base-valor-posicional-b95d99201d.mp4","title":"Cada cifra vale según su lugar: explicado en video","duration":56},
+  "base-suma-resta": {"src":"/media/lessons/base-suma-resta-04dacb4292.mp4","title":"Sumar y restar con canje: explicado en video","duration":72},
+  "base-multiplicar": {"src":"/media/lessons/base-multiplicar-c9664d7f27.mp4","title":"Multiplicar con atajos: explicado en video","duration":53},
+  "base-dividir": {"src":"/media/lessons/base-dividir-6e8cff0c56.mp4","title":"Dividir es repartir: explicado en video","duration":51},
+  "base-fracciones": {"src":"/media/lessons/base-fracciones-fe7aaa226a.mp4","title":"Fracciones: partes iguales: explicado en video","duration":53},
+  "base-decimales": {"src":"/media/lessons/base-decimales-a18bc3e902.mp4","title":"Decimales con medidas: explicado en video","duration":50},
 };

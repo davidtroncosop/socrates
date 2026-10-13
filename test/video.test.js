@@ -140,3 +140,15 @@ test("media function serves R2 videos with byte ranges and immutable caching", a
     assert.equal((await get(bad)).status, 404, bad);
   assert.equal((await serveMedia(new Request("https://x/media/lessons/a.mp4"), {}, ["lessons", "a.mp4"])).status, 404, "no bucket");
 });
+
+test("read-aloud says math symbols in words and keeps parentheses meaningful", async () => {
+  const { toSpeech } = await import("../public/speak.js");
+  assert.equal(toSpeech("3 + 4 · 2"), "3 más 4 por 2");
+  assert.equal(toSpeech("2x + 3 = 15"), "2 equis más 3 igual a 15");
+  assert.equal(toSpeech("−8 + 2 · 6"), "menos 8 más 2 por 6");
+  assert.equal(toSpeech("20 − 12 ÷ 4"), "20 menos 12 dividido en 4");
+  assert.equal(toSpeech("4 · 2³"), "4 por 2 al cubo");
+  assert.match(toSpeech("(x + 4)²"), /^abre paréntesis, equis más 4, cierra paréntesis al cuadrado$/);
+  assert.equal(toSpeech("📦 Primero el paquete"), "Primero el paquete", "emojis are not read");
+  assert.equal(toSpeech("Explica tu respuesta: x vale 7"), "Explica tu respuesta: equis vale 7", "words with x stay intact");
+});

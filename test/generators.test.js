@@ -19,7 +19,21 @@ const js = (expr) =>
     .replace(/(^|[^\w)])-x/g, "$1-1*x");
 const evaluate = (expr, x) => Function("x", `return (${js(expr)});`)(x);
 
+// Preguntas de las bases escritas con palabras.
+function baseAnswer(expr) {
+  let m;
+  if ((m = expr.match(/^¿Cuánto vale el (\d) en (\d+)\?$/))) return m[1] * 10 ** [...m[2]].reverse().indexOf(m[1]);
+  if ((m = expr.match(/^¿En cuántas partes se corta la pizza en \d+\/(\d+)\?$/))) return Number(m[1]);
+  if ((m = expr.match(/^(\d+)\/(\d+) de (\d+)$/))) return (m[1] / m[2]) * m[3];
+  if ((m = expr.match(/^1\/2 = \?\/(\d+)$/))) return m[1] / 2;
+  if ((m = expr.match(/^([\d,]+) m = \? cm$/))) return Math.round(Number(m[1].replace(",", ".")) * 100);
+  if ((m = expr.match(/^(\d+) láminas ÷ (\d+) amigos$/))) return m[1] % m[2];
+  return null;
+}
 function checkAnswer(id, [expr, answer]) {
+  const base = baseAnswer(expr);
+  if (base !== null) return assert.ok(Math.abs(base - answer) < 1e-9, `${id}: ${expr} ≠ ${answer}`);
+  if (id === "base-decimales") expr = expr.replace(/(\d),(\d)/g, "$1.$2");
   if (/ % de /.test(expr)) {
     const [p, base] = expr.split(" % de ").map(Number);
     return assert.equal(answer, (p * base) / 100, expr);
@@ -55,7 +69,8 @@ test("every generator yields valid, exact questions at every level", () => {
         ],
       });
       for (const q of questions) {
-        assert.ok(Number.isInteger(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
+        assert.ok(Number.isInteger(id === "base-decimales" ? Math.round(q[1] * 100) : q[1]) && Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6, `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);
       }

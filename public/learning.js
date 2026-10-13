@@ -4,9 +4,9 @@ export const lessons = [
     title: "Encuentra el valor de x",
     subject: "matematica",
     grade: "7b",
-    description: "MA07 OA 09 · Operaciones inversas y principio de la balanza",
+    description: "MA07 OA 09 · La balanza: haz lo mismo en los dos lados",
     concept:
-      "Una ecuación es como una balanza en equilibrio (Mineduc MA07 OA 09): el signo igual (=) significa que ambos lados pesan lo mismo. Para despejar la incógnita x, aplicamos operaciones inversas. Principio fundamental: la misma operación que aplicas a un lado de la balanza, debes aplicarla exactamente igual al otro lado para mantener el equilibrio.",
+      "Una ecuación es como una balanza en equilibrio. El signo = dice que los dos lados pesan lo mismo. La x es un número escondido. Para encontrarlo, haz lo mismo en los dos lados. Así la balanza no se cae.",
     examples:
       "Si x + 4 = 9, la operación que acompaña a x es sumar 4. Para mantener el equilibrio, restamos 4 en ambos lados: (x + 4) − 4 = 9 − 4 → x = 5. Comprobamos: 5 + 4 = 9 ✓.",
     questions: [
@@ -45,9 +45,9 @@ export const lessons = [
     title: "Haz las paces con los signos",
     subject: "matematica",
     grade: "8b",
-    description: "MA08 OA 08 · Paréntesis, distribución y números enteros en Z",
+    description: "MA08 OA 08 · Paréntesis y signos menos",
     concept:
-      "El factor fuera del paréntesis multiplica a cada término. Al operar con números enteros (Z), recuerda que (-) × (-) = (+) y (-) × (+) = (-) (Mineduc MA08 OA 08).",
+      "El número de afuera del paréntesis multiplica a cada número de adentro. Cada signo menos es una media vuelta. Dos medias vueltas te dejan mirando al frente: menos por menos da más. Con un solo menos, el resultado es negativo.",
     examples: "−2(x − 3) = −2x + 6: el −2 multiplica tanto a x como a −3.",
     questions: [
       [
@@ -85,9 +85,9 @@ export const lessons = [
     title: "Conecta las dos partes",
     subject: "matematica",
     grade: "8b",
-    description: "MA08 OA 08 · Ecuaciones con incógnita en ambos lados (ax + b = cx + d)",
+    description: "MA08 OA 08 · Cuando hay x en los dos lados",
     concept:
-      "Agrupa las incógnitas en un lado y los números en el otro, aplicando siempre la misma operación a ambos lados (Mineduc MA08 OA 08).",
+      "A veces hay x en los dos lados de la balanza. Primero junta todas las x en un lado. Después junta los números en el otro lado. Haz siempre lo mismo en los dos lados.",
     examples: "3x + 1 = x + 9 → 2x + 1 = 9 → 2x = 8 → x = 4.",
     questions: [
       [
@@ -125,9 +125,9 @@ export const lessons = [
     title: "Ecuaciones con racionales y decimales",
     subject: "matematica",
     grade: "8b",
-    description: "MA08 OA 08 · Coeficientes racionales en Q y valores decimales",
+    description: "MA08 OA 08 · Ecuaciones con números con coma",
     concept:
-      "En los números racionales (Q), una ecuación con decimales se resuelve aislando los términos en x o amplificando para operar con enteros (Mineduc MA08 OA 08).",
+      "0,5x es la mitad de x: media bolsa. Si la coma te complica, multiplica todo por 10. Así 0,5 se convierte en 5. Multiplica todos los números, no solo uno.",
     examples: "0.5x + 3 = 7 → 0.5x = 4 → x = 4 ÷ 0.5 = 8.",
     questions: [
       [
@@ -165,9 +165,9 @@ export const lessons = [
     title: "Distribución y reducción combinada",
     subject: "matematica",
     grade: "8b",
-    description: "MA08 OA 08 · Ecuaciones complejas con varios pasos de simplificación",
+    description: "MA08 OA 08 · Ecuaciones con paréntesis, en tres pasos",
     concept:
-      "Para resolver ecuaciones complejas: primero elimina paréntesis distribuyendo, luego reduce términos semejantes y finalmente despeja la incógnita (Mineduc MA08 OA 08).",
+      "Con paréntesis, sigue tres pasos. Uno: desarma el paréntesis multiplicando cada número de adentro. Dos: junta las x en un lado y los números en el otro. Tres: despeja la x.",
     examples: "2(3x − 1) = 4x + 6 → 6x − 2 = 4x + 6 → 2x = 8 → x = 4.",
     questions: [
       [
@@ -205,9 +205,9 @@ export const lessons = [
     title: "Modelamiento y problemas reales",
     subject: "matematica",
     grade: "1m",
-    description: "MA08 OA 08 / MA01 OA 04 · Planteamiento y resolución de situaciones cotidianas",
+    description: "MA08 OA 08 / MA01 OA 04 · De un problema en palabras a una ecuación",
     concept:
-      "Modelar es traducir un problema real a lenguaje matemático (Mineduc MA08 OA 08 / MA01 OA 04): define la incógnita x, escribe la relación como ecuación y comprueba la solución en el contexto.",
+      "Un problema es un mensaje en palabras. Primero decide qué es x: lo que no sabes. Después traduce cada frase a números. Resuelve la ecuación. Al final, revisa si tu respuesta tiene sentido.",
     examples: "El doble de un número más 5 es 21: 2x + 5 = 21 → 2x = 16 → x = 8.",
     questions: [
       [
@@ -245,9 +245,9 @@ export const lessons = [
     title: "Suma y resta de enteros en Z",
     subject: "matematica",
     grade: "7b",
-    description: "MA07 OA 01 · Reglas de signos, valor absoluto y recta numérica",
+    description: "MA07 OA 01 · Números negativos con el ascensor",
     concept:
-      "En los números enteros (Z), sumar valores con signos iguales mantiene el signo; sumar con signos opuestos resta sus valores y mantiene el signo del mayor en valor absoluto (Mineduc MA07 OA 01).",
+      "Piensa en un ascensor con subterráneos. Los números negativos son los pisos bajo la calle. Sumar es subir. Restar es bajar. Restar un negativo es quitar una deuda: también es subir.",
     examples: "−8 + 15 = 7; y −4 − 9 = −13.",
     questions: [
       [
@@ -285,9 +285,9 @@ export const lessons = [
     title: "Reducción de términos semejantes",
     subject: "matematica",
     grade: "7b",
-    description: "MA07 OA 07 · Expresiones algebraicas y coeficientes numéricos",
+    description: "MA07 OA 07 · Juntar términos con la misma letra",
     concept:
-      "Para reducir términos semejantes se suman o restan únicamente sus coeficientes numéricos, conservando intacta la parte literal (Mineduc MA07 OA 07).",
+      "Solo se juntan los términos con la misma letra, como frutas iguales. 3x + 8x = 11x, igual que 3 manzanas + 8 manzanas. 3x + 2y no se juntan: son frutas distintas. Se suman los números y la letra queda igual.",
     examples: "4x + 7x = 11x; y 9x − 12x = −3x.",
     questions: [
       [
@@ -325,9 +325,9 @@ export const lessons = [
     title: "Proporcionalidad directa y regla de tres",
     subject: "matematica",
     grade: "7b",
-    description: "MA07 OA 08 · Constante de proporcionalidad k y cálculo de incógnitas",
+    description: "MA07 OA 08 · Buscar el valor de uno",
     concept:
-      "Dos variables son directamente proporcionales cuando su cociente es constante (y = k · x). Si a/b = c/x, entonces x = (b · c) / a (Mineduc MA07 OA 08).",
+      "Dos cantidades son proporcionales si crecen al mismo ritmo. El truco es buscar el valor de uno. Si 2 cuadernos cuestan $6 000, uno cuesta $3 000. Para 5 cuadernos: 5 · 3 000 = 15 000.",
     examples: "Si 2 cuadernos cuestan $6, cada uno cuesta $3 (k = 3). 5 cuadernos costarán 5 · 3 = $15.",
     questions: [
       [
@@ -365,9 +365,9 @@ export const lessons = [
     title: "Potencias y propiedades de exponentes",
     subject: "matematica",
     grade: "8b",
-    description: "MA08 OA 03 · Multiplicación y división de potencias de igual base",
+    description: "MA08 OA 03 · Multiplicaciones repetidas",
     concept:
-      "Al multiplicar potencias de igual base se suman los exponentes: a^n · a^m = a^(n+m). Al dividir se restan: a^n ÷ a^m = a^(n-m) (Mineduc MA08 OA 03).",
+      "Una potencia es una multiplicación repetida. 2³ = 2 · 2 · 2 = 8. El número pequeño de arriba dice cuántas veces se multiplica. Con la misma base: al multiplicar, se suman los de arriba; al dividir, se restan.",
     examples: "2^3 · 2^2 = 2^(3+2) = 2^5 = 32. Y 3^4 ÷ 3^2 = 3^2 = 9.",
     questions: [
       [
@@ -405,9 +405,9 @@ export const lessons = [
     title: "Función afín y pendiente",
     subject: "matematica",
     grade: "8b",
-    description: "MA08 OA 07 · Evaluación de f(x) = mx + n, pendiente m e intercepto",
+    description: "MA08 OA 07 · La entrada y lo que sube en cada paso",
     concept:
-      "Una función afín tiene la forma f(x) = mx + n, donde m es la pendiente (tasa de cambio) y n es el valor inicial cuando x = 0 (Mineduc MA08 OA 07).",
+      "Una función es como pagar en un parque de diversiones. n es la entrada: lo que pagas al empezar. m es lo que sube por cada juego. Para calcular f(3), cambia la x por 3 y haz la cuenta.",
     examples: "Si f(x) = 2x + 5, para x = 3 la imagen es f(3) = 2(3) + 5 = 11.",
     questions: [
       [
@@ -445,9 +445,9 @@ export const lessons = [
     title: "Productos notables y binomios",
     subject: "matematica",
     grade: "1m",
-    description: "MA01 OA 03 · Cuadrado de binomio (a+b)² y suma por su diferencia",
+    description: "MA01 OA 03 · El cuadrado que se agranda",
     concept:
-      "Los productos notables permiten multiplicar expresiones algebraicas de forma directa (Mineduc MA01 OA 03): (a + b)² = a² + 2ab + b²; (a + b)(a − b) = a² − b².",
+      "(x + 4)² es un cuadrado de lado x + 4. Tiene cuatro partes: x², dos franjas de 4x y un cuadradito de 16. Por eso (x + 4)² = x² + 8x + 16. No olvides las dos franjas del medio.",
     examples: "(x + 4)² = x² + 8x + 16 (el término central es el doble producto: 2 · x · 4 = 8x).",
     questions: [
       [
@@ -497,9 +497,18 @@ export function parseNumber(raw) {
   const n = parts.length === 2 ? parts[0] / parts[1] : parts[0];
   return Number.isFinite(n) ? n : null;
 }
+// En Chile los miles se separan con punto o espacio («2.900», «2 900») y a
+// veces se escribe el signo $. Una respuesta es correcta si alguna de sus
+// lecturas coincide: «2.900» puede ser 2900 o 2,9.
+export function readings(raw) {
+  const s = String(raw).trim().replace(/^\$\s*/, "");
+  const out = [parseNumber(s)];
+  const grouped = s.replace(/(\d)[ .](?=\d{3}(?:[ .]\d{3})*(?:,\d+)?$)/g, "$1");
+  if (grouped !== s) out.push(parseNumber(grouped));
+  return out.filter((n) => n !== null);
+}
 export function isCorrect(raw, answer) {
-  const n = parseNumber(raw);
-  return n !== null && Math.abs(n - answer) < 1e-8;
+  return readings(raw).some((n) => Math.abs(n - answer) < 1e-8);
 }
 // Restricted, explicit grammar: ax + b = cx + d. No eval or arbitrary expression execution.
 export function solveLinear(raw) {
@@ -606,6 +615,8 @@ export function loadState(
         : [],
       grade: s.grade in GRADES ? s.grade : undefined,
       dailyGoal: [30, 50, 80].includes(s.dailyGoal) ? s.dailyGoal : undefined,
+      // Lección por la que el diagnóstico sugirió empezar.
+      focus: typeof s.focus === "string" && ids.has(s.focus) ? s.focus : undefined,
       // Lecciones cuyo video se reprodujo; informativo, no cuenta para el dominio.
       watched: Array.isArray(s.watched)
         ? [...new Set(s.watched.filter((id) => ids.has(id)))]
@@ -741,6 +752,7 @@ export function mergeStates(local, remote) {
     diagnosed: local.diagnosed || remote.diagnosed,
     grade: newer.grade ?? older.grade,
     dailyGoal: newer.dailyGoal ?? older.dailyGoal,
+    focus: newer.focus ?? older.focus,
     completed: unique([...local.completed, ...remote.completed], (id) => id),
     mastered: [...newer.mastered],
     attempts: unique(
@@ -801,6 +813,18 @@ export function shuffleAlternatives(q, rng = Math.random) {
     "\n" +
     order.map((from, i) => `${i + 1}. ${parsed.options[from]}`).join("\n");
   return [text, order.indexOf(q[1] - 1) + 1, ...q.slice(2)];
+}
+
+// Lo que lee el estudiante: sin códigos de objetivos ni referencias
+// curriculares, que son información para adultos (el mantenedor las conserva).
+export function forStudent(text) {
+  return String(text ?? "")
+    .split("\n")
+    .filter((line) => !/^(Referencia curricular|Actividad original)/.test(line.trim()))
+    .join("\n")
+    .replace(/\s*\((?:Mineduc|MINEDUC)[^)]*\)/g, "")
+    .replace(/^\s*(?:(?:MA|LE)\d{2} OA \d{1,2}\s*(?:\/\s*)?)+·\s*/, "")
+    .trim();
 }
 
 export const GRADES = {

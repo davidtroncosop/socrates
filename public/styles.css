@@ -3168,3 +3168,35 @@ select {
 .link-button:hover {
   background: transparent;
 }
+
+/* Leer en voz alta */
+.statement-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.statement-row .exercise-statement {
+  margin: 0;
+}
+.speak-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: 1px solid #c7d7fe;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.speak-btn:hover {
+  background: #dbeafe;
+}
+.statement-row .speak-btn {
+  margin-top: 0;
+}

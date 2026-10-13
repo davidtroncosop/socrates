@@ -258,3 +258,12 @@ test("archives survive loading and photos are stored apart from progress", async
   assert.deepEqual(JSON.parse(values.get("k")).completed, ["equations", "signs"]);
   assert.equal(JSON.parse(values.get(photosKey("k")))["6|u"], undefined);
 });
+
+test("answers written the Chilean way are accepted", async () => {
+  const { isCorrect } = await import("../public/learning.js");
+  for (const raw of ["2900", "2.900", "2 900", "$2.900", "$ 2 900"]) assert.ok(isCorrect(raw, 2900), raw);
+  assert.ok(isCorrect("2.900", 2.9), "still a decimal when that is the answer");
+  assert.ok(isCorrect("3,75", 3.75));
+  assert.ok(!isCorrect("2.90", 2900));
+  assert.ok(!isCorrect("29.00", 2900));
+});

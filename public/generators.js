@@ -566,6 +566,205 @@ function jerarquiaPotencias(rng, level) {
   ];
 }
 
+// Bases (para todos los cursos). Cada nivel anticipa el error típico.
+const comma = (n) => String(Math.round(n * 100) / 100).replace(".", ",");
+const PLACE = [1, 10, 100];
+
+function baseValorPosicional(rng, level) {
+  if (level === 0) {
+    // Una cifra que no se repita, para que la pregunta no sea ambigua.
+    const digits = [int(rng, 1, 9), int(rng, 0, 9), int(rng, 0, 9)];
+    const place = int(rng, 0, 2);
+    const d = digits[2 - place] || 5;
+    digits[2 - place] = d;
+    for (let i = 0; i < 3; i++) if (i !== 2 - place && digits[i] === d) digits[i] = (d % 9) + 1 === d ? 0 : (d % 9) + 1;
+    if (digits[0] === 0) digits[0] = d === 1 ? 2 : 1;
+    const n = Number(digits.join(""));
+    const names = ["unidades", "decenas", "centenas"];
+    return [
+      `¿Cuánto vale el ${d} en ${n}?`, d * PLACE[place],
+      `Escribe cuánto vale el ${d} según su lugar.`,
+      `💰 Cuenta los lugares desde la derecha: unidades, decenas, centenas.`,
+      `El ${d} está en las ${names[place]}: ${d} · ${PLACE[place]} = ${d * PLACE[place]}.`,
+      [[d, `Esa es la cifra, pero vale según su lugar: está en las ${names[place]}.`]],
+    ];
+  }
+  if (level === 1) {
+    const [a, b, c] = [int(rng, 1, 9), int(rng, 1, 9), int(rng, 1, 9)];
+    return [
+      `${a * 100} + ${b * 10} + ${c}`, a * 100 + b * 10 + c,
+      "Junta las monedas en un solo número.",
+      `${a} monedas de $100, ${b} de $10 y ${c} de $1.`,
+      `${a * 100} + ${b * 10} + ${c} = ${a * 100 + b * 10 + c}.`,
+      [[a + b + c, "No se suman las cifras: cada una va en su lugar."]],
+    ];
+  }
+  if (level === 2) {
+    const n = int(rng, 11, 99);
+    return [
+      `${n} · 10`, n * 10, "Multiplica por 10.",
+      "Por 10, todo sube un lugar: se agrega un cero a la derecha.",
+      `${n} · 10 = ${n * 10}.`,
+      [[n + 10, `Sumaste 10. Multiplicar por 10 es tener 10 veces lo mismo: ${n * 10}.`], [n * 100, `Por 10 se agrega un solo cero: ${n * 10}.`]],
+    ];
+  }
+  const [a, b, c] = [int(rng, 2, 8), int(rng, 10, 19), int(rng, 1, 9)];
+  return [
+    `${a} · 100 + ${b} · 10 + ${c}`, a * 100 + b * 10 + c,
+    `Tienes ${a} monedas de $100, ${b} de $10 y ${c} de $1. ¿Cuánto dinero tienes?`,
+    `${b} monedas de $10 son $${b * 10}.`,
+    `${a * 100} + ${b * 10} + ${c} = ${a * 100 + b * 10 + c}.`,
+    [[Number(`${a}${b}${c}`), `No se escriben las cantidades una al lado de la otra: ${b} monedas de $10 son $${b * 10}.`]],
+  ];
+}
+
+// Cifras por lugar (unidades primero) para calcular los errores de columna.
+const columns = (n, size) => Array.from({ length: size }, (_, i) => Math.floor(n / 10 ** i) % 10);
+const noCarrySum = (a, b, size) =>
+  columns(a, size).reduce((t, d, i) => t + ((d + columns(b, size)[i]) % 10) * 10 ** i, 0);
+const absDiff = (a, b, size) =>
+  columns(a, size).reduce((t, d, i) => t + Math.abs(d - columns(b, size)[i]) * 10 ** i, 0);
+
+function baseSumaResta(rng, level) {
+  if (level === 0) {
+    const [a0, b0] = [int(rng, 3, 9), int(rng, 3, 9)];
+    const fix0 = a0 + b0 < 10 ? 10 - a0 - b0 : 0;
+    const a = int(rng, 1, 4) * 10 + a0;
+    const b = int(rng, 1, 4) * 10 + Math.min(9, b0 + fix0);
+    return [
+      `${a} + ${b}`, a + b, "Suma con canje.",
+      "Si las unidades suman 10 o más, deja las unidades y lleva 1 decena.",
+      `${a} + ${b} = ${a + b}.`,
+      [[noCarrySum(a, b, 2), "Olvidaste la decena que llevabas."]],
+    ];
+  }
+  if (level === 1) {
+    // Las unidades siempre suman 10 o más: hay canje.
+    const a0 = int(rng, 3, 9);
+    const a = int(rng, 1, 4) * 100 + int(rng, 1, 8) * 10 + a0;
+    const b = int(rng, 1, 4) * 100 + int(rng, 1, 8) * 10 + int(rng, 10 - a0, 9);
+    return [
+      `${a} + ${b}`, a + b, "Suma con canje.",
+      "Suma cada lugar por separado. Si juntas 10 o más, lleva 1 al lugar siguiente.",
+      `${a} + ${b} = ${a + b}.`,
+      [[noCarrySum(a, b, 3), "Olvidaste lo que llevabas de un lugar al siguiente."]],
+    ];
+  }
+  if (level === 2) {
+    const a = int(rng, 4, 9) * 10 + int(rng, 0, 4);
+    const b = int(rng, 1, Math.floor(a / 10) - 1) * 10 + int(rng, (a % 10) + 1, 9);
+    return [
+      `${a} − ${b}`, a - b, "Resta con canje.",
+      "Si las unidades no alcanzan, cambia una decena por 10 unidades.",
+      `${a} − ${b} = ${a - b}.`,
+      [[absDiff(a, b, 2), "Restaste al revés en las unidades. Cuando no alcanza, cambia una decena por 10 unidades."]],
+    ];
+  }
+  const a = int(rng, 3, 9) * 100 + int(rng, 0, 5);
+  const b = int(rng, 1, Math.floor(a / 100) - 1) * 100 + int(rng, 1, 9) * 10 + int(rng, (a % 10) + 1, 9);
+  return [
+    `${a} − ${b}`, a - b, "Resta con canje, aunque haya un cero.",
+    "En las decenas hay 0: primero cambia una centena por 10 decenas, y después una decena por 10 unidades.",
+    `${a} − ${b} = ${a - b}.`,
+    [[absDiff(a, b, 3), "Restaste el número chico del grande en cada lugar. Cuando no alcanza, hay que cambiar."]],
+  ];
+}
+
+function baseMultiplicar(rng, level) {
+  if (level === 0) {
+    const n = int(rng, 3, 9);
+    return [`${n} · 4`, n * 4, "Usa el atajo del doble del doble.", `${n} · 2 = ${n * 2}. Ahora el doble de ${n * 2}.`, `${n} · 2 = ${n * 2} y el doble es ${n * 4}.`,
+      [[n + 4, `Sumaste. Multiplicar es juntar ${n} grupos de 4: ${n * 4}.`]]];
+  }
+  if (level === 1) {
+    const n = int(rng, 12, 24);
+    return [`5 · ${n}`, 5 * n, "Usa el atajo de la mitad.", `${n} · 10 = ${n * 10}. Ahora la mitad.`, `5 · ${n} es la mitad de ${n * 10}: ${5 * n}.`,
+      [[5 + n, `Sumaste. Por 5 es la mitad de por 10: ${5 * n}.`], [10 * n, `Eso es por 10. Por 5 es la mitad: ${5 * n}.`]]];
+  }
+  if (level === 2) {
+    const n = int(rng, 3, 9);
+    return [`9 · ${n}`, 9 * n, "Usa el atajo de por 10 menos una vez.", `10 · ${n} = ${10 * n}. Ahora quita un ${n}.`, `9 · ${n} = ${10 * n} − ${n} = ${9 * n}.`,
+      [[10 * n, `Eso es 10 · ${n}. Por 9 es una vez menos: ${9 * n}.`], [9 + n, `Sumaste. Multiplicar es juntar 9 grupos de ${n}: ${9 * n}.`]]];
+  }
+  const [a, b] = [int(rng, 6, 9), int(rng, 6, 9)];
+  return [`${a} · ${b}`, a * b, "Elige el atajo que quieras.", "Por ejemplo: el doble, la mitad de por 10, o por 10 menos una vez.", `${a} · ${b} = ${a * b}.`,
+    [[a + b, `Sumaste. Multiplicar es juntar ${a} grupos de ${b}: ${a * b}.`]]];
+}
+
+function baseDividir(rng, level) {
+  if (level <= 1) {
+    const b = level === 0 ? int(rng, 2, 5) : int(rng, 6, 9);
+    const q = int(rng, 3, 9);
+    return [`${b * q} ÷ ${b}`, q, "Reparte en partes iguales.", `¿Qué número por ${b} da ${b * q}?`, `${b} · ${q} = ${b * q}, así que ${b * q} ÷ ${b} = ${q}.`,
+      [[b * q - b, `Restaste ${b}. Dividir es repartir: ¿qué número por ${b} da ${b * q}?`], [b * q * b, "Multiplicaste. Dividir es lo contrario."]]];
+  }
+  if (level === 2) {
+    const b = int(rng, 3, 6);
+    const q = int(rng, 4, 9);
+    const r = int(rng, 1, b - 1);
+    const n = b * q + r;
+    return [`${n} láminas ÷ ${b} amigos`, r, `Reparte ${n} láminas entre ${b} amigos, todos con la misma cantidad. ¿Cuántas sobran?`,
+      `${b} · ${q} = ${b * q}. ¿Cuánto falta de ${b * q} a ${n}?`, `A cada amigo le tocan ${q} (${b} · ${q} = ${b * q}) y sobran ${n} − ${b * q} = ${r}.`,
+      [[q, `${q} es lo que le toca a cada uno. La pregunta es cuántas sobran: ${r}.`]]];
+  }
+  const b = int(rng, 2, 4);
+  const q = int(rng, 11, Math.floor(99 / b));
+  return [`${b * q} ÷ ${b}`, q, "Divide por partes.", `Reparte primero las decenas y después las unidades.`, `${b * q} ÷ ${b} = ${q}, porque ${b} · ${q} = ${b * q}.`,
+    [[b * q * b, "Multiplicaste. Dividir es repartir en partes iguales."]]];
+}
+
+function baseFracciones(rng, level) {
+  if (level === 0) {
+    const b = int(rng, 3, 9);
+    const a = int(rng, 1, b - 1);
+    return [`¿En cuántas partes se corta la pizza en ${a}/${b}?`, b, "Mira el número de abajo.", "🍕 El número de abajo dice en cuántas partes iguales se corta.",
+      `En ${a}/${b} la pizza se corta en ${b} partes y se toman ${a}.`,
+      [[a, `El ${a} es cuántas partes tomas. El número de abajo, ${b}, dice en cuántas se corta.`]]];
+  }
+  if (level === 1) {
+    const b = int(rng, 2, 6);
+    const k = int(rng, 2, 9);
+    return [`1/${b} de ${b * k}`, k, "Calcula la parte.", `Divide en ${b} partes iguales.`, `${b * k} ÷ ${b} = ${k}.`,
+      [[b * k * b, `Multiplicaste. Es dividir en ${b} partes: ${k}.`], [b * k - b, `Restaste. Es dividir en ${b} partes iguales: ${k}.`]]];
+  }
+  if (level === 2) {
+    const b = int(rng, 3, 6);
+    const a = int(rng, 2, b - 1);
+    const k = int(rng, 2, 9);
+    return [`${a}/${b} de ${b * k}`, a * k, "Calcula la parte.", `Divide ${b * k} en ${b} partes y toma ${a}.`, `${b * k} ÷ ${b} = ${k}; ${a} · ${k} = ${a * k}.`,
+      [[k, `Esa es una sola parte. Toma ${a}: ${a * k}.`], [a * b * k, `Te faltó dividir en ${b} partes.`]]];
+  }
+  const k = int(rng, 2, 6);
+  return [`1/2 = ?/${2 * k}`, k, "Encuentra la fracción equivalente.", `${2 * k} partes forman el entero. ¿Cuántas son la mitad?`, `La mitad de ${2 * k} es ${k}: 1/2 = ${k}/${2 * k}.`,
+    [[2, `La mitad no son 2 partes: ${2 * k} forman el entero, y la mitad son ${k}.`]]];
+}
+
+function baseDecimales(rng, level) {
+  if (level === 0) {
+    const d = int(rng, 1, 9);
+    return [`0,${d} m = ? cm`, d * 10, "Convierte a centímetros.", "📏 Un metro tiene 100 cm.", `0,${d} · 100 = ${d * 10} cm.`,
+      [[d, `Para pasar de metros a centímetros se multiplica por 100: ${d * 10}.`]]];
+  }
+  if (level === 1) {
+    const cm = int(rng, 11, 99);
+    const m = 1 + cm / 100;
+    return [`${comma(m)} m = ? cm`, 100 + cm, "Convierte a centímetros.", `1 m son 100 cm, y 0,${String(cm).padStart(2, "0")} m son ${cm} cm.`, `${comma(m)} · 100 = ${100 + cm} cm.`,
+      [[Math.round((100 + cm)) / 10, `Para pasar de metros a centímetros se multiplica por 100: ${100 + cm}.`]]];
+  }
+  if (level === 2) {
+    const a = int(rng, 1, 5) + int(rng, 1, 9) / 10;
+    const b = int(rng, 1, 5) + int(rng, 11, 99) / 100;
+    const sum = Math.round((a + b) * 100) / 100;
+    return [`${comma(a)} + ${comma(b)}`, sum, "Suma con la coma debajo de la coma.", `Escribe ${comma(a)}0 + ${comma(b)}.`, `${comma(a)}0 + ${comma(b)} = ${comma(sum)}.`,
+      [[Math.round((Math.trunc(a) + Math.trunc(b) + (Math.round((a % 1) * 10) + Math.round((b % 1) * 100)) / 100) * 100) / 100, `El ${comma(a)} tiene décimas: escríbelo como ${comma(a)}0 y suma con la coma debajo de la coma.`]]];
+  }
+  const n = int(rng, 2, 9);
+  const d = int(rng, 1, 9);
+  const diff = Math.round((n - d / 10) * 10) / 10;
+  return [`${n} − 0,${d}`, diff, "Resta con la coma debajo de la coma.", `Escribe ${n} como ${n},0.`, `${n},0 − 0,${d} = ${comma(diff)}.`,
+    [[Math.abs(d - n), `Escribe ${n} como ${n},0: ${n},0 − 0,${d} = ${comma(diff)}.`]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -584,6 +783,12 @@ export const generators = {
   "jerarquia-parentesis": jerarquiaParentesis,
   "jerarquia-enteros": jerarquiaEnteros,
   "jerarquia-potencias": jerarquiaPotencias,
+  "base-valor-posicional": baseValorPosicional,
+  "base-suma-resta": baseSumaResta,
+  "base-multiplicar": baseMultiplicar,
+  "base-dividir": baseDividir,
+  "base-fracciones": baseFracciones,
+  "base-decimales": baseDecimales,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);

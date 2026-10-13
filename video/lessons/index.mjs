@@ -25,12 +25,19 @@ import figuras from "./lectura-figuras-8b.mjs";
 import conflictos from "./lectura-conflictos-8b.mjs";
 import simbolos from "./lectura-simbolos-1m.mjs";
 import critica from "./lectura-critica-1m.mjs";
+import baseValor from "./base-valor-posicional.mjs";
+import baseSuma from "./base-suma-resta.mjs";
+import baseMult from "./base-multiplicar.mjs";
+import baseDiv from "./base-dividir.mjs";
+import baseFrac from "./base-fracciones.mjs";
+import baseDec from "./base-decimales.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  baseValor, baseSuma, baseMult, baseDiv, baseFrac, baseDec,
   jerarquiaMult, jerarquiaParentesis, jerarquiaEnteros, jerarquiaPotencias,
   equations, signs, both, racionales, combinadas, problemas, enteros, semejantes,
   proporciones, potencias, funcion, notables, porcentajes, circulos, pitagoras,

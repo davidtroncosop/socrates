@@ -12,7 +12,7 @@ import {
 import { loadState } from "../public/learning.js";
 test("initial catalog supplies complete independent reviews", () => {
   const catalog = validateCatalog(seedCatalog());
-  assert.equal(catalog.lessons.length, 30);
+  assert.equal(catalog.lessons.length, 36);
   for (const l of catalog.lessons) {
     assert.equal(l.questions.length, 4);
     assert.notEqual(l.review[0], l.questions[3][0]);

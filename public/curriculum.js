@@ -5,8 +5,8 @@ export const curriculumLessons = [
     "title": "Porcentajes en la vida diaria",
     "subject": "matematica",
     "grade": "7b",
-    "description": "MA07 OA 04 · Números",
-    "concept": "Un porcentaje expresa una cantidad por cada cien. Para calcular p % de una cantidad, multiplícala por p y divide entre 100.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70515.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "description": "MA07 OA 04 · Partes de cada 100",
+    "concept": "Por ciento significa de cada 100. El 25 % es 25 de cada 100: un cuarto. Para calcular un porcentaje, multiplica por el número y divide por 100. El 10 % es dividir por 10.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70515.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "El 25 % de 80 es 80 × 25 ÷ 100 = 20.",
     "status": "published",
     "questions": [
@@ -52,8 +52,8 @@ export const curriculumLessons = [
     "title": "Radio, perímetro y área",
     "subject": "matematica",
     "grade": "7b",
-    "description": "MA07 OA 11 · Geometría",
-    "concept": "El diámetro es dos veces el radio. La longitud de la circunferencia es 2πr y el área del círculo es πr². En esta lección usa π ≈ 3,14.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-11\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "description": "MA07 OA 11 · La cabra, la cuerda y el pasto",
+    "concept": "Imagina una cabra amarrada a una estaca. La cuerda es el radio. El diámetro son dos radios. El camino alrededor es el perímetro: 2 · π · r. El pasto de adentro es el área: π · r². Usa π ≈ 3,14.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-11\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Con radio 2 cm: diámetro 4 cm, perímetro 12,56 cm y área 12,56 cm².",
     "status": "published",
     "questions": [
@@ -99,8 +99,8 @@ export const curriculumLessons = [
     "title": "Distancias con Pitágoras",
     "subject": "matematica",
     "grade": "8b",
-    "description": "MA08 OA 12 · Geometría",
-    "concept": "En un triángulo rectángulo, a² + b² = c². Los catetos a y b forman el ángulo recto; la hipotenusa c está enfrente y es el lado más largo.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70561.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "description": "MA08 OA 12 · Triángulos con una esquina recta",
+    "concept": "Sirve solo en triángulos con una esquina recta. Los dos lados de esa esquina son los catetos. El lado más largo es la hipotenusa. La regla es a² + b² = c², donde c es la hipotenusa.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/614/w3-article-70561.html\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Con catetos 3 y 4: c² = 9 + 16 = 25; c = 5.",
     "status": "published",
     "questions": [
@@ -146,8 +146,8 @@ export const curriculumLessons = [
     "title": "Probabilidad y frecuencias",
     "subject": "matematica",
     "grade": "7b",
-    "description": "MA07 OA 18 · Probabilidad y estadística",
-    "concept": "La frecuencia relativa es el número de veces que ocurre un evento dividido por el total de ensayos. Permite estimar probabilidades; una estimación no garantiza el resultado siguiente.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-18\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "description": "MA07 OA 18 · Qué parte de las veces pasa algo",
+    "concept": "La frecuencia relativa dice qué parte de las veces pasó algo. Se calcula así: veces que pasó ÷ total de intentos. Si sale cara 12 de 20 veces: 12 ÷ 20 = 0,6. Sirve para estimar, pero la moneda no tiene memoria.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-18\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Si sale cara 12 veces en 20 lanzamientos, su frecuencia relativa es 12/20 = 0,6.",
     "status": "published",
     "questions": [
@@ -664,8 +664,8 @@ export const curriculumLessons = [
     "title": "Primero multiplicar y dividir",
     "subject": "matematica",
     "grade": "5b",
-    "description": "MA05 OA 05 · Operaciones combinadas",
-    "concept": "En una expresión con varias operaciones, primero se resuelven las multiplicaciones y divisiones, de izquierda a derecha, y después las sumas y restas, también de izquierda a derecha. Piensa en cada multiplicación como un paquete cerrado: primero cuentas lo que trae el paquete y después juntas todo.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "description": "MA05 OA 05 · Primero multiplicar y dividir",
+    "concept": "Cuando hay varias operaciones, hay un orden. Primero multiplica y divide. Después suma y resta. Piensa en la multiplicación como una bolsa cerrada: primero cuentas lo que trae.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "3 + 4 · 2: primero el paquete, 4 · 2 = 8, y después 3 + 8 = 11. No es 14.",
     "status": "published",
     "questions": [
@@ -746,8 +746,8 @@ export const curriculumLessons = [
     "title": "Los paréntesis mandan",
     "subject": "matematica",
     "grade": "6b",
-    "description": "MA05 OA 05 · Paréntesis y operaciones combinadas",
-    "concept": "Los paréntesis cambian el orden: lo que está adentro se resuelve primero, aunque sea una suma. Si hay un paréntesis dentro de un corchete, empieza por el de más adentro, como abrir cajas guardadas una dentro de otra. El orden completo se recuerda con PAPOMUDAS (en inglés, PEMDAS): Paréntesis, Potencias, Multiplicación y División, Adición y Sustracción.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "description": "MA05 OA 05 · Lo de adentro va primero",
+    "concept": "Lo que está dentro del paréntesis va primero. Si hay cajas dentro de cajas, empieza por la de más adentro. El orden completo es PAPOMUDAS: Paréntesis, Potencias, Multiplicación y División, Adición y Sustracción.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "(3 + 4) · 2 = 7 · 2 = 14, mientras que 3 + 4 · 2 = 11.",
     "status": "published",
     "questions": [
@@ -828,8 +828,8 @@ export const curriculumLessons = [
     "title": "Jerarquía con números enteros",
     "subject": "matematica",
     "grade": "7b",
-    "description": "MA07 OA 01 · Operaciones combinadas con números enteros",
-    "concept": "Con números negativos la jerarquía es la misma: primero los paréntesis, después las multiplicaciones y divisiones, y al final las sumas y restas, de izquierda a derecha. Para sumar y restar enteros usa la recta numérica, como un ascensor: sumar es subir y restar es bajar.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-01\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "description": "MA07 OA 01 · El mismo orden, con negativos",
+    "concept": "Con números negativos, el orden es el mismo. Primero los paréntesis. Después multiplica y divide. Al final suma y resta. Para sumar y restar, usa el ascensor: sumar es subir y restar es bajar.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-01\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "−8 + 2 · 6 = −8 + 12 = 4.",
     "status": "published",
     "questions": [
@@ -922,8 +922,8 @@ export const curriculumLessons = [
     "title": "Las potencias en la fila",
     "subject": "matematica",
     "grade": "8b",
-    "description": "MA08 OA 03 · Potencias en operaciones combinadas",
-    "concept": "Las potencias van justo después de los paréntesis: antes que multiplicar, dividir, sumar o restar. La potencia está pegada a su base: en 2 + 3², solo el 3 se eleva al cuadrado. Orden completo, PAPOMUDAS (en inglés, PEMDAS): Paréntesis, Potencias, Multiplicación y División, Adición y Sustracción.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-03\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "description": "MA08 OA 03 · Las potencias van segundas",
+    "concept": "Las potencias van justo después de los paréntesis. La potencia solo afecta a su número: en 2 + 3², solo el 3 se eleva. 3² = 3 · 3 = 9. Recuerda el orden PAPOMUDAS.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-03\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "2 + 3² = 2 + 9 = 11; en cambio, (2 + 3)² = 5² = 25.",
     "status": "published",
     "questions": [
@@ -1002,6 +1002,526 @@ export const curriculumLessons = [
         [
           12,
           "La resta y la suma van de izquierda a derecha: 25 − 12 = 13 y después 13 + 1 = 14."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-valor-posicional",
+    "since": "2026-10-13",
+    "title": "Cada cifra vale según su lugar",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 01 · Monedas de $1, $10 y $100",
+    "concept": "Cada cifra vale según el lugar donde está, como monedas. En 482 hay 4 monedas de $100, 8 de $10 y 2 de $1. Por eso el 4 vale 400. Multiplicar por 10 sube todo un lugar.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/4-basico/ma04-oa-01\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "En 482, el 4 está en el lugar de las centenas: vale 4 · 100 = 400. Y 482 = 400 + 80 + 2.",
+    "status": "published",
+    "questions": [
+      [
+        "¿Cuánto vale el 4 en 482?",
+        400,
+        "Escribe cuánto vale el 4 según su lugar.",
+        "💰 El 4 está en el lugar de las monedas de $100.",
+        "El 4 está en las centenas: 4 · 100 = 400.",
+        [
+          [
+            4,
+            "Esa es la cifra, pero vale según su lugar: está en las centenas, así que vale 400."
+          ],
+          [
+            40,
+            "Cuenta los lugares desde la derecha: unidades, decenas, centenas. El 4 está en las centenas: vale 400."
+          ]
+        ]
+      ],
+      [
+        "300 + 20 + 7",
+        327,
+        "Junta las monedas en un solo número.",
+        "3 monedas de $100, 2 de $10 y 7 de $1.",
+        "300 + 20 + 7 = 327.",
+        [
+          [
+            12,
+            "No se suman las cifras: cada una va en su lugar. 3 centenas, 2 decenas y 7 unidades forman 327."
+          ]
+        ]
+      ],
+      [
+        "46 · 10",
+        460,
+        "Multiplica por 10.",
+        "Por 10, cada moneda se cambia por una que vale 10 veces más: todo sube un lugar.",
+        "46 · 10 = 460: se agrega un cero a la derecha.",
+        [
+          [
+            56,
+            "Sumaste 10. Multiplicar por 10 es tener 10 veces lo mismo: 460."
+          ],
+          [
+            4600,
+            "Por 10 se agrega un solo cero: 460."
+          ]
+        ]
+      ],
+      [
+        "7 · 100 + 15 · 10 + 3",
+        853,
+        "Tienes 7 monedas de $100, 15 de $10 y 3 de $1. ¿Cuánto dinero tienes?",
+        "15 monedas de $10 son $150.",
+        "700 + 150 + 3 = 853. Tienes $853.",
+        [
+          [
+            7153,
+            "No se escriben las cantidades una al lado de la otra. 15 monedas de $10 son $150: 700 + 150 + 3 = 853."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "¿Cuánto vale el 6 en 615?",
+      600,
+      "Escribe cuánto vale el 6 según su lugar.",
+      "El 6 está en el lugar de las monedas de $100.",
+      "El 6 está en las centenas: 6 · 100 = 600.",
+      [
+        [
+          6,
+          "Esa es la cifra, pero vale según su lugar: 600."
+        ],
+        [
+          60,
+          "Cuenta desde la derecha: unidades, decenas, centenas. El 6 vale 600."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-suma-resta",
+    "since": "2026-10-13",
+    "title": "Sumar y restar con canje",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA03 OA 06 · Llevar y pedir prestado",
+    "concept": "Suma y resta cada lugar por separado: unidades con unidades. Si al sumar juntas 10 o más, cambia 10 monedas por una del lugar siguiente: eso es llevar. Si al restar no alcanza, cambia una moneda grande por 10 chicas: eso es pedir prestado.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/3-basico/ma03-oa-06\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "47 + 38: 7 + 8 = 15, dejas 5 y llevas 1 decena. Luego 4 + 3 + 1 = 8. Resultado: 85.",
+    "status": "published",
+    "questions": [
+      [
+        "47 + 38",
+        85,
+        "Suma con canje.",
+        "7 + 8 = 15: deja el 5 y lleva 1 decena.",
+        "7 + 8 = 15 (dejo 5, llevo 1); 4 + 3 + 1 = 8. Resultado: 85.",
+        [
+          [
+            715,
+            "Escribiste el 15 completo. Deja el 5 y lleva 1 decena: 4 + 3 + 1 = 8. Resultado: 85."
+          ],
+          [
+            75,
+            "Olvidaste la decena que llevabas: 4 + 3 + 1 = 8. Resultado: 85."
+          ]
+        ]
+      ],
+      [
+        "356 + 278",
+        634,
+        "Suma con canje.",
+        "6 + 8 = 14: llevas 1. Después 5 + 7 + 1 = 13: llevas 1 otra vez.",
+        "6 + 8 = 14 (llevo 1); 5 + 7 + 1 = 13 (llevo 1); 3 + 2 + 1 = 6. Resultado: 634.",
+        [
+          [
+            524,
+            "Olvidaste lo que llevabas. 6 + 8 = 14 deja 4 y lleva 1; 5 + 7 + 1 = 13 deja 3 y lleva 1; 3 + 2 + 1 = 6. Resultado: 634."
+          ]
+        ]
+      ],
+      [
+        "52 − 27",
+        25,
+        "Resta con canje.",
+        "2 − 7 no alcanza: cambia una decena por 10 unidades. Ahora tienes 12 − 7.",
+        "12 − 7 = 5; quedan 4 decenas: 4 − 2 = 2. Resultado: 25.",
+        [
+          [
+            35,
+            "Restaste al revés en las unidades (7 − 2). Cambia una decena: 12 − 7 = 5, y 4 − 2 = 2. Resultado: 25."
+          ]
+        ]
+      ],
+      [
+        "503 − 178",
+        325,
+        "Resta con canje, aunque haya un cero.",
+        "En las decenas hay 0: primero cambia una centena por 10 decenas, y después una decena por 10 unidades.",
+        "503 es 4 centenas, 9 decenas y 13 unidades. 13 − 8 = 5; 9 − 7 = 2; 4 − 1 = 3. Resultado: 325.",
+        [
+          [
+            475,
+            "Restaste el número chico del grande en cada lugar. Cuando no alcanza, hay que cambiar: 503 − 178 = 325."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "64 − 39",
+      25,
+      "Resta con canje.",
+      "4 − 9 no alcanza: cambia una decena por 10 unidades.",
+      "14 − 9 = 5; 5 − 3 = 2. Resultado: 25.",
+      [
+        [
+          35,
+          "Restaste al revés en las unidades (9 − 4). Cambia una decena: 14 − 9 = 5. Resultado: 25."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-multiplicar",
+    "since": "2026-10-13",
+    "title": "Multiplicar con atajos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 05 · Grupos iguales y atajos",
+    "concept": "Multiplicar es juntar grupos iguales: 4 · 3 son 4 grupos de 3. No necesitas saber todas las tablas de memoria. Por 2 es el doble. Por 4 es el doble del doble. Por 5 es la mitad de por 10. Por 9 es por 10 menos una vez.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/4-basico/ma04-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "9 · 8 = 10 · 8 − 8 = 80 − 8 = 72.",
+    "status": "published",
+    "questions": [
+      [
+        "6 · 4",
+        24,
+        "Usa el atajo del doble del doble.",
+        "6 · 2 = 12. Ahora el doble de 12.",
+        "6 · 2 = 12 y el doble de 12 es 24.",
+        [
+          [
+            10,
+            "Sumaste 6 + 4. Multiplicar es juntar 6 grupos de 4: 24."
+          ]
+        ]
+      ],
+      [
+        "5 · 14",
+        70,
+        "Usa el atajo de la mitad.",
+        "14 · 10 = 140. Ahora la mitad.",
+        "5 · 14 es la mitad de 140: 70.",
+        [
+          [
+            19,
+            "Sumaste 5 + 14. Por 5 es la mitad de por 10: 140 ÷ 2 = 70."
+          ],
+          [
+            140,
+            "Eso es por 10. Por 5 es la mitad: 70."
+          ]
+        ]
+      ],
+      [
+        "9 · 8",
+        72,
+        "Usa el atajo de por 10 menos una vez.",
+        "10 · 8 = 80. Ahora quita un 8.",
+        "9 · 8 = 80 − 8 = 72.",
+        [
+          [
+            80,
+            "Eso es 10 · 8. Por 9 es una vez menos: 80 − 8 = 72."
+          ],
+          [
+            17,
+            "Sumaste 9 + 8. Multiplicar es juntar 9 grupos de 8: 72."
+          ]
+        ]
+      ],
+      [
+        "7 · 6",
+        42,
+        "Elige el atajo que quieras.",
+        "Por ejemplo: 7 · 3 = 21, y después el doble.",
+        "7 · 3 = 21 y el doble de 21 es 42. También: 7 · 5 + 7 = 35 + 7 = 42.",
+        [
+          [
+            13,
+            "Sumaste 7 + 6. Multiplicar es juntar 7 grupos de 6: 42."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "9 · 7",
+      63,
+      "Usa el atajo que prefieras.",
+      "10 · 7 = 70. Ahora quita un 7.",
+      "9 · 7 = 70 − 7 = 63.",
+      [
+        [
+          70,
+          "Eso es 10 · 7. Por 9 es una vez menos: 63."
+        ],
+        [
+          16,
+          "Sumaste 9 + 7. Multiplicar es juntar 9 grupos de 7: 63."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-dividir",
+    "since": "2026-10-13",
+    "title": "Dividir es repartir",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 06 · Repartir en partes iguales",
+    "concept": "Dividir es repartir en partes iguales. 12 ÷ 3 es repartir 12 entre 3: a cada uno le tocan 4. Piensa en la multiplicación: ¿qué número por 3 da 12? Si no se puede repartir parejo, lo que queda es el resto.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/4-basico/ma04-oa-06\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "20 ÷ 4 = 5, porque 4 · 5 = 20. Y 23 entre 4 da 5 a cada uno y sobran 3.",
+    "status": "published",
+    "questions": [
+      [
+        "24 ÷ 4",
+        6,
+        "Reparte en partes iguales.",
+        "¿Qué número por 4 da 24?",
+        "4 · 6 = 24, así que 24 ÷ 4 = 6.",
+        [
+          [
+            20,
+            "Restaste 4. Dividir es repartir: ¿qué número por 4 da 24? Es 6."
+          ],
+          [
+            96,
+            "Multiplicaste. Dividir es lo contrario: ¿qué número por 4 da 24?"
+          ]
+        ]
+      ],
+      [
+        "56 ÷ 7",
+        8,
+        "Reparte en partes iguales.",
+        "¿Qué número por 7 da 56?",
+        "7 · 8 = 56, así que 56 ÷ 7 = 8.",
+        [
+          [
+            49,
+            "Restaste 7. Dividir es repartir: ¿qué número por 7 da 56? Es 8."
+          ]
+        ]
+      ],
+      [
+        "30 láminas ÷ 4 amigos",
+        2,
+        "Reparte 30 láminas entre 4 amigos, todos con la misma cantidad. ¿Cuántas sobran?",
+        "4 · 7 = 28. ¿Cuánto falta de 28 a 30?",
+        "A cada amigo le tocan 7 (4 · 7 = 28) y sobran 30 − 28 = 2.",
+        [
+          [
+            7,
+            "7 es lo que le toca a cada uno. La pregunta es cuántas sobran: 30 − 28 = 2."
+          ],
+          [
+            7.5,
+            "Las láminas no se parten: a cada uno le tocan 7 y sobran 2."
+          ]
+        ]
+      ],
+      [
+        "84 ÷ 4",
+        21,
+        "Divide por partes.",
+        "Reparte primero 80 y después 4: 80 ÷ 4 y 4 ÷ 4.",
+        "80 ÷ 4 = 20; 4 ÷ 4 = 1; 20 + 1 = 21.",
+        [
+          [
+            336,
+            "Multiplicaste. Dividir es repartir: 80 ÷ 4 = 20 y 4 ÷ 4 = 1, en total 21."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "63 ÷ 9",
+      7,
+      "Reparte en partes iguales.",
+      "¿Qué número por 9 da 63?",
+      "9 · 7 = 63, así que 63 ÷ 9 = 7.",
+      [
+        [
+          54,
+          "Restaste 9. Dividir es repartir: ¿qué número por 9 da 63? Es 7."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-fracciones",
+    "since": "2026-10-13",
+    "title": "Fracciones: partes iguales",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 08 · Partes de un entero",
+    "concept": "Una fracción es una parte de algo dividido en partes iguales. El número de abajo dice en cuántas partes se corta. El número de arriba dice cuántas partes tomas. 3/4 de una pizza: la cortas en 4 y tomas 3.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/4-basico/ma04-oa-08\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "3/4 de 20: 20 ÷ 4 = 5 en cada parte, y 3 partes son 3 · 5 = 15.",
+    "status": "published",
+    "questions": [
+      [
+        "¿En cuántas partes se corta la pizza en 3/8?",
+        8,
+        "Mira el número de abajo.",
+        "🍕 El número de abajo dice en cuántas partes iguales se corta.",
+        "En 3/8 la pizza se corta en 8 partes y se toman 3.",
+        [
+          [
+            3,
+            "El 3 es cuántas partes tomas. El número de abajo, 8, dice en cuántas se corta."
+          ]
+        ]
+      ],
+      [
+        "1/4 de 20",
+        5,
+        "Calcula la parte.",
+        "Un cuarto es dividir en 4 partes iguales.",
+        "20 ÷ 4 = 5.",
+        [
+          [
+            80,
+            "Multiplicaste por 4. Un cuarto es dividir en 4 partes: 20 ÷ 4 = 5."
+          ],
+          [
+            16,
+            "Restaste 4. Un cuarto es dividir en 4 partes iguales: 5."
+          ]
+        ]
+      ],
+      [
+        "3/4 de 20",
+        15,
+        "Calcula la parte.",
+        "Primero divide 20 en 4 partes. Después toma 3 de esas partes.",
+        "20 ÷ 4 = 5; 3 · 5 = 15.",
+        [
+          [
+            5,
+            "Esa es una sola parte. Necesitas 3 partes: 3 · 5 = 15."
+          ],
+          [
+            60,
+            "Te faltó dividir en 4 partes: 60 ÷ 4 = 15."
+          ]
+        ]
+      ],
+      [
+        "1/2 = ?/8",
+        4,
+        "Encuentra la fracción equivalente.",
+        "8 octavos forman la pizza entera. ¿Cuántos octavos son la mitad?",
+        "La mitad de 8 es 4: 1/2 = 4/8.",
+        [
+          [
+            2,
+            "La mitad no son 2 octavos: 8 octavos forman el entero, y la mitad son 4."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "2/5 de 30",
+      12,
+      "Calcula la parte.",
+      "Divide 30 en 5 partes y toma 2.",
+      "30 ÷ 5 = 6; 2 · 6 = 12.",
+      [
+        [
+          6,
+          "Esa es una sola parte. Toma 2: 2 · 6 = 12."
+        ],
+        [
+          60,
+          "Te faltó dividir en 5 partes: 60 ÷ 5 = 12."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-decimales",
+    "since": "2026-10-13",
+    "title": "Decimales con medidas",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 12 · Metros, centímetros y la coma",
+    "concept": "Los decimales son partes de una unidad, como los centímetros de un metro. Un metro tiene 100 centímetros: 0,5 m es la mitad, 50 cm. Para sumar o restar decimales, pon la coma debajo de la coma. Si falta una cifra, agrega un cero: 0,5 = 0,50.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-12\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "2,5 + 1,25: escribe 2,50 + 1,25 = 3,75.",
+    "status": "published",
+    "questions": [
+      [
+        "0,5 m = ? cm",
+        50,
+        "Convierte a centímetros.",
+        "📏 Un metro tiene 100 cm. 0,5 es la mitad.",
+        "0,5 · 100 = 50 cm.",
+        [
+          [
+            5,
+            "0,5 m es la mitad de un metro: la mitad de 100 cm es 50 cm."
+          ]
+        ]
+      ],
+      [
+        "1,25 m = ? cm",
+        125,
+        "Convierte a centímetros.",
+        "1 m son 100 cm y 0,25 m son 25 cm.",
+        "1,25 · 100 = 125 cm.",
+        [
+          [
+            12.5,
+            "Para pasar de metros a centímetros se multiplica por 100: 125."
+          ]
+        ]
+      ],
+      [
+        "2,5 + 1,25",
+        3.75,
+        "Suma con la coma debajo de la coma.",
+        "Escribe 2,50 + 1,25.",
+        "2,50 + 1,25 = 3,75.",
+        [
+          [
+            3.3,
+            "Sumaste 5 + 25 como si fueran iguales. El 5 son décimas: escribe 2,50 + 1,25 = 3,75."
+          ],
+          [
+            1.5,
+            "Alinea por la coma, no por la derecha: 2,50 + 1,25 = 3,75."
+          ]
+        ]
+      ],
+      [
+        "3 − 0,4",
+        2.6,
+        "Resta con la coma debajo de la coma.",
+        "Escribe 3 como 3,0.",
+        "3,0 − 0,4 = 2,6.",
+        [
+          [
+            1,
+            "Restaste 4 − 3. Escribe 3 como 3,0: 3,0 − 0,4 = 2,6."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "0,75 m = ? cm",
+      75,
+      "Convierte a centímetros.",
+      "Un metro tiene 100 cm.",
+      "0,75 · 100 = 75 cm.",
+      [
+        [
+          7.5,
+          "Para pasar de metros a centímetros se multiplica por 100: 75."
         ]
       ]
     ]

@@ -134,9 +134,10 @@ export function Tokens({ prev, cur, t, beat, area }) {
         const a = k === -1 ? 1 : stagger(t, k, freshGroups.length, beat.speak);
         if (g.op) return <div key={i} style={{ fontSize: 96, fontWeight: 800, color: C.muted, opacity: a }}>{g.op}</div>;
         const prevCount = k === -1 ? before[i].count : 0;
-        const n = Math.max(prevCount, g.count);
-        const cols = g.cols ?? Math.min(n, 5);
         const counting = k === -1 && prevCount !== g.count ? during(t, beat, 0.5) : 1;
+        // Mientras salen fichas se mantiene el espacio; después, solo el que queda.
+        const n = counting < 1 ? Math.max(prevCount, g.count) : g.count;
+        const cols = g.cols ?? Math.min(n, 5);
         return (
           <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 22, opacity: a, transform: `translateY(${30 * (1 - a)}px)` }}>
             <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, ${size}px)`, gap: 10 }}>
@@ -218,7 +219,7 @@ export function Bar({ prev, cur, t, beat }) {
           <g key={i}>
             <rect x={x0 + i * partW} y={y0} width={partW} height={H} fill={o > 0 ? C.blue : "#e2e8f0"} opacity={o > 0 ? 0.25 + 0.75 * o : 1} stroke="#ffffff" strokeWidth={4} />
             {cur.parts <= 10 && cur.partLabel && (
-              <text x={x0 + i * partW + partW / 2} y={y0 + H / 2 + 16} textAnchor="middle" fontSize={cur.parts > 10 ? 26 : 44} fontWeight={800} fill={o > 0.5 ? "#ffffff" : C.muted}>
+              <text x={x0 + i * partW + partW / 2} y={y0 + H / 2 + 14} textAnchor="middle" fontSize={cur.parts > 6 ? 32 : 44} fontWeight={800} fill={o > 0.5 ? "#ffffff" : C.muted}>
                 {cur.partLabel}
               </text>
             )}

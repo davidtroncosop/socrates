@@ -15,6 +15,7 @@ import {
   mergeStates,
   withoutPhotos,
   shuffleAlternatives,
+  forStudent,
   saveState,
   compactAttempts,
   photosKey,
@@ -28,6 +29,7 @@ import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
 import { videoFacade, videoPlayer, withLessonVideos } from "./video.js";
 import { ACTIVE_SUBJECTS } from "./subjects.js";
+import { speak, speakButton, stopSpeaking } from "./speak.js";
 import { diagnoseMistake } from "./mistakes.js";
 import {
   buildDailyPlan,
@@ -38,7 +40,7 @@ import {
   XP_PER_CORRECT,
 } from "./daily.js";
 import { $, escape, button, heading } from "./ui.js";
-import { getUnitsForLessons, routeOrder, PREREQUISITES, UNIT_DEFINITIONS } from "./units.js";
+import { getUnitsForLessons, routeOrder, PREREQUISITES, UNIT_DEFINITIONS, ALL_GRADES_LESSONS } from "./units.js";
 import { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
 import { showUnitGuide, showParentReport, showRewardsModal } from "./dialogs.js";
 export { UNIT_DEFINITIONS } from "./units.js";
@@ -51,10 +53,17 @@ try {
 const isAdmin = account?.mode === "account" && account.isAdmin === true;
 const synced = account?.mode === "account";
 const stateKey = progressKey(account);
+const CATALOG_VERSION_KEY = "socatres.catalog.updatedAt";
 let catalog,
   catalogWarning = "";
 try {
-  catalog = readCatalog(localStorage);
+  // Sin catálogo central (nunca se publicó uno), lo guardado es solo una copia
+  // del contenido incluido en la app: se usa la versión actual, así las
+  // mejoras de las lecciones llegan a todos.
+  // Con catálogo central guardado, se le suman las lecciones nuevas de la app
+  // que llegaron después de esa publicación (también sin conexión).
+  const published = localStorage.getItem(CATALOG_VERSION_KEY);
+  catalog = published ? withNewCurriculum(readCatalog(localStorage), published) : seedCatalog();
 } catch {
   catalog = seedCatalog();
   catalogWarning =
@@ -69,7 +78,6 @@ const publishedLessons = (c) =>
 // Con una sola materia no se muestran el filtro ni el progreso por materia.
 const bothSubjects = ACTIVE_SUBJECTS.length > 1;
 let lessons = publishedLessons(catalog);
-const CATALOG_VERSION_KEY = "socatres.catalog.updatedAt";
 function useCatalog(next, updatedAt) {
   try {
     catalog = writeCatalog(localStorage, next);
@@ -142,6 +150,9 @@ const isLocked = (l) => Boolean(lockedBy(l));
 // Siguiente paso sugerido: primero el curso del estudiante.
 function nextLesson() {
   const open = (l) => !state.completed.includes(l.id) && !isLocked(l);
+  // Donde el diagnóstico sugirió empezar, mientras no esté completa.
+  const focus = lessons.find((l) => l.id === state.focus && open(l));
+  if (focus) return focus;
   const route = routeOrder(lessons);
   // Sin diagnóstico, el curso de lo último que completó.
   const last = lessons.find((l) => l.id === state.completed.at(-1));
@@ -253,6 +264,7 @@ function updateBadge() {
   ).length;
 }
 function navigate() {
+  stopSpeaking();
   session = null;
   let page = location.hash.slice(1) || "ruta";
   if (page === "contenido" && !isAdmin) page = "ruta";
@@ -332,7 +344,7 @@ function route() {
   const visibleLessons = lessons.filter((l) => {
     if (currentSubject !== "all" && getSubject(l) !== currentSubject)
       return false;
-    return currentLevel === "all" || inferGrade(l) === currentLevel;
+    return currentLevel === "all" || inferGrade(l) === currentLevel || ALL_GRADES_LESSONS.has(l.id);
   });
 
   const mathCompleted = activeCompleted().filter((id) => {
@@ -394,7 +406,7 @@ function route() {
               icon = "🔒";
             }
 
-            const badge = `<span class="oa-badge">${GRADES[inferGrade(l)]}</span>`;
+            const badge = `<span class="oa-badge">${ALL_GRADES_LESSONS.has(l.id) ? "Base" : GRADES[inferGrade(l)]}</span>`;
             const sub = getSubject(l);
             const isLang = sub === "lenguaje";
             const subjectBadge = `<span class="subject-tag ${isLang ? "subject-lang" : "subject-math"}">${isLang ? "📖 Lenguaje" : "📐 Matemática"}</span>`;
@@ -405,7 +417,7 @@ function route() {
                 ? "Completada · por consolidar"
                 : locked
                   ? `🔒 Se abre al completar «${escape(displayTitle(blocker))}»`
-                  : escape(l.description);
+                  : escape(forStudent(l.description));
 
             return `
               <div class="duo-node-wrapper" style="--x-offset: ${offset}px;">
@@ -519,7 +531,7 @@ function route() {
         ${state.diagnosed || state.completed.length ? dailyHero(next) : `<section class="hero">
           <span class="eyebrow">ENCONTREMOS TU PUNTO DE PARTIDA</span>
           <h2>¿Qué sabes ya de ${bothSubjects ? "matemáticas y lectura" : "matemáticas"}?</h2>
-          <p>Hasta ${MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length} preguntas breves de tu curso para orientar tu recorrido según las Bases Curriculares del MINEDUC. No es una prueba: puedes pedir ayuda.</p>
+          <p>Hasta ${DIAGNOSTIC_BASE.length + MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length} preguntas breves, primero de base y después de tu curso, para orientar tu recorrido según las Bases Curriculares del MINEDUC. No es una prueba: puedes pedir ayuda.</p>
           <div class="hero-meta">
             <span>◷ 5 minutos aprox.</span>
             <span>◇ Sin calificación</span>
@@ -656,6 +668,9 @@ const phases = [
   "Desafío de autonomía",
 ];
 const MAX_PER_SUBJECT = 4;
+// El diagnóstico revisa primero la base: muchos vacíos vienen de cursos
+// anteriores. Va de lo más simple a lo más difícil y se detiene al tropezar.
+const DIAGNOSTIC_BASE = ["base-suma-resta", "base-multiplicar", "base-fracciones"];
 function diagnosticPicker() {
   const grades = Object.entries(GRADES).filter(([g]) =>
     lessons.some((l) => inferGrade(l) === g),
@@ -667,7 +682,7 @@ function diagnosticPicker() {
       "¿En qué curso estás?",
       bothSubjects
         ? `Te haremos hasta ${MAX_PER_SUBJECT} preguntas de matemática y ${MAX_PER_SUBJECT} de lectura de tu curso. Cuando algo cueste, pasamos a la otra materia: no es una prueba.`
-        : `Te haremos hasta ${MAX_PER_SUBJECT} preguntas de matemática de tu curso. Cuando algo cueste, nos detenemos: no es una prueba.`,
+        : `Primero ${DIAGNOSTIC_BASE.length} preguntas de base y después hasta ${MAX_PER_SUBJECT} de tu curso. Cuando algo cueste, nos detenemos: no es una prueba.`,
     ) +
     `<section class="card"><div class="grade-picker">${grades
       .map(([g, label]) =>
@@ -677,12 +692,19 @@ function diagnosticPicker() {
 }
 function startDiagnostic(grade) {
   if (!(grade in GRADES)) return;
-  const plan = ACTIVE_SUBJECTS.flatMap((subject) =>
-    routeOrder(lessons)
+  const plan = ACTIVE_SUBJECTS.flatMap((subject) => [
+    ...DIAGNOSTIC_BASE.map((id) => lessons.find((l) => l.id === id && getSubject(l) === subject)).filter(Boolean),
+    ...routeOrder(lessons)
       // Las lecciones que dependen de otra no ubican a nadie: se llega a ellas.
-      .filter((l) => inferGrade(l) === grade && getSubject(l) === subject && !PREREQUISITES[l.id])
+      .filter(
+        (l) =>
+          inferGrade(l) === grade &&
+          getSubject(l) === subject &&
+          !PREREQUISITES[l.id] &&
+          !ALL_GRADES_LESSONS.has(l.id),
+      )
       .slice(0, MAX_PER_SUBJECT),
-  );
+  ]);
   if (!plan.length) return;
   session = {
     mode: "diagnostic",
@@ -777,7 +799,7 @@ function renderIntroLesson(fromExercise = false) {
   const s = session,
     l = s.lesson;
   const isMath = getSubject(l) === "matematica";
-  const grade = GRADES[inferGrade(l)];
+  const grade = ALL_GRADES_LESSONS.has(l.id) ? "Base" : GRADES[inferGrade(l)];
 
   app.innerHTML = `
     ${button(
@@ -788,7 +810,7 @@ function renderIntroLesson(fromExercise = false) {
     ${heading(
       "LECCIÓN INICIAL · CONCEPTO CLAVE",
       l.title,
-      l.description,
+      forStudent(l.description),
     )}
     <div class="intro-lesson-layout">
       <article class="card intro-lesson-main">
@@ -807,7 +829,8 @@ function renderIntroLesson(fromExercise = false) {
           <div class="pedagogical-banner-icon">${BALANCE_LESSONS.has(l.id) ? "⚖️" : isMath ? "🧠" : "💡"}</div>
           <div class="pedagogical-banner-body">
             <h3>${BALANCE_LESSONS.has(l.id) ? "El Principio de la Balanza en Equilibrio" : isMath ? "La idea clave" : "Estrategia de Comprensión Lectora"}</h3>
-            <p class="pedagogical-banner-text">${escape(l.concept)}</p>
+            <p class="pedagogical-banner-text">${escape(forStudent(l.concept))}</p>
+            ${speakButton("concept", "Escuchar la explicación")}
             ${
               BALANCE_LESSONS.has(l.id)
                 ? `<div class="balance-rule-highlight">
@@ -969,7 +992,7 @@ function renderExercise() {
           : "EXPLORACIÓN"
   } · ${s.mode === "diagnostic" ? `PREGUNTA ${s.results.length + 1} · HASTA ${s.questions.length}` : `${s.index + 1} DE ${s.questions.length}`}</div><div class="steps">${s.questions
     .map((_, i) => `<span class="${i <= s.index ? "on" : ""}"></span>`)
-    .join("")}</div><p>${escape(q[2])}</p><div class="equation ${
+    .join("")}</div><div class="statement-row"><p class="exercise-statement">${escape(q[2])}</p>${speakButton("question")}</div><div class="equation ${
     q[0].includes("\n") ? "reading-passage" : ""
   }">${escape(q[0])}</div><form id="answer-form"><div class="handwritten-section"><div class="handwritten-title-row"><span class="handwritten-badge">✍️ Paso 1: Resuelve a mano</span><span class="muted">En tu cuaderno o papel</span></div><p class="handwritten-instruction">Haz el desarrollo con lápiz y papel. Sube la foto de tu cuaderno o escribe tus pasos:</p><div id="work-photo-container" class="work-photo-container">${
     s.workPhoto
@@ -986,7 +1009,7 @@ function renderExercise() {
   }</div></form><div id="next-area"></div></section><aside class="stack"><section class="card pedagogical-aside-card"><div class="mini-label">💡 ENFOQUE PEDAGÓGICO</div><h3>${
     BALANCE_LESSONS.has(l.id) ? "⚖️ Mantener el equilibrio" : isMath ? "💡 Idea clave" : "📖 Estrategia clave"
   }</h3><p class="muted" style="line-height:1.55;margin:8px 0 10px 0;">${escape(
-    l.concept,
+    forStudent(l.concept),
   )}</p><button type="button" class="btn-link-help" data-action="view-intro">📖 Ver lección inicial completa</button></section><section class="card"><div class="mini-icon">✧</div><h3>Tu espacio de ayuda</h3><p class="muted">Las pistas explican el porqué pedagógico de cada paso.</p><div id="hints" aria-live="polite"></div></section><section class="callout">${
     s.mode === "diagnostic"
       ? "El diagnóstico orienta tu ruta. No certifica dominio ni bloquea tu aprendizaje."
@@ -996,6 +1019,20 @@ function renderExercise() {
   attachPhotoListeners();
 }
 
+// Qué se lee en voz alta con cada botón 🔊.
+const SPEAK_TARGETS = {
+  concept: [".pedagogical-banner-text", ".intro-example-text"],
+  question: [".exercise-statement", ".equation"],
+  hint: ["#hints > .hint:last-child"],
+};
+function speakTarget(target) {
+  const text = (SPEAK_TARGETS[target] ?? [])
+    .map((sel) => document.querySelector(sel)?.textContent?.replace("🔊 Escuchar", "") ?? "")
+    .filter(Boolean)
+    .map((part) => part.trim().replace(/[.:]$/, ""))
+    .join(". ");
+  if (text) speak(text);
+}
 function playVideo(lessonId) {
   const lesson =
     session?.lesson?.id === lessonId
@@ -1049,7 +1086,7 @@ function hint() {
   if (s.hints < 3) {
     $("#hints").insertAdjacentHTML(
       "beforeend",
-      `<div class="hint"><strong>${title}</strong><div style="margin-top:6px;">${body}</div></div>`,
+      `<div class="hint"><strong>${title}</strong><div style="margin-top:6px;">${body}</div>${speakButton("hint")}</div>`,
     );
     s.hints++;
   }
@@ -1187,6 +1224,7 @@ function finish() {
                 !state.completed.includes(l.id),
             )
           : planned[gap];
+      if (subject === "matematica") state.focus = start?.id;
       proposals.push(
         start
           ? `En ${label}, empieza por «${displayTitle(start)}».`
@@ -1583,6 +1621,8 @@ app.addEventListener("click", (e) => {
   } else if (action === "remove-task-photo") {
     pendingTaskPhoto = null;
     task();
+  } else if (action === "speak") {
+    speakTarget(id);
   } else if (action === "play-video") {
     playVideo(id);
   } else if (action === "unit-guide") {

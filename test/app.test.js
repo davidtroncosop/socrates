@@ -39,7 +39,11 @@ async function harness(saved, { session, key = "socatres.v1", fetch, catalog, su
     return nodes.get(key);
   };
   const storage = new Map(saved ? [[key, JSON.stringify(saved)]] : []);
-  if (catalog) storage.set("socatres.content.v1", JSON.stringify(catalog));
+  // Un catálogo propio en las pruebas es uno publicado por la administración.
+  if (catalog) {
+    storage.set("socatres.content.v1", JSON.stringify(catalog));
+    storage.set("socatres.catalog.updatedAt", "1");
+  }
   if (session) storage.set("socatres.demo-session.v1", JSON.stringify(session));
   globalThis.localStorage = {
     getItem: (k) => storage.get(k) || null,
@@ -609,9 +613,14 @@ test("diagnostic asks only the student's grade and stops a subject at its first 
   const h = await harness();
   h.click("diagnostic");
   h.click("diagnostic-grade:7b");
-  const math = catalogLessons.filter((l) => inferGrade(l) === "7b" && getSubject(l) === "matematica").slice(0, 4);
+  // Primero tres preguntas de base, después las del curso.
+  const base = ["base-suma-resta", "base-multiplicar", "base-fracciones"].map(lessonById);
+  const math = [
+    ...base,
+    ...catalogLessons.filter((l) => inferGrade(l) === "7b" && getSubject(l) === "matematica" && !l.id.startsWith("base-") && l.id !== "jerarquia-enteros").slice(0, 4),
+  ];
   const reading = catalogLessons.filter((l) => inferGrade(l) === "7b" && getSubject(l) === "lenguaje").slice(0, 4);
-  assert.match(h.node("#app").innerHTML, /PREGUNTA 1 · HASTA 8/);
+  assert.match(h.node("#app").innerHTML, /PREGUNTA 1 · HASTA 11/);
   // Matemática: dos correctas y un tropiezo; la cuarta ya no se pregunta.
   h.answer(String(math[0].questions[1][1]));
   h.click("next");
@@ -629,6 +638,7 @@ test("diagnostic asks only the student's grade and stops a subject at its first 
   assert.equal(s.attempts.length, 6, "only 6 questions were needed");
   assert.deepEqual(s.completed, [math[0].id, math[1].id, ...reading.map((l) => l.id)]);
   assert.deepEqual(s.mastered, [], "the diagnostic never certifies mastery");
+  assert.equal(s.focus, math[2].id, "remembers where to start, even below the student's grade");
   assert.match(h.node("#app").innerHTML, new RegExp(`empieza por «${math[2].title}»`));
   h.click("exit");
   const html = h.node("#app").innerHTML;
@@ -760,4 +770,12 @@ test("only equation lessons talk about the balance; others show their unit's rul
   const eq = await harness();
   eq.click("lesson:equations");
   assert.match(eq.node("#app").innerHTML, /El Principio de la Balanza en Equilibrio/);
+});
+
+test("a saved central catalog also receives lessons added to the app later", async () => {
+  const { seedCatalog } = await import("../public/content.js");
+  const old = seedCatalog();
+  old.lessons = old.lessons.filter((l) => !l.id.startsWith("base-"));
+  const h = await harness(null, { catalog: old });
+  assert.match(h.node("#app").innerHTML, /data-action="lesson:base-suma-resta"/);
 });
