@@ -3236,3 +3236,38 @@ details.handwritten-section {
 details.handwritten-section[open] .handwritten-toggle {
   margin-bottom: 8px;
 }
+
+/* Salida cuando un ejercicio se traba */
+.stuck-help {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fef3c7;
+}
+.stuck-help p {
+  margin: 0 0 10px;
+}
+
+/* Teclado numérico (pantallas táctiles) */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.key {
+  min-height: 56px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 24px;
+  font-weight: 700;
+}
+.key:active {
+  background: #dbeafe;
+}
+.key-wide {
+  grid-column: span 2;
+  font-size: 18px;
+}

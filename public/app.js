@@ -978,16 +978,16 @@ function renderExercise() {
   }">${escape(q[0])}</div><form id="answer-form"><div class="answer-section"><label for="answer">${
     q[0] === "5x − 2x" ? "Coeficiente" : "Tu respuesta"
   }</label><input id="answer" autocomplete="off" placeholder="${
-    q[0].includes("\n") ? "Alternativa: 1, 2 o 3" : "Ej.: 7, x = 7 o 14/2"
-  }" required></div><div id="feedback" aria-live="polite" class="feedback"></div><div class="actions"><button class="primary" id="check" type="submit">Comprobar respuesta →</button><button type="button" data-action="hint" id="hint-button">Necesito una pista</button>${
+    q[0].includes("\n") ? "Alternativa: 1, 2 o 3" : touchKeypad() ? "Toca los números de abajo" : "Ej.: 7, x = 7 o 14/2"
+  }" required${touchKeypad() ? ' inputmode="none"' : ""}>${keypad(q)}</div><div id="feedback" aria-live="polite" class="feedback"></div><div class="actions"><button class="primary" id="check" type="submit">Comprobar respuesta →</button><button type="button" data-action="hint" id="hint-button">Necesito una pista</button>${
     s.mode === "diagnostic"
       ? '<button type="button" data-action="skip">Todavía no lo sé</button>'
       : ""
-  }</div><div id="hints" class="hints-inline" aria-live="polite"></div><details class="handwritten-section"${s.workPhoto || s.lastWork ? " open" : ""}><summary class="handwritten-toggle">✍️ Mostrar cómo lo resolví <span class="muted">(opcional)</span></summary><p class="handwritten-instruction">Si lo hiciste en tu cuaderno, sácale una foto o escribe tus pasos. Queda guardado en Mi cuaderno.</p><div id="work-photo-container" class="work-photo-container">${
+  }</div><div id="hints" class="hints-inline" aria-live="polite"></div></form><div id="next-area"></div><details class="handwritten-section"${s.workPhoto || s.lastWork ? " open" : ""}><summary class="handwritten-toggle">✍️ Mostrar cómo lo resolví <span class="muted">(opcional)</span></summary><p class="handwritten-instruction">Si lo hiciste en tu cuaderno, sácale una foto o escribe tus pasos. Queda guardado en Mi cuaderno.</p><div id="work-photo-container" class="work-photo-container">${
     s.workPhoto
       ? `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${s.workPhoto}" alt="Foto de tu desarrollo a mano" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu desarrollo adjunta</span><p class="muted" style="margin:4px 0 8px 0; font-size:12px;">Se guardará en tu cuaderno al comprobar.</p><button type="button" data-action="remove-photo" class="btn-remove-photo">✕ Eliminar o cambiar foto</button></div></div>`
       : `<label for="work-photo-input" class="photo-upload-box" id="photo-dropzone"><span class="photo-icon">📷</span><div class="photo-upload-text"><strong>Subir foto de tu desarrollo a mano</strong><span>Toma una foto con tu cámara o elige una imagen</span></div><span class="photo-tag-pill">Sube tu foto</span></label><input type="file" id="work-photo-input" accept="image/*" capture="environment" class="visually-hidden">`
-  }</div><details class="work-text-details"${s.lastWork ? " open" : ""}><summary class="work-text-toggle">O escribe tus pasos en texto (opcional)</summary><div style="margin-top:8px;"><label for="work" class="visually-hidden">Tu procedimiento</label><textarea id="work" placeholder="¿Qué harías primero? Escribe tus pasos aquí…">${escape(s.lastWork || "")}</textarea></div></details><div class="muted note-save-expl">Tu desarrollo y foto se guardan automáticamente en tu cuaderno al comprobar.</div></details></form><div id="next-area"></div></section><aside class="stack"><section class="card pedagogical-aside-card"><div class="mini-label">💡 SI TE PIERDES</div><h3>${
+  }</div><details class="work-text-details"${s.lastWork ? " open" : ""}><summary class="work-text-toggle">O escribe tus pasos en texto (opcional)</summary><div style="margin-top:8px;"><label for="work" class="visually-hidden">Tu procedimiento</label><textarea id="work" placeholder="¿Qué harías primero? Escribe tus pasos aquí…">${escape(s.lastWork || "")}</textarea></div></details><div class="muted note-save-expl">Tu desarrollo y foto se guardan automáticamente en tu cuaderno al comprobar.</div></details></section><aside class="stack"><section class="card pedagogical-aside-card"><div class="mini-label">💡 SI TE PIERDES</div><h3>${
     BALANCE_LESSONS.has(l.id) ? "⚖️ Mantener el equilibrio" : isMath ? "💡 Idea clave" : "📖 Estrategia clave"
   }</h3><p class="muted" style="line-height:1.55;margin:8px 0 10px 0;">${escape(
     forStudent(l.concept),
@@ -1000,6 +1000,27 @@ function renderExercise() {
   attachPhotoListeners();
 }
 
+// Teclado numérico propio en pantallas táctiles: el del teléfono tapa media
+// pantalla y esconde «−», «/» y la coma.
+const touchKeypad = () => typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+const KEY_LABELS = { "−": "menos", ",": "coma", "/": "fracción", borrar: "borrar" };
+function keypad(q) {
+  if (!touchKeypad()) return "";
+  const keys = q[0].includes("\n")
+    ? ["1", "2", "3"]
+    : ["1", "2", "3", "4", "5", "6", "7", "8", "9", "−", "0", ",", "/", "borrar"];
+  return `<div class="keypad" role="group" aria-label="Teclado numérico">${keys
+    .map(
+      (k) =>
+        `<button type="button" class="key${k === "borrar" ? " key-wide" : ""}" data-action="key:${k}" aria-label="${KEY_LABELS[k] ?? k}">${k === "borrar" ? "⌫ Borrar" : k}</button>`,
+    )
+    .join("")}</div>`;
+}
+function typeKey(key) {
+  const input = $("#answer");
+  if (!input || input.disabled) return;
+  input.value = key === "borrar" ? input.value.slice(0, -1) : input.value + key;
+}
 // Qué se lee en voz alta con cada botón 🔊.
 const SPEAK_TARGETS = {
   concept: [".pedagogical-banner-text", ".intro-example-text"],
@@ -1026,6 +1047,22 @@ function playVideo(lessonId) {
     state.watched.push(lessonId);
     save();
   }
+}
+// Muestra la solución de un ejercicio trabado y deja seguir.
+function reveal() {
+  const s = session;
+  if (!s || s.answered) return;
+  const q = s.questions[s.index];
+  s.answered = true;
+  s.results.push({ lesson: lessonAt(s).id, origin: s.origins?.[s.index], independent: false, revealed: true });
+  const f = $("#feedback");
+  f.className = "feedback";
+  f.textContent = `Así se resuelve: ${q[4]} La respuesta es ${String(q[1]).replace(".", ",")}.`;
+  for (const sel of ["#check", "#hint-button", "#answer", "#work", ".btn-remove-photo", '[data-action="skip"]'])
+    if ($(sel)) $(sel).disabled = true;
+  $("#next-area").innerHTML =
+    `<div class="actions">${button(s.index === s.questions.length - 1 ? "Ver mi resumen →" : "Siguiente ejercicio →", "next", "primary")}</div>`;
+  save();
 }
 function hint() {
   const s = session;
@@ -1113,6 +1150,11 @@ function check(e) {
       : "Todavía no coincide. Revisa el enunciado y tu respuesta; puedes probar otra vez o pedir una pista.";
     if (!state.reviews.some((r) => r.lesson === lesson))
       state.reviews.push({ lesson, due: Date.now() });
+    // Trabarse no debe ser un callejón sin salida: tras dos intentos se puede
+    // ver la solución y seguir (queda registrado como «con ayuda»).
+    if (s.wrong >= 2 && s.mode !== "diagnostic")
+      $("#next-area").innerHTML =
+        `<div class="stuck-help"><p>¿Te trabaste? No pasa nada: mira cómo se resuelve y seguimos. Lo volveremos a practicar.</p>${button("Ver cómo se resuelve y seguir", "reveal")}</div>`;
     save();
     return;
   }
@@ -1602,6 +1644,10 @@ app.addEventListener("click", (e) => {
   } else if (action === "remove-task-photo") {
     pendingTaskPhoto = null;
     task();
+  } else if (action === "reveal") {
+    reveal();
+  } else if (action === "key") {
+    typeKey(id);
   } else if (action === "speak") {
     speakTarget(id);
   } else if (action === "play-video") {

@@ -784,3 +784,45 @@ test("a saved central catalog also receives lessons added to the app later", asy
   const h = await harness(null, { catalog: old });
   assert.match(h.node("#app").innerHTML, /data-action="lesson:base-suma-resta"/);
 });
+
+test("after two misses a stuck student can see the solution and move on", async () => {
+  const h = await harness();
+  h.click("lesson:equations");
+  h.click("begin-exercises");
+  h.answer("3");
+  assert.doesNotMatch(h.node("#next-area").innerHTML, /Ver cómo se resuelve/, "not after a single miss");
+  h.answer("4");
+  assert.match(h.node("#next-area").innerHTML, /data-action="reveal"/);
+  h.click("reveal");
+  assert.match(h.node("#feedback").textContent, /Así se resuelve: .* La respuesta es 7\./);
+  assert.match(h.node("#next-area").innerHTML, /Siguiente ejercicio/);
+  h.click("next");
+  assert.match(h.node("#app").innerHTML, /2 DE 4/);
+  const s = h.read();
+  assert.equal(s.attempts.filter((a) => !a.correct).length, 2);
+  assert.ok(s.reviews.some((r) => r.lesson === "equations"), "it comes back in a review");
+  assert.deepEqual(s.mastered, [], "seeing the solution never counts as mastery");
+});
+
+test("touch screens get a number keypad instead of the phone keyboard", async () => {
+  globalThis.matchMedia = (q) => ({ matches: q === "(pointer: coarse)" });
+  try {
+    const h = await harness();
+    h.click("lesson:base-suma-resta");
+    h.click("begin-exercises");
+    const html = h.node("#app").innerHTML;
+    assert.match(html, /class="keypad"/);
+    assert.match(html, /inputmode="none"/, "the system keyboard stays closed");
+    for (const k of ["8", "5", "−", "borrar"]) h.click("key:" + k);
+    assert.equal(h.node("#answer").value, "85");
+    h.click("key:,");
+    h.click("key:5");
+    assert.equal(h.node("#answer").value, "85,5");
+  } finally {
+    delete globalThis.matchMedia;
+  }
+  const desktop = await harness();
+  desktop.click("lesson:base-suma-resta");
+  desktop.click("begin-exercises");
+  assert.doesNotMatch(desktop.node("#app").innerHTML, /class="keypad"/, "computers keep the normal input");
+});
