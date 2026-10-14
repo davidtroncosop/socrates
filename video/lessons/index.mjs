@@ -36,12 +36,18 @@ import fracSuma from "./fracciones-suma.mjs";
 import fracMult from "./fracciones-mult.mjs";
 import promedio from "./promedio.mjs";
 import areaTri from "./area-triangulos.mjs";
+import raices from "./raices.mjs";
+import volumen from "./volumen.mjs";
+import combinatoria from "./combinatoria.mjs";
+import potNeg from "./potencias-negativas.mjs";
+import sistemas from "./sistemas.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  raices, volumen, combinatoria, potNeg, sistemas,
   multiplos, fracSuma, fracMult, promedio, areaTri,
   baseValor, baseSuma, baseMult, baseDiv, baseFrac, baseDec,
   jerarquiaMult, jerarquiaParentesis, jerarquiaEnteros, jerarquiaPotencias,

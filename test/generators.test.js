@@ -20,7 +20,7 @@ const js = (expr) =>
 const evaluate = (expr, x) => Function("x", `return (${js(expr)});`)(x);
 
 // Preguntas de las bases escritas con palabras.
-function baseAnswer(expr) {
+function baseAnswer(expr, id) {
   let m;
   if ((m = expr.match(/^¿Cuánto vale el (\d) en (\d+)\?$/))) return m[1] * 10 ** [...m[2]].reverse().indexOf(m[1]);
   if ((m = expr.match(/^¿En cuántas partes se corta la pizza en \d+\/(\d+)\?$/))) return Number(m[1]);
@@ -59,10 +59,46 @@ function baseAnswer(expr) {
   if ((m = expr.match(/^Rectángulo de (\d+) cm por (\d+) cm$/))) return m[1] * m[2];
   if ((m = expr.match(/^Paralelogramo: base (\d+) cm, altura (\d+) cm$/))) return m[1] * m[2];
   if ((m = expr.match(/^Triángulo: base (\d+) c?m, altura (\d+) c?m$/))) return (m[1] * m[2]) / 2;
+  // Lote 2.
+  if ((m = expr.match(/^√(\d+)$/))) return Math.sqrt(m[1]);
+  if ((m = expr.match(/^Entero más cercano a √(\d+)$/))) {
+    assert.ok(!Number.isInteger(Math.sqrt(m[1])), expr);
+    return Math.round(Math.sqrt(m[1]));
+  }
+  if ((m = expr.match(/^Cuadrado de (\d+) m²$/))) return Math.sqrt(m[1]);
+  if ((m = expr.match(/^Caja de (\d+) cm, (\d+) cm y (\d+) cm$/))) return m[1] * m[2] * m[3];
+  if ((m = expr.match(/^Prisma: base de (\d+) cm², altura (\d+) cm$/))) return m[1] * m[2];
+  if ((m = expr.match(/^Prisma triangular: triángulo de base (\d+) cm y altura (\d+) cm, largo (\d+) cm$/))) return (m[1] * m[2] * m[3]) / 2;
+  if ((m = expr.match(/^Cilindro: radio (\d+) cm, altura (\d+) cm$/))) return 3.14 * m[1] * m[1] * m[2];
+  if (id === "combinatoria") {
+    if ((m = expr.match(/^Candado: (\d+) ruedas con (\d+) números$/))) return m[2] ** m[1];
+    return expr.match(/\d+/g).reduce((a, b) => a * b, 1);
+  }
+  if ((m = expr.match(/^(\d+)([⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+)$/)))
+    return m[1] ** Number(m[2].replace("⁻", "-").replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)));
   return null;
 }
-function checkAnswer(id, [expr, answer]) {
-  const base = baseAnswer(expr);
+
+// Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
+function solveSystem(expr) {
+  const letters = [...new Set(expr.match(/[a-z]/g))];
+  const coefs = expr.split(" ; ").map((eq) => {
+    const [left, right] = eq.split(" = ");
+    const f = (a, b) => Function(...letters, `return (${js(left).replace(/(\d)([a-z])/g, "$1*$2")});`)(a, b);
+    return [f(1, 0) - f(0, 0), f(0, 1) - f(0, 0), Number(right) - f(0, 0)];
+  });
+  const [[a, b, c], [d, e, f]] = coefs;
+  const det = a * e - b * d;
+  assert.notEqual(det, 0, expr);
+  return { [letters[0]]: (c * e - b * f) / det, [letters[1]]: (a * f - c * d) / det };
+}
+function checkAnswer(id, [expr, answer, prompt]) {
+  if (id === "sistemas") {
+    const values = solveSystem(expr);
+    const asked = prompt.match(/^Encuentra (\w)\.$/)?.[1] ?? "c";
+    return assert.equal(values[asked], answer, `${id}: ${expr} → ${asked}`);
+  }
+  const base = baseAnswer(expr, id);
   if (base !== null) return assert.ok(Math.abs(base - answer) < 1e-9, `${id}: ${expr} ≠ ${answer}`);
   if (id === "base-decimales") expr = expr.replace(/(\d),(\d)/g, "$1.$2");
   if (/ % de /.test(expr)) {
@@ -102,8 +138,8 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-")) assert.ok(q[1] > 0 && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
-        else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (id === "base-decimales" || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || id === "potencias-negativas") assert.ok(q[1] > 0 && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (id === "base-decimales" || id === "volumen" || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);
       }

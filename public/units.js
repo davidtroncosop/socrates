@@ -73,11 +73,11 @@ export const UNIT_DEFINITIONS = [
     theme: "theme-purple",
     subtitle: "Unidad 6 · 7° y 8° Básico",
     title: "Geometría, Datos y Probabilidad",
-    description: "Área de triángulos, círculos con π, Pitágoras, promedio y frecuencias relativas.",
+    description: "Área de triángulos, círculos con π, volumen, Pitágoras, promedio, frecuencias relativas y combinaciones.",
     concepts: "La circunferencia es el contorno (longitud 2πr) y el círculo es la superficie interior (área πr²). En triángulos rectángulos, el Teorema de Pitágoras (a² + b² = c²) relaciona catetos con hipotenusa.",
     rule: "📐 Identifica la hipotenusa: Es el lado opuesto al ángulo recto de 90° y el más extenso. Va sola en un miembro de la igualdad: a² + b² = c².",
     notebookTip: "Dibuja siempre la figura en tu cuaderno anotando las medidas conocidas en cada lado antes de calcular fórmulas.",
-    lessonIds: ["area-triangulos", "circulos", "pitagoras", "promedio", "probabilidad-experimental"],
+    lessonIds: ["area-triangulos", "circulos", "volumen", "pitagoras", "promedio", "probabilidad-experimental", "combinatoria"],
   },
   {
     id: "unit-math-4",
@@ -86,11 +86,11 @@ export const UNIT_DEFINITIONS = [
     theme: "theme-rose",
     subtitle: "Unidad 7 · 8° y 1° Medio",
     title: "Potencias, Funciones y Modelamiento",
-    description: "Propiedades de exponentes, pendiente y función afín, productos notables y problemas reales.",
+    description: "Potencias y raíces, exponente cero y negativo, función afín, productos notables, problemas y sistemas de ecuaciones.",
     concepts: "Las potencias representan multiplicaciones reiteradas de una base. La función afín f(x) = mx + n modela fenómenos con tasa de cambio constante (m) y punto de partida (n).",
     rule: "📈 Modelamiento algebraico: Define con precisión la variable independiente (x) y la dependiente (y) antes de plantear la ecuación.",
     notebookTip: "Crea una pequeña tabla de valores (x versus y) en tu cuaderno para comprobar la tasa de variación antes de responder.",
-    lessonIds: ["potencias", "funcion", "notables", "problemas"],
+    lessonIds: ["potencias", "raices", "potencias-negativas", "funcion", "notables", "problemas", "sistemas"],
   },
   {
     id: "unit-lang-1",
@@ -142,6 +142,7 @@ export const ALL_GRADES_LESSONS = new Set(
 export const PREREQUISITES = {
   // Usa sumas y restas con negativos.
   "jerarquia-enteros": ["enteros"],
+  "potencias-negativas": ["potencias"],
 };
 
 // Orden de la ruta, el mismo que ve el estudiante: unidad por unidad. Es el

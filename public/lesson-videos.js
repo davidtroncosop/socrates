@@ -42,4 +42,9 @@ export const lessonVideos = {
   "fracciones-mult": {"src":"/media/lessons/fracciones-mult-2baa3f3036.mp4","title":"Multiplicar y dividir fracciones: explicado en video","duration":53},
   "promedio": {"src":"/media/lessons/promedio-9f00d6861b.mp4","title":"Promedio, mediana y moda: explicado en video","duration":57},
   "area-triangulos": {"src":"/media/lessons/area-triangulos-cd20baba3c.mp4","title":"Área de triángulos y paralelogramos: explicado en video","duration":60},
+  "raices": {"src":"/media/lessons/raices-67c1ec3a30.mp4","title":"Raíces cuadradas: explicado en video","duration":51},
+  "volumen": {"src":"/media/lessons/volumen-855510d9e3.mp4","title":"Volumen de prismas y cilindros: explicado en video","duration":53},
+  "combinatoria": {"src":"/media/lessons/combinatoria-1b418c60e5.mp4","title":"Contar todas las combinaciones: explicado en video","duration":45},
+  "potencias-negativas": {"src":"/media/lessons/potencias-negativas-50f377dce8.mp4","title":"Exponente cero y negativo: explicado en video","duration":53},
+  "sistemas": {"src":"/media/lessons/sistemas-5f752f0956.mp4","title":"Sistemas de dos ecuaciones: explicado en video","duration":58},
 };

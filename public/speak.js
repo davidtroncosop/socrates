@@ -9,6 +9,10 @@ export function toSpeech(text) {
     .replace(/f\((−?\d+)\)/g, "f de $1")
     .replace(/(\d)x\b/g, "$1 equis")
     .replace(/(^|[^\p{L}])x(?![\p{L}])/gu, "$1equis")
+    // La «y» de una ecuación es la letra ye, no la conjunción.
+    .replace(/(?<=[+\-−=·(\d]\s?)y(?![\p{L}])|(?<![\p{L}])y(?=\s?[+\-−=)])/gu, "ye")
+    .replace(/\^\(?(−?\d+)\)?/g, " elevado a $1")
+    .replace(/⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]*[⁰¹⁴⁵⁶⁷⁸⁹⁻][⁰¹²³⁴⁵⁶⁷⁸⁹]*|⁻[²³]/g, (m) => " elevado a " + m.replace("⁻", "menos ").replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)))
     .replace(/²/g, " al cuadrado")
     .replace(/³/g, " al cubo")
     .replace(/[·×]/g, " por ")

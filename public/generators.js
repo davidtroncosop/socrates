@@ -907,6 +907,123 @@ function areaTriangulos(rng, level) {
     [[b * h, "Ese es el rectángulo completo. El triángulo es la mitad."], [b + h, "Sumaste base y altura. Es base por altura, dividido en 2."]]];
 }
 
+function raices(rng, level) {
+  if (level <= 1) {
+    const n = level === 0 ? int(rng, 2, 9) : int(rng, 10, 15);
+    return [`√${n * n}`, n, "Calcula la raíz cuadrada.", `🟦 ¿Qué número por sí mismo da ${n * n}?`,
+      `${n} · ${n} = ${n * n}, así que √${n * n} = ${n}.`, [[(n * n) / 2, `Dividiste por 2. Busca un número que por sí mismo dé ${n * n}: ${n} · ${n}.`]]];
+  }
+  if (level === 2) {
+    // √k está más cerca de n si k ≤ n² + n, y de n + 1 si no.
+    const n = int(rng, 3, 11);
+    const low = rng() < 0.5;
+    const k = low ? n * n + int(rng, 1, n) : n * n + int(rng, n + 1, 2 * n);
+    const near = low ? n : n + 1;
+    return [`Entero más cercano a √${k}`, near, `√${k} no es exacta. ¿A qué número entero está más cerca?`,
+      `${n} · ${n} = ${n * n} y ${n + 1} · ${n + 1} = ${(n + 1) ** 2}. ¿A cuál está más cerca el ${k}?`,
+      `${k} está más cerca de ${near * near} = ${near} · ${near}. Por eso √${k} es casi ${near}.`,
+      [[low ? n + 1 : n, `Compara las distancias: ${k} está más cerca de ${near * near}.`]]];
+  }
+  const n = int(rng, 4, 15);
+  return [`Cuadrado de ${n * n} m²`, n, `Un patio cuadrado tiene ${n * n} m² de área. ¿Cuánto mide cada lado, en metros?`,
+    `El área es lado · lado. ¿Qué número por sí mismo da ${n * n}?`, `${n} · ${n} = ${n * n}: cada lado mide ${n} m.`,
+    [[(n * n) / 4, "Dividiste por 4, como si fuera el perímetro. El área es lado · lado."], [(n * n) / 2, "Dividiste por 2. Busca un número que por sí mismo dé el área."]]];
+}
+
+// Decimales con coma, como se escriben en Chile.
+const dec = (n) => String(n).replace(".", ",");
+
+function volumen(rng, level) {
+  if (level === 0) {
+    const [a, b, c] = [int(rng, 2, 6), int(rng, 2, 6), int(rng, 2, 5)];
+    return [`Caja de ${a} cm, ${b} cm y ${c} cm`, a * b * c, "Calcula el volumen en cm³.",
+      `🧊 Piso: ${a} · ${b} cubitos. Luego multiplica por las ${c} capas.`, `${a} · ${b} = ${a * b}; ${a * b} · ${c} = ${a * b * c} cm³.`,
+      [[a + b + c, `Sumaste las medidas. Multiplica: ${a} · ${b} · ${c}.`]]];
+  }
+  if (level === 1) {
+    const [base, h] = [int(rng, 6, 20), int(rng, 2, 9)];
+    return [`Prisma: base de ${base} cm², altura ${h} cm`, base * h, "Calcula el volumen en cm³.", "Área de la base por la altura.",
+      `${base} · ${h} = ${base * h} cm³.`, [[base + h, "Sumaste. Es área de la base por altura."]]];
+  }
+  if (level === 2) {
+    const [b, h, l] = [2 * int(rng, 1, 4), int(rng, 2, 6), int(rng, 2, 10)];
+    return [`Prisma triangular: triángulo de base ${b} cm y altura ${h} cm, largo ${l} cm`, (b * h * l) / 2, "Calcula el volumen en cm³.",
+      `Primero el área del triángulo: ${b} · ${h} ÷ 2. Después por el largo.`, `${b} · ${h} ÷ 2 = ${(b * h) / 2} cm²; ${(b * h) / 2} · ${l} = ${(b * h * l) / 2} cm³.`,
+      [[b * h * l, "Falta dividir por 2 el triángulo de la base."]]];
+  }
+  const [r, h] = [int(rng, 1, 4), int(rng, 2, 10)];
+  const base = (314 * r * r) / 100;
+  const v = Math.round(314 * r * r * h) / 100;
+  return [`Cilindro: radio ${r} cm, altura ${h} cm`, v, "Un vaso tiene forma de cilindro. Calcula su volumen en cm³. Usa π = 3,14.",
+    `Base: 3,14 · ${r} · ${r}. Después por la altura.`, `3,14 · ${r} · ${r} = ${dec(base)} cm²; ${dec(base)} · ${h} = ${dec(v)} cm³.`,
+    [[Math.round(314 * r * h) / 100, "Usaste el radio una sola vez. La base es 3,14 · r · r."]]];
+}
+
+function combinatoria(rng, level) {
+  if (level <= 1) {
+    const [a, b] = level === 0 ? [int(rng, 2, 6), int(rng, 2, 5)] : [int(rng, 3, 8), int(rng, 2, 3)];
+    if (level === 0)
+      return [`${a} poleras y ${b} pantalones`, a * b, "¿Cuántas tenidas distintas puedes armar con una polera y un pantalón?",
+        `👕 Cada polera puede ir con los ${b} pantalones.`, `${a} · ${b} = ${a * b} tenidas.`, [[a + b, `Sumaste. Cada polera va con cada pantalón: ${a} · ${b}.`]]];
+    return [`${a} sabores y ${b} conos`, a * b, `En una heladería hay ${a} sabores y ${b} tipos de cono. Eliges un sabor y un cono. ¿Cuántos helados distintos hay?`,
+      "Cada sabor puede ir en cada cono.", `${a} · ${b} = ${a * b} helados.`, [[a + b, `Sumaste. Cada sabor va en cada cono: ${a} · ${b}.`]]];
+  }
+  if (level === 2) {
+    const [a, b, c] = [int(rng, 2, 4), int(rng, 2, 4), int(rng, 2, 3)];
+    return [`${a} panes, ${b} rellenos y ${c} bebidas`, a * b * c, "Un combo tiene un pan, un relleno y una bebida. ¿Cuántos combos distintos hay?",
+      "Multiplica las tres elecciones.", `${a} · ${b} · ${c} = ${a * b * c} combos.`,
+      [[a + b + c, "Sumaste. Multiplica las tres elecciones."], [a * b, `Te faltó multiplicar por las ${c} bebidas.`]]];
+  }
+  const [k, n] = [int(rng, 2, 3), pick(rng, [4, 5, 6, 10])];
+  const ruedas = n === 10 ? "del 0 al 9" : `del 1 al ${n}`;
+  return [`Candado: ${k} ruedas con ${n} números`, n ** k, `Un candado tiene ${k} ruedas y cada una va ${ruedas}. ¿Cuántas claves distintas hay?`,
+    `Cada rueda tiene ${n} opciones: ${Array(k).fill(n).join(" · ")}.`, `${Array(k).fill(n).join(" · ")} = ${n ** k} claves.`,
+    [[k * n, `Cada rueda multiplica las opciones: ${Array(k).fill(n).join(" · ")}.`]]];
+}
+
+// Exponentes escritos arriba: 2⁻³.
+const sup = (n) => String(n).replace("-", "⁻").replace(/\d/g, (d) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d]);
+
+function potenciasNegativas(rng, level) {
+  if (level === 0) {
+    const a = int(rng, 2, 12);
+    return [`${a}${sup(0)}`, 1, "Calcula la potencia.", "🔽 Un número elevado a 0 da 1.", `${a}¹ = ${a} y al bajar un paso se divide por ${a}: ${a}⁰ = 1.`,
+      [[0, "Elevado a 0 no da 0: da 1."], [a, `Ese es ${a}¹. Baja un paso más y divide por ${a}: 1.`]]];
+  }
+  const [a, k] = level === 1 ? [int(rng, 2, 9), 1] : level === 2 ? [int(rng, 2, 5), 2] : [pick(rng, [2, 10]), int(rng, 2, 3)];
+  const p = a ** k;
+  return [`${a}${sup(-k)}`, 1 / p, "Calcula la potencia. Puedes responder como fracción, por ejemplo 1/3.",
+    k === 1 ? `Sigue el patrón: ${a}¹ = ${a}, ${a}⁰ = 1, ${a}⁻¹ = 1 ÷ ${a}.` : `Da vuelta la potencia: ${a}${sup(-k)} = 1/${a}${sup(k)}.`,
+    k === 1 ? `${a}⁻¹ = 1/${a}.` : `${a}${sup(k)} = ${p}, así que ${a}${sup(-k)} = 1/${p}.`,
+    [[-p, "El exponente negativo no da un número negativo: da una fracción."], [-a * k, "No se multiplica la base por el exponente."]]];
+}
+
+// Miles con punto, como se escriben en Chile.
+const pesos = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+function sistemas(rng, level) {
+  if (level <= 1) {
+    const x = int(rng, 3, 12);
+    const y = int(rng, 1, x - 1);
+    const askY = level === 1;
+    return [`x + y = ${x + y} ; x − y = ${x - y}`, askY ? y : x, `Encuentra ${askY ? "y" : "x"}.`,
+      askY ? "Primero encuentra x sumando las ecuaciones. Después reemplaza." : "🧩 Suma las dos ecuaciones: la y desaparece.",
+      `2x = ${x + y} + ${x - y} = ${2 * x}, así que x = ${x}; ${x} + y = ${x + y}, y = ${y}.`,
+      [[askY ? x : y, `Ese es el valor de ${askY ? "x" : "y"}.`], ...(askY ? [] : [[2 * x, `Falta dividir por 2: x = ${x}.`]])]];
+  }
+  if (level === 2) {
+    const [x, y] = [int(rng, 2, 9), int(rng, 1, 9)];
+    return [`2x + y = ${2 * x + y} ; x + y = ${x + y}`, x, "Encuentra x.", "Resta las ecuaciones: la y desaparece.",
+      `(2x + y) − (x + y) = ${2 * x + y} − ${x + y}, así que x = ${x}. Comprobación: y = ${y}.`, [[y, `Ese es y. Se pide x: x = ${x}.`]]];
+  }
+  const c = 500 * int(rng, 3, 6);
+  const j = 500 * int(rng, 1, 3);
+  return [`c + j = ${c + j} ; 2c + j = ${2 * c + j}`, c,
+    `1 completo (c) y 1 jugo (j) cuestan $${pesos(c + j)}. 2 completos y 1 jugo cuestan $${pesos(2 * c + j)}. ¿Cuánto cuesta un completo?`,
+    "Compara: la segunda compra tiene 1 completo más.", `(2c + j) − (c + j) = ${2 * c + j} − ${c + j}, así que c = ${c}. El completo cuesta $${pesos(c)}.`,
+    [[j, "Ese es el precio del jugo. El completo es la diferencia."], [3 * c + 2 * j, "Sumaste las compras. Réstalas: la diferencia es 1 completo."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -936,6 +1053,11 @@ export const generators = {
   "fracciones-mult": fraccionesMult,
   promedio,
   "area-triangulos": areaTriangulos,
+  raices,
+  volumen,
+  combinatoria,
+  "potencias-negativas": potenciasNegativas,
+  sistemas,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);

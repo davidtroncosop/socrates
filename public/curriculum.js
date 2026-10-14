@@ -1949,5 +1949,427 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "raices",
+    "since": "2026-10-15",
+    "title": "Raíces cuadradas",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 04 · El lado del cuadrado",
+    "concept": "La raíz cuadrada pregunta: ¿qué número multiplicado por sí mismo da este? √49 = 7, porque 7 · 7 = 49. Piensa en un cuadrado de baldosas: si tiene 49 baldosas, cada lado tiene 7. Si no es exacta, la raíz queda entre dos enteros: √50 está entre 7 y 8.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-04\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "√64 = 8, porque 8 · 8 = 64. √20 está entre 4 y 5, porque 4 · 4 = 16 y 5 · 5 = 25.",
+    "status": "published",
+    "questions": [
+      [
+        "√49",
+        7,
+        "Calcula la raíz cuadrada.",
+        "🟦 ¿Qué número por sí mismo da 49?",
+        "7 · 7 = 49, así que √49 = 7.",
+        [
+          [
+            24.5,
+            "Dividiste por 2. La raíz busca un número que por sí mismo dé 49: 7 · 7 = 49."
+          ]
+        ]
+      ],
+      [
+        "√100",
+        10,
+        "Calcula la raíz cuadrada.",
+        "¿Qué número por sí mismo da 100?",
+        "10 · 10 = 100, así que √100 = 10.",
+        [
+          [
+            50,
+            "Dividiste por 2. Busca un número que por sí mismo dé 100: 10 · 10 = 100."
+          ]
+        ]
+      ],
+      [
+        "Entero más cercano a √50",
+        7,
+        "√50 no es exacta. ¿A qué número entero está más cerca?",
+        "7 · 7 = 49 y 8 · 8 = 64. ¿A cuál está más cerca el 50?",
+        "50 está muy cerca de 49 = 7 · 7. Por eso √50 es un poco más que 7.",
+        [
+          [
+            25,
+            "Dividiste por 2. Busca qué número por sí mismo da cerca de 50: 7 · 7 = 49."
+          ],
+          [
+            8,
+            "8 · 8 = 64 queda lejos de 50. 7 · 7 = 49 está más cerca."
+          ]
+        ]
+      ],
+      [
+        "Cuadrado de 64 m²",
+        8,
+        "Un patio cuadrado tiene 64 m² de área. ¿Cuánto mide cada lado, en metros?",
+        "El área es lado · lado. ¿Qué número por sí mismo da 64?",
+        "8 · 8 = 64: cada lado mide 8 m.",
+        [
+          [
+            16,
+            "Dividiste por 4, como si fuera el perímetro. El área es lado · lado: 8 · 8 = 64. Cada lado mide 8 m."
+          ],
+          [
+            32,
+            "Dividiste por 2. Busca un número que por sí mismo dé 64: 8."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "√81",
+      9,
+      "Calcula la raíz cuadrada.",
+      "¿Qué número por sí mismo da 81?",
+      "9 · 9 = 81, así que √81 = 9.",
+      [
+        [
+          40.5,
+          "Dividiste por 2. Busca un número que por sí mismo dé 81: 9 · 9 = 81."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "volumen",
+    "since": "2026-10-15",
+    "title": "Volumen de prismas y cilindros",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 11 · Cubitos por capas",
+    "concept": "El volumen cuenta cuántos cubitos caben adentro. Primero cuenta los cubitos del piso: es el área de la base. Después multiplica por cuántas capas hay: es la altura. Volumen = área de la base · altura. En un cilindro, la base es un círculo: π · r², con π ≈ 3,14.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-11\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Caja de 4 cm, 3 cm y 2 cm: el piso tiene 4 · 3 = 12 cubitos y hay 2 capas. 12 · 2 = 24 cm³.",
+    "status": "published",
+    "questions": [
+      [
+        "Caja de 4 cm, 3 cm y 2 cm",
+        24,
+        "Calcula el volumen en cm³.",
+        "🧊 Piso: 4 · 3 cubitos. Luego multiplica por las 2 capas.",
+        "4 · 3 = 12; 12 · 2 = 24 cm³.",
+        [
+          [
+            9,
+            "Sumaste las medidas. Multiplica: 4 · 3 · 2 = 24."
+          ]
+        ]
+      ],
+      [
+        "Prisma: base de 15 cm², altura 4 cm",
+        60,
+        "Calcula el volumen en cm³.",
+        "Área de la base por la altura.",
+        "15 · 4 = 60 cm³.",
+        [
+          [
+            19,
+            "Sumaste. Es área de la base por altura: 15 · 4 = 60."
+          ]
+        ]
+      ],
+      [
+        "Prisma triangular: triángulo de base 4 cm y altura 3 cm, largo 10 cm",
+        60,
+        "Calcula el volumen en cm³.",
+        "Primero el área del triángulo: 4 · 3 ÷ 2. Después por el largo.",
+        "4 · 3 ÷ 2 = 6 cm²; 6 · 10 = 60 cm³.",
+        [
+          [
+            120,
+            "Falta dividir por 2 el triángulo de la base: 4 · 3 ÷ 2 = 6; 6 · 10 = 60."
+          ]
+        ]
+      ],
+      [
+        "Cilindro: radio 2 cm, altura 5 cm",
+        62.8,
+        "Un vaso tiene forma de cilindro. Calcula su volumen en cm³. Usa π = 3,14.",
+        "Base: 3,14 · 2 · 2. Después por la altura.",
+        "3,14 · 2 · 2 = 12,56 cm²; 12,56 · 5 = 62,8 cm³.",
+        [
+          [
+            31.4,
+            "Usaste el radio una sola vez. La base es 3,14 · 2 · 2 = 12,56; por 5: 62,8."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Caja de 5 cm, 2 cm y 3 cm",
+      30,
+      "Calcula el volumen en cm³.",
+      "Piso por capas: 5 · 2 · 3.",
+      "5 · 2 = 10; 10 · 3 = 30 cm³.",
+      [
+        [
+          10,
+          "Sumaste las medidas. Multiplica: 5 · 2 · 3 = 30."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "combinatoria",
+    "since": "2026-10-15",
+    "title": "Contar todas las combinaciones",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 17 · Multiplicar las opciones",
+    "concept": "Para contar todas las combinaciones, multiplica las opciones de cada elección. Con 3 poleras y 2 pantalones, cada polera puede ir con los 2 pantalones: 3 · 2 = 6 tenidas. Si hay una elección más, también se multiplica.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-17\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "3 poleras y 2 pantalones: 3 · 2 = 6 tenidas. Si además eliges entre 2 zapatillas: 6 · 2 = 12.",
+    "status": "published",
+    "questions": [
+      [
+        "3 poleras y 2 pantalones",
+        6,
+        "¿Cuántas tenidas distintas puedes armar con una polera y un pantalón?",
+        "👕 Cada polera puede ir con los 2 pantalones.",
+        "3 · 2 = 6 tenidas.",
+        [
+          [
+            5,
+            "Sumaste. Cada polera va con cada pantalón: 3 · 2 = 6."
+          ]
+        ]
+      ],
+      [
+        "4 sabores y 2 conos",
+        8,
+        "En una heladería hay 4 sabores y 2 tipos de cono. Eliges un sabor y un cono. ¿Cuántos helados distintos hay?",
+        "Cada sabor puede ir en cada cono.",
+        "4 · 2 = 8 helados.",
+        [
+          [
+            6,
+            "Sumaste. Cada sabor va en cada cono: 4 · 2 = 8."
+          ]
+        ]
+      ],
+      [
+        "2 panes, 3 rellenos y 2 bebidas",
+        12,
+        "Un combo tiene un pan, un relleno y una bebida. ¿Cuántos combos distintos hay?",
+        "Multiplica las tres elecciones.",
+        "2 · 3 · 2 = 12 combos.",
+        [
+          [
+            7,
+            "Sumaste. Multiplica las tres elecciones: 2 · 3 · 2 = 12."
+          ],
+          [
+            6,
+            "Te faltó multiplicar por las 2 bebidas: 6 · 2 = 12."
+          ]
+        ]
+      ],
+      [
+        "Candado: 3 ruedas con 10 números",
+        1000,
+        "Un candado tiene 3 ruedas y cada una va del 0 al 9. ¿Cuántas claves distintas hay?",
+        "Cada rueda tiene 10 opciones: 10 · 10 · 10.",
+        "10 · 10 · 10 = 1000 claves.",
+        [
+          [
+            30,
+            "Cada rueda multiplica las opciones: 10 · 10 · 10 = 1000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "5 poleras y 4 pantalones",
+      20,
+      "¿Cuántas tenidas distintas puedes armar con una polera y un pantalón?",
+      "Cada polera puede ir con los 4 pantalones.",
+      "5 · 4 = 20 tenidas.",
+      [
+        [
+          9,
+          "Sumaste. Cada polera va con cada pantalón: 5 · 4 = 20."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "potencias-negativas",
+    "since": "2026-10-15",
+    "title": "Exponente cero y negativo",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 02 · Seguir el patrón hacia abajo",
+    "concept": "Mira el patrón: 2³ = 8, 2² = 4, 2¹ = 2. Cada vez que el exponente baja 1, se divide por 2. Si sigues: 2⁰ = 1 y 2⁻¹ = 1/2. Un número elevado a 0 da 1. Un exponente negativo da una fracción, no un número negativo: 2⁻³ = 1/2³ = 1/8.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-02\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "5⁰ = 1. 3⁻² = 1/3² = 1/9. 10⁻² = 1/100 = 0,01.",
+    "status": "published",
+    "questions": [
+      [
+        "5⁰",
+        1,
+        "Calcula la potencia.",
+        "🔽 Un número elevado a 0 da 1.",
+        "5¹ = 5 y al bajar un paso se divide por 5: 5⁰ = 1.",
+        [
+          [
+            0,
+            "Elevado a 0 no da 0: da 1. Patrón: 5² = 25, 5¹ = 5, 5⁰ = 5 ÷ 5 = 1."
+          ],
+          [
+            5,
+            "Ese es 5¹. Baja un paso más y divide por 5: 5⁰ = 1."
+          ]
+        ]
+      ],
+      [
+        "2⁻¹",
+        0.5,
+        "Calcula la potencia. Puedes responder como fracción, por ejemplo 1/3.",
+        "Sigue el patrón: 2¹ = 2, 2⁰ = 1, 2⁻¹ = 1 ÷ 2.",
+        "2⁻¹ = 1/2.",
+        [
+          [
+            -2,
+            "El exponente negativo no da un número negativo: da una fracción. 2⁻¹ = 1/2."
+          ]
+        ]
+      ],
+      [
+        "3⁻²",
+        0.1111111111111111,
+        "Calcula la potencia. Responde como fracción.",
+        "Da vuelta la potencia: 3⁻² = 1/3².",
+        "3² = 9, así que 3⁻² = 1/9.",
+        [
+          [
+            -9,
+            "El exponente negativo da una fracción, no un negativo: 1/3² = 1/9."
+          ],
+          [
+            -6,
+            "No se multiplica la base por el exponente. 3⁻² = 1/3² = 1/9."
+          ]
+        ]
+      ],
+      [
+        "10⁻²",
+        0.01,
+        "Un grano de arena mide 10⁻² metros. ¿Cuántos metros son? Responde como fracción o decimal.",
+        "10⁻² = 1/10².",
+        "10² = 100, así que 10⁻² = 1/100 = 0,01 m.",
+        [
+          [
+            -100,
+            "El exponente negativo da una fracción, no un negativo: 1/100 = 0,01."
+          ],
+          [
+            -20,
+            "No se multiplica la base por el exponente. 10⁻² = 1/100 = 0,01."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "4⁻¹",
+      0.25,
+      "Calcula la potencia. Puedes responder como fracción.",
+      "4⁻¹ = 1/4.",
+      "4⁻¹ = 1/4 = 0,25.",
+      [
+        [
+          -4,
+          "El exponente negativo da una fracción, no un negativo: 4⁻¹ = 1/4."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "sistemas",
+    "since": "2026-10-15",
+    "title": "Sistemas de dos ecuaciones",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 04 · Dos pistas a la vez",
+    "concept": "Un sistema son dos pistas al mismo tiempo. Con x + y = 10 y x − y = 4, si sumas las dos ecuaciones, la y desaparece: 2x = 14, así que x = 7. Después reemplazas: 7 + y = 10, y = 3. Comprueba siempre en las dos.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-04\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "1 completo y 1 jugo cuestan $3.000. 2 completos y 1 jugo cuestan $5.000. La diferencia es 1 completo: $2.000. El jugo cuesta $1.000.",
+    "status": "published",
+    "questions": [
+      [
+        "x + y = 10 ; x − y = 4",
+        7,
+        "Encuentra x.",
+        "🧩 Suma las dos ecuaciones: la y desaparece.",
+        "2x = 10 + 4 = 14, así que x = 7. Comprobación: y = 3; 7 + 3 = 10 y 7 − 3 = 4.",
+        [
+          [
+            3,
+            "Ese es el valor de y. Se pide x: 2x = 14, x = 7."
+          ],
+          [
+            14,
+            "Falta dividir por 2: 2x = 14, x = 7."
+          ]
+        ]
+      ],
+      [
+        "x + y = 9 ; x − y = 1",
+        4,
+        "Encuentra y.",
+        "Primero encuentra x sumando las ecuaciones. Después reemplaza.",
+        "2x = 10, x = 5; 5 + y = 9, y = 4.",
+        [
+          [
+            5,
+            "Ese es x. Reemplaza: 5 + y = 9, así que y = 4."
+          ]
+        ]
+      ],
+      [
+        "2x + y = 11 ; x + y = 7",
+        4,
+        "Encuentra x.",
+        "Resta las ecuaciones: la y desaparece.",
+        "(2x + y) − (x + y) = 11 − 7, así que x = 4. Comprobación: y = 3; 8 + 3 = 11 y 4 + 3 = 7.",
+        [
+          [
+            3,
+            "Ese es y. Se pide x: x = 4."
+          ]
+        ]
+      ],
+      [
+        "c + j = 3000 ; 2c + j = 5000",
+        2000,
+        "1 completo (c) y 1 jugo (j) cuestan $3.000. 2 completos y 1 jugo cuestan $5.000. ¿Cuánto cuesta un completo?",
+        "Compara: la segunda compra tiene 1 completo más.",
+        "(2c + j) − (c + j) = 5000 − 3000, así que c = 2000. El completo cuesta $2.000.",
+        [
+          [
+            1000,
+            "Ese es el precio del jugo. El completo es la diferencia: $2.000."
+          ],
+          [
+            8000,
+            "Sumaste las compras. Réstalas: la diferencia es 1 completo, $2.000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "x + y = 12 ; x − y = 2",
+      7,
+      "Encuentra x.",
+      "Suma las dos ecuaciones: la y desaparece.",
+      "2x = 14, así que x = 7. Comprobación: y = 5; 7 + 5 = 12 y 7 − 5 = 2.",
+      [
+        [
+          5,
+          "Ese es y. Se pide x: 2x = 14, x = 7."
+        ]
+      ]
+    ]
   }
 ];
