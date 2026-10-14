@@ -31,12 +31,18 @@ import baseMult from "./base-multiplicar.mjs";
 import baseDiv from "./base-dividir.mjs";
 import baseFrac from "./base-fracciones.mjs";
 import baseDec from "./base-decimales.mjs";
+import multiplos from "./multiplos-divisores.mjs";
+import fracSuma from "./fracciones-suma.mjs";
+import fracMult from "./fracciones-mult.mjs";
+import promedio from "./promedio.mjs";
+import areaTri from "./area-triangulos.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  multiplos, fracSuma, fracMult, promedio, areaTri,
   baseValor, baseSuma, baseMult, baseDiv, baseFrac, baseDec,
   jerarquiaMult, jerarquiaParentesis, jerarquiaEnteros, jerarquiaPotencias,
   equations, signs, both, racionales, combinadas, problemas, enteros, semejantes,

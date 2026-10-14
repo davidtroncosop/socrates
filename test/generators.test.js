@@ -28,6 +28,37 @@ function baseAnswer(expr) {
   if ((m = expr.match(/^1\/2 = \?\/(\d+)$/))) return m[1] / 2;
   if ((m = expr.match(/^([\d,]+) m = \? cm$/))) return Math.round(Number(m[1].replace(",", ".")) * 100);
   if ((m = expr.match(/^(\d+) láminas ÷ (\d+) amigos$/))) return m[1] % m[2];
+  // Dividir por una fracción: la fracción va completa (no de izquierda a derecha).
+  if ((m = expr.match(/^(\d+)(?:\/(\d+))? ÷ (\d+)\/(\d+)$/))) return (m[1] / (m[2] ?? 1)) / (m[3] / m[4]);
+  // Lote 1: se recalcula cada respuesta de forma independiente.
+  const ordinals = ["primer", "segundo", "tercer", "cuarto", "quinto", "sexto", "séptimo", "octavo"];
+  if ((m = expr.match(/^¿Cuál es el (\S+) múltiplo de (\d+)\?$/))) return (ordinals.indexOf(m[1]) + 1) * m[2];
+  if ((m = expr.match(/^¿Cuántos divisores tiene el (\d+)\?$/))) return Array.from({ length: +m[1] }, (_, i) => i + 1).filter((d) => m[1] % d === 0).length;
+  const prime = (n) => n > 1 && Array.from({ length: n - 2 }, (_, i) => i + 2).every((d) => n % d);
+  if ((m = expr.match(/^¿Cuál es el único número primo entre (\d+) y (\d+)\?$/))) {
+    const found = Array.from({ length: m[2] - m[1] - 1 }, (_, i) => +m[1] + 1 + i).filter(prime);
+    assert.equal(found.length, 1, expr);
+    return found[0];
+  }
+  if ((m = expr.match(/^Buses cada (\d+) y cada (\d+) minutos$/))) {
+    let t = 1;
+    while (t % m[1] || t % m[2]) t++;
+    return t;
+  }
+  const nums = (text) => text.split(/, | y /).map(Number);
+  if ((m = expr.match(/^Promedio de (.+)$/))) return nums(m[1]).reduce((a, b) => a + b, 0) / nums(m[1]).length;
+  if ((m = expr.match(/^Mediana de (.+)$/))) return [...nums(m[1])].sort((a, b) => a - b)[Math.floor(nums(m[1]).length / 2)];
+  if ((m = expr.match(/^Moda de (.+)$/))) {
+    const counts = new Map();
+    for (const v of nums(m[1])) counts.set(v, (counts.get(v) ?? 0) + 1);
+    const top = Math.max(...counts.values());
+    const modes = [...counts].filter(([, c]) => c === top);
+    assert.equal(modes.length, 1, `${expr}: una sola moda`);
+    return modes[0][0];
+  }
+  if ((m = expr.match(/^Rectángulo de (\d+) cm por (\d+) cm$/))) return m[1] * m[2];
+  if ((m = expr.match(/^Paralelogramo: base (\d+) cm, altura (\d+) cm$/))) return m[1] * m[2];
+  if ((m = expr.match(/^Triángulo: base (\d+) c?m, altura (\d+) c?m$/))) return (m[1] * m[2]) / 2;
   return null;
 }
 function checkAnswer(id, [expr, answer]) {
@@ -70,7 +101,9 @@ test("every generator yields valid, exact questions at every level", () => {
       });
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
-        assert.ok(Number.isInteger(id === "base-decimales" ? Math.round(q[1] * 100) : q[1]) && Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6, `${id}: ${q[0]} → ${q[1]}`);
+        // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
+        if (id.startsWith("fracciones-")) assert.ok(q[1] > 0 && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (id === "base-decimales" || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);
       }

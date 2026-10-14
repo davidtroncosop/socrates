@@ -5,9 +5,17 @@
 import { parseNumber, solveLinear } from "./learning.js";
 
 const close = (a, b) => Math.abs(a - b) < 1e-8;
-const num = (n) =>
-  (n < 0 ? "−" : "") +
-  String(Math.round(Math.abs(n) * 1000) / 1000).replace(".", ",");
+// Hasta 3 decimales como decimal (0,5); si no alcanzan, como fracción (1/3,
+// 20/3) para no perder exactitud al exportar e importar.
+function num(n) {
+  const sign = n < 0 ? "−" : "";
+  const x = Math.abs(n);
+  if (Math.abs(x * 1000 - Math.round(x * 1000)) < 1e-9)
+    return sign + String(Math.round(x * 1000) / 1000).replace(".", ",");
+  for (let d = 2; d <= 100; d++)
+    if (Math.abs(x * d - Math.round(x * d)) < 1e-9) return `${sign}${Math.round(x * d)}/${d}`;
+  return sign + String(Math.round(x * 1e6) / 1e6).replace(".", ",");
+}
 const coef = (a) => (a === 1 ? "" : a === -1 ? "−" : num(a));
 
 export function diagnoseMistake(q, raw) {

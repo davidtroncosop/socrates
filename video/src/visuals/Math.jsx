@@ -495,3 +495,72 @@ export function Freq({ prev, cur, t, beat }) {
     </svg>
   );
 }
+
+// Figuras para el área: rectángulo con cuadraditos, triángulo como mitad de
+// un rectángulo y paralelogramo que se vuelve rectángulo al mover un triángulo.
+export function Shape({ prev, cur, t, beat }) {
+  const { kind, base, height } = cur;
+  const slant = kind === "parallelogram" ? 0.5 : 0;
+  const u = Math.min(720 / (base + height * slant), 380 / height);
+  const W = base * u;
+  const H = height * u;
+  const S = height * slant * u;
+  const x0 = 960 - (W + S) / 2;
+  const y0 = 590 - H / 2;
+  const pts = (list) => list.map(([x, y]) => `${x},${y}`).join(" ");
+  const grid = [];
+  if (cur.grid)
+    for (let i = 1; i < base; i++) grid.push([x0 + i * u, y0, x0 + i * u, y0 + H]);
+  if (cur.grid)
+    for (let j = 1; j < height; j++) grid.push([x0, y0 + j * u, x0 + W, y0 + j * u]);
+  // El triángulo que se corta y se mueve al otro lado.
+  const move = cur.asRect ? (prev?.asRect ? 1 : during(t, beat, 0.6)) : 0;
+  const labelBase = cur.labels?.base;
+  const labelHeight = cur.labels?.height;
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      {kind === "rect" && (
+        <g>
+          <rect x={x0} y={y0} width={W} height={H} fill="#bfdbfe" stroke={C.beam} strokeWidth={5} />
+          {grid.map(([a, b, c, d], i) => (
+            <line key={i} x1={a} y1={b} x2={c} y2={d} stroke="#ffffff" strokeWidth={3} />
+          ))}
+        </g>
+      )}
+      {kind === "triangle" && (
+        <g>
+          <rect x={x0} y={y0} width={W} height={H} fill="#f1f5f9" stroke={C.muted} strokeWidth={3} strokeDasharray="12 10" />
+          <polygon points={pts([[x0, y0 + H], [x0 + W, y0 + H], [x0, y0]])} fill={C.amberSoft} stroke={C.amberDark} strokeWidth={5} />
+          <text x={x0 + W * 0.68} y={y0 + H * 0.35} textAnchor="middle" fontSize={40} fontWeight={700} fill={C.muted}>la otra mitad</text>
+        </g>
+      )}
+      {kind === "parallelogram" && (
+        <g>
+          <polygon points={pts([[x0 + S, y0 + H], [x0 + W, y0 + H], [x0 + W + S, y0], [x0 + S, y0]])} fill="#bbf7d0" stroke={C.green} strokeWidth={5} />
+          <g transform={`translate(${move * W} 0)`}>
+            <polygon points={pts([[x0, y0 + H], [x0 + S, y0 + H], [x0 + S, y0]])} fill={move > 0 ? C.amberSoft : "#bbf7d0"} stroke={move > 0 ? C.amberDark : C.green} strokeWidth={5} />
+          </g>
+          {!cur.asRect && <line x1={x0 + S} y1={y0} x2={x0 + S} y2={y0 + H} stroke={C.red} strokeWidth={4} strokeDasharray="10 8" />}
+        </g>
+      )}
+      {labelBase && (
+        <text x={x0 + (kind === "parallelogram" && cur.asRect ? S : 0) + W / 2} y={y0 + H + 62} textAnchor="middle" fontSize={46} fontWeight={800} fill={C.blueDark}>
+          {labelBase}
+        </text>
+      )}
+      {labelHeight && (
+        // En el paralelogramo inclinado, la etiqueta va junto a la altura (dentro), lejos del lado inclinado.
+        <text
+          x={kind === "parallelogram" ? x0 + S + (cur.asRect ? -24 : 20) : x0 - 24}
+          y={y0 + H / 2 + 16}
+          textAnchor={kind === "parallelogram" && !cur.asRect ? "start" : "end"}
+          fontSize={46}
+          fontWeight={800}
+          fill={C.red}
+        >
+          {labelHeight}
+        </text>
+      )}
+    </svg>
+  );
+}

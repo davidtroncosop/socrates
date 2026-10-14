@@ -154,8 +154,12 @@ function nextLesson() {
   const focus = lessons.find((l) => l.id === state.focus && open(l));
   if (focus) return focus;
   const route = routeOrder(lessons);
-  // Sin diagnóstico, el curso de lo último que completó.
   const last = lessons.find((l) => l.id === state.completed.at(-1));
+  // Primero, seguir en la unidad que está haciendo.
+  const unit = last && getUnitsForLessons(lessons).find((u) => u.lessons.some((l) => l.id === last.id));
+  const inUnit = unit?.lessons.find(open);
+  if (inUnit) return inUnit;
+  // Sin diagnóstico, el curso de lo último que completó.
   const grade = state.grade ?? (last && inferGrade(last));
   return (
     (grade && route.find((l) => inferGrade(l) === grade && open(l))) ||

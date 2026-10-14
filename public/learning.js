@@ -205,7 +205,7 @@ export const lessons = [
     title: "Modelamiento y problemas reales",
     subject: "matematica",
     grade: "1m",
-    description: "MA08 OA 08 / MA01 OA 04 · De un problema en palabras a una ecuación",
+    description: "MA08 OA 08 · De un problema en palabras a una ecuación",
     concept:
       "Un problema es un mensaje en palabras. Primero decide qué es x: lo que no sabes. Después traduce cada frase a números. Resuelve la ecuación. Al final, revisa si tu respuesta tiene sentido.",
     examples: "El doble de un número más 5 es 21: 2x + 5 = 21 → 2x = 16 → x = 8.",
@@ -445,7 +445,7 @@ export const lessons = [
     title: "Productos notables y binomios",
     subject: "matematica",
     grade: "1m",
-    description: "MA01 OA 03 · El cuadrado que se agranda",
+    description: "MA1M OA 03 · El cuadrado que se agranda",
     concept:
       "(x + 4)² es un cuadrado de lado x + 4. Tiene cuatro partes: x², dos franjas de 4x y un cuadradito de 16. Por eso (x + 4)² = x² + 8x + 16. No olvides las dos franjas del medio.",
     examples: "(x + 4)² = x² + 8x + 16 (el término central es el doble producto: 2 · x · 4 = 8x).",
@@ -823,7 +823,7 @@ export function forStudent(text) {
     .filter((line) => !/^(Referencia curricular|Actividad original)/.test(line.trim()))
     .join("\n")
     .replace(/\s*\((?:Mineduc|MINEDUC)[^)]*\)/g, "")
-    .replace(/^\s*(?:(?:MA|LE)\d{2} OA \d{1,2}\s*(?:\/\s*)?)+·\s*/, "")
+    .replace(/^\s*(?:(?:MA|LE)\w{2} OA \d{1,2}\s*(?:\/\s*)?)+·\s*/, "")
     .trim();
 }
 

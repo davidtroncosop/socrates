@@ -4,7 +4,7 @@ import { LEAD } from "./timeline.js";
 import { C, clamp01 } from "./anim.js";
 import { Balance } from "./visuals/Balance.jsx";
 import { Cards, List, Lines, Marked, Passage, Steps, Table } from "./visuals/Text.jsx";
-import { Area, Bar, Chart, Circle, Freq, Grid100, NumberLine, Tokens, Triangle } from "./visuals/Math.jsx";
+import { Area, Bar, Chart, Circle, Freq, Grid100, NumberLine, Shape, Tokens, Triangle } from "./visuals/Math.jsx";
 
 const { fontFamily } = loadFont("normal", { weights: ["500", "600", "700", "800"], subsets: ["latin"] });
 
@@ -25,6 +25,7 @@ const VISUALS = {
   triangle: Triangle,
   chart: Chart,
   freq: Freq,
+  shape: Shape,
 };
 
 // Zona disponible para la visualización: bajo la ecuación (si hay) y sobre

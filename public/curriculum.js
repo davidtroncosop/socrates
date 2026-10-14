@@ -1525,5 +1525,429 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "multiplos-divisores",
+    "since": "2026-10-14",
+    "title": "Múltiplos, divisores y primos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 01 · Saltos, repartos y números primos",
+    "concept": "Los múltiplos de un número son su tabla: los de 3 son 3, 6, 9, 12. Los divisores de un número lo reparten sin que sobre nada: los de 12 son 1, 2, 3, 4, 6 y 12. Un número primo tiene solo dos divisores: el 1 y él mismo.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-01\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "¿El 15 es múltiplo de 5? Sí, porque 5 · 3 = 15. ¿El 7 es primo? Sí: solo se divide por 1 y por 7.",
+    "status": "published",
+    "questions": [
+      [
+        "¿Cuál es el quinto múltiplo de 4?",
+        20,
+        "Recorre la tabla del 4.",
+        "🦘 Salta de 4 en 4: 4, 8, 12, 16…",
+        "Los múltiplos de 4 son 4, 8, 12, 16, 20: el quinto es 20.",
+        [
+          [
+            9,
+            "Sumaste 4 + 5. El quinto múltiplo es 4 · 5 = 20."
+          ],
+          [
+            16,
+            "Ese es el cuarto. Cuenta: 4, 8, 12, 16, 20."
+          ]
+        ]
+      ],
+      [
+        "¿Cuántos divisores tiene el 12?",
+        6,
+        "Busca todos los números que dividen a 12 sin que sobre nada.",
+        "Busca parejas que multiplicadas den 12: 1 · 12, 2 · 6, 3 · 4.",
+        "Las parejas 1 · 12, 2 · 6 y 3 · 4 dan 6 divisores: 1, 2, 3, 4, 6 y 12.",
+        [
+          [
+            4,
+            "Te faltaron el 1 y el 12: también dividen a 12."
+          ],
+          [
+            3,
+            "Cada pareja tiene dos números: 1 y 12, 2 y 6, 3 y 4. Son 6 divisores."
+          ]
+        ]
+      ],
+      [
+        "¿Cuál es el único número primo entre 24 y 30?",
+        29,
+        "Un primo solo se divide por 1 y por sí mismo.",
+        "Descarta los pares y los que terminan en 5. ¿Qué queda?",
+        "25 = 5 · 5 y 27 = 3 · 9 no son primos; el 29 solo se divide por 1 y por 29.",
+        [
+          [
+            27,
+            "27 = 3 · 9: tiene más divisores, no es primo."
+          ],
+          [
+            25,
+            "25 = 5 · 5: no es primo."
+          ]
+        ]
+      ],
+      [
+        "Buses cada 4 y cada 6 minutos",
+        12,
+        "Dos buses salen juntos. Uno pasa cada 4 minutos y el otro cada 6. ¿En cuántos minutos vuelven a pasar juntos?",
+        "Escribe los múltiplos de cada uno y busca el primero que se repite.",
+        "Múltiplos de 4: 4, 8, 12. Múltiplos de 6: 6, 12. El primero en común es 12.",
+        [
+          [
+            24,
+            "24 también es común, pero hay uno antes: 12."
+          ],
+          [
+            10,
+            "Sumaste 4 + 6. Busca el primer múltiplo común: 12."
+          ],
+          [
+            2,
+            "El 2 es un divisor común, no un múltiplo. Buscamos cuándo coinciden: 12."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "¿Cuántos divisores tiene el 18?",
+      6,
+      "Busca todos los números que dividen a 18 sin que sobre nada.",
+      "Busca parejas: 1 · 18, 2 · 9, 3 · 6.",
+      "1, 2, 3, 6, 9 y 18: son 6 divisores.",
+      [
+        [
+          4,
+          "Te faltaron el 1 y el 18: también dividen a 18."
+        ],
+        [
+          3,
+          "Cada pareja aporta dos divisores: son 6."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "fracciones-suma",
+    "since": "2026-10-14",
+    "title": "Sumar y restar fracciones",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 06 · Partes del mismo tamaño",
+    "concept": "Para sumar fracciones, las partes tienen que ser del mismo tamaño. Si el número de abajo es igual, suma solo los de arriba: 1/5 + 2/5 = 3/5. Si es distinto, primero corta en partes iguales: 1/2 = 2/4. El número de abajo no se suma.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-06\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "1/2 + 1/4: la mitad son 2 cuartos, así que 2/4 + 1/4 = 3/4.",
+    "status": "published",
+    "questions": [
+      [
+        "1/5 + 2/5",
+        0.6,
+        "Suma las fracciones. Puedes responder como fracción, por ejemplo 3/5.",
+        "🍕 Las partes ya son del mismo tamaño: suma solo los de arriba.",
+        "1/5 + 2/5 = 3/5.",
+        [
+          [
+            0.3,
+            "Sumaste también los de abajo (3/10). El de abajo dice el tamaño de las partes: se queda en 5. Resultado: 3/5."
+          ]
+        ]
+      ],
+      [
+        "5/8 − 3/8",
+        0.25,
+        "Resta las fracciones.",
+        "Mismo tamaño de partes: resta solo los de arriba.",
+        "5/8 − 3/8 = 2/8, que es lo mismo que 1/4."
+      ],
+      [
+        "1/2 + 1/4",
+        0.75,
+        "Suma las fracciones.",
+        "Corta la mitad en dos: 1/2 = 2/4.",
+        "1/2 = 2/4; 2/4 + 1/4 = 3/4.",
+        [
+          [
+            0.3333333333333333,
+            "Sumaste arriba con arriba y abajo con abajo (2/6). Primero haz partes del mismo tamaño: 1/2 = 2/4. Resultado: 3/4."
+          ]
+        ]
+      ],
+      [
+        "2/3 + 1/6",
+        0.8333333333333334,
+        "Comes 2/3 de una pizza y tu hermano 1/6. ¿Qué parte se comieron entre los dos?",
+        "Corta cada tercio en dos: 2/3 = 4/6.",
+        "2/3 = 4/6; 4/6 + 1/6 = 5/6.",
+        [
+          [
+            0.3333333333333333,
+            "Sumaste arriba y abajo por separado (3/9). Primero 2/3 = 4/6; después 4/6 + 1/6 = 5/6."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "3/4 − 1/2",
+      0.25,
+      "Resta las fracciones.",
+      "Escribe 1/2 como 2/4.",
+      "3/4 − 2/4 = 1/4.",
+      [
+        [
+          1,
+          "Restaste arriba y abajo por separado (2/2). Primero 1/2 = 2/4: 3/4 − 2/4 = 1/4."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "fracciones-mult",
+    "since": "2026-10-14",
+    "title": "Multiplicar y dividir fracciones",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 02 · Una parte de una parte",
+    "concept": "Multiplicar por una fracción es tomar una parte de algo: 1/2 · 1/3 es la mitad de un tercio. Para multiplicar, se multiplica arriba con arriba y abajo con abajo. Dividir por una fracción es contar cuántas veces cabe: 3 ÷ 1/2 es cuántas mitades caben en 3.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-02\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "2/3 · 3/4 = 6/12 = 1/2. Y 3 ÷ 1/2 = 6, porque en 3 pizzas hay 6 mitades.",
+    "status": "published",
+    "questions": [
+      [
+        "1/2 · 1/3",
+        0.16666666666666666,
+        "Multiplica las fracciones.",
+        "🍕 La mitad de un tercio. Arriba por arriba y abajo por abajo.",
+        "1 · 1 = 1 y 2 · 3 = 6: 1/6.",
+        [
+          [
+            0.4,
+            "Sumaste (2/5). Para multiplicar: arriba por arriba (1) y abajo por abajo (6): 1/6."
+          ]
+        ]
+      ],
+      [
+        "2/3 · 3/4",
+        0.5,
+        "Multiplica las fracciones.",
+        "Arriba: 2 · 3. Abajo: 3 · 4.",
+        "2 · 3 = 6 y 3 · 4 = 12: 6/12, que es 1/2.",
+        [
+          [
+            0.8888888888888888,
+            "Eso es dividir (cruzaste los números). Para multiplicar: arriba por arriba y abajo por abajo: 6/12."
+          ]
+        ]
+      ],
+      [
+        "3 ÷ 1/2",
+        6,
+        "¿Cuántas mitades caben en 3 pizzas?",
+        "Cada pizza tiene 2 mitades.",
+        "3 · 2 = 6 mitades.",
+        [
+          [
+            1.5,
+            "Esa es la mitad de 3. Dividir por 1/2 es contar cuántas mitades caben: 6."
+          ]
+        ]
+      ],
+      [
+        "3/4 ÷ 1/4",
+        3,
+        "¿Cuántos cuartos caben en tres cuartos?",
+        "Cuenta cuántas veces cabe un cuarto en tres cuartos.",
+        "3/4 son 3 cuartos: 1/4 cabe 3 veces.",
+        [
+          [
+            0.1875,
+            "Multiplicaste. Dividir es contar cuántas veces cabe: 1/4 cabe 3 veces en 3/4."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "2/3 · 1/2",
+      0.3333333333333333,
+      "Multiplica las fracciones.",
+      "Arriba por arriba y abajo por abajo.",
+      "2 · 1 = 2 y 3 · 2 = 6: 2/6, que es 1/3.",
+      [
+        [
+          0.6,
+          "Sumaste (3/5). Para multiplicar: arriba por arriba y abajo por abajo: 2/6 = 1/3."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "promedio",
+    "since": "2026-10-14",
+    "title": "Promedio, mediana y moda",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 17 · Emparejar, el del medio y el que más se repite",
+    "concept": "El promedio empareja todo: suma los datos y divide por cuántos son. La mediana es el dato del medio, después de ordenarlos. La moda es el dato que más se repite.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-17\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Notas 4, 5 y 6: suman 15, y 15 ÷ 3 = 5. El promedio es 5. Ordenadas 4, 5, 6: la mediana también es 5.",
+    "status": "published",
+    "questions": [
+      [
+        "Promedio de 4, 6 y 8",
+        6,
+        "Calcula el promedio.",
+        "📊 Suma los tres y divide por 3.",
+        "4 + 6 + 8 = 18; 18 ÷ 3 = 6.",
+        [
+          [
+            18,
+            "Esa es la suma. Falta repartirla en 3: 18 ÷ 3 = 6."
+          ]
+        ]
+      ],
+      [
+        "Mediana de 7, 2, 9, 4, 5",
+        5,
+        "Encuentra el dato del medio.",
+        "Primero ordénalos de menor a mayor.",
+        "Ordenados: 2, 4, 5, 7, 9. El del medio es 5.",
+        [
+          [
+            9,
+            "Tomaste el del medio sin ordenar. Ordena primero: 2, 4, 5, 7, 9. La mediana es 5."
+          ]
+        ]
+      ],
+      [
+        "Moda de 3, 5, 3, 6, 3, 5",
+        3,
+        "Encuentra el dato que más se repite.",
+        "Cuenta cuántas veces aparece cada número.",
+        "El 3 aparece 3 veces y el 5, dos. La moda es 3.",
+        [
+          [
+            5,
+            "El 5 aparece 2 veces; el 3 aparece 3 veces. La moda es 3."
+          ]
+        ]
+      ],
+      [
+        "Notas: 5,0; 6,0; 4,0; 5,0",
+        5,
+        "Tienes las notas 5,0, 6,0, 4,0 y 5,0. ¿Cuál es tu promedio?",
+        "Suma las cuatro y divide por 4.",
+        "5 + 6 + 4 + 5 = 20; 20 ÷ 4 = 5,0.",
+        [
+          [
+            20,
+            "Esa es la suma. Divide por 4: 5,0."
+          ],
+          [
+            6.666666666666667,
+            "Son 4 notas: divide por 4, no por 3. Resultado: 5,0."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Promedio de 3, 7, 5, 9",
+      6,
+      "Calcula el promedio.",
+      "Suma los cuatro y divide por 4.",
+      "3 + 7 + 5 + 9 = 24; 24 ÷ 4 = 6.",
+      [
+        [
+          24,
+          "Esa es la suma. Divide por 4: 6."
+        ],
+        [
+          8,
+          "Son 4 datos: divide por 4, no por 3. Resultado: 6."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "area-triangulos",
+    "since": "2026-10-14",
+    "title": "Área de triángulos y paralelogramos",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 13 · Contar cuadraditos",
+    "concept": "El área cuenta cuántos cuadraditos caben en una figura. Un rectángulo de 5 por 3 tiene 5 · 3 = 15 cuadraditos. Un triángulo es la mitad de un rectángulo: base por altura, dividido en 2. Un paralelogramo se ordena como rectángulo: base por altura.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-13\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Triángulo de base 6 cm y altura 4 cm: 6 · 4 = 24, y la mitad es 12 cm².",
+    "status": "published",
+    "questions": [
+      [
+        "Rectángulo de 5 cm por 3 cm",
+        15,
+        "Calcula el área en cm².",
+        "🟦 Cuenta cuadraditos: 5 por fila y 3 filas.",
+        "5 · 3 = 15 cm².",
+        [
+          [
+            16,
+            "Ese es el perímetro (5 + 3 + 5 + 3). El área es 5 · 3 = 15."
+          ],
+          [
+            8,
+            "Sumaste los lados. El área es 5 · 3 = 15."
+          ]
+        ]
+      ],
+      [
+        "Triángulo: base 6 cm, altura 4 cm",
+        12,
+        "Calcula el área en cm².",
+        "Es la mitad de un rectángulo de 6 por 4.",
+        "6 · 4 = 24; 24 ÷ 2 = 12 cm².",
+        [
+          [
+            24,
+            "Ese es el rectángulo completo. El triángulo es la mitad: 12."
+          ],
+          [
+            10,
+            "Sumaste base y altura. Es base por altura, dividido en 2: 12."
+          ]
+        ]
+      ],
+      [
+        "Paralelogramo: base 7 cm, altura 3 cm",
+        21,
+        "Calcula el área en cm².",
+        "Mueve el triángulo de un lado al otro: queda un rectángulo.",
+        "7 · 3 = 21 cm².",
+        [
+          [
+            10.5,
+            "Dividiste por 2, pero eso es para triángulos. El paralelogramo es base por altura: 21."
+          ]
+        ]
+      ],
+      [
+        "Triángulo: base 10 m, altura 5 m",
+        25,
+        "Un terreno con forma de triángulo tiene base 10 m y altura 5 m. ¿Cuántos metros cuadrados tiene?",
+        "Base por altura, dividido en 2.",
+        "10 · 5 = 50; 50 ÷ 2 = 25 m².",
+        [
+          [
+            50,
+            "Falta dividir por 2: es un triángulo. 25 m²."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Triángulo: base 8 cm, altura 5 cm",
+      20,
+      "Calcula el área en cm².",
+      "Base por altura, dividido en 2.",
+      "8 · 5 = 40; 40 ÷ 2 = 20 cm².",
+      [
+        [
+          40,
+          "Falta dividir por 2: es un triángulo. 20 cm²."
+        ]
+      ]
+    ]
   }
 ];

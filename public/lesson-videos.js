@@ -37,4 +37,9 @@ export const lessonVideos = {
   "base-dividir": {"src":"/media/lessons/base-dividir-6e8cff0c56.mp4","title":"Dividir es repartir: explicado en video","duration":51},
   "base-fracciones": {"src":"/media/lessons/base-fracciones-fe7aaa226a.mp4","title":"Fracciones: partes iguales: explicado en video","duration":53},
   "base-decimales": {"src":"/media/lessons/base-decimales-a18bc3e902.mp4","title":"Decimales con medidas: explicado en video","duration":50},
+  "multiplos-divisores": {"src":"/media/lessons/multiplos-divisores-4e38db8e54.mp4","title":"Múltiplos, divisores y primos: explicado en video","duration":64},
+  "fracciones-suma": {"src":"/media/lessons/fracciones-suma-a4aad7904e.mp4","title":"Sumar y restar fracciones: explicado en video","duration":54},
+  "fracciones-mult": {"src":"/media/lessons/fracciones-mult-2baa3f3036.mp4","title":"Multiplicar y dividir fracciones: explicado en video","duration":53},
+  "promedio": {"src":"/media/lessons/promedio-9f00d6861b.mp4","title":"Promedio, mediana y moda: explicado en video","duration":57},
+  "area-triangulos": {"src":"/media/lessons/area-triangulos-cd20baba3c.mp4","title":"Área de triángulos y paralelogramos: explicado en video","duration":60},
 };

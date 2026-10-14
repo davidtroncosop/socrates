@@ -765,6 +765,148 @@ function baseDecimales(rng, level) {
     [[Math.abs(d - n), `Escribe ${n} como ${n},0: ${n},0 − 0,${d} = ${comma(diff)}.`]]];
 }
 
+// Lote 1 (6° y 7° Básico): múltiplos, fracciones, promedio y área.
+const frac = (a, b) => `${a}/${b}`;
+const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+const divisorsOf = (n) => Array.from({ length: n }, (_, i) => i + 1).filter((d) => n % d === 0);
+const isPrime = (n) => n > 1 && divisorsOf(n).length === 2;
+const shuffle = (rng, list) => {
+  const out = [...list];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+};
+
+function multiplosDivisores(rng, level) {
+  if (level === 0) {
+    const [n, k] = [int(rng, 3, 9), int(rng, 3, 8)];
+    const ord = ["", "primer", "segundo", "tercer", "cuarto", "quinto", "sexto", "séptimo", "octavo"][k];
+    return [`¿Cuál es el ${ord} múltiplo de ${n}?`, n * k, `Recorre la tabla del ${n}.`, `🦘 Salta de ${n} en ${n}.`,
+      `Los múltiplos de ${n} son ${Array.from({ length: k }, (_, i) => n * (i + 1)).join(", ")}: el ${ord} es ${n * k}.`,
+      [[n + k, `Sumaste. El ${ord} múltiplo es ${n} · ${k} = ${n * k}.`], [n * (k - 1), `Ese es el anterior. Cuenta de ${n} en ${n} hasta el ${ord}.`]]];
+  }
+  if (level === 1) {
+    const n = pick(rng, [12, 18, 20, 24, 28, 30]);
+    const ds = divisorsOf(n);
+    return [`¿Cuántos divisores tiene el ${n}?`, ds.length, `Busca todos los números que dividen a ${n} sin que sobre nada.`,
+      "Busca parejas que multiplicadas den el número.", `Los divisores de ${n} son ${ds.join(", ")}: son ${ds.length}.`,
+      [[ds.length - 2, `Te faltaron el 1 y el ${n}: también lo dividen.`]]];
+  }
+  if (level === 2) {
+    // Intervalos con un solo primo.
+    const starts = [];
+    for (let a = 8; a < 90; a++) {
+      const primes = Array.from({ length: 5 }, (_, i) => a + 1 + i).filter(isPrime);
+      if (primes.length === 1) starts.push([a, primes[0]]);
+    }
+    const [a, p] = pick(rng, starts);
+    return [`¿Cuál es el único número primo entre ${a} y ${a + 6}?`, p, "Un primo solo se divide por 1 y por sí mismo.",
+      "Descarta los pares y los que terminan en 5. ¿Qué queda?", `El ${p} solo se divide por 1 y por ${p}.`, []];
+  }
+  const pairs = [[4, 6], [6, 8], [6, 9], [4, 10], [8, 12], [6, 10], [9, 12], [10, 15]];
+  const [a, b] = pick(rng, pairs);
+  const lcm = (a * b) / gcd(a, b);
+  return [`Buses cada ${a} y cada ${b} minutos`, lcm,
+    `Dos buses salen juntos. Uno pasa cada ${a} minutos y el otro cada ${b}. ¿En cuántos minutos vuelven a pasar juntos?`,
+    "Escribe los múltiplos de cada uno y busca el primero que se repite.", `El primer múltiplo común de ${a} y ${b} es ${lcm}.`,
+    [[a + b, `Sumaste. Busca el primer múltiplo común: ${lcm}.`], [a * b, `${a * b} también es común, pero hay uno antes: ${lcm}.`]]];
+}
+
+function fraccionesSuma(rng, level) {
+  if (level <= 1) {
+    const d = int(rng, 5, 9);
+    let a = int(rng, 1, d - 2);
+    let b = int(rng, 1, d - 1 - a);
+    if (level === 1 && a < b) [a, b] = [b, a];
+    if (level === 1 && a === b) a = Math.min(d - 1, a + 1);
+    const top = level === 0 ? a + b : a - b;
+    return [`${frac(a, d)} ${level === 0 ? "+" : "−"} ${frac(b, d)}`, top / d,
+      `${level === 0 ? "Suma" : "Resta"} las fracciones. Puedes responder como fracción, por ejemplo ${frac(1, d)}.`,
+      "🍕 Las partes ya son del mismo tamaño: opera solo los de arriba.", `${frac(a, d)} ${level === 0 ? "+" : "−"} ${frac(b, d)} = ${frac(top, d)}.`,
+      level === 0 ? [[top / (2 * d), `Sumaste también los de abajo. El de abajo dice el tamaño de las partes: se queda en ${d}.`]] : []];
+  }
+  const b = int(rng, 2, 5);
+  const a = int(rng, 1, b - 1);
+  // En la resta, lo que se quita es menor: el resultado es positivo.
+  const c = level === 2 ? int(rng, 1, b) : int(rng, 1, Math.min(b, 2 * a - 1));
+  const total = level === 2 ? (2 * a + c) / (2 * b) : (2 * a - c) / (2 * b);
+  return [`${frac(a, b)} ${level === 2 ? "+" : "−"} ${frac(c, 2 * b)}`, total, `${level === 2 ? "Suma" : "Resta"} las fracciones.`,
+    `Corta cada parte de ${frac(1, b)} en dos: ${frac(a, b)} = ${frac(2 * a, 2 * b)}.`,
+    `${frac(a, b)} = ${frac(2 * a, 2 * b)}; ${frac(2 * a, 2 * b)} ${level === 2 ? "+" : "−"} ${frac(c, 2 * b)} = ${frac(level === 2 ? 2 * a + c : 2 * a - c, 2 * b)}.`,
+    level === 2 ? [[(a + c) / (3 * b), "Sumaste arriba y abajo por separado. Primero haz partes del mismo tamaño."]] : []];
+}
+
+function fraccionesMult(rng, level) {
+  if (level === 0) {
+    const [a, b] = [int(rng, 2, 5), int(rng, 2, 5)];
+    return [`${frac(1, a)} · ${frac(1, b)}`, 1 / (a * b), "Multiplica las fracciones.", "🍕 Arriba por arriba y abajo por abajo.",
+      `1 · 1 = 1 y ${a} · ${b} = ${a * b}: ${frac(1, a * b)}.`, [[2 / (a + b), "Sumaste. Para multiplicar: arriba por arriba y abajo por abajo."]]];
+  }
+  if (level === 1) {
+    const [b, d] = [int(rng, 3, 6), int(rng, 3, 6)];
+    const [a, c] = [int(rng, 1, b - 1), int(rng, 1, d - 1)];
+    return [`${frac(a, b)} · ${frac(c, d)}`, (a * c) / (b * d), "Multiplica las fracciones.", `Arriba: ${a} · ${c}. Abajo: ${b} · ${d}.`,
+      `${a * c}/${b * d}.`, [[(a * d) / (b * c), "Eso es dividir (cruzaste los números). Para multiplicar: arriba por arriba y abajo por abajo."]]];
+  }
+  if (level === 2) {
+    const [n, k] = [int(rng, 2, 6), int(rng, 2, 4)];
+    return [`${n} ÷ ${frac(1, k)}`, n * k, `¿Cuántos trozos de ${frac(1, k)} caben en ${n} pizzas?`, `Cada pizza tiene ${k} trozos.`,
+      `${n} · ${k} = ${n * k} trozos.`, [[n / k, `Eso es repartir ${n} en ${k}. Dividir por ${frac(1, k)} es contar cuántos trozos caben: ${n * k}.`]]];
+  }
+  const b = int(rng, 4, 8);
+  const a = int(rng, 2, b - 1);
+  return [`${frac(a, b)} ÷ ${frac(1, b)}`, a, `¿Cuántas veces cabe ${frac(1, b)} en ${frac(a, b)}?`, `${frac(a, b)} son ${a} trozos de ${frac(1, b)}.`,
+    `Cabe ${a} veces.`, [[a / (b * b), "Multiplicaste. Dividir es contar cuántas veces cabe."]]];
+}
+
+function promedio(rng, level) {
+  if (level === 0 || level === 3) {
+    const n = level === 0 ? 3 : 4;
+    const mean = int(rng, 3, 9);
+    const data = Array.from({ length: n - 1 }, () => int(rng, Math.max(1, mean - 3), mean + 3));
+    data.push(mean * n - data.reduce((a, b) => a + b, 0));
+    if (data.at(-1) < 1) return promedio(rng, level);
+    const sum = mean * n;
+    return [`Promedio de ${data.join(", ")}`, mean, "Calcula el promedio.", `📊 Suma los ${n} datos y divide por ${n}.`,
+      `${data.join(" + ")} = ${sum}; ${sum} ÷ ${n} = ${mean}.`,
+      [[sum, `Esa es la suma. Falta repartirla en ${n}: ${mean}.`], ...(n === 4 ? [[sum / 3, "Son 4 datos: divide por 4, no por 3."]] : [])]];
+  }
+  if (level === 1) {
+    const data = shuffle(rng, shuffle(rng, [1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 5));
+    const median = [...data].sort((a, b) => a - b)[2];
+    return [`Mediana de ${data.join(", ")}`, median, "Encuentra el dato del medio.", "Primero ordénalos de menor a mayor.",
+      `Ordenados: ${[...data].sort((a, b) => a - b).join(", ")}. El del medio es ${median}.`,
+      [[data[2], "Tomaste el del medio sin ordenar. Ordena primero."]]];
+  }
+  const [m, o] = shuffle(rng, [2, 3, 4, 5, 6, 7, 8]).slice(0, 2);
+  // El sexto dato es distinto de los otros dos: una sola moda.
+  const other = pick(rng, [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((v) => v !== m && v !== o));
+  const data = shuffle(rng, [m, m, m, o, o, other]);
+  return [`Moda de ${data.join(", ")}`, m, "Encuentra el dato que más se repite.", "Cuenta cuántas veces aparece cada número.",
+    `El ${m} aparece 3 veces: es la moda.`, [[o, `El ${o} aparece 2 veces; el ${m} aparece 3. La moda es ${m}.`]]];
+}
+
+function areaTriangulos(rng, level) {
+  if (level === 0) {
+    const [w, h] = [int(rng, 3, 9), int(rng, 2, 7)];
+    return [`Rectángulo de ${w} cm por ${h} cm`, w * h, "Calcula el área en cm².", `🟦 Cuenta cuadraditos: ${w} por fila y ${h} filas.`,
+      `${w} · ${h} = ${w * h} cm².`, [[2 * (w + h), "Ese es el perímetro. El área es base por altura."], [w + h, "Sumaste los lados. El área es base por altura."]]];
+  }
+  if (level === 2) {
+    const [b, h] = [int(rng, 4, 12), int(rng, 2, 8)];
+    return [`Paralelogramo: base ${b} cm, altura ${h} cm`, b * h, "Calcula el área en cm².", "Mueve el triángulo de un lado al otro: queda un rectángulo.",
+      `${b} · ${h} = ${b * h} cm².`, [[(b * h) / 2, "Dividiste por 2, pero eso es para triángulos. El paralelogramo es base por altura."]]];
+  }
+  const b = 2 * int(rng, 2, 7);
+  const h = int(rng, 3, 9);
+  const unit = level === 3 ? "m" : "cm";
+  return [`Triángulo: base ${b} ${unit}, altura ${h} ${unit}`, (b * h) / 2, `Calcula el área en ${unit}².`, "Es la mitad de un rectángulo: base por altura, dividido en 2.",
+    `${b} · ${h} = ${b * h}; ${b * h} ÷ 2 = ${(b * h) / 2} ${unit}².`,
+    [[b * h, "Ese es el rectángulo completo. El triángulo es la mitad."], [b + h, "Sumaste base y altura. Es base por altura, dividido en 2."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -789,6 +931,11 @@ export const generators = {
   "base-dividir": baseDividir,
   "base-fracciones": baseFracciones,
   "base-decimales": baseDecimales,
+  "multiplos-divisores": multiplosDivisores,
+  "fracciones-suma": fraccionesSuma,
+  "fracciones-mult": fraccionesMult,
+  promedio,
+  "area-triangulos": areaTriangulos,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);
