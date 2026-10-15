@@ -2,6 +2,7 @@ import { C, ease } from "../anim.js";
 import { LEAD } from "../timeline.js";
 
 const svgFill = { position: "absolute", inset: 0 };
+const num = (n) => (n < 0 ? `−${-n}` : String(n));
 const during = (t, beat, share = 0.6) => ease(t, LEAD, LEAD + Math.max(20, beat.speak * share));
 const rad = (deg) => (deg * Math.PI) / 180;
 // Punto a una distancia y ángulo (grados, sentido matemático: y hacia arriba).
@@ -249,25 +250,36 @@ export function Trapezoid({ prev, cur, t, beat }) {
 // Plano cartesiano con puntos y un vector que mueve un punto.
 export function Plane({ prev, cur, t, beat }) {
   const max = cur.max ?? 8;
-  const u = 64;
-  const x0 = 960 - (max * u) / 2;
+  const min = cur.min ?? 0;
+  const span = max - min;
+  const u = Math.min(64, 560 / span);
+  const x0 = 960 - (span * u) / 2 - min * u;
   const y0 = 300 + max * u;
   const P = ([x, y]) => [x0 + x * u, y0 - y * u];
   const o = prev && JSON.stringify(prev.vector) === JSON.stringify(cur.vector) ? 1 : during(t, beat, 0.6);
+  const ticks = Array.from({ length: span + 1 }, (_, i) => min + i);
   return (
     <svg width={1920} height={1080} style={svgFill}>
-      {Array.from({ length: max + 1 }, (_, i) => (
+      {ticks.map((i) => (
         <g key={i}>
-          <line x1={x0 + i * u} y1={y0} x2={x0 + i * u} y2={y0 - max * u} stroke={C.soft} strokeWidth={2} />
-          <line x1={x0} y1={y0 - i * u} x2={x0 + max * u} y2={y0 - i * u} stroke={C.soft} strokeWidth={2} />
-          <text x={x0 + i * u} y={y0 + 40} textAnchor="middle" fontSize={28} fill={C.muted}>{i}</text>
-          {i > 0 && <text x={x0 - 18} y={y0 - i * u + 10} textAnchor="end" fontSize={28} fill={C.muted}>{i}</text>}
+          <line x1={x0 + i * u} y1={y0 - min * u} x2={x0 + i * u} y2={y0 - max * u} stroke={C.soft} strokeWidth={2} />
+          <line x1={x0 + min * u} y1={y0 - i * u} x2={x0 + max * u} y2={y0 - i * u} stroke={C.soft} strokeWidth={2} />
+          {i !== 0 && <text x={x0 + i * u} y={y0 + 34} textAnchor="middle" fontSize={26} fill={C.muted}>{num(i)}</text>}
+          {i !== 0 && <text x={x0 - 14} y={y0 - i * u + 9} textAnchor="end" fontSize={26} fill={C.muted}>{num(i)}</text>}
         </g>
       ))}
-      <line x1={x0} y1={y0} x2={x0 + max * u + 30} y2={y0} stroke={C.beam} strokeWidth={5} />
-      <line x1={x0} y1={y0} x2={x0} y2={y0 - max * u - 30} stroke={C.beam} strokeWidth={5} />
+      <line x1={x0 + min * u - (min ? 20 : 0)} y1={y0} x2={x0 + max * u + 30} y2={y0} stroke={C.beam} strokeWidth={5} />
+      <line x1={x0} y1={y0 - min * u + (min ? 20 : 0)} x2={x0} y2={y0 - max * u - 30} stroke={C.beam} strokeWidth={5} />
       <text x={x0 + max * u + 50} y={y0 + 12} fontSize={40} fontWeight={800} fill={C.ink}>x</text>
       <text x={x0 - 12} y={y0 - max * u - 46} fontSize={40} fontWeight={800} fill={C.ink}>y</text>
+      {cur.mirror && (
+        <line
+          {...(cur.mirror === "y" ? { x1: x0, y1: y0 - min * u, x2: x0, y2: y0 - max * u } : { x1: x0 + min * u, y1: y0, x2: x0 + max * u, y2: y0 })}
+          stroke={C.blue}
+          strokeWidth={10}
+          opacity={0.45}
+        />
+      )}
       {cur.walk && (() => {
         const [x, y] = cur.walk;
         const [ax, ay] = P([0, 0]);
@@ -294,9 +306,9 @@ export function Plane({ prev, cur, t, beat }) {
       {(cur.points ?? []).map(([x, y, label], i) => {
         const [px, py] = P([x, y]);
         return (
-          <g key={i}>
+          <g key={i} opacity={i && !prev?.points?.[i] ? o : 1}>
             <circle cx={px} cy={py} r={14} fill={i ? C.green : C.red} />
-            <text x={px + 22} y={py - 18} fontSize={40} fontWeight={800} fill={i ? C.green : C.red}>{label ?? `(${x}, ${y})`}</text>
+            <text x={px + 22} y={py - 18} fontSize={38} fontWeight={800} fill={i ? C.green : C.red}>{label ?? `(${num(x)}, ${num(y)})`}</text>
           </g>
         );
       })}

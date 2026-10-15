@@ -58,12 +58,19 @@ import frecuencias from "./frecuencias.mjs";
 import probTeo from "./probabilidad-teorica.mjs";
 import muestreo from "./muestreo.mjs";
 import propInv from "./proporcion-inversa.mjs";
+import entMult from "./enteros-mult.mjs";
+import racMult from "./racionales-mult.mjs";
+import variacion from "./variacion-porcentual.mjs";
+import algProd from "./algebra-producto.mjs";
+import isometrias from "./isometrias.mjs";
+import cuartiles from "./cuartiles.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  entMult, racMult, variacion, algProd, isometrias, cuartiles,
   pot10, inecuaciones, angPoli, trapecio, plano, frecuencias, probTeo, muestreo, propInv,
   razones, mixtos, decMult, patrones, expresiones, angulos, areaSup, graficos,
   raices, volumen, combinatoria, potNeg, sistemas,

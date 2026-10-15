@@ -20,11 +20,16 @@ const js = (expr) =>
 const evaluate = (expr, x) => Function("x", `return (${js(expr)});`)(x);
 
 // Preguntas de las bases escritas con palabras.
-function baseAnswer(expr, id) {
+function baseAnswer(expr, id, prompt) {
   let m;
   if (["razones", "fracciones-mixtos", "decimales-mult", "patrones", "expresiones", "angulos", "area-superficie", "graficos"].includes(id)) {
     const answer = lote3Answer(expr, id);
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
+  if (LOTE5.includes(id)) {
+    const answer = lote5Answer(expr, id, prompt);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
   if (LOTE4.includes(id)) {
@@ -200,6 +205,55 @@ function lote4Answer(expr, id) {
   return null;
 }
 
+// Lote 5 (8° Básico).
+const LOTE5 = ["enteros-mult", "racionales-mult", "variacion-porcentual", "algebra-producto", "isometrias", "cuartiles"];
+function lote5Answer(expr, id, prompt) {
+  let m;
+  const n = (v) => Number(v.replace(/\./g, "").replace(",", "."));
+  const val = (v) => Number(v.replace("−", "-"));
+  // Cada fracción va agrupada: −3/4 ÷ 1/2 es (−3/4) ÷ (1/2).
+  if (id === "enteros-mult" || id === "racionales-mult") return evaluate(expr.replace(/(\d),(\d)/g, "$1.$2").replace(/(\d+)\/(\d+)/g, "($1/$2)"), 0);
+  if (id === "variacion-porcentual") {
+    if ((m = expr.match(/^\$([\d.]+) con (\d+) % de (descuento|aumento)$/))) return n(m[1]) * (1 + (m[3] === "aumento" ? 1 : -1) * (m[2] / 100));
+    if ((m = expr.match(/^De (\d+) a (\d+): ¿% de aumento\?$/))) return ((m[2] - m[1]) * 100) / m[1];
+    if ((m = expr.match(/^\$([\d.]+) · ([\d,]+)$/))) {
+      // El factor debe coincidir con el descuento del enunciado.
+      const off = Number(prompt.match(/(\d+) % de descuento/)[1]);
+      assert.equal(n(m[2]), 1 - off / 100, expr);
+      return Math.round(n(m[1]) * n(m[2]));
+    }
+  }
+  if (id === "algebra-producto") {
+    // Compara las dos expresiones en varios x para despejar «?».
+    const [left, right] = expr.split(" = ");
+    const at = (x, q) => [evaluate(left, x), evaluate(right.replace("?", `(${q})`).replace(/\)x/g, ")*x"), x)];
+    const [l0, r0] = at(3, 0);
+    const [l1, r1] = at(3, 1);
+    const q = (l0 - r0) / (r1 - r0 - (l1 - l0));
+    for (const x of [-2, 0, 5]) {
+      const [l, r] = at(x, q);
+      assert.ok(Math.abs(l - r) < 1e-9, `${expr} con ? = ${q}`);
+    }
+    return q;
+  }
+  if (id === "isometrias") {
+    if ((m = expr.match(/^\((−?\d+), (−?\d+)\) reflejado en el eje y: ¿x\?$/))) return -val(m[1]);
+    if ((m = expr.match(/^\((−?\d+), (−?\d+)\) reflejado en el eje x: ¿y\?$/))) return -val(m[2]);
+    if ((m = expr.match(/^\((−?\d+), (−?\d+)\) rotado 180°: ¿(x|y)\?$/))) return -val(m[3] === "x" ? m[1] : m[2]);
+    if ((m = expr.match(/^\((−?\d+), (−?\d+)\) trasladado con \((−?\d+), (−?\d+)\): ¿y\?$/))) return val(m[2]) + val(m[4]);
+  }
+  if (id === "cuartiles") {
+    if ((m = expr.match(/^Percentil (\d+) de (\d+)$/))) return (m[1] * m[2]) / 100;
+    if ((m = expr.match(/^Q(\d) de (.+)$/))) {
+      const data = m[2].split(", ").map(Number).sort((a, b) => a - b);
+      const median = (list) => (list.length % 2 ? list[(list.length - 1) / 2] : (list[list.length / 2 - 1] + list[list.length / 2]) / 2);
+      const half = Math.floor(data.length / 2);
+      return { 1: median(data.slice(0, half)), 2: median(data), 3: median(data.slice(data.length - half)) }[m[1]];
+    }
+  }
+  return null;
+}
+
 // Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
 function solveSystem(expr) {
   const letters = [...new Set(expr.match(/[a-z]/g))];
@@ -219,7 +273,7 @@ function checkAnswer(id, [expr, answer, prompt]) {
     const asked = prompt.match(/^Encuentra (\w)\.$/)?.[1] ?? "c";
     return assert.equal(values[asked], answer, `${id}: ${expr} → ${asked}`);
   }
-  const base = baseAnswer(expr, id);
+  const base = baseAnswer(expr, id, prompt);
   if (base !== null) return assert.ok(Math.abs(base - answer) < 1e-9, `${id}: ${expr} ≠ ${answer}`);
   if (id === "base-decimales") expr = expr.replace(/(\d),(\d)/g, "$1.$2");
   if (/ % de /.test(expr)) {
@@ -259,7 +313,7 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias"].includes(id)) assert.ok(q[1] > 0 && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult"].includes(id)) assert.ok((q[1] > 0 || id === "racionales-mult") && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
         else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);

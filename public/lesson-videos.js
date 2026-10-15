@@ -64,4 +64,10 @@ export const lessonVideos = {
   "probabilidad-teorica": {"src":"/media/lessons/probabilidad-teorica-d3e2102874.mp4","title":"Probabilidad teórica: explicado en video","duration":44},
   "muestreo": {"src":"/media/lessons/muestreo-26e4ff541b.mp4","title":"Muestras: explicado en video","duration":41},
   "proporcion-inversa": {"src":"/media/lessons/proporcion-inversa-6cbdd88c0b.mp4","title":"Proporción inversa: explicado en video","duration":45},
+  "enteros-mult": {"src":"/media/lessons/enteros-mult-dbc0ec972e.mp4","title":"Multiplicar y dividir enteros: explicado en video","duration":54},
+  "racionales-mult": {"src":"/media/lessons/racionales-mult-d70cf43b90.mp4","title":"Multiplicar y dividir números racionales: explicado en video","duration":47},
+  "variacion-porcentual": {"src":"/media/lessons/variacion-porcentual-20cca4421d.mp4","title":"Aumentos y descuentos: explicado en video","duration":48},
+  "algebra-producto": {"src":"/media/lessons/algebra-producto-ec46858f46.mp4","title":"Multiplicar expresiones algebraicas: explicado en video","duration":49},
+  "isometrias": {"src":"/media/lessons/isometrias-5fc3a1c76b.mp4","title":"Mover figuras: traslación, reflexión y rotación: explicado en video","duration":49},
+  "cuartiles": {"src":"/media/lessons/cuartiles-9c2f283cfd.mp4","title":"Cuartiles y percentiles: explicado en video","duration":46},
 };

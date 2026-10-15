@@ -3791,5 +3791,541 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "enteros-mult",
+    "since": "2026-10-16",
+    "title": "Multiplicar y dividir enteros",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 01 · Signos iguales, resultado positivo",
+    "concept": "Primero multiplica o divide los números sin signo. Después decide el signo: si los dos signos son iguales, el resultado es positivo; si son distintos, es negativo. (−3) · (−4) = 12 y (−3) · 4 = −12.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-01\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "(−20) ÷ 5 = −4, porque los signos son distintos. (−20) ÷ (−5) = 4, porque son iguales.",
+    "status": "published",
+    "questions": [
+      [
+        "(−3) · 4",
+        -12,
+        "Multiplica.",
+        "➖➕ Signos distintos: el resultado es negativo.",
+        "3 · 4 = 12; signos distintos: −12.",
+        [
+          [
+            12,
+            "Los signos son distintos (− y +): el resultado es negativo, −12."
+          ],
+          [
+            1,
+            "Sumaste. Es multiplicar: 3 · 4 = 12, con signo menos."
+          ]
+        ]
+      ],
+      [
+        "(−5) · (−6)",
+        30,
+        "Multiplica.",
+        "Signos iguales: el resultado es positivo.",
+        "5 · 6 = 30; signos iguales: +30.",
+        [
+          [
+            -30,
+            "Menos por menos da más: 30."
+          ],
+          [
+            -11,
+            "Sumaste. Es multiplicar: 30."
+          ]
+        ]
+      ],
+      [
+        "(−24) ÷ 6",
+        -4,
+        "Divide.",
+        "Signos distintos: negativo.",
+        "24 ÷ 6 = 4; signos distintos: −4.",
+        [
+          [
+            4,
+            "Signos distintos: el resultado es negativo, −4."
+          ]
+        ]
+      ],
+      [
+        "(−2) · (−3) · (−5)",
+        -30,
+        "Multiplica los tres.",
+        "Ve de a dos: primero (−2) · (−3).",
+        "(−2) · (−3) = 6; 6 · (−5) = −30.",
+        [
+          [
+            30,
+            "Hay tres signos menos: dos se cancelan y queda uno. −30."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "(−36) ÷ (−9)",
+      4,
+      "Divide.",
+      "Signos iguales: positivo.",
+      "36 ÷ 9 = 4; signos iguales: +4.",
+      [
+        [
+          -4,
+          "Menos entre menos da más: 4."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "racionales-mult",
+    "since": "2026-10-16",
+    "title": "Multiplicar y dividir números racionales",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 02 · Fracciones y decimales con signo",
+    "concept": "Los números racionales son fracciones y decimales, positivos o negativos. Se multiplican igual que siempre (arriba por arriba, abajo por abajo) y el signo sigue la regla de los enteros: iguales da positivo, distintos da negativo.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-02\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "−1/2 · 3/4 = −3/8. Y −0,5 · (−4) = 2.",
+    "status": "published",
+    "questions": [
+      [
+        "−1/2 · 3/4",
+        -0.375,
+        "Multiplica. Responde como fracción.",
+        "Arriba por arriba, abajo por abajo, y signos distintos.",
+        "1 · 3 = 3, 2 · 4 = 8; signos distintos: −3/8.",
+        [
+          [
+            0.375,
+            "Signos distintos: el resultado es negativo, −3/8."
+          ],
+          [
+            0.25,
+            "Sumaste. Para multiplicar: arriba por arriba y abajo por abajo."
+          ]
+        ]
+      ],
+      [
+        "−0,5 · (−4)",
+        2,
+        "Multiplica.",
+        "0,5 es la mitad. Y menos por menos…",
+        "La mitad de 4 es 2; signos iguales: +2.",
+        [
+          [
+            -2,
+            "Menos por menos da más: 2."
+          ]
+        ]
+      ],
+      [
+        "−3/4 ÷ 1/2",
+        -1.5,
+        "Divide. Puedes responder como fracción.",
+        "Dividir por 1/2 es contar cuántas mitades caben: es multiplicar por 2.",
+        "3/4 · 2 = 6/4 = 3/2; signos distintos: −3/2.",
+        [
+          [
+            -0.375,
+            "Multiplicaste por 1/2. Dividir por 1/2 es multiplicar por 2: −3/2."
+          ],
+          [
+            1.5,
+            "Signos distintos: −3/2."
+          ]
+        ]
+      ],
+      [
+        "−2,5 · 4",
+        -10,
+        "La temperatura baja 2,5 °C cada hora. ¿Cuánto cambia en 4 horas?",
+        "Baja: es un número negativo, −2,5.",
+        "−2,5 · 4 = −10 °C.",
+        [
+          [
+            10,
+            "La temperatura baja: el cambio es negativo, −10."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "−2/3 · (−3/5)",
+      0.4,
+      "Multiplica. Responde como fracción.",
+      "Signos iguales: positivo.",
+      "2 · 3 = 6, 3 · 5 = 15: 6/15 = 2/5.",
+      [
+        [
+          -0.4,
+          "Menos por menos da más: 2/5."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "variacion-porcentual",
+    "since": "2026-10-16",
+    "title": "Aumentos y descuentos",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 05 · Cuánto sube, cuánto baja",
+    "concept": "Un aumento del 20 % es sumar el 20 % al precio. Un descuento del 20 % es restarlo. Atajo: con un descuento del 20 % pagas el 80 %, así que multiplicas por 0,8. Con un aumento del 20 %, multiplicas por 1,2.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Una polera de $10.000 con 30 % de descuento: el 30 % es $3.000, y pagas $7.000 (10.000 · 0,7).",
+    "status": "published",
+    "questions": [
+      [
+        "$10.000 con 30 % de descuento",
+        7000,
+        "¿Cuánto pagas?",
+        "🏷️ El 30 % de 10.000 es 3.000. Réstalo.",
+        "10.000 − 3.000 = $7.000.",
+        [
+          [
+            3000,
+            "Ese es el descuento. Pagas lo que queda: 10.000 − 3.000 = 7.000."
+          ],
+          [
+            13000,
+            "Es descuento: se resta. 7.000."
+          ]
+        ]
+      ],
+      [
+        "$5.000 con 20 % de aumento",
+        6000,
+        "Un pasaje de $5.000 sube un 20 %. ¿Cuánto cuesta ahora?",
+        "El 20 % de 5.000 es 1.000. Súmalo.",
+        "5.000 + 1.000 = $6.000.",
+        [
+          [
+            1000,
+            "Ese es el aumento. El precio nuevo es 5.000 + 1.000 = 6.000."
+          ],
+          [
+            4000,
+            "Es aumento: se suma. 6.000."
+          ]
+        ]
+      ],
+      [
+        "De 40 a 50: ¿% de aumento?",
+        25,
+        "Un curso tenía 40 estudiantes y ahora tiene 50. ¿En qué porcentaje aumentó?",
+        "Aumentó 10. ¿Qué porcentaje es 10 de 40?",
+        "10 ÷ 40 = 0,25 = 25 %.",
+        [
+          [
+            10,
+            "Ese es el aumento en estudiantes. En porcentaje: 10 ÷ 40 = 25 %."
+          ],
+          [
+            20,
+            "Comparaste con 50. Se compara con lo que había antes, 40: 25 %."
+          ]
+        ]
+      ],
+      [
+        "$20.000 · 0,85",
+        17000,
+        "Unas zapatillas de $20.000 tienen 15 % de descuento. ¿Cuánto pagas? (Pagas el 85 %.)",
+        "Multiplica por 0,85.",
+        "20.000 · 0,85 = $17.000.",
+        [
+          [
+            3000,
+            "Ese es el descuento. Pagas 20.000 − 3.000 = 17.000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "$8.000 con 25 % de descuento",
+      6000,
+      "¿Cuánto pagas?",
+      "El 25 % es un cuarto: 2.000.",
+      "8.000 − 2.000 = $6.000.",
+      [
+        [
+          2000,
+          "Ese es el descuento. Pagas 6.000."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "algebra-producto",
+    "since": "2026-10-16",
+    "title": "Multiplicar expresiones algebraicas",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 06 · Rectángulos de área",
+    "concept": "Para multiplicar (x + 3)(x + 2), piensa en un rectángulo de lados x + 3 y x + 2. Se divide en 4 partes: x · x = x², x · 2 = 2x, 3 · x = 3x y 3 · 2 = 6. Juntas: x² + 5x + 6. Al revés, factorizar es buscar el número que se repite: 6x + 9 = 3(2x + 3).\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-06\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "2(x + 4) = 2x + 8. (x + 1)(x + 4) = x² + 4x + x + 4 = x² + 5x + 4.",
+    "status": "published",
+    "questions": [
+      [
+        "3(x + 5) = 3x + ?",
+        15,
+        "Multiplica. ¿Qué número va en lugar de «?»?",
+        "🟦 El 3 multiplica a cada parte del paréntesis.",
+        "3 · x = 3x y 3 · 5 = 15: 3x + 15.",
+        [
+          [
+            5,
+            "Falta multiplicar el 5 por 3: 15."
+          ],
+          [
+            8,
+            "Sumaste. Es 3 · 5 = 15."
+          ]
+        ]
+      ],
+      [
+        "(x + 3)(x + 2) = x² + ?x + 6",
+        5,
+        "Multiplica. ¿Cuánto vale el número que va delante de x?",
+        "Las partes del medio son 2x y 3x.",
+        "x · 2 + 3 · x = 2x + 3x = 5x.",
+        [
+          [
+            6,
+            "Ese es el último término (3 · 2). El del medio es 2x + 3x = 5x."
+          ],
+          [
+            1,
+            "Junta 2x + 3x = 5x."
+          ]
+        ]
+      ],
+      [
+        "6x + 9 = 3(2x + ?)",
+        3,
+        "Factoriza. ¿Qué número va en lugar de «?»?",
+        "Divide 9 por 3.",
+        "9 ÷ 3 = 3: 6x + 9 = 3(2x + 3).",
+        [
+          [
+            9,
+            "Hay que sacar el 3 también del 9: 9 ÷ 3 = 3."
+          ],
+          [
+            6,
+            "6x ÷ 3 = 2x ya está. Falta 9 ÷ 3 = 3."
+          ]
+        ]
+      ],
+      [
+        "(x + 4)(x + 1) = x² + 5x + ?",
+        4,
+        "Multiplica. ¿Cuál es el último número?",
+        "Multiplica los dos números de los paréntesis.",
+        "4 · 1 = 4: x² + 5x + 4.",
+        [
+          [
+            5,
+            "Sumaste. El último número es 4 · 1 = 4."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "2(x + 7) = 2x + ?",
+      14,
+      "Multiplica. ¿Qué número va en lugar de «?»?",
+      "El 2 multiplica también al 7.",
+      "2 · 7 = 14: 2x + 14.",
+      [
+        [
+          7,
+          "Falta multiplicar el 7 por 2: 14."
+        ],
+        [
+          9,
+          "Sumaste. Es 2 · 7 = 14."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "isometrias",
+    "since": "2026-10-16",
+    "title": "Mover figuras: traslación, reflexión y rotación",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 13 · Mover sin deformar",
+    "concept": "Las isometrías mueven una figura sin cambiar su forma ni su tamaño. Trasladar es deslizar: se suma un vector. Reflejar es mirarse en un espejo: en el eje y, la x cambia de signo; en el eje x, la y cambia de signo. Rotar media vuelta (180°) cambia el signo de las dos.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-13\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "El punto (3, 2) reflejado en el eje y llega a (−3, 2). Rotado 180°, llega a (−3, −2).",
+    "status": "published",
+    "questions": [
+      [
+        "(4, 1) reflejado en el eje y: ¿x?",
+        -4,
+        "Reflejas el punto (4, 1) en el eje y, como en un espejo. ¿Cuál es la nueva x?",
+        "🪞 En el eje y, la x cambia de signo.",
+        "(4, 1) → (−4, 1).",
+        [
+          [
+            4,
+            "En el espejo del eje y, la x cambia de signo: −4."
+          ],
+          [
+            -1,
+            "Cambiaste la y. En el eje y cambia la x: −4."
+          ]
+        ]
+      ],
+      [
+        "(5, 3) reflejado en el eje x: ¿y?",
+        -3,
+        "Reflejas el punto (5, 3) en el eje x. ¿Cuál es la nueva y?",
+        "En el eje x, la y cambia de signo.",
+        "(5, 3) → (5, −3).",
+        [
+          [
+            3,
+            "En el espejo del eje x, la y cambia de signo: −3."
+          ],
+          [
+            -5,
+            "Cambiaste la x. En el eje x cambia la y: −3."
+          ]
+        ]
+      ],
+      [
+        "(2, 6) rotado 180°: ¿y?",
+        -6,
+        "Rotas el punto (2, 6) media vuelta (180°) alrededor del origen. ¿Cuál es la nueva y?",
+        "Media vuelta cambia el signo de las dos coordenadas.",
+        "(2, 6) → (−2, −6).",
+        [
+          [
+            6,
+            "Media vuelta cambia los dos signos: −6."
+          ],
+          [
+            -2,
+            "Esa es la nueva x. La y es −6."
+          ]
+        ]
+      ],
+      [
+        "(1, 4) trasladado con (3, −2): ¿y?",
+        2,
+        "Trasladas el punto (1, 4) con el vector (3, −2). ¿Cuál es la nueva y?",
+        "Suma el segundo número del vector a la y.",
+        "4 + (−2) = 2. El punto llega a (4, 2).",
+        [
+          [
+            6,
+            "−2 es bajar: 4 − 2 = 2."
+          ],
+          [
+            4,
+            "Esa es la nueva x. La y es 4 − 2 = 2."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "(−3, 5) reflejado en el eje y: ¿x?",
+      3,
+      "Reflejas el punto (−3, 5) en el eje y. ¿Cuál es la nueva x?",
+      "La x cambia de signo.",
+      "(−3, 5) → (3, 5).",
+      [
+        [
+          -3,
+          "En el eje y la x cambia de signo: 3."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "cuartiles",
+    "since": "2026-10-16",
+    "title": "Cuartiles y percentiles",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 15 · Partir la fila en cuatro",
+    "concept": "Ordena los datos de menor a mayor y pártelos en cuatro grupos iguales. Los cortes son los cuartiles: Q1 deja abajo un cuarto de los datos, Q2 es la mediana y Q3 deja abajo tres cuartos. Un percentil hace lo mismo con 100 partes: estar en el percentil 80 es superar al 80 % del grupo.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-15\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Datos 2, 4, 5, 7, 8, 9, 11: la mediana Q2 es 7; Q1 es la mediana de 2, 4, 5 (4) y Q3 la de 8, 9, 11 (9).",
+    "status": "published",
+    "questions": [
+      [
+        "Q2 de 2, 4, 5, 7, 8, 9, 11",
+        7,
+        "¿Cuál es el cuartil 2 (la mediana)?",
+        "📏 Los datos ya están ordenados: busca el del medio.",
+        "Son 7 datos: el del medio es el cuarto, 7.",
+        [
+          [
+            5,
+            "Ese es el tercero. El del medio de 7 datos es el cuarto: 7."
+          ]
+        ]
+      ],
+      [
+        "Q1 de 2, 4, 5, 7, 8, 9, 11",
+        4,
+        "¿Cuál es el cuartil 1?",
+        "Toma la mitad de abajo (2, 4, 5) y busca su mediana.",
+        "La mitad de abajo es 2, 4, 5; su mediana es 4.",
+        [
+          [
+            2,
+            "Ese es el menor. Q1 es la mediana de la mitad de abajo: 4."
+          ],
+          [
+            7,
+            "Esa es la mediana (Q2). Q1 es la de la mitad de abajo: 4."
+          ]
+        ]
+      ],
+      [
+        "Q3 de 2, 4, 5, 7, 8, 9, 11",
+        9,
+        "¿Cuál es el cuartil 3?",
+        "Toma la mitad de arriba (8, 9, 11) y busca su mediana.",
+        "La mitad de arriba es 8, 9, 11; su mediana es 9.",
+        [
+          [
+            11,
+            "Ese es el mayor. Q3 es la mediana de la mitad de arriba: 9."
+          ]
+        ]
+      ],
+      [
+        "Percentil 80 de 200",
+        160,
+        "En una prueba de 200 estudiantes, Ana quedó en el percentil 80. ¿Cuántos estudiantes sacaron menos que ella, aproximadamente?",
+        "El percentil 80 supera al 80 % del grupo.",
+        "80 % de 200 = 160 estudiantes.",
+        [
+          [
+            80,
+            "80 es el percentil. El 80 % de 200 es 160."
+          ],
+          [
+            40,
+            "Esos quedaron sobre ella. Bajo ella hay 160."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Q2 de 1, 3, 6, 8, 10",
+      6,
+      "¿Cuál es el cuartil 2 (la mediana)?",
+      "Son 5 datos ordenados: el del medio.",
+      "El tercero de 5 datos: 6.",
+      [
+        [
+          3,
+          "Ese es el segundo. El del medio es el tercero: 6."
+        ]
+      ]
+    ]
   }
 ];

@@ -1374,6 +1374,133 @@ function proporcionInversa(rng, level) {
     [[(t * b) / a, "Con más, se tarda menos (y con menos, más). El producto se mantiene."], [t + b - a, "No se suma ni se resta: el producto se mantiene."]]];
 }
 
+// Lote 5: 8° Básico.
+
+function enterosMult(rng, level) {
+  const [a, b] = [int(rng, 2, 9), int(rng, 2, 9)];
+  const sign = (n) => (n < 0 ? "negativo" : "positivo");
+  if (level === 0 || level === 1) {
+    const [x, y] = level === 0 ? (rng() < 0.5 ? [-a, b] : [a, -b]) : [-a, -b];
+    return [`${paren(x)} · ${paren(y)}`, x * y, "Multiplica.", level === 0 ? "➖➕ Signos distintos: el resultado es negativo." : "Signos iguales: el resultado es positivo.",
+      `${a} · ${b} = ${a * b}; signos ${level === 0 ? "distintos" : "iguales"}: ${num(x * y)}.`, [[-x * y, `El resultado es ${sign(x * y)}.`], [x + y, "Sumaste. Es multiplicar."]]];
+  }
+  if (level === 2) {
+    const [x, y] = rng() < 0.5 ? [-a * b, b] : [-a * b, -b];
+    return [`${paren(x)} ÷ ${paren(y)}`, x / y, "Divide.", y < 0 ? "Signos iguales: positivo." : "Signos distintos: negativo.",
+      `${a * b} ÷ ${b} = ${a}; signos ${y < 0 ? "iguales" : "distintos"}: ${num(x / y)}.`, [[-x / y, `El resultado es ${sign(x / y)}.`]]];
+  }
+  const c = int(rng, 2, 5);
+  const negs = int(rng, 1, 3);
+  const f = [a, b, c].map((v, i) => (i < negs ? -v : v));
+  const r = f[0] * f[1] * f[2];
+  return [f.map(paren).join(" · "), r, "Multiplica los tres.", `Ve de a dos: primero ${paren(f[0])} · ${paren(f[1])}.`,
+    `${paren(f[0])} · ${paren(f[1])} = ${num(f[0] * f[1])}; ${num(f[0] * f[1])} · ${paren(f[2])} = ${num(r)}.`,
+    [[-r, `Cuenta los signos menos: ${negs}. ${negs % 2 ? "Uno queda sin pareja: negativo." : "Se cancelan de a dos: positivo."}`]]];
+}
+
+function racionalesMult(rng, level) {
+  if (level === 0 || level === 2) {
+    const [b, d] = [int(rng, 2, 5), int(rng, 2, 6)];
+    const [a, c] = [int(rng, 1, b - 1), int(rng, 1, d - 1)];
+    const s1 = -1;
+    const s2 = level === 2 ? -1 : 1;
+    const r = (s1 * s2 * a * c) / (b * d);
+    const f2 = `${s2 < 0 ? "(−" : ""}${frac(c, d)}${s2 < 0 ? ")" : ""}`;
+    return [`−${frac(a, b)} · ${f2}`, r, "Multiplica. Responde como fracción.", `Arriba por arriba, abajo por abajo, y signos ${s2 < 0 ? "iguales" : "distintos"}.`,
+      `${a} · ${c} = ${a * c}, ${b} · ${d} = ${b * d}; signos ${s2 < 0 ? "iguales" : "distintos"}: ${r < 0 ? "−" : ""}${a * c}/${b * d}.`,
+      [[-r, `El resultado es ${r < 0 ? "negativo" : "positivo"}.`]]];
+  }
+  if (level === 1) {
+    const k = 2 * int(rng, 1, 9);
+    return [`−0,5 · (−${k})`, k / 2, "Multiplica.", "0,5 es la mitad. Y menos por menos…", `La mitad de ${k} es ${k / 2}; signos iguales: +${k / 2}.`, [[-k / 2, "Menos por menos da más."]]];
+  }
+  const [step, hours] = [pick(rng, [0.5, 1.5, 2.5, 3.5]), int(rng, 2, 6)];
+  return [`−${dec(step)} · ${hours}`, -step * hours, `La temperatura baja ${dec(step)} °C cada hora. ¿Cuánto cambia en ${hours} horas?`, `Baja: es un número negativo, −${dec(step)}.`,
+    `−${dec(step)} · ${hours} = ${num(-step * hours).replace(".", ",")} °C.`, [[step * hours, "La temperatura baja: el cambio es negativo."]]];
+}
+
+function variacionPorcentual(rng, level) {
+  const price = 1000 * int(rng, 2, 20);
+  const p = pick(rng, [10, 20, 25, 30, 40, 50]);
+  const delta = (price * p) / 100;
+  if (level === 0)
+    return [`$${pesos(price)} con ${p} % de descuento`, price - delta, "¿Cuánto pagas?", `🏷️ El ${p} % de ${pesos(price)} es ${pesos(delta)}. Réstalo.`,
+      `${pesos(price)} − ${pesos(delta)} = $${pesos(price - delta)}.`, [[delta, "Ese es el descuento. Pagas lo que queda."], [price + delta, "Es descuento: se resta."]]];
+  if (level === 1)
+    return [`$${pesos(price)} con ${p} % de aumento`, price + delta, `Un producto de $${pesos(price)} sube un ${p} %. ¿Cuánto cuesta ahora?`, `El ${p} % de ${pesos(price)} es ${pesos(delta)}. Súmalo.`,
+      `${pesos(price)} + ${pesos(delta)} = $${pesos(price + delta)}.`, [[delta, "Ese es el aumento. Súmalo al precio."], [price - delta, "Es aumento: se suma."]]];
+  if (level === 2) {
+    // Cantidades cuyo 10, 20, 25 y 50 % es entero.
+    const before = pick(rng, [20, 40, 80, 100, 200]);
+    const pct = pick(rng, [10, 20, 25, 50]);
+    const up = (before * pct) / 100;
+    return [`De ${before} a ${before + up}: ¿% de aumento?`, pct, `Un club tenía ${before} socios y ahora tiene ${before + up}. ¿En qué porcentaje aumentó?`,
+      `Aumentó ${up}. ¿Qué porcentaje es ${up} de ${before}?`, `${up} ÷ ${before} = ${dec(pct / 100)} = ${pct} %.`,
+      [[up, "Ese es el aumento en socios. Pásalo a porcentaje."], [Math.round((up * 100) / (before + up) * 100) / 100, "Comparaste con el número nuevo. Se compara con lo que había antes."]]];
+  }
+  const q = pick(rng, [5, 15, 35, 45]);
+  const pay = (price * (100 - q)) / 100;
+  return [`$${pesos(price)} · ${dec((100 - q) / 100)}`, pay, `Algo de $${pesos(price)} tiene ${q} % de descuento. ¿Cuánto pagas? (Pagas el ${100 - q} %.)`, `Multiplica por ${dec((100 - q) / 100)}.`,
+    `${pesos(price)} · ${dec((100 - q) / 100)} = $${pesos(pay)}.`, [[price - pay, "Ese es el descuento. Pagas el resto."]]];
+}
+
+function algebraProducto(rng, level) {
+  const [a, b] = [int(rng, 1, 9), int(rng, 1, 9)];
+  if (level === 0) {
+    const k = int(rng, 2, 9);
+    return [`${k}(x + ${a}) = ${k}x + ?`, k * a, "Multiplica. ¿Qué número va en lugar de «?»?", `🟦 El ${k} multiplica a cada parte del paréntesis.`, `${k} · ${a} = ${k * a}: ${k}x + ${k * a}.`,
+      [[a, `Falta multiplicar el ${a} por ${k}.`], [k + a, `Sumaste. Es ${k} · ${a}.`]]];
+  }
+  if (level === 1)
+    return [`(x + ${a})(x + ${b}) = x² + ?x + ${a * b}`, a + b, "Multiplica. ¿Cuánto vale el número que va delante de x?", `Las partes del medio son ${b}x y ${a}x.`,
+      `${b}x + ${a}x = ${a + b}x.`, [[a * b, "Ese es el último término. El del medio es la suma."]]];
+  if (level === 2) {
+    const k = int(rng, 2, 6);
+    const [m, c] = [int(rng, 1, 5), int(rng, 1, 9)];
+    return [`${k * m}x + ${k * c} = ${k}(${coef(m)} + ?)`, c, "Factoriza. ¿Qué número va en lugar de «?»?", `Divide ${k * c} por ${k}.`,
+      `${k * c} ÷ ${k} = ${c}: ${k}(${coef(m)} + ${c}).`, [[k * c, `Hay que sacar el ${k} también del ${k * c}.`]]];
+  }
+  return [`(x + ${a})(x + ${b}) = x² + ${a + b}x + ?`, a * b, "Multiplica. ¿Cuál es el último número?", "Multiplica los dos números de los paréntesis.",
+    `${a} · ${b} = ${a * b}.`, [[a + b, `Sumaste. El último número es ${a} · ${b}.`]]];
+}
+
+function isometrias(rng, level) {
+  const [x, y] = [nonZero(rng, -7, 7), nonZero(rng, -7, 7)];
+  const pt = `(${num(x)}, ${num(y)})`;
+  if (level === 0)
+    return [`${pt} reflejado en el eje y: ¿x?`, -x, `Reflejas el punto ${pt} en el eje y, como en un espejo. ¿Cuál es la nueva x?`, "🪞 En el eje y, la x cambia de signo.",
+      `${pt} → (${num(-x)}, ${num(y)}).`, [[x, "En el espejo del eje y, la x cambia de signo."], [-y, "Cambiaste la y. En el eje y cambia la x."]]];
+  if (level === 1)
+    return [`${pt} reflejado en el eje x: ¿y?`, -y, `Reflejas el punto ${pt} en el eje x. ¿Cuál es la nueva y?`, "En el eje x, la y cambia de signo.",
+      `${pt} → (${num(x)}, ${num(-y)}).`, [[y, "En el espejo del eje x, la y cambia de signo."], [-x, "Cambiaste la x. En el eje x cambia la y."]]];
+  if (level === 2) {
+    const askX = rng() < 0.5;
+    return [`${pt} rotado 180°: ¿${askX ? "x" : "y"}?`, askX ? -x : -y, `Rotas el punto ${pt} media vuelta (180°) alrededor del origen. ¿Cuál es la nueva ${askX ? "x" : "y"}?`,
+      "Media vuelta cambia el signo de las dos coordenadas.", `${pt} → (${num(-x)}, ${num(-y)}).`, [[askX ? x : y, "Media vuelta cambia los dos signos."]]];
+  }
+  const [a, b] = [nonZero(rng, -5, 5), nonZero(rng, -5, 5)];
+  return [`${pt} trasladado con (${num(a)}, ${num(b)}): ¿y?`, y + b, `Trasladas el punto ${pt} con el vector (${num(a)}, ${num(b)}). ¿Cuál es la nueva y?`,
+    "Suma el segundo número del vector a la y.", `${num(y)} + ${paren(b)} = ${num(y + b)}. El punto llega a (${num(x + a)}, ${num(y + b)}).`,
+    [[y - b, "Se suma el vector, no se resta."], [x + a, "Esa es la nueva x."]]];
+}
+
+function cuartiles(rng, level) {
+  if (level === 3) {
+    const [p, n] = [pick(rng, [10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90]), pick(rng, [100, 200, 300, 400])];
+    return [`Percentil ${p} de ${n}`, (p * n) / 100, `En una prueba de ${n} estudiantes, Ana quedó en el percentil ${p}. ¿Cuántos estudiantes sacaron menos que ella, aproximadamente?`,
+      `El percentil ${p} supera al ${p} % del grupo.`, `${p} % de ${n} = ${(p * n) / 100} estudiantes.`, [[p, `${p} es el percentil, no la cantidad.`], [n - (p * n) / 100, "Esos quedaron sobre ella."]]];
+  }
+  const data = shuffle(rng, Array.from({ length: 20 }, (_, i) => i + 1)).slice(0, 7).sort((a, b) => a - b);
+  const [k, name, hint] = [
+    [3, "el cuartil 2 (la mediana)", "Los datos ya están ordenados: busca el del medio."],
+    [1, "el cuartil 1", "Toma la mitad de abajo (los 3 primeros) y busca su mediana."],
+    [5, "el cuartil 3", "Toma la mitad de arriba (los 3 últimos) y busca su mediana."],
+  ][level];
+  return [`Q${level === 0 ? 2 : level === 1 ? 1 : 3} de ${data.join(", ")}`, data[k], `¿Cuál es ${name}?`, `📏 ${hint}`,
+    `Ordenados: ${data.join(", ")}. ${name[0].toUpperCase() + name.slice(1)} es ${data[k]}.`,
+    [[data[3], "Esa es la mediana (Q2)."], [level === 1 ? data[0] : data[6], "Ese es un extremo, no el cuartil."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -1425,6 +1552,12 @@ export const generators = {
   "probabilidad-teorica": probabilidadTeorica,
   muestreo,
   "proporcion-inversa": proporcionInversa,
+  "enteros-mult": enterosMult,
+  "racionales-mult": racionalesMult,
+  "variacion-porcentual": variacionPorcentual,
+  "algebra-producto": algebraProducto,
+  isometrias,
+  cuartiles,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);

@@ -254,7 +254,8 @@ export function Area({ prev, cur, t, beat }) {
   const pieces = [
     { x: x0, y: y0, w: A, h: A, fill: "#bfdbfe", text: labels.a2 },
     { x: x0 + A, y: y0, w: B, h: A, fill: C.amberSoft, text: labels.ab },
-    { x: x0, y: y0 + A, w: A, h: B, fill: C.amberSoft, text: labels.ab },
+    // Con `c` (otro número al costado) es (a + b)(a + c): la pieza de abajo es «ac».
+    { x: x0, y: y0 + A, w: A, h: B, fill: C.amberSoft, text: labels.ac ?? labels.ab },
     { x: x0 + A, y: y0 + A, w: B, h: B, fill: C.greenSoft, text: labels.b2 },
   ];
   const shownBefore = prev?.show ?? 0;
@@ -274,7 +275,7 @@ export function Area({ prev, cur, t, beat }) {
       <text x={x0 - 24} y={y0 + A / 2 + 18} textAnchor="end" fontSize={50} fontWeight={800} fill={C.blueDark}>{labels.a}</text>
       <g opacity={cur.show > 1 ? 1 : 0}>
         <text x={x0 + A + B / 2} y={y0 - 24} textAnchor="middle" fontSize={50} fontWeight={800} fill={C.amberDark}>{labels.b}</text>
-        <text x={x0 - 24} y={y0 + A + B / 2 + 18} textAnchor="end" fontSize={50} fontWeight={800} fill={C.amberDark}>{labels.b}</text>
+        <text x={x0 - 24} y={y0 + A + B / 2 + 18} textAnchor="end" fontSize={50} fontWeight={800} fill={C.amberDark}>{labels.c ?? labels.b}</text>
       </g>
     </svg>
   );
