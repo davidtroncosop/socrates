@@ -178,3 +178,128 @@ export function Bars({ prev, cur, t, beat }) {
     </svg>
   );
 }
+
+// Polígono regular dividido en triángulos desde una esquina.
+export function Poly({ prev, cur, t, beat }) {
+  const same = prev && prev.n === cur.n && prev.diagonals === cur.diagonals;
+  const o = same ? 1 : during(t, beat, 0.6);
+  const n = cur.n;
+  const cx = 960;
+  const cy = 610;
+  const R = 300;
+  const pts = Array.from({ length: n }, (_, i) => at(cx, cy, R, -90 - 180 / n + (360 * i) / n));
+  const fills = ["#bfdbfe", C.amberSoft, C.greenSoft, "#ede9fe", C.redSoft, "#cffafe", "#fce7f3", "#e0e7ff", "#fef9c3", "#dcfce7"];
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      {cur.diagonals
+        ? pts.slice(1, -1).map((p, i) => (
+            <polygon key={i} points={[pts[0], p, pts[i + 2]].map((q) => q.join(",")).join(" ")} fill={fills[i % fills.length]} opacity={Math.min(1, Math.max(0, o * (n - 2) - i))} />
+          ))
+        : <polygon points={pts.map((p) => p.join(",")).join(" ")} fill="#f1f5f9" />}
+      {cur.diagonals &&
+        pts.slice(2, -1).map((p, i) => (
+          <line key={i} x1={pts[0][0]} y1={pts[0][1]} x2={p[0]} y2={p[1]} stroke={C.blue} strokeWidth={5} strokeDasharray="14 10" opacity={o} />
+        ))}
+      <polygon points={pts.map((p) => p.join(",")).join(" ")} fill="none" stroke={C.beam} strokeWidth={6} strokeLinejoin="round" />
+      {cur.diagonals &&
+        o > 0.95 &&
+        pts.slice(1, -1).map((p, i) => {
+          const q = pts[i + 2];
+          return (
+            <text key={i} x={(pts[0][0] + p[0] + q[0]) / 3} y={(pts[0][1] + p[1] + q[1]) / 3 + 14} textAnchor="middle" fontSize={40} fontWeight={800} fill={C.ink}>
+              180°
+            </text>
+          );
+        })}
+      {cur.label && <text x={cx} y={cy + R + 70} textAnchor="middle" fontSize={48} fontWeight={800} fill={C.ink}>{cur.label}</text>}
+    </svg>
+  );
+}
+
+// Trapecio; con `double`, una copia girada lo completa en paralelogramo.
+export function Trapezoid({ prev, cur, t, beat }) {
+  const u = 80;
+  const { B, b, h } = cur;
+  const W = (B + b) * u;
+  const x0 = 960 - (cur.double ? W : B * u) / 2;
+  const y0 = 640 + (h * u) / 2;
+  const off = ((B - b) * u) / 2;
+  const trap = (x, flip) =>
+    flip
+      ? [[x, y0 - h * u], [x + B * u, y0 - h * u], [x + B * u - off, y0], [x + off, y0]]
+      : [[x, y0], [x + B * u, y0], [x + B * u - off, y0 - h * u], [x + off, y0 - h * u]];
+  const o = cur.double ? (prev?.double ? 1 : during(t, beat, 0.6)) : 0;
+  const copy = trap(x0 + B * u - off, true).map(([x, y]) => [x + (1 - o) * 300, y]);
+  const pts = (list) => list.map((p) => p.join(",")).join(" ");
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      <polygon points={pts(trap(x0, false))} fill="#bfdbfe" stroke={C.blue} strokeWidth={5} />
+      {cur.double && <polygon points={pts(copy)} fill={C.amberSoft} stroke={C.amber} strokeWidth={5} opacity={o} />}
+      <line x1={x0 + off} y1={y0} x2={x0 + off} y2={y0 - h * u} stroke={C.red} strokeWidth={4} strokeDasharray="10 8" />
+      <text x={x0 + off + 16} y={y0 - (h * u) / 2 + 16} fontSize={44} fontWeight={800} fill={C.red}>{h}</text>
+      <text x={x0 + (B * u) / 2} y={y0 + 60} textAnchor="middle" fontSize={44} fontWeight={800} fill={C.blueDark}>{B}</text>
+      <text x={x0 + (B * u) / 2} y={y0 - h * u - 22} textAnchor="middle" fontSize={44} fontWeight={800} fill={C.blueDark}>{b}</text>
+      {cur.double && o > 0.95 && (
+        <text x={x0 + W / 2} y={y0 + 120} textAnchor="middle" fontSize={46} fontWeight={800} fill={C.ink}>base: {B} + {b} = {B + b}</text>
+      )}
+    </svg>
+  );
+}
+
+// Plano cartesiano con puntos y un vector que mueve un punto.
+export function Plane({ prev, cur, t, beat }) {
+  const max = cur.max ?? 8;
+  const u = 64;
+  const x0 = 960 - (max * u) / 2;
+  const y0 = 300 + max * u;
+  const P = ([x, y]) => [x0 + x * u, y0 - y * u];
+  const o = prev && JSON.stringify(prev.vector) === JSON.stringify(cur.vector) ? 1 : during(t, beat, 0.6);
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      {Array.from({ length: max + 1 }, (_, i) => (
+        <g key={i}>
+          <line x1={x0 + i * u} y1={y0} x2={x0 + i * u} y2={y0 - max * u} stroke={C.soft} strokeWidth={2} />
+          <line x1={x0} y1={y0 - i * u} x2={x0 + max * u} y2={y0 - i * u} stroke={C.soft} strokeWidth={2} />
+          <text x={x0 + i * u} y={y0 + 40} textAnchor="middle" fontSize={28} fill={C.muted}>{i}</text>
+          {i > 0 && <text x={x0 - 18} y={y0 - i * u + 10} textAnchor="end" fontSize={28} fill={C.muted}>{i}</text>}
+        </g>
+      ))}
+      <line x1={x0} y1={y0} x2={x0 + max * u + 30} y2={y0} stroke={C.beam} strokeWidth={5} />
+      <line x1={x0} y1={y0} x2={x0} y2={y0 - max * u - 30} stroke={C.beam} strokeWidth={5} />
+      <text x={x0 + max * u + 50} y={y0 + 12} fontSize={40} fontWeight={800} fill={C.ink}>x</text>
+      <text x={x0 - 12} y={y0 - max * u - 46} fontSize={40} fontWeight={800} fill={C.ink}>y</text>
+      {cur.walk && (() => {
+        const [x, y] = cur.walk;
+        const [ax, ay] = P([0, 0]);
+        const [bx, by] = P([x, 0]);
+        const [cx, cy] = P([x, y]);
+        return (
+          <g opacity={o}>
+            <line x1={ax} y1={ay} x2={bx} y2={by} stroke={C.blue} strokeWidth={8} />
+            <line x1={bx} y1={by} x2={cx} y2={cy} stroke={C.amber} strokeWidth={8} />
+          </g>
+        );
+      })()}
+      {cur.vector && (() => {
+        const [from, d] = cur.vector;
+        const [ax, ay] = P(from);
+        const [bx, by] = P([from[0] + d[0] * o, from[1] + d[1] * o]);
+        return <line x1={ax} y1={ay} x2={bx} y2={by} stroke={C.green} strokeWidth={7} markerEnd="url(#arrow)" />;
+      })()}
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill={C.green} />
+        </marker>
+      </defs>
+      {(cur.points ?? []).map(([x, y, label], i) => {
+        const [px, py] = P([x, y]);
+        return (
+          <g key={i}>
+            <circle cx={px} cy={py} r={14} fill={i ? C.green : C.red} />
+            <text x={px + 22} y={py - 18} fontSize={40} fontWeight={800} fill={i ? C.green : C.red}>{label ?? `(${x}, ${y})`}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}

@@ -1206,6 +1206,174 @@ function graficos(rng, level) {
     "La barra más alta es el número mayor.", `La barra más alta tiene ${max} votos.`, [[Math.min(...values), "Esa es la barra más baja."]]];
 }
 
+// Lote 4: 7° Básico.
+
+function potencias10(rng, level) {
+  const k = int(rng, 2, 7);
+  const zeros = "1" + "0".repeat(k);
+  if (level === 0)
+    return [`10${sup(k)}`, 10 ** k, "Calcula la potencia.", `🔟 El ${k} dice cuántos ceros van después del 1.`, `10${sup(k)} = ${pesos(10 ** k)} (${k} ceros).`,
+      [[10 * k, `No es 10 · ${k}. Es un 1 con ${k} ceros.`], [10 + k, "No se suma. Es un 1 con ceros."]]];
+  if (level === 1) {
+    const a = int(rng, 2, 9);
+    const j = int(rng, 2, 5);
+    return [`${a} · 10${sup(j)}`, a * 10 ** j, "Calcula.", `Primero 10${sup(j)} = ${pesos(10 ** j)}. Después por ${a}.`, `${a} · ${pesos(10 ** j)} = ${pesos(a * 10 ** j)}.`,
+      [[a * 10 * j, `10${sup(j)} no es ${10 * j}. Es ${pesos(10 ** j)}.`]]];
+  }
+  if (level === 2)
+    return [`${pesos(Number(zeros))} = 10^?`, k, `¿A qué número hay que elevar 10 para obtener ${pesos(Number(zeros))}?`, "Cuenta los ceros.", `${pesos(Number(zeros))} tiene ${k} ceros: 10${sup(k)}.`,
+      [[k + 1, "Contaste también el 1. Solo se cuentan los ceros."]]];
+  const a = int(rng, 2, 9);
+  const j = int(rng, 4, 8);
+  return [`${pesos(a * 10 ** j)} = ${a} · 10^?`, j, `Escribe ${pesos(a * 10 ** j)} como ${a} · 10^?. ¿Cuál es el exponente?`, `${pesos(a * 10 ** j)} es ${a} por ${pesos(10 ** j)}.`,
+    `${pesos(10 ** j)} = 10${sup(j)}, así que ${pesos(a * 10 ** j)} = ${a} · 10${sup(j)}.`, [[a, `El ${a} va adelante; el exponente cuenta los ceros.`], [j + 1, "Solo se cuentan los ceros."]]];
+}
+
+function inecuaciones(rng, level) {
+  if (level === 0) {
+    const [b, x] = [int(rng, 2, 9), int(rng, 1, 12)];
+    return [`x + ${b} > ${x + b}`, x + 1, "¿Cuál es el menor número entero que cumple la inecuación?", `⚖️ Resta ${b} en los dos lados: x > ${x}.`,
+      `x > ${x}. El ${x} no sirve (${x} + ${b} = ${x + b}, no es mayor). El menor entero es ${x + 1}.`, [[x, `${x} + ${b} = ${x + b}, que no es mayor que ${x + b}.`]]];
+  }
+  if (level === 1) {
+    const [a, x] = [int(rng, 2, 6), int(rng, 2, 10)];
+    return [`${a}x < ${a * x}`, x - 1, "¿Cuál es el mayor número entero que cumple la inecuación?", `Divide los dos lados por ${a}: x < ${x}.`,
+      `x < ${x}. El ${x} no sirve (${a} · ${x} = ${a * x}, no es menor). El mayor entero es ${x - 1}.`, [[x, `${a} · ${x} = ${a * x}, que no es menor que ${a * x}.`]]];
+  }
+  if (level === 2) {
+    const [b, x] = [int(rng, 2, 9), int(rng, 3, 15)];
+    return [`x − ${b} ≥ ${x - b}`, x, "¿Cuál es el menor número entero que cumple la inecuación? (≥ es «mayor o igual»)", `Suma ${b} en los dos lados.`,
+      `x ≥ ${x}. Como vale el igual, el ${x} sirve.`, [[x + 1, "≥ incluye el igual: el borde sirve."], [x - 2 * b, `Para deshacer «− ${b}» se suma ${b}.`]]];
+  }
+  const [price, n] = [pick(rng, [300, 400, 500, 600, 800]), int(rng, 3, 9)];
+  const money = price * n + int(rng, 0, price / 100 - 1) * 100;
+  return [`${price}x ≤ ${money}`, n, `Cada helado cuesta $${pesos(price)} y tienes $${pesos(money)}. ¿Cuántos helados puedes comprar como máximo?`, `Divide los dos lados por ${price}.`,
+    `x ≤ ${pesos(money)} ÷ ${price}. Puedes comprar hasta ${n} helados.`, [[money - price, `Restaste. Divide por ${price}.`], [n + 1, `${n + 1} helados costarían $${pesos(price * (n + 1))}: no alcanza.`]]];
+}
+
+const POLY = { 5: "pentágono", 6: "hexágono", 8: "octágono", 10: "decágono", 12: "dodecágono" };
+
+function angulosPoligonos(rng, level) {
+  const n = pick(rng, level === 0 ? [5, 6] : [5, 6, 8, 10, 12]);
+  const sum = (n - 2) * 180;
+  if (level <= 1)
+    return [`Suma de ángulos de un ${POLY[n]}`, sum, `¿Cuánto suman los ángulos interiores de un ${POLY[n]} (${n} lados)?`, `🔺 Desde una esquina se forman ${n} − 2 = ${n - 2} triángulos.`,
+      `${n - 2} · 180 = ${pesos(sum)}°.`, [[n * 180, `Usaste ${n} triángulos. Son ${n} − 2 = ${n - 2}.`], [360, "Eso suman los cuadriláteros."]]];
+  if (level === 2)
+    return [`Ángulo de un ${POLY[n]} regular`, sum / n, `Un ${POLY[n]} regular tiene ${n} ángulos iguales. ¿Cuánto mide cada uno?`, `Primero la suma (${pesos(sum)}°), después reparte en ${n}.`,
+      `${pesos(sum)} ÷ ${n} = ${sum / n}°.`, [[sum, `Esa es la suma de los ${n}. Reparte en ${n}.`], [360 / n, `Ese es el ángulo exterior (360 ÷ ${n}).`]]];
+  return [`Ángulo exterior de un ${POLY[n]} regular`, 360 / n, `¿Cuánto mide cada ángulo exterior de un ${POLY[n]} regular (${n} lados)?`, "Los exteriores de cualquier polígono suman 360°.",
+    `360 ÷ ${n} = ${360 / n}°.`, [[sum / n, `Ese es el interior. El exterior es 360 ÷ ${n}.`]]];
+}
+
+function areaTrapecio(rng, level) {
+  const unit = level >= 2 ? "m" : "cm";
+  let b = int(rng, 2, 9);
+  const B = b + int(rng, 2, 8);
+  const h = int(rng, 2, 9);
+  if (((B + b) * h) % 2) b += 1;
+  if (b >= B) return areaTrapecio(rng, level);
+  const area = ((B + b) * h) / 2;
+  return [`Trapecio: bases ${B} ${unit} y ${b} ${unit}, altura ${h} ${unit}`, area,
+    level === 3 ? `Un jardín tiene forma de trapecio con bases de ${B} m y ${b} m, y ${h} m de altura. ¿Cuántos m² tiene?` : `Calcula el área en ${unit}².`,
+    "🔁 Suma las bases, multiplica por la altura y divide por 2.", `(${B} + ${b}) · ${h} ÷ 2 = ${(B + b) * h} ÷ 2 = ${area} ${unit}².`,
+    [[(B + b) * h, "Falta dividir por 2: dos trapecios forman el paralelogramo."], [B * b * h, "Primero suma las bases."]]];
+}
+
+function planoCartesiano(rng, level) {
+  const [x, y] = [int(rng, 1, 9), int(rng, 1, 9)];
+  if (level === 0) {
+    const askX = rng() < 0.5;
+    return [`Punto (${x}, ${y}): ¿${askX ? "x" : "y"}?`, askX ? x : y, `En el punto (${x}, ${y}), ¿cuánto se ${askX ? "camina a la derecha" : "sube"}?`,
+      "📍 El primer número es lo que caminas; el segundo, lo que subes.", `En (${x}, ${y}) se caminan ${x} a la derecha y se suben ${y}.`,
+      [[askX ? y : x, "Ese es el otro número. Primero se camina, después se sube."]]];
+  }
+  const [a, b] = level === 1 ? [int(rng, 1, 6), int(rng, 1, 6)] : [nonZero(rng, -5, 5), nonZero(rng, -5, 5)];
+  if (level <= 2) {
+    const askX = level === 1 || rng() < 0.5;
+    const v = askX ? x + a : y + b;
+    return [`(${x}, ${y}) + vector (${num(a)}, ${num(b)}): ¿${askX ? "x" : "y"}?`, v,
+      `Mueves el punto (${x}, ${y}) con el vector (${num(a)}, ${num(b)}). ¿Cuál es la nueva coordenada ${askX ? "x" : "y"}?`,
+      askX ? `Suma el primer número del vector a la x: ${x} + ${paren(a)}.` : `Suma el segundo número del vector a la y: ${y} + ${paren(b)}.`,
+      `El punto llega a (${num(x + a)}, ${num(y + b)}).`, [[askX ? y + b : x + a, "Esa es la otra coordenada."], [askX ? x - a : y - b, "Se suma el vector, no se resta."]]];
+  }
+  const x2 = x + int(rng, 2, 8);
+  return [`De (${x}, ${y}) a (${x2}, ${y})`, x2 - x, `En un mapa, la casa está en (${x}, ${y}) y el colegio en (${x2}, ${y}). ¿Cuántas cuadras hay de una a otra?`,
+    "Están a la misma altura: compara las x.", `${x2} − ${x} = ${x2 - x} cuadras.`, [[x2 + x, "Sumaste. La distancia es la diferencia."]]];
+}
+
+function frecuencias(rng, level) {
+  if (level === 2) {
+    const f = [int(rng, 2, 9), int(rng, 2, 12), int(rng, 2, 15)];
+    return [`Frecuencias ${f[0]}, ${f[1]}, ${f[2]}: total`, f[0] + f[1] + f[2], `En una tabla, las frecuencias son ${f[0]} (a pie), ${f[1]} (auto) y ${f[2]} (bus). ¿Cuántos estudiantes hay en total?`,
+      "Suma todas las frecuencias.", `${f.join(" + ")} = ${f[0] + f[1] + f[2]}.`, [[Math.max(...f), "Esa es la mayor. El total es la suma."]]];
+  }
+  // Totales que dividen a 100: el porcentaje es entero.
+  const total = pick(rng, [10, 20, 25, 50]);
+  const part = int(rng, 1, total - 1);
+  const pct = (part * 100) / total;
+  if (level === 0)
+    return [`Bus: ${part} de ${total}`, part / total, `De ${total} estudiantes, ${part} llegan en bus. ¿Cuál es la frecuencia relativa? Responde como decimal o fracción.`,
+      "📋 Divide las veces por el total.", `${part} ÷ ${total} = ${dec(part / total)}.`, [[part, "Esa es la frecuencia absoluta."], [total / part, "Dividiste al revés."]]];
+  return [`${level === 1 ? "Bus" : "Auto"}: ${part} de ${total}, en %`, pct, `De ${total} personas, ${part} viajan en ${level === 1 ? "bus" : "auto"}. ¿Qué porcentaje es?`,
+    `${part} ÷ ${total} y después · 100.`, `${part} ÷ ${total} = ${dec(part / total)} = ${dec(pct)} %.`, [[part, "Ese es el número de personas."]]];
+}
+
+function probabilidadTeorica(rng, level) {
+  if (level === 0) {
+    const face = int(rng, 1, 6);
+    return [`Dado: sacar ${face}`, 1 / 6, `Lanzas un dado. ¿Cuál es la probabilidad de sacar un ${face}? Responde como fracción.`, "🎲 Casos favorables: 1. Casos posibles: 6.",
+      "1 caso favorable de 6: 1/6.", [[face, "La probabilidad es una fracción: casos favorables ÷ posibles."]]];
+  }
+  if (level === 1) {
+    const [name, cases] = pick(rng, [["un número par", [2, 4, 6]], ["un número impar", [1, 3, 5]], ["un número mayor que 4", [5, 6]], ["un número menor que 3", [1, 2]], ["un múltiplo de 3", [3, 6]]]);
+    return [`Dado: sacar ${name}`, cases.length / 6, `Lanzas un dado. ¿Cuál es la probabilidad de sacar ${name}?`, `Casos favorables: ${cases.join(", ")}.`,
+      `${cases.length} casos de 6: ${cases.length}/6.`, [[cases.length, "Esos son los casos favorables. Divide por 6."]]];
+  }
+  const [a, b] = [int(rng, 1, 7), int(rng, 1, 7)];
+  return [`Bolsa: ${a} rojas y ${b} azules`, a / (a + b), `Una bolsa tiene ${a} bolitas rojas y ${b} azules. ¿Cuál es la probabilidad de sacar una roja?`,
+    "Casos posibles: todas las bolitas.", `${a} rojas de ${a + b} bolitas: ${a}/${a + b}.`, [[a / b, "Dividiste rojas por azules. Se divide por el total."]]];
+}
+
+function muestreo(rng, level) {
+  if (level === 1) {
+    const p = 5 * int(rng, 2, 18);
+    return [`Muestra: ${p} de 100`, p, `En una muestra de 100 personas, ${p} prefieren el té. ¿Qué porcentaje prefiere té?`, "De 100, el número ya es el porcentaje.",
+      `${p} de 100 = ${p} %.`, [[p / 100, `Eso es la fracción; en porcentaje es ${p}.`]]];
+  }
+  if (level === 2) {
+    const p = 10 * int(rng, 1, 9);
+    const N = 1000 * int(rng, 1, 5);
+    return [`Muestra: ${p} % de ${N}`, (p * N) / 100, `Si el ${p} % de una muestra prefiere té, ¿cuántos de ${pesos(N)} personas lo preferirían aproximadamente?`, `${p} % es ${p} de cada 100.`,
+      `${pesos(N)} · ${dec(p / 100)} = ${pesos((p * N) / 100)}.`, [[(p * N) / 1000, `Eso sería el ${dec(p / 10)} %.`]]];
+  }
+  const k = pick(rng, [2, 4, 5, 10]);
+  const n = k * int(rng, 4, 10);
+  const yes = n / k;
+  const N = n * int(rng, 2, 12);
+  return [`Muestra: ${yes} de ${n}; colegio de ${N}`, N / k,
+    `En una muestra de ${n} estudiantes, ${yes} usan lentes. Si el colegio tiene ${N} estudiantes, ¿cuántos usarían lentes aproximadamente?`,
+    `🥄 ${yes} de ${n} es 1 de cada ${k}.`, `${yes} ÷ ${n} = 1/${k}; ${N} ÷ ${k} = ${N / k}.`, [[N - n + yes, `Sumaste o restaste. Usa la proporción: 1 de cada ${k}.`]]];
+}
+
+function proporcionInversa(rng, level) {
+  const contexts = [
+    (a, t, b) => [`${a} pintores, ${t} días; ${b} pintores`, `${a} pintores tardan ${t} días en pintar una casa. ¿Cuántos días tardan ${b} pintores?`, "días"],
+    (a, t, b) => [`${a} amigos, ${t} trozos; ${b} amigos`, `${a} amigos se reparten una pizza y cada uno recibe ${t} trozos. Si fueran ${b} amigos, ¿cuántos trozos recibiría cada uno?`, "trozos"],
+    (a, t, b) => [`${a} llaves, ${t} horas; ${b} llaves`, `${a} llaves llenan un estanque en ${t} horas. ¿Cuántas horas tardan ${b} llaves?`, "horas"],
+  ];
+  // La pizza tiene 12 trozos; lo demás, un total múltiplo de las dos cantidades.
+  const [a, b] = level === 1 ? shuffle(rng, [2, 3, 4, 6]).slice(0, 2) : (() => {
+    const first = int(rng, 2, 6);
+    return [first, level === 0 ? 2 * first : pick(rng, [2, 3, 4, 6, 8, 12].filter((v) => v !== first))];
+  })();
+  const total = level === 1 ? 12 : a * b * int(rng, 1, 3);
+  const t = total / a;
+  const [expr, prompt, unit] = contexts[level % 3](a, t, b);
+  return [expr, total / b, prompt, `🔄 El total se mantiene: ${a} · ${t} = ${total}.`, `${a} · ${t} = ${total}; ${total} ÷ ${b} = ${total / b} ${unit}.`,
+    [[(t * b) / a, "Con más, se tarda menos (y con menos, más). El producto se mantiene."], [t + b - a, "No se suma ni se resta: el producto se mantiene."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -1248,6 +1416,15 @@ export const generators = {
   angulos,
   "area-superficie": areaSuperficie,
   graficos,
+  "potencias-10": potencias10,
+  inecuaciones,
+  "angulos-poligonos": angulosPoligonos,
+  "area-trapecio": areaTrapecio,
+  "plano-cartesiano": planoCartesiano,
+  frecuencias,
+  "probabilidad-teorica": probabilidadTeorica,
+  muestreo,
+  "proporcion-inversa": proporcionInversa,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);

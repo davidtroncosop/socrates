@@ -49,12 +49,22 @@ import expresiones from "./expresiones.mjs";
 import angulos from "./angulos.mjs";
 import areaSup from "./area-superficie.mjs";
 import graficos from "./graficos.mjs";
+import pot10 from "./potencias-10.mjs";
+import inecuaciones from "./inecuaciones.mjs";
+import angPoli from "./angulos-poligonos.mjs";
+import trapecio from "./area-trapecio.mjs";
+import plano from "./plano-cartesiano.mjs";
+import frecuencias from "./frecuencias.mjs";
+import probTeo from "./probabilidad-teorica.mjs";
+import muestreo from "./muestreo.mjs";
+import propInv from "./proporcion-inversa.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  pot10, inecuaciones, angPoli, trapecio, plano, frecuencias, probTeo, muestreo, propInv,
   razones, mixtos, decMult, patrones, expresiones, angulos, areaSup, graficos,
   raices, volumen, combinatoria, potNeg, sistemas,
   multiplos, fracSuma, fracMult, promedio, areaTri,

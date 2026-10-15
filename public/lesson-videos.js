@@ -55,4 +55,13 @@ export const lessonVideos = {
   "angulos": {"src":"/media/lessons/angulos-7c3b59de94.mp4","title":"Ángulos: explicado en video","duration":55},
   "area-superficie": {"src":"/media/lessons/area-superficie-1422301a39.mp4","title":"Área de la superficie de cajas: explicado en video","duration":50},
   "graficos": {"src":"/media/lessons/graficos-f1aacd5c7f.mp4","title":"Leer gráficos: explicado en video","duration":44},
+  "potencias-10": {"src":"/media/lessons/potencias-10-1d4b36c90e.mp4","title":"Potencias de 10: explicado en video","duration":42},
+  "inecuaciones": {"src":"/media/lessons/inecuaciones-7ce64211cb.mp4","title":"Inecuaciones: explicado en video","duration":56},
+  "angulos-poligonos": {"src":"/media/lessons/angulos-poligonos-a127ceba4b.mp4","title":"Ángulos de los polígonos: explicado en video","duration":48},
+  "area-trapecio": {"src":"/media/lessons/area-trapecio-eea94568ee.mp4","title":"Área del trapecio: explicado en video","duration":38},
+  "plano-cartesiano": {"src":"/media/lessons/plano-cartesiano-a5ddae51a1.mp4","title":"El plano cartesiano: explicado en video","duration":42},
+  "frecuencias": {"src":"/media/lessons/frecuencias-e54b1918e3.mp4","title":"Tablas de frecuencia: explicado en video","duration":43},
+  "probabilidad-teorica": {"src":"/media/lessons/probabilidad-teorica-d3e2102874.mp4","title":"Probabilidad teórica: explicado en video","duration":44},
+  "muestreo": {"src":"/media/lessons/muestreo-26e4ff541b.mp4","title":"Muestras: explicado en video","duration":41},
+  "proporcion-inversa": {"src":"/media/lessons/proporcion-inversa-6cbdd88c0b.mp4","title":"Proporción inversa: explicado en video","duration":45},
 };

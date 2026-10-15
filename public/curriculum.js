@@ -3055,5 +3055,741 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "potencias-10",
+    "since": "2026-10-16",
+    "title": "Potencias de 10",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 05 · Contar los ceros",
+    "concept": "Una potencia de 10 es un 1 seguido de ceros. El número de arriba dice cuántos ceros: 10³ = 1.000 (tres ceros). Sirve para escribir números muy grandes en corto: 4.000 = 4 · 10³. Eso se llama notación científica.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "10⁵ = 100.000 (cinco ceros). 3.000.000 = 3 · 10⁶, porque 1.000.000 tiene seis ceros.",
+    "status": "published",
+    "questions": [
+      [
+        "10³",
+        1000,
+        "Calcula la potencia.",
+        "🔟 El 3 dice cuántos ceros van después del 1.",
+        "10³ = 10 · 10 · 10 = 1.000 (tres ceros).",
+        [
+          [
+            30,
+            "No es 10 · 3. Es 10 · 10 · 10: un 1 con tres ceros, 1.000."
+          ],
+          [
+            13,
+            "No se suma. Es un 1 con tres ceros: 1.000."
+          ]
+        ]
+      ],
+      [
+        "4 · 10³",
+        4000,
+        "Calcula.",
+        "Primero 10³ = 1.000. Después por 4.",
+        "4 · 1.000 = 4.000.",
+        [
+          [
+            120,
+            "10³ no es 30. Es 1.000: 4 · 1.000 = 4.000."
+          ]
+        ]
+      ],
+      [
+        "1.000.000 = 10^?",
+        6,
+        "¿A qué número hay que elevar 10 para obtener un millón?",
+        "Cuenta los ceros de 1.000.000.",
+        "1.000.000 tiene 6 ceros: 10⁶.",
+        [
+          [
+            7,
+            "Contaste también el 1. Solo se cuentan los ceros: 6."
+          ]
+        ]
+      ],
+      [
+        "3.000.000 = 3 · 10^?",
+        6,
+        "Chile tiene unos 3.000.000 de perros con dueño. Escribe el número como 3 · 10^?. ¿Cuál es el exponente?",
+        "3.000.000 es 3 por un millón.",
+        "Un millón es 10⁶, así que 3.000.000 = 3 · 10⁶.",
+        [
+          [
+            3,
+            "El 3 va adelante; el exponente cuenta los ceros: 6."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "10⁴",
+      10000,
+      "Calcula la potencia.",
+      "Un 1 con cuatro ceros.",
+      "10⁴ = 10.000.",
+      [
+        [
+          40,
+          "No es 10 · 4. Es un 1 con cuatro ceros: 10.000."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "inecuaciones",
+    "since": "2026-10-16",
+    "title": "Inecuaciones",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 09 · Más que, menos que",
+    "concept": "Una inecuación usa > (mayor que) o < (menor que) en vez de =. No tiene una sola respuesta: tiene muchas. x + 3 > 7 se cumple para todo x mayor que 4. Se resuelve igual que una ecuación: haz lo mismo en los dos lados.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-09\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "x + 3 > 7: resta 3 en los dos lados, x > 4. Sirven 5, 6, 7… El menor entero que cumple es 5.",
+    "status": "published",
+    "questions": [
+      [
+        "x + 3 > 7",
+        5,
+        "¿Cuál es el menor número entero que cumple la inecuación?",
+        "⚖️ Resta 3 en los dos lados: x > 4.",
+        "x > 4. El 4 no sirve (4 + 3 = 7, no es mayor que 7). El menor entero es 5.",
+        [
+          [
+            4,
+            "4 + 3 = 7, y 7 no es mayor que 7. El menor entero que sirve es 5."
+          ]
+        ]
+      ],
+      [
+        "2x < 10",
+        4,
+        "¿Cuál es el mayor número entero que cumple la inecuación?",
+        "Divide los dos lados por 2: x < 5.",
+        "x < 5. El 5 no sirve (2 · 5 = 10, no es menor que 10). El mayor entero es 4.",
+        [
+          [
+            5,
+            "2 · 5 = 10, y 10 no es menor que 10. El mayor entero que sirve es 4."
+          ]
+        ]
+      ],
+      [
+        "x − 2 ≥ 6",
+        8,
+        "¿Cuál es el menor número entero que cumple la inecuación? (≥ es «mayor o igual»)",
+        "Suma 2 en los dos lados.",
+        "x ≥ 8. Como vale el igual, el 8 sirve.",
+        [
+          [
+            9,
+            "≥ incluye el igual: 8 − 2 = 6 sirve. El menor es 8."
+          ],
+          [
+            4,
+            "Para deshacer «− 2» se suma 2: x ≥ 8."
+          ]
+        ]
+      ],
+      [
+        "500x ≤ 3000",
+        6,
+        "Cada helado cuesta $500 y tienes $3.000. ¿Cuántos helados puedes comprar como máximo?",
+        "Divide los dos lados por 500.",
+        "x ≤ 6. Puedes comprar hasta 6 helados.",
+        [
+          [
+            2500,
+            "Restaste. Divide: 3.000 ÷ 500 = 6."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "x + 5 > 9",
+      5,
+      "¿Cuál es el menor número entero que cumple la inecuación?",
+      "Resta 5 en los dos lados.",
+      "x > 4. El menor entero es 5.",
+      [
+        [
+          4,
+          "4 + 5 = 9, y 9 no es mayor que 9. El menor es 5."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "angulos-poligonos",
+    "since": "2026-10-16",
+    "title": "Ángulos de los polígonos",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 10 · Divide en triángulos",
+    "concept": "Desde una esquina, un polígono se divide en triángulos: un polígono de n lados tiene n − 2 triángulos. Cada triángulo suma 180°, así que los ángulos interiores suman (n − 2) · 180°. Los ángulos exteriores de cualquier polígono suman siempre 360°.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-10\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Pentágono: 5 − 2 = 3 triángulos; 3 · 180 = 540°. Si es regular, cada ángulo mide 540 ÷ 5 = 108°.",
+    "status": "published",
+    "questions": [
+      [
+        "Suma de ángulos de un pentágono",
+        540,
+        "¿Cuánto suman los ángulos interiores de un pentágono (5 lados)?",
+        "🔺 Desde una esquina se forman 5 − 2 = 3 triángulos.",
+        "3 · 180 = 540°.",
+        [
+          [
+            900,
+            "Usaste 5 triángulos. Desde una esquina se forman 5 − 2 = 3: 540°."
+          ],
+          [
+            360,
+            "Eso suman los cuadriláteros. El pentágono tiene 3 triángulos: 540°."
+          ]
+        ]
+      ],
+      [
+        "Suma de ángulos de un hexágono",
+        720,
+        "¿Cuánto suman los ángulos interiores de un hexágono (6 lados)?",
+        "6 − 2 = 4 triángulos.",
+        "4 · 180 = 720°.",
+        [
+          [
+            1080,
+            "Usaste 6 triángulos. Son 6 − 2 = 4: 720°."
+          ]
+        ]
+      ],
+      [
+        "Ángulo de un hexágono regular",
+        120,
+        "Un hexágono regular tiene 6 ángulos iguales. ¿Cuánto mide cada uno?",
+        "Primero la suma (720°), después reparte en 6.",
+        "720 ÷ 6 = 120°.",
+        [
+          [
+            720,
+            "Esa es la suma de los 6. Reparte: 720 ÷ 6 = 120°."
+          ],
+          [
+            60,
+            "Ese es el ángulo exterior (360 ÷ 6). El interior es 720 ÷ 6 = 120°."
+          ]
+        ]
+      ],
+      [
+        "Ángulo exterior de un octágono regular",
+        45,
+        "¿Cuánto mide cada ángulo exterior de un octágono regular (8 lados)?",
+        "Los exteriores de cualquier polígono suman 360°.",
+        "360 ÷ 8 = 45°.",
+        [
+          [
+            135,
+            "Ese es el interior. El exterior es 360 ÷ 8 = 45°."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Suma de ángulos de un octágono",
+      1080,
+      "¿Cuánto suman los ángulos interiores de un octágono (8 lados)?",
+      "8 − 2 = 6 triángulos.",
+      "6 · 180 = 1.080°.",
+      [
+        [
+          1440,
+          "Usaste 8 triángulos. Son 8 − 2 = 6: 1.080°."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "area-trapecio",
+    "since": "2026-10-16",
+    "title": "Área del trapecio",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 13 · Dos trapecios, un paralelogramo",
+    "concept": "Un trapecio tiene dos lados paralelos: la base mayor y la base menor. Si pones dos trapecios iguales, uno al revés, forman un paralelogramo de base (mayor + menor). Por eso el área del trapecio es (base mayor + base menor) · altura ÷ 2.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-13\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Bases 8 y 4, altura 3: (8 + 4) · 3 ÷ 2 = 12 · 3 ÷ 2 = 18.",
+    "status": "published",
+    "questions": [
+      [
+        "Trapecio: bases 8 cm y 4 cm, altura 3 cm",
+        18,
+        "Calcula el área en cm².",
+        "🔁 Suma las bases, multiplica por la altura y divide por 2.",
+        "(8 + 4) · 3 ÷ 2 = 36 ÷ 2 = 18 cm².",
+        [
+          [
+            36,
+            "Falta dividir por 2: dos trapecios forman el paralelogramo. 18."
+          ],
+          [
+            96,
+            "Multiplicaste todo. Primero suma las bases: (8 + 4) · 3 ÷ 2 = 18."
+          ]
+        ]
+      ],
+      [
+        "Trapecio: bases 10 cm y 6 cm, altura 5 cm",
+        40,
+        "Calcula el área en cm².",
+        "Primero 10 + 6.",
+        "(10 + 6) · 5 ÷ 2 = 80 ÷ 2 = 40 cm².",
+        [
+          [
+            80,
+            "Falta dividir por 2: 40."
+          ]
+        ]
+      ],
+      [
+        "Trapecio: bases 7 m y 3 m, altura 4 m",
+        20,
+        "Calcula el área en m².",
+        "(7 + 3) · 4 ÷ 2.",
+        "10 · 4 ÷ 2 = 20 m².",
+        [
+          [
+            40,
+            "Falta dividir por 2: 20."
+          ]
+        ]
+      ],
+      [
+        "Trapecio: bases 12 m y 8 m, altura 6 m",
+        60,
+        "Un jardín tiene forma de trapecio con bases de 12 m y 8 m, y 6 m de altura. ¿Cuántos m² tiene?",
+        "Suma las bases y sigue la fórmula.",
+        "(12 + 8) · 6 ÷ 2 = 120 ÷ 2 = 60 m².",
+        [
+          [
+            120,
+            "Falta dividir por 2: 60 m²."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Trapecio: bases 9 cm y 5 cm, altura 2 cm",
+      14,
+      "Calcula el área en cm².",
+      "(9 + 5) · 2 ÷ 2.",
+      "14 · 2 ÷ 2 = 14 cm².",
+      [
+        [
+          28,
+          "Falta dividir por 2: 14."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "plano-cartesiano",
+    "since": "2026-10-16",
+    "title": "El plano cartesiano",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 14 · Primero caminas, después subes",
+    "concept": "Un punto del plano se escribe (x, y). El primer número dice cuánto caminas a la derecha (o a la izquierda si es negativo). El segundo, cuánto subes (o bajas). Mover un punto con un vector (a, b) es sumar a a la x y b a la y.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-14\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "El punto (3, 2) movido con el vector (4, −1) llega a (3 + 4, 2 − 1) = (7, 1).",
+    "status": "published",
+    "questions": [
+      [
+        "Punto (5, 2): ¿x?",
+        5,
+        "En el punto (5, 2), ¿cuánto se camina a la derecha?",
+        "📍 El primer número es la x: lo que caminas.",
+        "En (5, 2) se caminan 5 a la derecha y se suben 2.",
+        [
+          [
+            2,
+            "Ese es el segundo número: lo que subes. Primero se camina: 5."
+          ]
+        ]
+      ],
+      [
+        "(3, 2) + vector (4, 1): ¿x?",
+        7,
+        "Mueves el punto (3, 2) con el vector (4, 1). ¿Cuál es la nueva coordenada x?",
+        "Suma el primer número del vector a la x.",
+        "3 + 4 = 7. El punto llega a (7, 3).",
+        [
+          [
+            3,
+            "Esa es la nueva y (2 + 1). La x es 3 + 4 = 7."
+          ],
+          [
+            6,
+            "Sumaste 3 + 2 + 1. A la x solo se suma el 4: 7."
+          ]
+        ]
+      ],
+      [
+        "(6, 5) + vector (−2, −3): ¿y?",
+        2,
+        "Mueves el punto (6, 5) con el vector (−2, −3). ¿Cuál es la nueva coordenada y?",
+        "Suma el segundo número del vector a la y: 5 + (−3).",
+        "5 − 3 = 2. El punto llega a (4, 2).",
+        [
+          [
+            8,
+            "−3 es bajar 3: 5 − 3 = 2."
+          ],
+          [
+            4,
+            "Esa es la nueva x (6 − 2). La y es 5 − 3 = 2."
+          ]
+        ]
+      ],
+      [
+        "De (1, 3) a (6, 3)",
+        5,
+        "En un mapa, la casa está en (1, 3) y el colegio en (6, 3). ¿Cuántas cuadras hay de una a otra?",
+        "Están a la misma altura: compara las x.",
+        "6 − 1 = 5 cuadras.",
+        [
+          [
+            7,
+            "Sumaste. La distancia es la diferencia: 6 − 1 = 5."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "(2, 4) + vector (3, 1): ¿x?",
+      5,
+      "Mueves el punto (2, 4) con el vector (3, 1). ¿Cuál es la nueva coordenada x?",
+      "Suma 3 a la x.",
+      "2 + 3 = 5. El punto llega a (5, 5)."
+    ]
+  },
+  {
+    "id": "frecuencias",
+    "since": "2026-10-16",
+    "title": "Tablas de frecuencia",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 16 · Contar y comparar con el total",
+    "concept": "La frecuencia absoluta cuenta cuántas veces aparece algo. La frecuencia relativa lo compara con el total: veces ÷ total. Multiplicada por 100 da el porcentaje.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-16\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "De 20 estudiantes, 5 llegan en bus. Frecuencia relativa: 5 ÷ 20 = 0,25, que es el 25 %.",
+    "status": "published",
+    "questions": [
+      [
+        "Bus: 5 de 20",
+        0.25,
+        "De 20 estudiantes, 5 llegan en bus. ¿Cuál es la frecuencia relativa? Responde como decimal o fracción.",
+        "📋 Divide las veces por el total.",
+        "5 ÷ 20 = 0,25.",
+        [
+          [
+            5,
+            "Esa es la frecuencia absoluta. La relativa es 5 ÷ 20 = 0,25."
+          ],
+          [
+            4,
+            "Dividiste al revés. Es 5 ÷ 20 = 0,25."
+          ]
+        ]
+      ],
+      [
+        "Bus: 5 de 20, en %",
+        25,
+        "¿Qué porcentaje de los estudiantes llega en bus?",
+        "0,25 · 100.",
+        "5 ÷ 20 = 0,25 = 25 %.",
+        [
+          [
+            5,
+            "Ese es el número de estudiantes. El porcentaje es 5 ÷ 20 · 100 = 25."
+          ]
+        ]
+      ],
+      [
+        "Frecuencias 4, 7, 9: total",
+        20,
+        "En una tabla, las frecuencias son 4 (a pie), 7 (auto) y 9 (bus). ¿Cuántos estudiantes hay en total?",
+        "Suma todas las frecuencias.",
+        "4 + 7 + 9 = 20.",
+        [
+          [
+            9,
+            "Esa es la mayor. El total es la suma: 20."
+          ]
+        ]
+      ],
+      [
+        "Auto: 12 de 40, en %",
+        30,
+        "De 40 personas, 12 viajan en auto. ¿Qué porcentaje es?",
+        "12 ÷ 40 y después · 100.",
+        "12 ÷ 40 = 0,3 = 30 %.",
+        [
+          [
+            12,
+            "Ese es el número de personas. El porcentaje es 12 ÷ 40 · 100 = 30."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Pie: 3 de 10",
+      0.3,
+      "De 10 estudiantes, 3 llegan a pie. ¿Cuál es la frecuencia relativa?",
+      "Divide 3 por 10.",
+      "3 ÷ 10 = 0,3.",
+      [
+        [
+          3,
+          "Esa es la frecuencia absoluta. La relativa es 3 ÷ 10 = 0,3."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "probabilidad-teorica",
+    "since": "2026-10-16",
+    "title": "Probabilidad teórica",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 19 · Casos favorables ÷ casos posibles",
+    "concept": "Si todos los resultados tienen la misma oportunidad, la probabilidad es: casos favorables ÷ casos posibles. En un dado hay 6 caras. Sacar un 3 tiene 1 caso favorable: 1/6. Sacar un número par tiene 3 casos (2, 4, 6): 3/6 = 1/2.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-19\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Una bolsa tiene 3 rojas y 2 azules. La probabilidad de sacar roja es 3/5.",
+    "status": "published",
+    "questions": [
+      [
+        "Dado: sacar 4",
+        0.16666666666666666,
+        "Lanzas un dado. ¿Cuál es la probabilidad de sacar un 4? Responde como fracción.",
+        "🎲 Casos favorables: 1. Casos posibles: 6.",
+        "1 caso favorable de 6: 1/6.",
+        [
+          [
+            4,
+            "La probabilidad es una fracción: casos favorables ÷ posibles = 1/6."
+          ],
+          [
+            0.25,
+            "El dado tiene 6 caras, no 4: 1/6."
+          ]
+        ]
+      ],
+      [
+        "Dado: sacar par",
+        0.5,
+        "Lanzas un dado. ¿Cuál es la probabilidad de sacar un número par?",
+        "Pares: 2, 4 y 6.",
+        "3 casos de 6: 3/6 = 1/2.",
+        [
+          [
+            3,
+            "Esos son los casos favorables. Divide por 6: 1/2."
+          ]
+        ]
+      ],
+      [
+        "Bolsa: 3 rojas y 2 azules",
+        0.6,
+        "Una bolsa tiene 3 bolitas rojas y 2 azules. ¿Cuál es la probabilidad de sacar una roja?",
+        "Casos posibles: todas las bolitas.",
+        "3 rojas de 5 bolitas: 3/5.",
+        [
+          [
+            1.5,
+            "Dividiste rojas por azules. Se divide por el total: 3/5."
+          ]
+        ]
+      ],
+      [
+        "Moneda: sacar cara",
+        0.5,
+        "Lanzas una moneda. ¿Cuál es la probabilidad de que salga cara?",
+        "Una moneda tiene 2 caras.",
+        "1 caso de 2: 1/2.",
+        [
+          [
+            1,
+            "La probabilidad de 1 es «seguro». Hay 2 resultados: 1/2."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Bolsa: 1 verde y 3 amarillas",
+      0.25,
+      "Una bolsa tiene 1 bolita verde y 3 amarillas. ¿Cuál es la probabilidad de sacar la verde?",
+      "Casos posibles: 4 bolitas.",
+      "1 de 4: 1/4.",
+      [
+        [
+          0.3333333333333333,
+          "Dividiste verde por amarillas. Se divide por el total: 1/4."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "muestreo",
+    "since": "2026-10-16",
+    "title": "Muestras",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 15 · Probar una cucharada de la olla",
+    "concept": "Para saber cómo es un grupo grande, se estudia una parte: una muestra. Es como probar una cucharada para saber cómo está la sopa. Si en la muestra 1 de cada 5 usa lentes, en el grupo grande también será cerca de 1 de cada 5.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-15\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "En una muestra de 50 estudiantes, 10 usan lentes (10 de 50 = 20 %). En un colegio de 600, se estiman 600 · 0,2 = 120.",
+    "status": "published",
+    "questions": [
+      [
+        "Muestra: 10 de 50; colegio de 600",
+        120,
+        "En una muestra de 50 estudiantes, 10 usan lentes. Si el colegio tiene 600 estudiantes, ¿cuántos usarían lentes aproximadamente?",
+        "🥄 10 de 50 es 1 de cada 5. ¿Cuánto es 1 de cada 5 de 600?",
+        "10 ÷ 50 = 1/5; 600 ÷ 5 = 120.",
+        [
+          [
+            560,
+            "Sumaste o restaste. Usa la proporción: 1 de cada 5, así que 600 ÷ 5 = 120."
+          ]
+        ]
+      ],
+      [
+        "Muestra: 30 de 100",
+        30,
+        "En una muestra de 100 personas, 30 prefieren el té. ¿Qué porcentaje prefiere té?",
+        "De 100, el número ya es el porcentaje.",
+        "30 de 100 = 30 %.",
+        [
+          [
+            0.3,
+            "Eso es la fracción; en porcentaje es 30."
+          ]
+        ]
+      ],
+      [
+        "Muestra: 30 % de 2000",
+        600,
+        "Si el 30 % de una muestra prefiere té, ¿cuántos de 2.000 personas lo preferirían aproximadamente?",
+        "30 % es 30 de cada 100.",
+        "2.000 · 0,3 = 600.",
+        [
+          [
+            60,
+            "Eso sería el 3 %. El 30 % de 2.000 es 2.000 · 0,3 = 600."
+          ]
+        ]
+      ],
+      [
+        "Muestra: 4 de 20; curso de 40",
+        8,
+        "En una muestra de 20 estudiantes, 4 llegan en bicicleta. ¿Cuántos de 40 estudiantes llegarían en bicicleta aproximadamente?",
+        "40 es el doble de 20.",
+        "El doble de 4: 8.",
+        [
+          [
+            24,
+            "Sumaste 20. 40 es el doble de 20, así que el doble de 4: 8."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Muestra: 5 de 25; colegio de 500",
+      100,
+      "En una muestra de 25 estudiantes, 5 practican fútbol. ¿Cuántos de 500 lo practicarían aproximadamente?",
+      "5 de 25 es 1 de cada 5.",
+      "500 ÷ 5 = 100.",
+      [
+        [
+          480,
+          "Usa la proporción: 1 de cada 5, 500 ÷ 5 = 100."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "proporcion-inversa",
+    "since": "2026-10-16",
+    "title": "Proporción inversa",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 08 · Más personas, menos tiempo",
+    "concept": "En una proporción inversa, cuando una cantidad aumenta, la otra disminuye. Si 2 pintores tardan 6 días, 4 pintores tardan la mitad: 3 días. El producto se mantiene: 2 · 6 = 4 · 3 = 12.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-08\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "3 amigos se reparten una pizza de 12 trozos: 4 cada uno. Si son 6 amigos, 2 cada uno (3 · 4 = 6 · 2 = 12).",
+    "status": "published",
+    "questions": [
+      [
+        "2 pintores, 6 días; 4 pintores",
+        3,
+        "2 pintores tardan 6 días en pintar una casa. ¿Cuántos días tardan 4 pintores?",
+        "🔄 El doble de pintores tarda la mitad.",
+        "2 · 6 = 12; 12 ÷ 4 = 3 días.",
+        [
+          [
+            12,
+            "Con más pintores se tarda menos, no más. 2 · 6 = 12; 12 ÷ 4 = 3 días."
+          ],
+          [
+            8,
+            "Sumaste 2. En la proporción inversa, el producto se mantiene: 12 ÷ 4 = 3."
+          ]
+        ]
+      ],
+      [
+        "3 amigos, 4 trozos; 6 amigos",
+        2,
+        "3 amigos se reparten una pizza y cada uno recibe 4 trozos. Si fueran 6 amigos, ¿cuántos trozos recibiría cada uno?",
+        "El total de trozos es 3 · 4.",
+        "3 · 4 = 12 trozos; 12 ÷ 6 = 2.",
+        [
+          [
+            8,
+            "Con más amigos, cada uno recibe menos: 12 ÷ 6 = 2."
+          ]
+        ]
+      ],
+      [
+        "60 km/h, 4 horas; 80 km/h",
+        3,
+        "Un bus a 60 km/h tarda 4 horas. ¿Cuántas horas tarda a 80 km/h?",
+        "La distancia es 60 · 4.",
+        "60 · 4 = 240 km; 240 ÷ 80 = 3 horas.",
+        [
+          [
+            5.333333333333333,
+            "A más velocidad se tarda menos: 240 ÷ 80 = 3."
+          ]
+        ]
+      ],
+      [
+        "4 llaves, 9 horas; 6 llaves",
+        6,
+        "4 llaves llenan un estanque en 9 horas. ¿Cuántas horas tardan 6 llaves?",
+        "4 · 9 = 36.",
+        "36 ÷ 6 = 6 horas.",
+        [
+          [
+            13.5,
+            "Con más llaves se tarda menos: 36 ÷ 6 = 6."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "3 pintores, 8 días; 6 pintores",
+      4,
+      "3 pintores tardan 8 días. ¿Cuántos días tardan 6 pintores?",
+      "El doble de pintores tarda la mitad.",
+      "3 · 8 = 24; 24 ÷ 6 = 4 días.",
+      [
+        [
+          16,
+          "Con más pintores se tarda menos: 24 ÷ 6 = 4."
+        ]
+      ]
+    ]
   }
 ];

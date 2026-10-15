@@ -27,6 +27,11 @@ function baseAnswer(expr, id) {
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
+  if (LOTE4.includes(id)) {
+    const answer = lote4Answer(expr, id);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
   if ((m = expr.match(/^¿Cuánto vale el (\d) en (\d+)\?$/))) return m[1] * 10 ** [...m[2]].reverse().indexOf(m[1]);
   if ((m = expr.match(/^¿En cuántas partes se corta la pizza en \d+\/(\d+)\?$/))) return Number(m[1]);
   if ((m = expr.match(/^(\d+)\/(\d+) de (\d+)$/))) return (m[1] / m[2]) * m[3];
@@ -137,6 +142,64 @@ function lote3Answer(expr, id) {
   return null;
 }
 
+// Lote 4 (7° Básico).
+const LOTE4 = ["potencias-10", "inecuaciones", "angulos-poligonos", "area-trapecio", "plano-cartesiano", "frecuencias", "probabilidad-teorica", "muestreo", "proporcion-inversa"];
+function lote4Answer(expr, id) {
+  let m;
+  const n = (v) => Number(v.replace(/\./g, "").replace(",", "."));
+  const supNum = (v) => Number(v.replace("⁻", "-").replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)));
+  if (id === "potencias-10") {
+    if ((m = expr.match(/^(?:(\d+) · )?10([⁰¹²³⁴⁵⁶⁷⁸⁹]+)$/))) return (m[1] ? Number(m[1]) : 1) * 10 ** supNum(m[2]);
+    if ((m = expr.match(/^([\d.]+) = (?:(\d+) · )?10\^\?$/))) return Math.round(Math.log10(n(m[1]) / (m[2] ? Number(m[2]) : 1)));
+  }
+  if (id === "inecuaciones") {
+    // Prueba enteros: el menor que cumple (> y ≥) o el mayor (<, ≤).
+    const [left, op, right] = expr.split(/ ([<>]=?|≥|≤) /);
+    const ok = (x) => {
+      const v = evaluate(left, x);
+      return { ">": v > right, "≥": v >= right, "<": v < right, "≤": v <= right }[op];
+    };
+    const range = Array.from({ length: 4001 }, (_, i) => i - 2000);
+    return op === ">" || op === "≥" ? range.find(ok) : range.findLast(ok);
+  }
+  if (id === "angulos-poligonos") {
+    const sides = { pentágono: 5, hexágono: 6, octágono: 8, decágono: 10, dodecágono: 12 };
+    const k = sides[expr.match(/(\S+?)(?: regular)?$/)[1]];
+    if (expr.startsWith("Suma")) return (k - 2) * 180;
+    if (expr.startsWith("Ángulo exterior")) return 360 / k;
+    return ((k - 2) * 180) / k;
+  }
+  if (id === "area-trapecio" && (m = expr.match(/^Trapecio: bases (\d+) c?m y (\d+) c?m, altura (\d+) c?m$/))) return ((+m[1] + +m[2]) * m[3]) / 2;
+  if (id === "plano-cartesiano") {
+    const val = (v) => Number(v.replace("−", "-"));
+    if ((m = expr.match(/^Punto \((\d+), (\d+)\): ¿(x|y)\?$/))) return m[3] === "x" ? +m[1] : +m[2];
+    if ((m = expr.match(/^\((\d+), (\d+)\) \+ vector \((−?\d+), (−?\d+)\): ¿(x|y)\?$/))) return m[5] === "x" ? +m[1] + val(m[3]) : +m[2] + val(m[4]);
+    if ((m = expr.match(/^De \((\d+), (\d+)\) a \((\d+), \2\)$/))) return m[3] - m[1];
+  }
+  if (id === "frecuencias") {
+    if ((m = expr.match(/^\D+: (\d+) de (\d+), en %$/))) return (m[1] * 100) / m[2];
+    if ((m = expr.match(/^\D+: (\d+) de (\d+)$/))) return m[1] / m[2];
+    if ((m = expr.match(/^Frecuencias (\d+), (\d+), (\d+): total$/))) return +m[1] + +m[2] + +m[3];
+  }
+  if (id === "probabilidad-teorica") {
+    const faces = [1, 2, 3, 4, 5, 6];
+    const events = { "un número par": (f) => f % 2 === 0, "un número impar": (f) => f % 2, "un número mayor que 4": (f) => f > 4,
+      "un número menor que 3": (f) => f < 3, "un múltiplo de 3": (f) => f % 3 === 0 };
+    if ((m = expr.match(/^Dado: sacar (\d)$/))) return 1 / 6;
+    if ((m = expr.match(/^Dado: sacar par$/))) return 0.5;
+    if ((m = expr.match(/^Dado: sacar (.+)$/))) return faces.filter(events[m[1]]).length / 6;
+    if ((m = expr.match(/^Bolsa: (\d+) \D+ y (\d+) \D+$/))) return m[1] / (+m[1] + +m[2]);
+    if (expr === "Moneda: sacar cara") return 0.5;
+  }
+  if (id === "muestreo") {
+    if ((m = expr.match(/^Muestra: (\d+) de (\d+); \D+ de (\d+)$/))) return (m[1] / m[2]) * m[3];
+    if ((m = expr.match(/^Muestra: (\d+) de 100$/))) return +m[1];
+    if ((m = expr.match(/^Muestra: (\d+) % de (\d+)$/))) return (m[1] * m[2]) / 100;
+  }
+  if (id === "proporcion-inversa" && (m = expr.match(/^(\d+) [^,]+, (\d+) [^;]+; (\d+) \D+$/))) return (m[1] * m[2]) / m[3];
+  return null;
+}
+
 // Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
 function solveSystem(expr) {
   const letters = [...new Set(expr.match(/[a-z]/g))];
@@ -196,7 +259,7 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-") || id === "potencias-negativas") assert.ok(q[1] > 0 && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias"].includes(id)) assert.ok(q[1] > 0 && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
         else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);
