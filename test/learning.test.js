@@ -267,3 +267,11 @@ test("answers written the Chilean way are accepted", async () => {
   assert.ok(!isCorrect("2.90", 2900));
   assert.ok(!isCorrect("29.00", 2900));
 });
+
+test("answers may end with degrees or units", () => {
+  assert.ok(isCorrect("40°", 40));
+  assert.ok(isCorrect("54 cm²", 54));
+  assert.ok(isCorrect("62,8 cm3", 62.8));
+  assert.ok(isCorrect("4,5 litros", 4.5));
+  assert.ok(!isCorrect("40°", 4));
+});

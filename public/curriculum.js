@@ -2371,5 +2371,689 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "razones",
+    "since": "2026-10-16",
+    "title": "Razones",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 03 · Por cada 2, hay 3",
+    "concept": "Una razón compara dos cantidades: «por cada 2 rojas hay 3 azules» se escribe 2 : 3. Si una cantidad se duplica, la otra también. Las razones se multiplican, no se suman.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-03\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Por cada 2 rojas hay 3 azules. Con 4 rojas (el doble), hay 6 azules (el doble).",
+    "status": "published",
+    "questions": [
+      [
+        "Razón 2 : 3 con 4 rojas",
+        6,
+        "Por cada 2 bolitas rojas hay 3 azules. Si hay 4 rojas, ¿cuántas azules hay?",
+        "⚖️ 4 rojas es el doble de 2. Las azules también se duplican.",
+        "4 es 2 · 2, así que las azules son 3 · 2 = 6.",
+        [
+          [
+            5,
+            "Sumaste 2 a cada lado. Las razones se multiplican: 4 es el doble de 2, y el doble de 3 es 6."
+          ]
+        ]
+      ],
+      [
+        "Razón 3 : 1 con 12 tazas",
+        4,
+        "Una receta usa 3 tazas de harina por cada 1 de leche. Con 12 tazas de harina, ¿cuántas de leche?",
+        "¿Cuántas veces cabe 3 en 12?",
+        "12 = 3 · 4, así que la leche es 1 · 4 = 4 tazas.",
+        [
+          [
+            10,
+            "Restaste 2. Las razones se multiplican: 12 es 3 · 4, y la leche es 1 · 4 = 4."
+          ]
+        ]
+      ],
+      [
+        "12 : 8 = 3 : ?",
+        2,
+        "En un curso hay 12 niñas y 8 niños. Simplifica la razón 12 : 8 a 3 : ?",
+        "Divide los dos números por el mismo número.",
+        "12 ÷ 4 = 3 y 8 ÷ 4 = 2. La razón es 3 : 2.",
+        [
+          [
+            -1,
+            "Restaste 9 a cada lado. Se divide: 12 ÷ 4 = 3 y 8 ÷ 4 = 2."
+          ]
+        ]
+      ],
+      [
+        "2 jugos cuestan $1.500; ¿6 jugos?",
+        4500,
+        "Por cada 2 jugos pagas $1.500. ¿Cuánto pagas por 6 jugos?",
+        "6 jugos son 3 veces 2 jugos.",
+        "6 = 2 · 3, así que pagas 1.500 · 3 = $4.500.",
+        [
+          [
+            1504,
+            "Sumaste 4. Se multiplica: 6 jugos son 3 veces 2, así que 1.500 · 3 = 4.500."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Razón 1 : 4 con 3 vasos",
+      12,
+      "Un jugo se prepara con 1 vaso de concentrado por cada 4 de agua. Con 3 vasos de concentrado, ¿cuántos de agua?",
+      "3 es el triple de 1.",
+      "1 · 3 = 3, así que el agua es 4 · 3 = 12 vasos.",
+      [
+        [
+          6,
+          "Sumaste 2. Se multiplica: el triple de 4 es 12."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "fracciones-mixtos",
+    "since": "2026-10-16",
+    "title": "Fracciones impropias y números mixtos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 05 · Enteros y pedacitos",
+    "concept": "Una fracción impropia tiene arriba un número mayor que abajo: 7/4 es más que un entero. Para verla como número mixto, arma enteros: 4 cuartos forman 1 entero, y sobran 3 cuartos. 7/4 = 1 entero y 3/4.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "7/4: con 4 cuartos armas 1 entero y sobran 3. 7/4 = 1 3/4. Al revés: 2 1/3 son 2 · 3 + 1 = 7 tercios.",
+    "status": "published",
+    "questions": [
+      [
+        "¿Cuántos enteros completos hay en 7/4?",
+        1,
+        "Responde cuántos enteros completos se arman.",
+        "🍕 Con 4 cuartos se arma 1 entero.",
+        "7 ÷ 4 = 1 y sobran 3: hay 1 entero y 3/4.",
+        [
+          [
+            3,
+            "Ese es lo que sobra. Con 4 cuartos armas 1 entero; los 3 cuartos que sobran no alcanzan para otro."
+          ]
+        ]
+      ],
+      [
+        "7/4 = 1 entero y ¿cuántos cuartos?",
+        3,
+        "Responde cuántos cuartos sobran.",
+        "Saca los 4 cuartos del entero. ¿Cuántos quedan?",
+        "7 − 4 = 3: 7/4 = 1 3/4.",
+        [
+          [
+            7,
+            "Ese es el total. Quita los 4 cuartos que forman el entero: quedan 3."
+          ]
+        ]
+      ],
+      [
+        "2 1/3 = ?/3",
+        7,
+        "Escribe 2 1/3 como fracción impropia. ¿Cuántos tercios son?",
+        "Cada entero tiene 3 tercios.",
+        "2 enteros = 6 tercios; 6 + 1 = 7 tercios: 7/3.",
+        [
+          [
+            3,
+            "Sumaste 2 + 1. Cada entero tiene 3 tercios: 2 · 3 + 1 = 7."
+          ],
+          [
+            6,
+            "Te faltó sumar el tercio que sobra: 6 + 1 = 7."
+          ]
+        ]
+      ],
+      [
+        "9 mitades de naranja",
+        4.5,
+        "Tienes 9 mitades de naranja. ¿Cuántas naranjas son? Puedes responder 4 1/2 como 4,5 o 9/2.",
+        "Con 2 mitades se arma 1 naranja.",
+        "9 ÷ 2 = 4 y sobra 1 mitad: 4 naranjas y media (4,5).",
+        [
+          [
+            4,
+            "Te faltó la mitad que sobra: son 4 naranjas y media (4,5)."
+          ],
+          [
+            9,
+            "Esas son las mitades. Con 2 mitades se arma una naranja: 4,5 naranjas."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "11/4 = 2 enteros y ¿cuántos cuartos?",
+      3,
+      "Responde cuántos cuartos sobran.",
+      "Dos enteros son 8 cuartos.",
+      "11 − 8 = 3: 11/4 = 2 3/4.",
+      [
+        [
+          11,
+          "Ese es el total. Quita los 8 cuartos de los 2 enteros: quedan 3."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "decimales-mult",
+    "since": "2026-10-16",
+    "title": "Multiplicar y dividir decimales",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 07 · Como con dinero",
+    "concept": "Para multiplicar un decimal, multiplica como si no tuviera coma y después pon la coma: 0,4 · 3 → 4 · 3 = 12 → 1,2. Por 10, la coma se corre un lugar a la derecha: 2,5 · 10 = 25. Para dividir por un número, reparte: 4,8 ÷ 4 = 1,2.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-07\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "1,5 · 3: 15 · 3 = 45, y con un decimal: 4,5. Tres botellas de 1,5 litros son 4,5 litros.",
+    "status": "published",
+    "questions": [
+      [
+        "0,4 · 3",
+        1.2,
+        "Multiplica.",
+        "🪙 Piensa en 4 décimas, 3 veces: 12 décimas.",
+        "4 · 3 = 12; con un decimal: 1,2.",
+        [
+          [
+            12,
+            "Falta la coma: 0,4 tiene un decimal, así que 12 → 1,2."
+          ],
+          [
+            0.12,
+            "Pusiste dos decimales. 0,4 tiene solo uno: 1,2."
+          ]
+        ]
+      ],
+      [
+        "2,5 · 10",
+        25,
+        "Multiplica.",
+        "Por 10, la coma se corre un lugar a la derecha.",
+        "2,5 · 10 = 25.",
+        [
+          [
+            2.5,
+            "Por 10 el número crece: la coma se corre a la derecha. 25."
+          ],
+          [
+            250,
+            "La coma se corre un solo lugar: 25."
+          ]
+        ]
+      ],
+      [
+        "4,8 ÷ 4",
+        1.2,
+        "Divide.",
+        "Reparte 4 enteros y 8 décimas en 4 partes.",
+        "4 ÷ 4 = 1 y 8 décimas ÷ 4 = 2 décimas: 1,2.",
+        [
+          [
+            12,
+            "Falta la coma: 4,8 ÷ 4 = 1,2."
+          ]
+        ]
+      ],
+      [
+        "3 · 1,5",
+        4.5,
+        "Compras 3 botellas de 1,5 litros. ¿Cuántos litros son en total?",
+        "Multiplica 15 · 3 y pon la coma.",
+        "15 · 3 = 45; con un decimal: 4,5 litros.",
+        [
+          [
+            45,
+            "Falta la coma: 1,5 tiene un decimal, así que 4,5."
+          ],
+          [
+            4.15,
+            "Multiplica todo el número: 1,5 · 3 = 4,5."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "0,6 · 4",
+      2.4,
+      "Multiplica.",
+      "6 · 4 = 24, con un decimal.",
+      "6 · 4 = 24; con un decimal: 2,4.",
+      [
+        [
+          24,
+          "Falta la coma: 2,4."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "patrones",
+    "since": "2026-10-16",
+    "title": "Patrones y tablas",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 09 · Descubre la regla",
+    "concept": "Un patrón sigue una regla. Mira cuánto cambia de un número al siguiente: en 3, 7, 11, 15 siempre se suma 4. En una tabla, busca qué le pasa a la entrada para llegar a la salida.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-09\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "1 mesa tiene 4 sillas, 2 mesas tienen 6, 3 mesas tienen 8: cada mesa suma 2 sillas.",
+    "status": "published",
+    "questions": [
+      [
+        "3, 7, 11, 15, ?",
+        19,
+        "¿Qué número sigue?",
+        "🔎 ¿Cuánto aumenta cada vez?",
+        "Cada vez se suma 4: 15 + 4 = 19.",
+        [
+          [
+            17,
+            "Sumaste 2. Mira el salto: de 3 a 7 hay 4. 15 + 4 = 19."
+          ]
+        ]
+      ],
+      [
+        "Regla: · 2 + 1 con entrada 6",
+        13,
+        "La regla es «multiplica por 2 y suma 1». Si la entrada es 6, ¿cuál es la salida?",
+        "Primero 6 · 2, después suma 1.",
+        "6 · 2 = 12; 12 + 1 = 13.",
+        [
+          [
+            12,
+            "Te faltó sumar 1: 13."
+          ],
+          [
+            14,
+            "Primero se multiplica y después se suma 1: 6 · 2 + 1 = 13."
+          ]
+        ]
+      ],
+      [
+        "Tabla 1 → 4, 2 → 7, 3 → 10; ¿10 → ?",
+        31,
+        "La tabla tiene entrada y salida: 1 → 4, 2 → 7, 3 → 10. ¿Qué salida tiene la entrada 10?",
+        "La salida sube 3 cada vez: es 3 · entrada + 1.",
+        "3 · 10 + 1 = 31.",
+        [
+          [
+            13,
+            "Sumaste 3 una sola vez. La regla es 3 · entrada + 1: 3 · 10 + 1 = 31."
+          ],
+          [
+            40,
+            "La regla es 3 · entrada + 1, no 4 · entrada: 31."
+          ]
+        ]
+      ],
+      [
+        "Mesas: 1 → 4, 2 → 6, 3 → 8; ¿5 → ?",
+        12,
+        "1 mesa tiene 4 sillas, 2 mesas juntas 6, 3 mesas 8. ¿Cuántas sillas tienen 5 mesas juntas?",
+        "Cada mesa nueva suma 2 sillas.",
+        "4 → 6 → 8 → 10 → 12: 5 mesas tienen 12 sillas.",
+        [
+          [
+            20,
+            "No son 4 sillas por mesa: al juntarlas, cada mesa nueva suma solo 2. 12 sillas."
+          ],
+          [
+            10,
+            "Esa es la cuarta mesa. Una más: 12."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "5, 10, 15, 20, ?",
+      25,
+      "¿Qué número sigue?",
+      "¿Cuánto aumenta cada vez?",
+      "Cada vez se suma 5: 20 + 5 = 25.",
+      [
+        [
+          21,
+          "El salto es 5, no 1: 25."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "expresiones",
+    "since": "2026-10-16",
+    "title": "Expresiones con letras",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 10 · La letra guarda un número",
+    "concept": "Una letra guarda un número que puede cambiar. «3n + 2» dice: multiplica el número por 3 y súmale 2. Si n = 4, entonces 3 · 4 + 2 = 14. «El doble de un número» se escribe 2n.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-10\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Si n = 5: 2n + 1 = 2 · 5 + 1 = 11. «Un número más 7 es 15»: n + 7 = 15, así que n = 8.",
+    "status": "published",
+    "questions": [
+      [
+        "Si n = 4: 3n + 2",
+        14,
+        "Reemplaza n por 4 y calcula.",
+        "🔤 3n es 3 · n: 3 · 4.",
+        "3 · 4 + 2 = 12 + 2 = 14.",
+        [
+          [
+            36,
+            "3n no es «3 y 4 pegados» (34) ni 34 + 2. Es 3 · 4 = 12; 12 + 2 = 14."
+          ],
+          [
+            9,
+            "3n es 3 por n, no 3 más n: 3 · 4 + 2 = 14."
+          ]
+        ]
+      ],
+      [
+        "Si n = 8: n + 5",
+        13,
+        "Juan tiene n láminas y Ana tiene n + 5. Si Juan tiene 8, ¿cuántas tiene Ana?",
+        "Reemplaza n por 8.",
+        "8 + 5 = 13 láminas.",
+        [
+          [
+            40,
+            "n + 5 es sumar, no multiplicar: 13."
+          ]
+        ]
+      ],
+      [
+        "n + 7 = 15",
+        8,
+        "Un número más 7 es 15. ¿Cuál es el número?",
+        "⚖️ ¿Qué número sumado con 7 da 15? Quita 7 de los dos lados.",
+        "15 − 7 = 8. Comprobación: 8 + 7 = 15.",
+        [
+          [
+            22,
+            "Sumaste 7. Para deshacer «+ 7», resta 7: 15 − 7 = 8."
+          ]
+        ]
+      ],
+      [
+        "2n + 5 = 17",
+        6,
+        "El doble de un número, más 5, es 17. ¿Cuál es el número?",
+        "Primero quita 5; después divide por 2.",
+        "17 − 5 = 12; 12 ÷ 2 = 6. Comprobación: 2 · 6 + 5 = 17.",
+        [
+          [
+            12,
+            "Ese es el doble. Divide por 2: 6."
+          ],
+          [
+            11,
+            "Primero quita el 5 (12) y después divide por 2: 6."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Si n = 5: 2n + 1",
+      11,
+      "Reemplaza n por 5 y calcula.",
+      "2n es 2 · n.",
+      "2 · 5 + 1 = 11.",
+      [
+        [
+          26,
+          "2n no es 25. Es 2 · 5 = 10; 10 + 1 = 11."
+        ],
+        [
+          8,
+          "2n es 2 por n, no 2 más n: 11."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "angulos",
+    "since": "2026-10-16",
+    "title": "Ángulos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 17 · Medio giro y la suma 180°",
+    "concept": "Una recta es medio giro: mide 180°. Dos ángulos juntos en una recta suman 180°. Cuando dos rectas se cruzan, los ángulos opuestos son iguales. Los tres ángulos de un triángulo suman 180°, y los cuatro de un cuadrilátero, 360°.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-17\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Triángulo con ángulos de 50° y 60°: 50 + 60 = 110, y 180 − 110 = 70°.",
+    "status": "published",
+    "questions": [
+      [
+        "Opuesto a 40°",
+        40,
+        "Dos rectas se cruzan. Un ángulo mide 40°. ¿Cuánto mide el ángulo opuesto por el vértice?",
+        "📐 Los ángulos opuestos son iguales.",
+        "Opuestos por el vértice: los dos miden 40°.",
+        [
+          [
+            140,
+            "Ese es el ángulo de al lado (suman 180°). El opuesto es igual: 40°."
+          ]
+        ]
+      ],
+      [
+        "110° + ? = 180°",
+        70,
+        "Dos ángulos juntos forman una recta. Uno mide 110°. ¿Cuánto mide el otro?",
+        "Una recta mide 180°.",
+        "180 − 110 = 70°.",
+        [
+          [
+            250,
+            "Sumaste. Juntos suman 180°: 180 − 110 = 70."
+          ]
+        ]
+      ],
+      [
+        "Triángulo: 50°, 60° y ?",
+        70,
+        "Un triángulo tiene ángulos de 50° y 60°. ¿Cuánto mide el tercero?",
+        "Los tres ángulos suman 180°.",
+        "50 + 60 = 110; 180 − 110 = 70°.",
+        [
+          [
+            250,
+            "Usaste 360°, que es para cuadriláteros. En un triángulo suman 180°: 70°."
+          ],
+          [
+            110,
+            "Esa es la suma de los dos. Resta de 180: 70°."
+          ]
+        ]
+      ],
+      [
+        "Cuadrilátero: 90°, 90°, 100° y ?",
+        80,
+        "Un cuadrilátero tiene ángulos de 90°, 90° y 100°. ¿Cuánto mide el cuarto?",
+        "Los cuatro ángulos suman 360°.",
+        "90 + 90 + 100 = 280; 360 − 280 = 80°.",
+        [
+          [
+            -100,
+            "Usaste 180°, pero los cuadriláteros suman 360°: 80°."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Triángulo: 90°, 35° y ?",
+      55,
+      "Un triángulo tiene un ángulo recto (90°) y otro de 35°. ¿Cuánto mide el tercero?",
+      "Los tres suman 180°.",
+      "90 + 35 = 125; 180 − 125 = 55°.",
+      [
+        [
+          235,
+          "Usaste 360°. En un triángulo suman 180°: 55°."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "area-superficie",
+    "since": "2026-10-16",
+    "title": "Área de la superficie de cajas",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 18 · Cuánto papel para envolver",
+    "concept": "El área de la superficie es cuánto papel necesitas para envolver una caja. Una caja tiene 6 caras, en pares iguales: adelante y atrás, arriba y abajo, izquierda y derecha. Calcula cada cara y suma las 6. Un cubo tiene 6 caras iguales.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-18\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Cubo de arista 3 cm: cada cara mide 3 · 3 = 9 cm², y 6 caras son 6 · 9 = 54 cm².",
+    "status": "published",
+    "questions": [
+      [
+        "Cubo de arista 3 cm",
+        54,
+        "Calcula el área de la superficie en cm².",
+        "📦 6 caras iguales, cada una de 3 · 3.",
+        "3 · 3 = 9 cm²; 6 · 9 = 54 cm².",
+        [
+          [
+            27,
+            "Ese es el volumen (3 · 3 · 3). Para envolver, suma las 6 caras: 54."
+          ],
+          [
+            9,
+            "Esa es una sola cara. Son 6: 54."
+          ]
+        ]
+      ],
+      [
+        "Caja de 4 cm, 3 cm y 2 cm",
+        52,
+        "Calcula el área de la superficie en cm².",
+        "Tres pares de caras: 4 · 3, 4 · 2 y 3 · 2. Cada una va dos veces.",
+        "4 · 3 = 12, 4 · 2 = 8, 3 · 2 = 6; 12 + 8 + 6 = 26; 26 · 2 = 52 cm².",
+        [
+          [
+            24,
+            "Ese es el volumen. Para envolver, suma las 6 caras: 52."
+          ],
+          [
+            26,
+            "Contaste 3 caras. Cada una tiene su pareja: 26 · 2 = 52."
+          ]
+        ]
+      ],
+      [
+        "Cubo de arista 5 cm",
+        150,
+        "Calcula el área de la superficie en cm².",
+        "Una cara: 5 · 5. Son 6 caras.",
+        "5 · 5 = 25; 6 · 25 = 150 cm².",
+        [
+          [
+            125,
+            "Ese es el volumen. Suma las 6 caras: 150."
+          ]
+        ]
+      ],
+      [
+        "Caja de 10 cm, 5 cm y 4 cm",
+        220,
+        "Quieres envolver un regalo en una caja de 10 cm, 5 cm y 4 cm. ¿Cuántos cm² de papel necesitas como mínimo?",
+        "Caras: 10 · 5, 10 · 4 y 5 · 4, cada una dos veces.",
+        "50 + 40 + 20 = 110; 110 · 2 = 220 cm².",
+        [
+          [
+            200,
+            "Ese es el volumen. Para envolver, suma las 6 caras: 220."
+          ],
+          [
+            110,
+            "Contaste 3 caras. Cada una tiene su pareja: 220."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Cubo de arista 2 cm",
+      24,
+      "Calcula el área de la superficie en cm².",
+      "6 caras de 2 · 2.",
+      "2 · 2 = 4; 6 · 4 = 24 cm².",
+      [
+        [
+          8,
+          "Ese es el volumen. Suma las 6 caras: 24."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "graficos",
+    "since": "2026-10-16",
+    "title": "Leer gráficos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 24 · Barras y círculos",
+    "concept": "Un gráfico de barras compara cantidades: la barra más alta es la mayor. En un gráfico circular, el círculo completo es el total, y cada parte es una fracción: la mitad del círculo es la mitad del total.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-24\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Si 40 estudiantes votan y el gráfico circular muestra que la mitad eligió fútbol, son 40 ÷ 2 = 20.",
+    "status": "published",
+    "questions": [
+      [
+        "Mitad de 40",
+        20,
+        "En un gráfico circular de 40 mascotas, la mitad del círculo son perros. ¿Cuántos perros hay?",
+        "🥧 La mitad del círculo es la mitad del total.",
+        "40 ÷ 2 = 20 perros.",
+        [
+          [
+            40,
+            "Ese es el total. La mitad del círculo es la mitad: 20."
+          ]
+        ]
+      ],
+      [
+        "Un cuarto de 80",
+        20,
+        "En un gráfico circular de 80 estudiantes, un cuarto del círculo eligió vóleibol. ¿Cuántos eligieron vóleibol?",
+        "Un cuarto es dividir en 4.",
+        "80 ÷ 4 = 20 estudiantes.",
+        [
+          [
+            40,
+            "Esa es la mitad. Un cuarto es 80 ÷ 4 = 20."
+          ]
+        ]
+      ],
+      [
+        "Barras: 12 y 9",
+        3,
+        "En un gráfico de barras dobles, el 6°A tiene 12 votos por fútbol y el 6°B tiene 9. ¿Cuántos votos más tiene el 6°A?",
+        "Resta las dos barras.",
+        "12 − 9 = 3 votos más.",
+        [
+          [
+            21,
+            "Sumaste. «Cuántos más» es la diferencia: 12 − 9 = 3."
+          ]
+        ]
+      ],
+      [
+        "Barras: 8, 15, 6 y 11",
+        15,
+        "Un gráfico de barras muestra las frutas favoritas: manzana 8, plátano 15, pera 6 y naranja 11. ¿Cuántos votos tiene la barra más alta?",
+        "La barra más alta es el número mayor.",
+        "La más alta es plátano, con 15 votos.",
+        [
+          [
+            6,
+            "Esa es la barra más baja. La más alta es plátano: 15."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Mitad de 30",
+      15,
+      "En un gráfico circular de 30 personas, la mitad del círculo prefiere el invierno. ¿Cuántas personas son?",
+      "La mitad del círculo es la mitad del total.",
+      "30 ÷ 2 = 15 personas.",
+      [
+        [
+          30,
+          "Ese es el total. La mitad es 15."
+        ]
+      ]
+    ]
   }
 ];

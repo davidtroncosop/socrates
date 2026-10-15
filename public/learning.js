@@ -501,7 +501,11 @@ export function parseNumber(raw) {
 // veces se escribe el signo $. Una respuesta es correcta si alguna de sus
 // lecturas coincide: «2.900» puede ser 2900 o 2,9.
 export function readings(raw) {
-  const s = String(raw).trim().replace(/^\$\s*/, "");
+  // También se aceptan grados y unidades al final: «40°», «54 cm²».
+  const s = String(raw)
+    .trim()
+    .replace(/^\$\s*/, "")
+    .replace(/\s*(?:°|grados?|[cm]?m[²³23]?|litros?)$/i, "");
   const out = [parseNumber(s)];
   const grouped = s.replace(/(\d)[ .](?=\d{3}(?:[ .]\d{3})*(?:,\d+)?$)/g, "$1");
   if (grouped !== s) out.push(parseNumber(grouped));
@@ -834,6 +838,8 @@ export const GRADES = {
   "8b": "8° Básico",
   "1m": "1° Medio",
   "2m": "2° Medio",
+  "3m": "3° Medio",
+  "4m": "4° Medio",
 };
 const gradePrefix = new RegExp(
   `^(?:${Object.values(GRADES).join("|")})(?:\\s*/\\s*(?:${Object.values(GRADES).join("|")}))*\\s*·\\s*`,

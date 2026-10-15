@@ -155,9 +155,10 @@ function nextLesson() {
   if (focus) return focus;
   const route = routeOrder(lessons);
   const last = lessons.find((l) => l.id === state.completed.at(-1));
-  // Primero, seguir en la unidad que está haciendo.
+  // Primero, seguir en la unidad que está haciendo, en el mismo curso: las
+  // unidades mezclan cursos y no hay que retroceder sin motivo.
   const unit = last && getUnitsForLessons(lessons).find((u) => u.lessons.some((l) => l.id === last.id));
-  const inUnit = unit?.lessons.find(open);
+  const inUnit = unit?.lessons.find((l) => open(l) && inferGrade(l) === inferGrade(last));
   if (inUnit) return inUnit;
   // Sin diagnóstico, el curso de lo último que completó.
   const grade = state.grade ?? (last && inferGrade(last));

@@ -12,6 +12,8 @@ import { parseMistakes } from "./mistakes.js";
 export const SUBJECTS = ["matematica", "lenguaje"];
 export const CONTENT_KEY = "socatres.content.v1";
 export const LEGACY_CONTENT_KEY = "tutorai.content.v1";
+// Cabe el currículo completo de 6° Básico a 4° Medio, con espacio para más.
+export const MAX_LESSONS = 200;
 const reviews = [
   [
     "5x + 4 = 39",
@@ -115,8 +117,8 @@ export function validateCatalog(input) {
     throw Error(
       "El archivo debe contener version: 1 y una lista lessons. Descarga la plantilla para ver el formato.",
     );
-  if (input.lessons.length > 100)
-    throw Error("Se admiten hasta 100 lecciones por catálogo.");
+  if (input.lessons.length > MAX_LESSONS)
+    throw Error(`Se admiten hasta ${MAX_LESSONS} lecciones por catálogo.`);
   const ids = new Set();
   const lessons = input.lessons.map((l, i) => {
     const prefix = `Lección ${i + 1}`;
@@ -216,7 +218,7 @@ export function readCatalog(storage) {
   if (storage.getItem(CURRICULUM_KEY) === null && catalog.lessons.length) {
     const ids = new Set(catalog.lessons.map((l) => l.id));
     const added = curriculumLessons.filter((l) => !ids.has(l.id));
-    if (catalog.lessons.length + added.length <= 100) {
+    if (catalog.lessons.length + added.length <= MAX_LESSONS) {
       catalog.lessons.push(...added.map(withoutSince));
       // Persist the complete upgrade before marking it applied; never overwrite edits.
       return writeCatalog(storage, catalog);
@@ -232,7 +234,7 @@ export function withNewCurriculum(catalog, updatedAt) {
   const added = curriculumLessons.filter(
     (l) => l.since && !ids.has(l.id) && Date.parse(l.since) > Number(updatedAt),
   );
-  if (!added.length || catalog.lessons.length + added.length > 100) return catalog;
+  if (!added.length || catalog.lessons.length + added.length > MAX_LESSONS) return catalog;
   return validateCatalog({ ...catalog, lessons: [...catalog.lessons, ...added.map(withoutSince)] });
 }
 export function writeCatalog(storage, catalog) {

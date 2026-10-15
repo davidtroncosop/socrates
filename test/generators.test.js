@@ -22,6 +22,11 @@ const evaluate = (expr, x) => Function("x", `return (${js(expr)});`)(x);
 // Preguntas de las bases escritas con palabras.
 function baseAnswer(expr, id) {
   let m;
+  if (["razones", "fracciones-mixtos", "decimales-mult", "patrones", "expresiones", "angulos", "area-superficie", "graficos"].includes(id)) {
+    const answer = lote3Answer(expr, id);
+    assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
   if ((m = expr.match(/^¿Cuánto vale el (\d) en (\d+)\?$/))) return m[1] * 10 ** [...m[2]].reverse().indexOf(m[1]);
   if ((m = expr.match(/^¿En cuántas partes se corta la pizza en \d+\/(\d+)\?$/))) return Number(m[1]);
   if ((m = expr.match(/^(\d+)\/(\d+) de (\d+)$/))) return (m[1] / m[2]) * m[3];
@@ -47,6 +52,10 @@ function baseAnswer(expr, id) {
   }
   const nums = (text) => text.split(/, | y /).map(Number);
   if ((m = expr.match(/^Promedio de (.+)$/))) return nums(m[1]).reduce((a, b) => a + b, 0) / nums(m[1]).length;
+  if ((m = expr.match(/^Notas: (.+)$/))) {
+    const notes = m[1].split("; ").map((v) => Number(v.replace(",", ".")));
+    return notes.reduce((a, b) => a + b, 0) / notes.length;
+  }
   if ((m = expr.match(/^Mediana de (.+)$/))) return [...nums(m[1])].sort((a, b) => a - b)[Math.floor(nums(m[1]).length / 2)];
   if ((m = expr.match(/^Moda de (.+)$/))) {
     const counts = new Map();
@@ -76,6 +85,55 @@ function baseAnswer(expr, id) {
   }
   if ((m = expr.match(/^(\d+)([⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+)$/)))
     return m[1] ** Number(m[2].replace("⁻", "-").replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)));
+  return null;
+}
+
+// Lote 3 (6° Básico): cada respuesta se recalcula desde el enunciado.
+function lote3Answer(expr, id) {
+  let m;
+  const n = (v) => Number(v.replace(/\./g, "").replace(",", "."));
+  if (id === "razones") {
+    if ((m = expr.match(/^Razón (\d+) : (\d+) con (\d+) \D+$/))) return (m[2] * m[3]) / m[1];
+    if ((m = expr.match(/^(\d+) : (\d+) = (\d+) : \?$/))) return (m[2] * m[3]) / m[1];
+    if ((m = expr.match(/^(\d+) jugos cuestan \$([\d.]+); ¿(\d+) jugos\?$/))) return (n(m[2]) * m[3]) / m[1];
+  }
+  if (id === "fracciones-mixtos") {
+    if ((m = expr.match(/^¿Cuántos enteros completos hay en (\d+)\/(\d+)\?$/))) return Math.floor(m[1] / m[2]);
+    if ((m = expr.match(/^(\d+)\/(\d+) = (\d+) enteros? y ¿cuántos .+\?$/))) return m[1] - m[3] * m[2];
+    if ((m = expr.match(/^(\d+) (\d+)\/(\d+) = \?\/\d+$/))) return m[1] * m[3] + Number(m[2]);
+    if ((m = expr.match(/^(\d+) mitades de naranja$/))) return m[1] / 2;
+  }
+  if (id === "decimales-mult") return evaluate(expr.replace(/(\d),(\d)/g, "$1.$2"), 0);
+  if (id === "patrones") {
+    if ((m = expr.match(/^(\d+), (\d+), (\d+), (\d+), \?$/))) return 2 * m[4] - m[3];
+    if ((m = expr.match(/^Regla: · (\d+) \+ (\d+) con entrada (\d+)$/))) return m[1] * m[3] + Number(m[2]);
+    if ((m = expr.match(/^Tabla 1 → (\d+), 2 → (\d+), 3 → (\d+); ¿(\d+) → \?$/))) return Number(m[1]) + (m[2] - m[1]) * (m[4] - 1);
+    if ((m = expr.match(/^Mesas: 1 → 4, 2 → 6, 3 → 8; ¿(\d+) → \?$/))) return 4 + 2 * (m[1] - 1);
+  }
+  if (id === "expresiones") {
+    if ((m = expr.match(/^Si n = (\d+): (.+)$/))) return evaluate(m[2].replace(/n/g, "x"), Number(m[1]));
+    for (let v = 0; v <= 100; v++) {
+      const [left, right] = expr.split(" = ");
+      if (evaluate(left.replace(/n/g, "x"), v) === Number(right)) return v;
+    }
+  }
+  if (id === "angulos") {
+    const nums = (expr.match(/\d+(?=°)/g) ?? []).map(Number);
+    if (expr.startsWith("Opuesto")) return nums[0];
+    if (expr.includes("= 180°")) return 180 - nums[0];
+    if (expr.startsWith("Triángulo")) return 180 - nums[0] - nums[1];
+    if (expr.startsWith("Cuadrilátero")) return 360 - nums[0] - nums[1] - nums[2];
+  }
+  if (id === "area-superficie") {
+    if ((m = expr.match(/^Cubo de arista (\d+) cm$/))) return 6 * m[1] ** 2;
+    if ((m = expr.match(/^Caja de (\d+) cm, (\d+) cm y (\d+) cm$/))) return 2 * (m[1] * m[2] + m[1] * m[3] + m[2] * m[3]);
+  }
+  if (id === "graficos") {
+    const parts = { mitad: 2, tercio: 3, cuarto: 4, quinto: 5 };
+    if ((m = expr.match(/^(?:la |un )?(mitad|tercio|cuarto|quinto) de (\d+)$/i))) return m[2] / parts[m[1].toLowerCase()];
+    if ((m = expr.match(/^Barras: (\d+) y (\d+)$/))) return m[1] - m[2];
+    if ((m = expr.match(/^Barras: (.+)$/))) return Math.max(...m[1].split(/, | y /).map(Number));
+  }
   return null;
 }
 
@@ -139,7 +197,7 @@ test("every generator yields valid, exact questions at every level", () => {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
         if (id.startsWith("fracciones-") || id === "potencias-negativas") assert.ok(q[1] > 0 && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
-        else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (id === "base-decimales" || id === "volumen" || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
+        else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);
       }
@@ -165,4 +223,15 @@ test("function and notable-product generators match their definitions", () => {
 
 test("lessons without a generator fall back to curated content", () => {
   assert.equal(generateQuestions("lectura-narraciones", [0]), null);
+});
+
+test("curated curriculum questions match the generator checks", async () => {
+  const { curriculumLessons } = await import("../public/curriculum.js");
+  for (const lesson of curriculumLessons.filter((l) => l.since && generators[l.id]))
+    for (const q of [...lesson.questions, lesson.review])
+      try {
+        checkAnswer(lesson.id, q);
+      } catch (error) {
+        throw new Error(`${lesson.id}: «${q[0]}» → ${error.message}`);
+      }
 });

@@ -47,4 +47,12 @@ export const lessonVideos = {
   "combinatoria": {"src":"/media/lessons/combinatoria-1b418c60e5.mp4","title":"Contar todas las combinaciones: explicado en video","duration":45},
   "potencias-negativas": {"src":"/media/lessons/potencias-negativas-50f377dce8.mp4","title":"Exponente cero y negativo: explicado en video","duration":53},
   "sistemas": {"src":"/media/lessons/sistemas-5f752f0956.mp4","title":"Sistemas de dos ecuaciones: explicado en video","duration":58},
+  "razones": {"src":"/media/lessons/razones-96a22a0d49.mp4","title":"Razones: explicado en video","duration":48},
+  "fracciones-mixtos": {"src":"/media/lessons/fracciones-mixtos-3589dbea65.mp4","title":"Fracciones impropias y números mixtos: explicado en video","duration":38},
+  "decimales-mult": {"src":"/media/lessons/decimales-mult-fca20ddeff.mp4","title":"Multiplicar y dividir decimales: explicado en video","duration":49},
+  "patrones": {"src":"/media/lessons/patrones-913cc5fc96.mp4","title":"Patrones y tablas: explicado en video","duration":49},
+  "expresiones": {"src":"/media/lessons/expresiones-5643a43ddc.mp4","title":"Expresiones con letras: explicado en video","duration":50},
+  "angulos": {"src":"/media/lessons/angulos-7c3b59de94.mp4","title":"Ángulos: explicado en video","duration":55},
+  "area-superficie": {"src":"/media/lessons/area-superficie-1422301a39.mp4","title":"Área de la superficie de cajas: explicado en video","duration":50},
+  "graficos": {"src":"/media/lessons/graficos-f1aacd5c7f.mp4","title":"Leer gráficos: explicado en video","duration":44},
 };

@@ -41,12 +41,21 @@ import volumen from "./volumen.mjs";
 import combinatoria from "./combinatoria.mjs";
 import potNeg from "./potencias-negativas.mjs";
 import sistemas from "./sistemas.mjs";
+import razones from "./razones.mjs";
+import mixtos from "./fracciones-mixtos.mjs";
+import decMult from "./decimales-mult.mjs";
+import patrones from "./patrones.mjs";
+import expresiones from "./expresiones.mjs";
+import angulos from "./angulos.mjs";
+import areaSup from "./area-superficie.mjs";
+import graficos from "./graficos.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  razones, mixtos, decMult, patrones, expresiones, angulos, areaSup, graficos,
   raices, volumen, combinatoria, potNeg, sistemas,
   multiplos, fracSuma, fracMult, promedio, areaTri,
   baseValor, baseSuma, baseMult, baseDiv, baseFrac, baseDec,

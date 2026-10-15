@@ -59,8 +59,8 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
       const file = e.target.files[0];
       if (!file) return;
       try {
-        if (file.size > 1024 * 1024)
-          throw Error("El archivo supera el máximo de 1 MB.");
+        if (file.size > 2 * 1024 * 1024)
+          throw Error("El archivo supera el máximo de 2 MB.");
         const raw = await file.text();
         pending = file.name.toLowerCase().endsWith(".csv")
           ? importCSV(raw)
