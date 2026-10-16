@@ -27,6 +27,11 @@ function baseAnswer(expr, id, prompt) {
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
+  if (LOTE6.includes(id)) {
+    const answer = lote6Answer(expr, id);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
   if (LOTE5.includes(id)) {
     const answer = lote5Answer(expr, id, prompt);
     assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
@@ -254,6 +259,67 @@ function lote5Answer(expr, id, prompt) {
   return null;
 }
 
+// Lote 6 (1° Medio).
+const LOTE6 = ["racionales-operatoria", "crecimiento-exponencial", "funcion-dos-variables", "sectores-circulares", "cono", "homotecia", "tales", "semejanza", "doble-entrada", "reglas-probabilidad", "galton"];
+function lote6Answer(expr, id) {
+  let m;
+  const n = (v) => Number(v.replace(/\./g, "").replace(",", "."));
+  const sup = (v) => v.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (d) => "^" + [...d].map((c) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)).join(""));
+  const calc = (e) => evaluate(sup(e).replace(/(\d),(\d)/g, "$1.$2").replace(/(\d+)\/(\d+)/g, "($1/$2)"), 0);
+  if (id === "racionales-operatoria") {
+    if ((m = expr.match(/^(\d+)\/(\d+) de ([\d,]+)$/))) return (m[1] / m[2]) * n(m[3]);
+    return calc(expr);
+  }
+  if (id === "crecimiento-exponencial") return calc(expr);
+  if (id === "funcion-dos-variables") {
+    if ((m = expr.match(/^f\((\d+), (\d+)\) con f\(x, y\) = (\d+)x \+ (\d+)y$/))) return m[3] * m[1] + m[4] * m[2];
+    if ((m = expr.match(/^(\d+)x \+ (\d+)y = (\d+) con x = (\d+)$/))) return (m[3] - m[1] * m[4]) / m[2];
+  }
+  if (id === "sectores-circulares") {
+    if ((m = expr.match(/^¿Qué parte del círculo es (\d+)°\?$/))) return m[1] / 360;
+    if ((m = expr.match(/^Sector de (\d+)°, radio (\d+) cm$/))) return (3.14 * m[2] ** 2 * m[1]) / 360;
+    if ((m = expr.match(/^Arco de (\d+)°, radio (\d+) cm$/))) return (2 * 3.14 * m[2] * m[1]) / 360;
+  }
+  if (id === "cono") {
+    if ((m = expr.match(/^Cono: radio (\d+) cm, altura (\d+) cm$/))) return (3.14 * m[1] ** 2 * m[2]) / 3;
+    if ((m = expr.match(/^Cilindro de (\d+) cm³$/))) return m[1] / 3;
+  }
+  if (id === "homotecia") {
+    if ((m = expr.match(/^(?:Segmento|Lado) de (\d+) cm, k = (.+)$/))) return m[1] * calc(m[2]);
+    if ((m = expr.match(/^\((\d+), (\d+)\) con k = (\d+): ¿y\?$/))) return m[2] * m[3];
+    if ((m = expr.match(/^De (\d+) cm a (\d+) cm: ¿k\?$/))) return m[2] / m[1];
+  }
+  if (id === "tales") {
+    if ((m = expr.match(/^(\d+)\/(\d+) = (\d+)\/x$/))) return (m[3] * m[2]) / m[1];
+    if ((m = expr.match(/^(\d+)\/x = (\d+)\/(\d+)$/))) return (m[1] * m[3]) / m[2];
+    if ((m = expr.match(/^Sombra: (\d+) m → (\d+) m; edificio con sombra de (\d+) m$/))) return (m[1] * m[3]) / m[2];
+  }
+  if (id === "semejanza") {
+    if ((m = expr.match(/^Triángulos semejantes: (\d+) → (\d+), (\d+) → \?$/))) return (m[3] * m[2]) / m[1];
+    if ((m = expr.match(/^(Plano|Maqueta|Mapa) 1 : (\d+), (\d+) cm$/))) return (m[3] * m[2]) / (m[1] === "Mapa" ? 100000 : 100);
+  }
+  if (id === "doble-entrada") {
+    if ((m = expr.match(/^\S+ fútbol (\d+) de (\d+)$/))) return (m[1] * 100) / m[2];
+    if ((m = expr.match(/^Total (\d+), fútbol (\d+)$/))) return m[1] - m[2];
+    if ((m = expr.match(/(\d+), .+ (\d+)$/))) return +m[1] + +m[2];
+  }
+  if (id === "reglas-probabilidad") {
+    const faces = [1, 2, 3, 4, 5, 6];
+    const event = (name) => (name === "par" ? (f) => f % 2 === 0 : name === "impar" ? (f) => f % 2 === 1 : (f) => f === Number(name));
+    if ((m = expr.match(/^Dado: (\w+) o (\d)$/))) return faces.filter((f) => event(m[1])(f) || event(m[2])(f)).length / 6;
+    if ((m = expr.match(/^Moneda y dado: (cara|sello) y (\d)$/))) return 1 / 12;
+    if ((m = expr.match(/^(\d) monedas: todas cara$/))) return 1 / 2 ** m[1];
+    if (expr === "Dos monedas: dos caras") return 0.25;
+    if (expr === "Dos dados: dos 6") return 1 / 36;
+  }
+  if (id === "galton") {
+    if ((m = expr.match(/^Galton: (\d) filas, ¿caminos\?$/))) return 2 ** m[1];
+    if ((m = expr.match(/^Galton: (\d) filas, extremo \w+$/))) return 1 / 2 ** m[1];
+    if ((m = expr.match(/^Galton: 2 filas, centro$/))) return 0.5;
+  }
+  return null;
+}
+
 // Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
 function solveSystem(expr) {
   const letters = [...new Set(expr.match(/[a-z]/g))];
@@ -313,8 +379,8 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult"].includes(id)) assert.ok((q[1] > 0 || id === "racionales-mult") && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
-        else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton"].includes(id)) assert.ok((q[1] > 0 || id === "racionales-mult") && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos", "crecimiento-exponencial", "cono", "homotecia"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);
       }

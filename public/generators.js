@@ -1501,6 +1501,216 @@ function cuartiles(rng, level) {
     [[data[3], "Esa es la mediana (Q2)."], [level === 1 ? data[0] : data[6], "Ese es un extremo, no el cuartil."]]];
 }
 
+// Lote 6: 1° Medio.
+
+const PI = 3.14;
+// Redondea a centésimas para evitar errores de coma flotante con π = 3,14.
+const cents = (n) => Math.round(n * 100) / 100;
+
+function racionalesOperatoria(rng, level) {
+  if (level === 0) {
+    const [d, txt] = pick(rng, [[0.5, "0,5"], [0.25, "0,25"], [0.75, "0,75"]]);
+    const k = pick(rng, [2, 4, 8].filter((v) => v !== 2 || d === 0.5));
+    const a = int(rng, 1, k - 1);
+    return [`${txt} + ${frac(a, k)}`, d + a / k, "Calcula. Puedes responder como fracción o decimal.", `🔁 Pasa ${txt} a fracción.`,
+      `${txt} = ${d * 4}/4; ${txt} + ${frac(a, k)} = ${dec(d + a / k)}.`, []];
+  }
+  if (level === 1) {
+    const [a, b] = [int(rng, 2, 5), int(rng, 2, 5)];
+    return [`1/2 + 1/${a} · ${a}/${b}`, 0.5 + 1 / b, "Calcula respetando el orden de las operaciones.", `Primero la multiplicación: 1/${a} · ${a}/${b}.`,
+      `1/${a} · ${a}/${b} = 1/${b}; 1/2 + 1/${b}.`, [[(0.5 + 1 / a) * (a / b), "Sumaste antes de multiplicar."]]];
+  }
+  if (level === 2) {
+    const [b, k] = [int(rng, 2, 4), int(rng, 1, 4)];
+    const m = b * b * k;
+    return [`(1/${b})² · ${m}`, k, "Calcula.", `Primero la potencia: (1/${b})² = 1/${b * b}.`, `1/${b * b} · ${m} = ${k}.`,
+      [[(2 * m) / b, "Elevar al cuadrado no es multiplicar por 2."], [m / b, `(1/${b})² es 1/${b * b}, no 1/${b}.`]]];
+  }
+  const [num_, den] = pick(rng, [[3, 4], [1, 4], [1, 2], [2, 5], [3, 5]]);
+  const tenths = den * int(rng, 1, 6);
+  return [`${num_}/${den} de ${dec(tenths / 10)}`, cents((num_ * tenths) / den / 10), `Una botella tiene ${dec(tenths / 10)} litros y tomas ${num_}/${den}. ¿Cuántos litros tomaste?`,
+    `«de» es multiplicar: ${num_}/${den} · ${dec(tenths / 10)}.`, `${dec(tenths / 10)} ÷ ${den} = ${dec(tenths / den / 10)}; · ${num_} = ${dec(cents((num_ * tenths) / den / 10))} litros.`,
+    [[cents(tenths / den / 10), `Ese es 1/${den}.`]]];
+}
+
+function crecimientoExponencial(rng, level) {
+  if (level === 0) {
+    const [a, n] = [int(rng, 2, 6), int(rng, 2, 5)];
+    return [`${a} · 2${sup(n)}`, a * 2 ** n, `Hay ${a} bacterias y se duplican cada hora. ¿Cuántas hay después de ${n} horas?`, `📈 Se multiplica por 2, ${n} veces.`,
+      Array.from({ length: n + 1 }, (_, i) => a * 2 ** i).join(" → ") + ".", [[a + 2 * n, "Se duplica: se multiplica por 2, no se suma."], [a * 2 * n, `2${sup(n)} no es 2 · ${n}.`]]];
+  }
+  if (level === 1) {
+    const [b, n] = [pick(rng, [2, 3]), int(rng, 3, 5)];
+    return [`${b}${sup(n)}`, b ** n, `Una cadena de mensajes: cada persona lo manda a ${b} nuevas. ¿Cuántas personas nuevas lo reciben en el paso ${n}?`,
+      `${b} multiplicado ${n} veces.`, `${b}${sup(n)} = ${b ** n}.`, [[b * n, `No es ${b} · ${n}. Es ${b} multiplicado ${n} veces.`]]];
+  }
+  if (level === 2) {
+    const n = int(rng, 2, 4);
+    const start = 2 ** n * int(rng, 5, 50);
+    return [`${start} · (1/2)${sup(n)}`, start / 2 ** n, `Un remedio se reduce a la mitad cada 6 horas. Si hay ${start} mg, ¿cuánto queda después de ${n} mitades?`,
+      `${start} → ${start / 2} → …`, Array.from({ length: n + 1 }, (_, i) => start / 2 ** i).join(" → ") + " mg.",
+      [[start / 2 ** (n - 1), "Te faltó una mitad."], [start / (2 * n), `No se divide por ${2 * n}: se parte por la mitad ${n} veces.`]]];
+  }
+  const p = 1000 * int(rng, 1, 5);
+  return [`${p} · 1,1²`, cents(p * 1.21), `Tienes $${pesos(p)} y cada año aumenta un 10 % (se multiplica por 1,1). ¿Cuánto tienes después de 2 años?`,
+    `${pesos(p)} · 1,1 = ${pesos(p * 1.1)}; y otra vez · 1,1.`, `${pesos(p)} → ${pesos(cents(p * 1.1))} → ${pesos(cents(p * 1.21))}.`, [[p * 1.2, "El segundo año el 10 % es del monto nuevo, no del inicial."]]];
+}
+
+function funcionDosVariables(rng, level) {
+  if (level <= 1) {
+    const [a, b] = level === 0 ? [pick(rng, [1500, 2000, 2500, 3000]), pick(rng, [500, 1000, 1500])] : [int(rng, 2, 9), int(rng, 2, 9)];
+    let [x, y] = [int(rng, 1, 5), int(rng, 1, 5)];
+    if (x === y) y += 1;
+    const v = a * x + b * y;
+    return [`f(${x}, ${y}) con f(x, y) = ${a}x + ${b}y`, v,
+      level === 0 ? `Entradas: adulto $${pesos(a)} (x), niño $${pesos(b)} (y). ¿Cuánto pagan ${x} adultos y ${y} niños?` : `Calcula f(${x}, ${y}).`,
+      `🎟️ Reemplaza x por ${x} e y por ${y}.`, `${a} · ${x} + ${b} · ${y} = ${a * x} + ${b * y} = ${v}.`, [[a * y + b * x, "Cruzaste los valores: x va con el primer número."]]];
+  }
+  const [a, b] = level === 2 ? [int(rng, 2, 5), int(rng, 2, 5)] : [pick(rng, [400, 500, 600]), pick(rng, [200, 300])];
+  const [x, y] = [int(rng, 1, 6), int(rng, 1, 6)];
+  const c = a * x + b * y;
+  return [`${a}x + ${b}y = ${c} con x = ${x}`, y,
+    level === 2 ? `Si ${a}x + ${b}y = ${c} y x = ${x}, ¿cuánto vale y?` : `Empanadas a $${a} (x) y bebidas a $${b} (y). Pagaste $${pesos(c)} y compraste ${x} empanadas. ¿Cuántas bebidas compraste?`,
+    `Reemplaza x: ${a * x} + ${b}y = ${c}.`, `${b}y = ${c - a * x}; y = ${y}.`, [[b * y, `Ese es ${b}y. Divide por ${b}.`]]];
+}
+
+const SECTOR = { 60: ["un sexto", 6], 90: ["un cuarto", 4], 120: ["un tercio", 3], 180: ["la mitad", 2] };
+
+function sectoresCirculares(rng, level) {
+  const angle = pick(rng, level === 0 ? [90] : [60, 90, 120, 180]);
+  const [name, parts] = SECTOR[angle];
+  if (level === 1)
+    return [`¿Qué parte del círculo es ${angle}°?`, angle / 360, `¿Qué fracción del círculo es un sector de ${angle}°? Responde como fracción.`, "Un círculo completo tiene 360°.",
+      `${angle} ÷ 360 = 1/${parts}.`, [[360 / angle, "Dividiste al revés."]]];
+  // Radios con resultado exacto en centésimas: π · r² ÷ partes y 2 · π · r ÷ partes.
+  const radii = level === 3 ? { 2: [1, 2, 3, 5], 3: [3, 6, 9], 4: [2, 4, 6, 10], 6: [3, 6, 9] } : { 2: [1, 2, 3, 4, 5], 3: [3, 6], 4: [2, 4, 6], 6: [6] };
+  const r = pick(rng, radii[parts]);
+  if (level === 3)
+    return [`Arco de ${angle}°, radio ${r} cm`, cents((2 * PI * r) / parts), `¿Cuánto mide el borde curvo (el arco) de un sector de ${angle}° y radio ${r} cm? Usa π = 3,14.`,
+      `El borde completo mide 2 · π · r. Toma ${name}.`, `2 · 3,14 · ${r} = ${dec(cents(2 * PI * r))}; ${name} es ${dec(cents((2 * PI * r) / parts))} cm.`,
+      [[cents(2 * PI * r), "Ese es el borde completo."], [cents((PI * r * r) / parts), "Esa es el área. El arco es el borde."]]];
+  return [`Sector de ${angle}°, radio ${r} cm`, cents((PI * r * r) / parts), "Calcula el área del sector en cm². Usa π = 3,14.", `🍕 ${angle}° es ${name} del círculo.`,
+    `3,14 · ${r} · ${r} = ${dec(cents(PI * r * r))}; ${name} es ${dec(cents((PI * r * r) / parts))} cm².`, [[cents(PI * r * r), "Ese es el círculo completo."]]];
+}
+
+function cono(rng, level) {
+  if (level === 1) {
+    const v = 3 * int(rng, 5, 40);
+    return [`Cilindro de ${v} cm³`, v / 3, `Un cilindro tiene ${v} cm³. ¿Cuál es el volumen de un cono con la misma base y la misma altura?`, "Tres conos llenan el cilindro.",
+      `${v} ÷ 3 = ${v / 3} cm³.`, [[v / 2, "No es la mitad: es un tercio."], [v * 3, "El cono es más chico."]]];
+  }
+  const r = int(rng, 1, 4);
+  const h = 3 * int(rng, 1, 4);
+  const cyl = cents(PI * r * r * h);
+  return [`Cono: radio ${r} cm, altura ${h} cm`, cents(cyl / 3), level === 3 ? `Un cono de helado tiene radio ${r} cm y altura ${h} cm. ¿Cuántos cm³ caben? Usa π = 3,14.` : "Calcula el volumen en cm³. Usa π = 3,14.",
+    "🍦 Calcula el cilindro y divide en 3.", `3,14 · ${r} · ${r} · ${h} = ${dec(cyl)}; ÷ 3 = ${dec(cents(cyl / 3))} cm³.`, [[cyl, "Ese es el cilindro. El cono es un tercio."]]];
+}
+
+function homotecia(rng, level) {
+  if (level === 0 || level === 2) {
+    const [l, k] = level === 0 ? [int(rng, 2, 9), int(rng, 2, 5)] : [2 * int(rng, 2, 10), 0.5];
+    return [`Segmento de ${l} cm, k = ${k === 0.5 ? "1/2" : k}`, l * k, `Un segmento mide ${l} cm. Le aplicas una homotecia de razón ${k === 0.5 ? "1/2" : k}. ¿Cuánto mide ahora?`,
+      k === 0.5 ? "k = 1/2 es la mitad." : `🔦 k = ${k}: todo se multiplica por ${k}.`, `${l} · ${k === 0.5 ? "1/2" : k} = ${l * k} cm.`,
+      [[k === 0.5 ? l * 2 : l + k, k === 0.5 ? "k = 1/2 achica." : "La homotecia multiplica, no suma."]]];
+  }
+  if (level === 1) {
+    const [x, y, k] = [int(rng, 1, 6), int(rng, 1, 6), int(rng, 2, 4)];
+    return [`(${x}, ${y}) con k = ${k}: ¿y?`, y * k, `Aplicas una homotecia desde el origen con k = ${k} al punto (${x}, ${y}). ¿Cuál es la nueva y?`, `Multiplica cada coordenada por ${k}.`,
+      `(${x}, ${y}) → (${x * k}, ${y * k}).`, [[y + k, "Se multiplica, no se suma."], [x * k, "Esa es la nueva x."]]];
+  }
+  const [a, k] = [int(rng, 2, 6), int(rng, 2, 6)];
+  return [`De ${a} cm a ${a * k} cm: ¿k?`, k, `Un dibujo de ${a} cm se proyecta y mide ${a * k} cm. ¿Cuál es la razón k?`, `¿Por cuánto se multiplicó ${a}?`,
+    `${a * k} ÷ ${a} = ${k}.`, [[a * k - a, "Restaste. k es cuántas veces."]]];
+}
+
+function tales(rng, level) {
+  const [a, k] = [int(rng, 2, 6), int(rng, 2, 4)];
+  const c = int(rng, 2, 9);
+  if (level <= 1)
+    return [`${a}/${a * k} = ${c}/x`, c * k, level === 0 ? `Tres paralelas cortan dos rectas. En una, los trozos miden ${a} y ${a * k}. En la otra, el primero mide ${c}. ¿Cuánto mide el segundo?` : `Encuentra x en la proporción de Tales ${a}/${a * k} = ${c}/x.`,
+      `📐 ${a * k} es ${k} veces ${a}. El otro trozo también.`, `x = ${c} · ${k} = ${c * k}.`, [[c + a * k - a, "Sumaste. Es proporción: se multiplica."]]];
+  if (level === 2)
+    return [`${c}/x = ${c * k}/${a * k}`, a, `Encuentra x en ${c}/x = ${c * k}/${a * k}.`, `${c * k} es ${k} veces ${c}. Entonces ${a * k} es ${k} veces x.`,
+      `x = ${a * k} ÷ ${k} = ${a}.`, [[a * k * k, "Al revés: divide."]]];
+  const [h, sh] = shuffle(rng, [1, 2, 3, 4]).slice(0, 2);
+  const m = int(rng, 3, 10);
+  return [`Sombra: ${h} m → ${sh} m; edificio con sombra de ${sh * m} m`, h * m,
+    `Un poste de ${h} m da una sombra de ${sh} m. A la misma hora, un edificio da una sombra de ${sh * m} m. ¿Cuánto mide el edificio?`,
+    `La sombra del edificio es ${m} veces la del poste.`, `${sh * m} = ${sh} · ${m}, así que el edificio mide ${h} · ${m} = ${h * m} m.`,
+    [[h + sh * m - sh, "Sumaste. Es proporción: se multiplica."], [(sh * sh * m) / h, "Cruzaste los datos: la altura va con la altura."]]];
+}
+
+function semejanza(rng, level) {
+  if (level === 1) {
+    const [a, c] = shuffle(rng, [2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 2);
+    const k = int(rng, 2, 4);
+    return [`Triángulos semejantes: ${a} → ${a * k}, ${c} → ?`, c * k, `Dos triángulos son semejantes. Un lado de ${a} cm corresponde a uno de ${a * k} cm. ¿Cuánto mide el lado que corresponde a uno de ${c} cm?`,
+      `${a * k} es ${k} veces ${a}.`, `${c} · ${k} = ${c * k} cm.`, [[c + a * k - a, "Sumaste. En la semejanza todo se multiplica."]]];
+  }
+  const [scale, unit, factor, label] = [[100, "metros", 100, "1 : 100"], [100, "metros", 100, "1 : 100"], [50, "metros", 100, "1 : 50"], [100000, "km", 100000, "1 : 100.000"]][level];
+  const cm = level === 2 ? 2 * int(rng, 5, 30) : int(rng, 2, 12);
+  const real = (cm * scale) / factor;
+  const what = level === 3 ? `En un mapa a escala ${label}, dos pueblos están a ${cm} cm. ¿Cuántos km los separan?` : level === 2 ? `Una maqueta a escala ${label} tiene una torre de ${cm} cm. ¿Cuántos metros mide la torre real?` : `En un plano a escala ${label}, una pieza mide ${cm} cm. ¿Cuántos metros mide en la realidad?`;
+  return [`${level === 3 ? "Mapa" : level === 2 ? "Maqueta" : "Plano"} ${label.replace(".", "")}, ${cm} cm`, real, what, `🗺️ 1 cm son ${pesos(scale)} cm reales.`,
+    `${cm} · ${pesos(scale)} = ${pesos(cm * scale)} cm = ${dec(real)} ${unit}.`, [[cm * scale, `Esos son centímetros. Pásalo a ${unit}.`]]];
+}
+
+function dobleEntrada(rng, level) {
+  const [a, b] = [int(rng, 3, 15), int(rng, 3, 15)];
+  if (level === 0)
+    return [`1°A: fútbol ${a}, básquetbol ${b}`, a + b, `En una tabla, el 1°A tiene ${a} estudiantes que prefieren fútbol y ${b} básquetbol. ¿Cuál es el total de la fila 1°A?`, "📋 Suma la fila.",
+      `${a} + ${b} = ${a + b}.`, [[a * b, "Multiplicaste. El total es la suma."]]];
+  if (level === 1)
+    return [`Fútbol: 1°A ${a}, 1°B ${b}`, a + b, `En la columna de fútbol, el 1°A tiene ${a} y el 1°B ${b}. ¿Cuántos prefieren fútbol en total?`, "Suma la columna.",
+      `${a} + ${b} = ${a + b}.`, [[Math.abs(a - b), "Restaste. El total es la suma."]]];
+  if (level === 2) {
+    const total = pick(rng, [20, 25, 50]);
+    const part = int(rng, 1, total - 1);
+    return [`1°B: fútbol ${part} de ${total}`, (part * 100) / total, `En el 1°B hay ${total} estudiantes y ${part} prefieren fútbol. ¿Qué porcentaje del 1°B prefiere fútbol?`,
+      `${part} de ${total}.`, `${part} ÷ ${total} = ${dec(part / total)} = ${dec((part * 100) / total)} %.`, [[part, "Esa es la cantidad. Pásala a porcentaje."]]];
+  }
+  const total = a + b + int(rng, 10, 30);
+  return [`Total ${total}, fútbol ${a + b}`, total - a - b, `En total hay ${total} estudiantes y ${a + b} prefieren fútbol. Si el resto prefiere básquetbol, ¿cuántos prefieren básquetbol?`,
+    "Resta del total.", `${total} − ${a + b} = ${total - a - b}.`, [[total + a + b, "Sumaste. El resto es la resta."]]];
+}
+
+function reglasProbabilidad(rng, level) {
+  if (level === 0) {
+    const [x, y] = shuffle(rng, [1, 2, 3, 4, 5, 6]).slice(0, 2).sort();
+    return [`Dado: ${x} o ${y}`, 1 / 3, `Lanzas un dado. ¿Cuál es la probabilidad de sacar ${x} o ${y}? Responde como fracción.`, "🎲 «O» se suma: 1/6 + 1/6.",
+      "1/6 + 1/6 = 2/6 = 1/3.", [[1 / 36, "Multiplicaste. «O» se suma."]]];
+  }
+  if (level === 1) {
+    const face = int(rng, 1, 6);
+    const side = pick(rng, ["cara", "sello"]);
+    return [`Moneda y dado: ${side} y ${face}`, 1 / 12, `Lanzas una moneda y un dado. ¿Cuál es la probabilidad de ${side} y un ${face}?`, "«Y» se multiplica: 1/2 · 1/6.",
+      "1/2 · 1/6 = 1/12.", [[2 / 3, "Sumaste. «Y» se multiplica."]]];
+  }
+  if (level === 2) {
+    const n = int(rng, 2, 4);
+    return [`${n} monedas: todas cara`, 1 / 2 ** n, `Lanzas ${n} monedas. ¿Cuál es la probabilidad de que todas salgan cara?`, `1/2 multiplicado ${n} veces.`,
+      `(1/2)${sup(n)} = 1/${2 ** n}.`, [[n / 2, "Sumaste. «Y» se multiplica."], [1 / (2 * n), `No es 1/(2 · ${n}): es 1/2 multiplicado ${n} veces.`]]];
+  }
+  const odd = rng() < 0.5;
+  const face = pick(rng, odd ? [2, 4, 6] : [1, 3, 5]);
+  return [`Dado: ${odd ? "impar" : "par"} o ${face}`, 2 / 3, `Lanzas un dado. ¿Cuál es la probabilidad de sacar un ${odd ? "impar" : "par"} o un ${face}?`,
+    `${odd ? "Impar" : "Par"}: 3/6. Un ${face}: 1/6. Súmalas.`, "3/6 + 1/6 = 4/6 = 2/3.", [[1 / 12, "Multiplicaste. «O» se suma."]]];
+}
+
+function galton(rng, level) {
+  const n = level === 3 ? int(rng, 4, 6) : level === 2 ? 2 : int(rng, 2, 5);
+  if (level === 0 || level === 3)
+    return [`Galton: ${n} filas, ¿caminos?`, 2 ** n, `Una bolita pasa por ${n} filas de clavos y en cada una va a la izquierda o a la derecha. ¿Cuántos caminos posibles hay?`,
+      `🔻 En cada fila hay 2 opciones: ${Array(n).fill(2).join(" · ")}.`, `2${sup(n)} = ${2 ** n} caminos.`, [[2 * n, "Sumaste. Se multiplica."]]];
+  if (level === 1) {
+    const side = pick(rng, ["izquierdo", "derecho"]);
+    return [`Galton: ${n} filas, extremo ${side}`, 1 / 2 ** n, `Con ${n} filas, ¿cuál es la probabilidad de llegar al extremo ${side}? Responde como fracción.`,
+      `Hay que ir siempre a la ${side === "izquierdo" ? "izquierda" : "derecha"}: 1 camino.`, `1 camino de ${2 ** n}: 1/${2 ** n}.`, [[1 / n, `Hay ${2 ** n} caminos, no ${n}.`]]];
+  }
+  return ["Galton: 2 filas, centro", 0.5, "Con 2 filas, ¿cuál es la probabilidad de caer en el centro?", "Caminos: II, ID, DI, DD. ¿Cuántos llegan al centro?",
+    "ID y DI: 2 de 4 = 1/2.", [[0.25, "Al centro llegan 2 caminos (ID y DI)."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -1558,6 +1768,17 @@ export const generators = {
   "algebra-producto": algebraProducto,
   isometrias,
   cuartiles,
+  "racionales-operatoria": racionalesOperatoria,
+  "crecimiento-exponencial": crecimientoExponencial,
+  "funcion-dos-variables": funcionDosVariables,
+  "sectores-circulares": sectoresCirculares,
+  cono,
+  homotecia,
+  tales,
+  semejanza,
+  "doble-entrada": dobleEntrada,
+  "reglas-probabilidad": reglasProbabilidad,
+  galton,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);

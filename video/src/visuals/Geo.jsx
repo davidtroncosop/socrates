@@ -303,6 +303,9 @@ export function Plane({ prev, cur, t, beat }) {
           <path d="M 0 0 L 10 5 L 0 10 z" fill={C.green} />
         </marker>
       </defs>
+      {(cur.polygons ?? []).map((list, i) => (
+        <polygon key={`p${i}`} points={list.map(P).map((p) => p.join(",")).join(" ")} fill={i ? C.greenSoft : "#bfdbfe"} stroke={i ? C.green : C.blue} strokeWidth={5} opacity={i && !prev?.polygons?.[i] ? o : 0.9} />
+      ))}
       {(cur.points ?? []).map(([x, y, label], i) => {
         const [px, py] = P([x, y]);
         return (
@@ -312,6 +315,102 @@ export function Plane({ prev, cur, t, beat }) {
           </g>
         );
       })}
+    </svg>
+  );
+}
+
+// Sector circular: un trozo de pizza de `angle` grados.
+export function Sector({ prev, cur, t, beat }) {
+  const o = prev && prev.angle === cur.angle ? 1 : during(t, beat, 0.6);
+  const cx = 960;
+  const cy = 600;
+  const R = 270;
+  const span = cur.angle * o;
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      <circle cx={cx} cy={cy} r={R} fill="#f1f5f9" stroke={C.beam} strokeWidth={5} />
+      {span >= 359.9 ? (
+        <circle cx={cx} cy={cy} r={R} fill="#bfdbfe" stroke={C.blue} strokeWidth={5} />
+      ) : (
+        <path d={arc(cx, cy, R, 90, span)} fill="#bfdbfe" stroke={C.blue} strokeWidth={5} />
+      )}
+      {cur.arc && <path d={(() => { const [x1, y1] = at(cx, cy, R, 90); const [x2, y2] = at(cx, cy, R, 90 + span); return `M ${x1} ${y1} A ${R} ${R} 0 ${span > 180 ? 1 : 0} 0 ${x2} ${y2}`; })()} fill="none" stroke={C.red} strokeWidth={12} />}
+      <line x1={cx} y1={cy} x2={cx} y2={cy - R} stroke={C.amber} strokeWidth={6} />
+      <text x={cx + 18} y={cy - R / 2} fontSize={44} fontWeight={800} fill={C.amberDark}>{cur.r ?? "r"}</text>
+      {o > 0.9 && <text {...(([x, y]) => ({ x, y: y + 16 }))(at(cx, cy, 90, 90 + cur.angle / 2))} textAnchor="middle" fontSize={44} fontWeight={800} fill={C.blueDark}>{cur.angle}°</text>}
+      {cur.label && <text x={cx + R + 60} y={cy + 16} fontSize={52} fontWeight={800} fill={C.ink}>{cur.label}</text>}
+    </svg>
+  );
+}
+
+// Teorema de Tales: dos rectas que salen de un punto, cortadas por paralelas.
+export function Tales({ prev, cur, t, beat }) {
+  const o = prev && prev.k === cur.k ? 1 : during(t, beat, 0.6);
+  const O = [520, 820];
+  const dirA = [1, -0.62];
+  const dirB = [1, 0.02];
+  const steps = [0, 260, 260 * (1 + cur.k)];
+  const P = (dir, d) => [O[0] + dir[0] * d, O[1] + dir[1] * d];
+  const labels = cur.labels ?? [];
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      <line x1={O[0]} y1={O[1]} x2={P(dirA, 1050)[0]} y2={P(dirA, 1050)[1]} stroke={C.beam} strokeWidth={5} />
+      <line x1={O[0]} y1={O[1]} x2={P(dirB, 1050)[0]} y2={P(dirB, 1050)[1]} stroke={C.beam} strokeWidth={5} />
+      {steps.slice(1).map((d, i) => {
+        const [ax, ay] = P(dirA, d);
+        const [bx, by] = P(dirB, d);
+        return <line key={i} x1={ax - 40} y1={ay - 40 * ((by - ay) / (bx - ax || 1))} x2={bx} y2={by + 40} stroke={C.green} strokeWidth={5} strokeDasharray="16 10" opacity={i ? o : 1} />;
+      })}
+      {[0, 1].map((i) => {
+        const [a1, a2] = [P(dirA, steps[i]), P(dirA, steps[i + 1])];
+        const [b1, b2] = [P(dirB, steps[i]), P(dirB, steps[i + 1])];
+        return (
+          <g key={i} opacity={i ? o : 1}>
+            <text x={(a1[0] + a2[0]) / 2 - 20} y={(a1[1] + a2[1]) / 2 - 24} textAnchor="middle" fontSize={48} fontWeight={800} fill={C.blue}>{labels[i]}</text>
+            <text x={(b1[0] + b2[0]) / 2} y={(b1[1] + b2[1]) / 2 + 60} textAnchor="middle" fontSize={48} fontWeight={800} fill={C.amberDark}>{labels[i + 2]}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+// Tablero de Galton: clavos en triángulo y, opcionalmente, un camino marcado.
+export function Galton({ prev, cur, t, beat }) {
+  const rows = cur.rows;
+  const o = prev && JSON.stringify(prev.path) === JSON.stringify(cur.path) ? 1 : during(t, beat, 0.7);
+  const dx = 120;
+  const dy = 110;
+  const top = 300;
+  const peg = (r, i) => [960 + (i - r / 2) * dx, top + r * dy];
+  const path = cur.path ?? [];
+  const points = [[960, top - 70]];
+  let pos = 0;
+  path.forEach((step, r) => {
+    points.push(peg(r, pos).map((v, k) => (k ? v - 30 : v)));
+    if (step === "D") pos += 1;
+  });
+  if (path.length) points.push(peg(rows, pos));
+  const shown = Math.max(1, Math.round(o * points.length));
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      {Array.from({ length: rows }, (_, r) => Array.from({ length: r + 1 }, (_, i) => {
+        const [x, y] = peg(r, i);
+        return <circle key={`${r}-${i}`} cx={x} cy={y} r={14} fill={C.beam} />;
+      }))}
+      {Array.from({ length: rows + 1 }, (_, i) => {
+        const [x, y] = peg(rows, i);
+        return (
+          <g key={i}>
+            <rect x={x - dx / 2 + 8} y={y - 20} width={dx - 16} height={90} rx={10} fill={cur.highlight === i ? C.amberSoft : "#f1f5f9"} stroke={C.line} strokeWidth={3} />
+            {cur.counts && <text x={x} y={y + 40} textAnchor="middle" fontSize={40} fontWeight={800} fill={C.ink}>{cur.counts[i]}</text>}
+          </g>
+        );
+      })}
+      {path.length > 0 && (
+        <polyline points={points.slice(0, shown).map((p) => p.join(",")).join(" ")} fill="none" stroke={C.red} strokeWidth={8} strokeLinejoin="round" />
+      )}
+      {path.length > 0 && <circle cx={points[shown - 1][0]} cy={points[shown - 1][1]} r={20} fill={C.red} />}
     </svg>
   );
 }

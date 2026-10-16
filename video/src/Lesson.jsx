@@ -4,7 +4,7 @@ import { LEAD } from "./timeline.js";
 import { C, clamp01 } from "./anim.js";
 import { Balance } from "./visuals/Balance.jsx";
 import { Cards, List, Lines, Marked, Passage, Steps, Table } from "./visuals/Text.jsx";
-import { Angles, Bars, Pie, Plane, Poly, Trapezoid } from "./visuals/Geo.jsx";
+import { Angles, Bars, Galton, Pie, Plane, Poly, Sector, Tales, Trapezoid } from "./visuals/Geo.jsx";
 import { Area, Bar, Chart, Circle, Freq, Grid100, NumberLine, Shape, Tokens, Triangle } from "./visuals/Math.jsx";
 
 const { fontFamily } = loadFont("normal", { weights: ["500", "600", "700", "800"], subsets: ["latin"] });
@@ -33,6 +33,9 @@ const VISUALS = {
   poly: Poly,
   trapezoid: Trapezoid,
   plane: Plane,
+  sector: Sector,
+  tales: Tales,
+  galton: Galton,
 };
 
 // Zona disponible para la visualización: bajo la ecuación (si hay) y sobre

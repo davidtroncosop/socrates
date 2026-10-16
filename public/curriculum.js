@@ -4327,5 +4327,915 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "racionales-operatoria",
+    "since": "2026-10-16",
+    "title": "Operaciones con números racionales",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 01 · Todo como fracción",
+    "concept": "Si hay fracciones y decimales mezclados, pásalos todos a fracción: 0,5 = 1/2 y 0,25 = 1/4. Después respeta el orden de siempre (PAPOMUDAS): primero paréntesis y potencias, luego multiplicación y división, y al final suma y resta.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-01\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "0,5 + 1/4 = 1/2 + 1/4 = 2/4 + 1/4 = 3/4. Y 1/2 + 1/3 · 3/2 = 1/2 + 1/2 = 1.",
+    "status": "published",
+    "questions": [
+      [
+        "0,5 + 1/4",
+        0.75,
+        "Calcula. Puedes responder como fracción o decimal.",
+        "🔁 Pasa 0,5 a fracción: es 1/2.",
+        "1/2 + 1/4 = 2/4 + 1/4 = 3/4.",
+        [
+          [
+            0.3333333333333333,
+            "Sumaste arriba y abajo por separado. Primero partes iguales: 2/4 + 1/4 = 3/4."
+          ]
+        ]
+      ],
+      [
+        "1/2 + 1/3 · 3/2",
+        1,
+        "Calcula respetando el orden de las operaciones.",
+        "Primero la multiplicación: 1/3 · 3/2.",
+        "1/3 · 3/2 = 3/6 = 1/2; 1/2 + 1/2 = 1.",
+        [
+          [
+            1.25,
+            "Sumaste antes de multiplicar. Primero 1/3 · 3/2 = 1/2; después 1/2 + 1/2 = 1."
+          ]
+        ]
+      ],
+      [
+        "(1/2)² · 8",
+        2,
+        "Calcula.",
+        "Primero la potencia: (1/2)² = 1/4.",
+        "(1/2)² = 1/4; 1/4 · 8 = 2.",
+        [
+          [
+            8,
+            "(1/2)² no es 1. Es 1/2 · 1/2 = 1/4; 1/4 · 8 = 2."
+          ],
+          [
+            4,
+            "Elevar al cuadrado no es multiplicar por 2: (1/2)² = 1/4. Resultado 2."
+          ]
+        ]
+      ],
+      [
+        "3/4 de 1,2",
+        0.9,
+        "Una botella tiene 1,2 litros y tomas 3/4. ¿Cuántos litros tomaste?",
+        "«de» es multiplicar: 3/4 · 1,2.",
+        "1,2 ÷ 4 = 0,3; 0,3 · 3 = 0,9 litros.",
+        [
+          [
+            0.3,
+            "Ese es 1/4. Tomaste 3/4: 0,3 · 3 = 0,9."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "0,25 + 1/2",
+      0.75,
+      "Calcula.",
+      "0,25 es 1/4.",
+      "1/4 + 2/4 = 3/4.",
+      [
+        [
+          0.3333333333333333,
+          "Primero partes iguales: 1/4 + 2/4 = 3/4."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "crecimiento-exponencial",
+    "since": "2026-10-16",
+    "title": "Crecimiento exponencial",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 02 · Se duplica cada vez",
+    "concept": "Algo crece exponencialmente cuando se multiplica por el mismo número en cada paso. Si 3 bacterias se duplican cada hora, después de 4 horas hay 3 · 2 · 2 · 2 · 2 = 3 · 2⁴ = 48. Si se divide en cada paso, decrece: la mitad, la mitad…\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-02\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Un rumor: 1 persona se lo cuenta a 3, cada una a otras 3… En el paso 4 lo saben 3⁴ = 81 personas nuevas.",
+    "status": "published",
+    "questions": [
+      [
+        "3 · 2⁴",
+        48,
+        "Hay 3 bacterias y se duplican cada hora. ¿Cuántas hay después de 4 horas?",
+        "📈 Se multiplica por 2 cuatro veces.",
+        "3 → 6 → 12 → 24 → 48.",
+        [
+          [
+            11,
+            "Sumaste 2 cuatro veces. Se duplica: se multiplica por 2: 48."
+          ],
+          [
+            24,
+            "Esa es la hora 3. Una vez más: 48."
+          ]
+        ]
+      ],
+      [
+        "2⁵",
+        32,
+        "Una cadena de mensajes: cada persona lo manda a 2 nuevas. ¿Cuántas personas nuevas lo reciben en el paso 5?",
+        "2 · 2 · 2 · 2 · 2.",
+        "2⁵ = 32.",
+        [
+          [
+            10,
+            "No es 2 · 5. Es 2 multiplicado 5 veces: 32."
+          ]
+        ]
+      ],
+      [
+        "800 · (1/2)³",
+        100,
+        "Un remedio se reduce a la mitad cada 6 horas. Si hay 800 mg, ¿cuánto queda después de 3 mitades?",
+        "800 → 400 → 200 → …",
+        "800 → 400 → 200 → 100 mg.",
+        [
+          [
+            200,
+            "Esa es la segunda mitad. Una vez más: 100."
+          ],
+          [
+            266.6666666666667,
+            "No se divide por 3: se parte por la mitad 3 veces. 100."
+          ]
+        ]
+      ],
+      [
+        "1000 · 1,1²",
+        1210,
+        "Tienes $1.000 y cada año aumenta un 10 % (se multiplica por 1,1). ¿Cuánto tienes después de 2 años?",
+        "1.000 · 1,1 = 1.100; y otra vez · 1,1.",
+        "1.000 → 1.100 → 1.210.",
+        [
+          [
+            1200,
+            "El segundo año el 10 % es de 1.100, no de 1.000: 1.210."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "5 · 2³",
+      40,
+      "Hay 5 conejos y la población se duplica cada mes. ¿Cuántos hay después de 3 meses?",
+      "5 → 10 → 20 → …",
+      "5 · 2 · 2 · 2 = 40.",
+      [
+        [
+          11,
+          "Se multiplica por 2 cada mes, no se suma: 40."
+        ],
+        [
+          30,
+          "5 · 2³ no es 5 · 6. Es 5 · 8 = 40."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "funcion-dos-variables",
+    "since": "2026-10-16",
+    "title": "Funciones de dos variables",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 05 · Dos cantidades a la vez",
+    "concept": "Algunas cuentas dependen de dos cantidades. Si la entrada de adulto cuesta $2.000 y la de niño $1.000, el total es f(x, y) = 2.000x + 1.000y, con x adultos e y niños. Para calcular, reemplaza cada letra por su número.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "f(2, 3) = 2.000 · 2 + 1.000 · 3 = 4.000 + 3.000 = $7.000.",
+    "status": "published",
+    "questions": [
+      [
+        "f(2, 3) con f(x, y) = 2000x + 1000y",
+        7000,
+        "Entradas: adulto $2.000 (x), niño $1.000 (y). ¿Cuánto pagan 2 adultos y 3 niños?",
+        "🎟️ Reemplaza x por 2 e y por 3.",
+        "2.000 · 2 + 1.000 · 3 = 4.000 + 3.000 = 7.000.",
+        [
+          [
+            5000,
+            "Sumaste 2.000 + 1.000 + 2. Reemplaza: 2.000 · 2 + 1.000 · 3 = 7.000."
+          ],
+          [
+            15000,
+            "Cruzaste los números: x son adultos (2) e y niños (3). 7.000."
+          ]
+        ]
+      ],
+      [
+        "f(4, 1) con f(x, y) = 3x + 5y",
+        17,
+        "Calcula f(4, 1).",
+        "x = 4 e y = 1.",
+        "3 · 4 + 5 · 1 = 12 + 5 = 17.",
+        [
+          [
+            23,
+            "Cruzaste los valores: x = 4 va con el 3. 3 · 4 + 5 · 1 = 17."
+          ]
+        ]
+      ],
+      [
+        "2x + 3y = 12 con x = 3",
+        2,
+        "Si 2x + 3y = 12 y x = 3, ¿cuánto vale y?",
+        "Reemplaza x: 6 + 3y = 12.",
+        "6 + 3y = 12; 3y = 6; y = 2.",
+        [
+          [
+            6,
+            "Ese es 3y. Divide por 3: y = 2."
+          ]
+        ]
+      ],
+      [
+        "500x + 300y = 3100 con x = 5",
+        2,
+        "Empanadas a $500 (x) y bebidas a $300 (y). Pagaste $3.100 y compraste 5 empanadas. ¿Cuántas bebidas compraste?",
+        "5 empanadas cuestan 2.500.",
+        "2.500 + 300y = 3.100; 300y = 600; y = 2.",
+        [
+          [
+            600,
+            "Ese es el dinero de las bebidas. Divide por 300: 2 bebidas."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "f(1, 2) con f(x, y) = 4x + 3y",
+      10,
+      "Calcula f(1, 2).",
+      "x = 1 e y = 2.",
+      "4 · 1 + 3 · 2 = 4 + 6 = 10.",
+      [
+        [
+          11,
+          "Cruzaste los valores: 4 · 1 + 3 · 2 = 10."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "sectores-circulares",
+    "since": "2026-10-16",
+    "title": "Sectores circulares",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 06 · Un trozo de pizza",
+    "concept": "Un sector circular es un trozo de pizza. Si el ángulo es 90°, es un cuarto del círculo (90 ÷ 360 = 1/4). Su área es un cuarto del área del círculo: π · r² ÷ 4. Con 180° es la mitad; con 120°, un tercio; con 60°, un sexto. Usa π ≈ 3,14.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-06\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Sector de 90° y radio 4: el círculo tiene 3,14 · 16 = 50,24, y un cuarto es 12,56.",
+    "status": "published",
+    "questions": [
+      [
+        "Sector de 90°, radio 4 cm",
+        12.56,
+        "Calcula el área del sector en cm². Usa π = 3,14.",
+        "🍕 90° es un cuarto del círculo.",
+        "3,14 · 4 · 4 = 50,24; 50,24 ÷ 4 = 12,56 cm².",
+        [
+          [
+            50.24,
+            "Ese es el círculo completo. 90° es un cuarto: 12,56."
+          ],
+          [
+            25.12,
+            "Esa es la mitad. 90° es un cuarto: 12,56."
+          ]
+        ]
+      ],
+      [
+        "¿Qué parte del círculo es 120°?",
+        0.3333333333333333,
+        "¿Qué fracción del círculo es un sector de 120°? Responde como fracción.",
+        "Un círculo completo tiene 360°.",
+        "120 ÷ 360 = 1/3.",
+        [
+          [
+            3,
+            "Dividiste al revés. 120 ÷ 360 = 1/3."
+          ]
+        ]
+      ],
+      [
+        "Sector de 180°, radio 2 cm",
+        6.28,
+        "Calcula el área del sector en cm². Usa π = 3,14.",
+        "180° es la mitad.",
+        "3,14 · 2 · 2 = 12,56; la mitad es 6,28 cm².",
+        [
+          [
+            12.56,
+            "Ese es el círculo completo. La mitad: 6,28."
+          ]
+        ]
+      ],
+      [
+        "Arco de 90°, radio 10 cm",
+        15.7,
+        "¿Cuánto mide el borde curvo (el arco) de un sector de 90° y radio 10 cm? Usa π = 3,14.",
+        "El borde completo mide 2 · π · r. Toma un cuarto.",
+        "2 · 3,14 · 10 = 62,8; 62,8 ÷ 4 = 15,7 cm.",
+        [
+          [
+            62.8,
+            "Ese es el borde completo. 90° es un cuarto: 15,7."
+          ],
+          [
+            78.5,
+            "Esa es el área. El arco es el borde: 15,7."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Sector de 90°, radio 2 cm",
+      3.14,
+      "Calcula el área del sector en cm². Usa π = 3,14.",
+      "Un cuarto del círculo.",
+      "3,14 · 4 = 12,56; 12,56 ÷ 4 = 3,14 cm².",
+      [
+        [
+          12.56,
+          "Ese es el círculo completo. Un cuarto: 3,14."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "cono",
+    "since": "2026-10-16",
+    "title": "Volumen del cono",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 07 · Tres conos llenan un cilindro",
+    "concept": "Un cono con la misma base y altura que un cilindro cabe 3 veces en él. Por eso su volumen es el del cilindro dividido en 3: π · r² · h ÷ 3. Usa π ≈ 3,14.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-07\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Cono de radio 3 y altura 4: cilindro 3,14 · 9 · 4 = 113,04; cono 113,04 ÷ 3 = 37,68.",
+    "status": "published",
+    "questions": [
+      [
+        "Cono: radio 3 cm, altura 4 cm",
+        37.68,
+        "Calcula el volumen en cm³. Usa π = 3,14.",
+        "🍦 Calcula el cilindro y divide en 3.",
+        "3,14 · 3 · 3 · 4 = 113,04; 113,04 ÷ 3 = 37,68 cm³.",
+        [
+          [
+            113.04,
+            "Ese es el cilindro. El cono es un tercio: 37,68."
+          ]
+        ]
+      ],
+      [
+        "Cilindro de 90 cm³",
+        30,
+        "Un cilindro tiene 90 cm³. ¿Cuál es el volumen de un cono con la misma base y la misma altura?",
+        "Tres conos llenan el cilindro.",
+        "90 ÷ 3 = 30 cm³.",
+        [
+          [
+            45,
+            "No es la mitad: es un tercio. 90 ÷ 3 = 30."
+          ],
+          [
+            270,
+            "El cono es más chico: 90 ÷ 3 = 30."
+          ]
+        ]
+      ],
+      [
+        "Cono: radio 1 cm, altura 6 cm",
+        6.28,
+        "Calcula el volumen en cm³. Usa π = 3,14.",
+        "3,14 · 1 · 1 · 6 ÷ 3.",
+        "3,14 · 6 = 18,84; 18,84 ÷ 3 = 6,28 cm³.",
+        [
+          [
+            18.84,
+            "Falta dividir por 3: 6,28."
+          ]
+        ]
+      ],
+      [
+        "Cono: radio 2 cm, altura 9 cm",
+        37.68,
+        "Un cono de helado tiene radio 2 cm y altura 9 cm. ¿Cuántos cm³ de helado caben (sin el copete)? Usa π = 3,14.",
+        "Cilindro: 3,14 · 4 · 9. Después ÷ 3.",
+        "3,14 · 4 · 9 = 113,04; ÷ 3 = 37,68 cm³.",
+        [
+          [
+            113.04,
+            "Falta dividir por 3: 37,68."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Cilindro de 60 cm³",
+      20,
+      "Un cilindro tiene 60 cm³. ¿Cuál es el volumen de un cono con la misma base y altura?",
+      "Un tercio.",
+      "60 ÷ 3 = 20 cm³.",
+      [
+        [
+          30,
+          "No es la mitad: es un tercio. 20."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "homotecia",
+    "since": "2026-10-16",
+    "title": "Homotecia",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 08 · Agrandar o achicar desde un punto",
+    "concept": "Una homotecia agranda o achica una figura desde un punto, como una linterna que proyecta una sombra. La razón k dice cuántas veces: con k = 2 todo mide el doble; con k = 1/2, la mitad. Desde el origen, el punto (x, y) llega a (k · x, k · y).\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-08\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Un segmento de 4 cm con k = 3 mide 12 cm. El punto (2, 3) con k = 2 desde el origen llega a (4, 6).",
+    "status": "published",
+    "questions": [
+      [
+        "Segmento de 4 cm, k = 3",
+        12,
+        "Un segmento mide 4 cm. Le aplicas una homotecia de razón 3. ¿Cuánto mide ahora?",
+        "🔦 k = 3: todo mide el triple.",
+        "4 · 3 = 12 cm.",
+        [
+          [
+            7,
+            "Sumaste. La homotecia multiplica: 4 · 3 = 12."
+          ]
+        ]
+      ],
+      [
+        "(2, 3) con k = 2: ¿y?",
+        6,
+        "Aplicas una homotecia desde el origen con k = 2 al punto (2, 3). ¿Cuál es la nueva y?",
+        "Multiplica cada coordenada por 2.",
+        "(2, 3) → (4, 6).",
+        [
+          [
+            5,
+            "Sumaste 2. Se multiplica: 3 · 2 = 6."
+          ],
+          [
+            4,
+            "Esa es la nueva x. La y es 3 · 2 = 6."
+          ]
+        ]
+      ],
+      [
+        "Lado de 10 cm, k = 1/2",
+        5,
+        "Un lado mide 10 cm. Con una homotecia de razón 1/2, ¿cuánto mide?",
+        "k = 1/2 es la mitad.",
+        "10 · 1/2 = 5 cm.",
+        [
+          [
+            20,
+            "k = 1/2 achica: la mitad, 5."
+          ]
+        ]
+      ],
+      [
+        "De 3 cm a 15 cm: ¿k?",
+        5,
+        "Un dibujo de 3 cm se proyecta y mide 15 cm. ¿Cuál es la razón k?",
+        "¿Por cuánto se multiplicó 3 para llegar a 15?",
+        "15 ÷ 3 = 5.",
+        [
+          [
+            12,
+            "Restaste. k es cuántas veces: 15 ÷ 3 = 5."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Segmento de 6 cm, k = 2",
+      12,
+      "Un segmento mide 6 cm. Con una homotecia de razón 2, ¿cuánto mide?",
+      "Todo mide el doble.",
+      "6 · 2 = 12 cm.",
+      [
+        [
+          8,
+          "Se multiplica: 6 · 2 = 12."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "tales",
+    "since": "2026-10-16",
+    "title": "Teorema de Tales",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 09 · Las paralelas cortan en la misma proporción",
+    "concept": "Si dos rectas son cortadas por rectas paralelas, los trozos quedan en la misma proporción. Si en una recta los trozos miden 2 y 4, y en la otra el primero mide 3, el segundo mide 6: se multiplicó por 2 en las dos. Se escribe 2/4 = 3/x.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-09\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "2/4 = 3/x: 4 es el doble de 2, así que x es el doble de 3: x = 6.",
+    "status": "published",
+    "questions": [
+      [
+        "2/4 = 3/x",
+        6,
+        "Tres paralelas cortan dos rectas. En una, los trozos miden 2 y 4. En la otra, el primero mide 3. ¿Cuánto mide el segundo?",
+        "📐 4 es el doble de 2. El otro trozo también es el doble.",
+        "4 = 2 · 2, así que x = 3 · 2 = 6.",
+        [
+          [
+            5,
+            "Sumaste 2 (como de 2 a 4). Es proporción: se multiplica. x = 6."
+          ]
+        ]
+      ],
+      [
+        "3/9 = 4/x",
+        12,
+        "Encuentra x en la proporción de Tales 3/9 = 4/x.",
+        "9 es el triple de 3.",
+        "x = 4 · 3 = 12.",
+        [
+          [
+            10,
+            "Sumaste 6. 9 es el triple de 3: x = 12."
+          ]
+        ]
+      ],
+      [
+        "5/x = 10/8",
+        4,
+        "Encuentra x en 5/x = 10/8.",
+        "10 es el doble de 5. Entonces 8 es el doble de x.",
+        "x = 8 ÷ 2 = 4.",
+        [
+          [
+            16,
+            "Al revés: 8 es el doble de x, así que x = 4."
+          ],
+          [
+            3,
+            "Restaste. Es proporción: x = 8 ÷ 2 = 4."
+          ]
+        ]
+      ],
+      [
+        "Sombra: 2 m → 3 m; edificio con sombra de 30 m",
+        20,
+        "Un poste de 2 m da una sombra de 3 m. A la misma hora, un edificio da una sombra de 30 m. ¿Cuánto mide el edificio?",
+        "La sombra del edificio es 10 veces la del poste.",
+        "30 = 3 · 10, así que el edificio mide 2 · 10 = 20 m.",
+        [
+          [
+            29,
+            "Sumaste 27 como en la sombra. Es proporción: 2 · 10 = 20 m."
+          ],
+          [
+            45,
+            "Cruzaste los datos: la altura va con la altura. 2 · 10 = 20."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "4/8 = 5/x",
+      10,
+      "Encuentra x en 4/8 = 5/x.",
+      "8 es el doble de 4.",
+      "x = 5 · 2 = 10.",
+      [
+        [
+          9,
+          "Sumaste 4. Se multiplica: x = 10."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "semejanza",
+    "since": "2026-10-16",
+    "title": "Semejanza y escalas",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 10 · Misma forma, otro tamaño",
+    "concept": "Dos figuras son semejantes si tienen la misma forma pero distinto tamaño: todos sus lados se multiplican por el mismo número. Una escala 1 : 100 dice que 1 cm del dibujo son 100 cm (1 m) reales.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-10\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "En un plano 1 : 100, una pieza de 4 cm mide 400 cm = 4 m reales.",
+    "status": "published",
+    "questions": [
+      [
+        "Plano 1 : 100, 4 cm",
+        4,
+        "En un plano a escala 1 : 100, una pieza mide 4 cm. ¿Cuántos metros mide en la realidad?",
+        "🗺️ 1 cm del plano son 100 cm = 1 m.",
+        "4 · 100 = 400 cm = 4 m.",
+        [
+          [
+            400,
+            "Esos son centímetros. En metros: 4."
+          ],
+          [
+            0.04,
+            "Al revés: la realidad es más grande. 4 m."
+          ]
+        ]
+      ],
+      [
+        "Triángulos semejantes: 3 → 6, 5 → ?",
+        10,
+        "Dos triángulos son semejantes. Un lado de 3 cm corresponde a uno de 6 cm. ¿Cuánto mide el lado que corresponde a uno de 5 cm?",
+        "6 es el doble de 3.",
+        "5 · 2 = 10 cm.",
+        [
+          [
+            8,
+            "Sumaste 3. Es semejanza: todo se multiplica por 2. 10."
+          ]
+        ]
+      ],
+      [
+        "Maqueta 1 : 50, 30 cm",
+        15,
+        "Una maqueta a escala 1 : 50 tiene una torre de 30 cm. ¿Cuántos metros mide la torre real?",
+        "30 · 50 = 1.500 cm.",
+        "1.500 cm = 15 m.",
+        [
+          [
+            1500,
+            "Esos son centímetros. En metros: 15."
+          ]
+        ]
+      ],
+      [
+        "Mapa 1 : 100000, 5 cm",
+        5,
+        "En un mapa a escala 1 : 100.000, dos pueblos están a 5 cm. ¿Cuántos km los separan?",
+        "1 cm del mapa son 100.000 cm = 1 km.",
+        "5 · 1 km = 5 km.",
+        [
+          [
+            500000,
+            "Esos son centímetros. 100.000 cm = 1 km, así que son 5 km."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Plano 1 : 100, 7 cm",
+      7,
+      "En un plano a escala 1 : 100, una pared mide 7 cm. ¿Cuántos metros mide en la realidad?",
+      "1 cm = 1 m.",
+      "7 · 100 = 700 cm = 7 m.",
+      [
+        [
+          700,
+          "Esos son centímetros: 7 m."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "doble-entrada",
+    "since": "2026-10-16",
+    "title": "Tablas de doble entrada",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 12 · Filas y columnas",
+    "concept": "Una tabla de doble entrada cruza dos características: por ejemplo, curso (filas) y deporte favorito (columnas). Cada casilla cuenta a quienes cumplen las dos. Los totales de fila y columna suman todo.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-12\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Si en 1°A hay 8 de fútbol y 7 de básquetbol, el total de 1°A es 15.",
+    "status": "published",
+    "questions": [
+      [
+        "1°A: fútbol 8, básquetbol 7",
+        15,
+        "En una tabla, el 1°A tiene 8 estudiantes que prefieren fútbol y 7 básquetbol. ¿Cuál es el total de la fila 1°A?",
+        "📋 Suma la fila.",
+        "8 + 7 = 15.",
+        [
+          [
+            56,
+            "Multiplicaste. El total de la fila es la suma: 15."
+          ]
+        ]
+      ],
+      [
+        "Fútbol: 1°A 8, 1°B 10",
+        18,
+        "En la columna de fútbol, el 1°A tiene 8 y el 1°B 10. ¿Cuántos prefieren fútbol en total?",
+        "Suma la columna.",
+        "8 + 10 = 18.",
+        [
+          [
+            2,
+            "Restaste. El total de la columna es la suma: 18."
+          ]
+        ]
+      ],
+      [
+        "1°B: fútbol 10 de 20",
+        50,
+        "En el 1°B hay 20 estudiantes y 10 prefieren fútbol. ¿Qué porcentaje del 1°B prefiere fútbol?",
+        "10 de 20.",
+        "10 ÷ 20 = 0,5 = 50 %.",
+        [
+          [
+            10,
+            "Esa es la cantidad. En porcentaje: 50."
+          ]
+        ]
+      ],
+      [
+        "Total 40, fútbol 18",
+        22,
+        "En total hay 40 estudiantes y 18 prefieren fútbol. Si el resto prefiere básquetbol, ¿cuántos prefieren básquetbol?",
+        "Resta del total.",
+        "40 − 18 = 22.",
+        [
+          [
+            58,
+            "Sumaste. El resto es 40 − 18 = 22."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "1°C: fútbol 6, básquetbol 9",
+      15,
+      "El 1°C tiene 6 de fútbol y 9 de básquetbol. ¿Cuál es el total de la fila?",
+      "Suma la fila.",
+      "6 + 9 = 15.",
+      [
+        [
+          54,
+          "Multiplicaste. Es la suma: 15."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "reglas-probabilidad",
+    "since": "2026-10-16",
+    "title": "Reglas de la probabilidad",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 14 · «O» suma, «y» multiplica",
+    "concept": "Si dos resultados no pueden pasar a la vez, la probabilidad de uno «o» el otro es la suma: sacar 1 o 2 en un dado es 1/6 + 1/6 = 2/6. Si dos sucesos no se afectan, la probabilidad de uno «y» el otro es el producto: cara y un 6 es 1/2 · 1/6 = 1/12.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-14\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Lanzar dos monedas y sacar dos caras: 1/2 · 1/2 = 1/4.",
+    "status": "published",
+    "questions": [
+      [
+        "Dado: 1 o 2",
+        0.3333333333333333,
+        "Lanzas un dado. ¿Cuál es la probabilidad de sacar 1 o 2? Responde como fracción.",
+        "🎲 «O» se suma: 1/6 + 1/6.",
+        "1/6 + 1/6 = 2/6 = 1/3.",
+        [
+          [
+            0.027777777777777776,
+            "Multiplicaste. «O» se suma: 2/6 = 1/3."
+          ]
+        ]
+      ],
+      [
+        "Moneda y dado: cara y 6",
+        0.08333333333333333,
+        "Lanzas una moneda y un dado. ¿Cuál es la probabilidad de cara y un 6?",
+        "«Y» se multiplica: 1/2 · 1/6.",
+        "1/2 · 1/6 = 1/12.",
+        [
+          [
+            0.6666666666666666,
+            "Sumaste. «Y» se multiplica: 1/12."
+          ]
+        ]
+      ],
+      [
+        "Dos monedas: dos caras",
+        0.25,
+        "Lanzas dos monedas. ¿Cuál es la probabilidad de dos caras?",
+        "1/2 · 1/2.",
+        "1/2 · 1/2 = 1/4.",
+        [
+          [
+            1,
+            "Sumaste. «Y» se multiplica: 1/4."
+          ],
+          [
+            0.5,
+            "Esa es una sola moneda. Las dos: 1/4."
+          ]
+        ]
+      ],
+      [
+        "Dado: par o 5",
+        0.6666666666666666,
+        "Lanzas un dado. ¿Cuál es la probabilidad de sacar un par o un 5?",
+        "Par: 3/6. Un 5: 1/6. Súmalas.",
+        "3/6 + 1/6 = 4/6 = 2/3.",
+        [
+          [
+            0.08333333333333333,
+            "Multiplicaste. «O» se suma: 4/6."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Dos dados: dos 6",
+      0.027777777777777776,
+      "Lanzas dos dados. ¿Cuál es la probabilidad de sacar 6 en los dos?",
+      "1/6 · 1/6.",
+      "1/36.",
+      [
+        [
+          0.3333333333333333,
+          "Sumaste. «Y» se multiplica: 1/36."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "galton",
+    "since": "2026-10-16",
+    "title": "Caminos al azar: el tablero de Galton",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 15 · Izquierda o derecha en cada clavo",
+    "concept": "En un tablero de Galton, una bolita cae y en cada clavo va a la izquierda o a la derecha, con la misma probabilidad. Con 3 filas hay 2 · 2 · 2 = 8 caminos. Llegar al extremo izquierdo exige ir siempre a la izquierda: 1 camino de 8. Al centro llegan más caminos.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-15\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Con 2 filas hay 4 caminos: II, ID, DI, DD. Al centro llegan 2 (ID y DI): probabilidad 2/4 = 1/2.",
+    "status": "published",
+    "questions": [
+      [
+        "Galton: 3 filas, ¿caminos?",
+        8,
+        "Una bolita pasa por 3 filas de clavos y en cada una va a la izquierda o a la derecha. ¿Cuántos caminos posibles hay?",
+        "🔻 En cada fila hay 2 opciones: 2 · 2 · 2.",
+        "2 · 2 · 2 = 8 caminos.",
+        [
+          [
+            6,
+            "Sumaste 2 + 2 + 2. Se multiplica: 8."
+          ]
+        ]
+      ],
+      [
+        "Galton: 3 filas, extremo izquierdo",
+        0.125,
+        "Con 3 filas, ¿cuál es la probabilidad de llegar al extremo izquierdo? Responde como fracción.",
+        "Hay que ir siempre a la izquierda: 1 camino.",
+        "1 camino de 8: 1/8.",
+        [
+          [
+            0.3333333333333333,
+            "Hay 8 caminos, no 3: 1/8."
+          ]
+        ]
+      ],
+      [
+        "Galton: 2 filas, centro",
+        0.5,
+        "Con 2 filas, ¿cuál es la probabilidad de caer en el centro?",
+        "Caminos: II, ID, DI, DD. ¿Cuántos llegan al centro?",
+        "ID y DI: 2 de 4 = 1/2.",
+        [
+          [
+            0.25,
+            "Al centro llegan 2 caminos (ID y DI), no 1: 2/4 = 1/2."
+          ]
+        ]
+      ],
+      [
+        "Galton: 4 filas, ¿caminos?",
+        16,
+        "Con 4 filas de clavos, ¿cuántos caminos posibles hay?",
+        "2 · 2 · 2 · 2.",
+        "2⁴ = 16 caminos.",
+        [
+          [
+            8,
+            "Esas son 3 filas. Con 4: 16."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Galton: 2 filas, ¿caminos?",
+      4,
+      "Con 2 filas de clavos, ¿cuántos caminos hay?",
+      "2 · 2.",
+      "4 caminos: II, ID, DI y DD.",
+      [
+        [
+          3,
+          "Hay 4 caminos: II, ID, DI y DD."
+        ]
+      ]
+    ]
   }
 ];
