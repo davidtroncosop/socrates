@@ -154,3 +154,21 @@ La importación comprueba estructura, identificadores, ejercicios faltantes, res
 - Si se borra el progreso en un dispositivo mientras otro sin conexión conserva el anterior, al reconectar ese otro dispositivo las lecciones completadas vuelven a sumarse.
 - El recordatorio usa horas en punto; en zonas horarias con media hora se envía en la hora local más cercana siguiente.
 - Antes de abrirla al público, revisa con asesoría legal la política de privacidad y el consentimiento parental según la Ley 21.719.
+
+## Respaldo
+
+Además del repositorio local, hay una copia en el bucket R2 `socatres-videos`, carpeta `respaldo/` (privada: el bucket no tiene acceso público y la app solo sirve `lessons/*.mp4`):
+
+- `socatres-AAAA-MM-DD.bundle`: el repositorio completo, con todas las ramas e historial.
+- `socatres-audio-AAAA-MM-DD.tgz.part-*`: las voces narradas (`video/public/audio`) y sus tiempos (`video/src/generated`), que no se versionan.
+
+Para restaurar:
+
+```sh
+npx wrangler r2 object get socatres-videos/respaldo/socatres-AAAA-MM-DD.bundle --file socatres.bundle --remote
+git clone socatres.bundle socatres
+# Audios (descarga cada parte con el mismo comando y únelas):
+cat socatres-audio-AAAA-MM-DD.tgz.part-* | tar -xzf - -C socatres/video
+```
+
+Los secretos (`.env`, `.dev.vars`) no se respaldan: guárdalos en un gestor de contraseñas.
