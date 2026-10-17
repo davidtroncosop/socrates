@@ -27,6 +27,11 @@ function baseAnswer(expr, id, prompt) {
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
+  if (LOTE11.includes(id)) {
+    const answer = lote11Answer(expr, id, prompt);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
   if (LOTE10.includes(id)) {
     const answer = lote10Answer(expr, id, prompt);
     assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
@@ -497,18 +502,11 @@ function lote8Answer(expr, id) {
 }
 
 // Lote 9 (4° Medio).
-const LOTE9 = ["interes", "credito", "sueldo-impuestos", "binomial", "normal", "funcion-potencia", "funciones-trigonometricas"];
+const LOTE9 = ["credito", "sueldo-impuestos", "binomial", "normal", "funcion-potencia", "funciones-trigonometricas"];
 function lote9Answer(expr, id) {
   let m;
   const n = (v) => Number(v.replace(/\./g, "").replace(",", "."));
   const val = (v) => Number(v.replace("−", "-"));
-  if (id === "interes") {
-    if ((m = expr.match(/^Simple: \$([\d.]+) al (\d+) % por (\d+) años(, total)?$/))) {
-      const i = (n(m[1]) * m[2] * m[3]) / 100;
-      return m[4] ? n(m[1]) + i : i;
-    }
-    if ((m = expr.match(/^Compuesto: \$([\d.]+) al (\d+) % por (\d+) años$/))) return Math.round(n(m[1]) * (1 + m[2] / 100) ** m[3]);
-  }
   if (id === "credito") {
     if ((m = expr.match(/^(\d+) cuotas de \$([\d.]+) por \$([\d.]+)$/))) return m[1] * n(m[2]) - n(m[3]);
     if ((m = expr.match(/^Costo \$([\d.]+) de \$([\d.]+): %$/))) return (n(m[1]) * 100) / n(m[2]);
@@ -639,6 +637,45 @@ function lote10Answer(expr, id, prompt) {
   return null;
 }
 
+// Lote 11: interés simple y compuesto, base de un logaritmo y número e.
+const LOTE11 = ["interes-simple", "interes-compuesto", "logaritmo-base", "numero-e"];
+function lote11Answer(expr, id, prompt) {
+  let m;
+  const n = (v) => Number(v.replace(/\./g, "").replace(",", "."));
+  const r2 = (v) => Math.round(v * 100) / 100;
+  const supd = (v) => Number(v.replace("⁻", "-").replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)));
+  const subd = (v) => Number([...v].map((c) => "₀₁₂₃₄₅₆₇₈₉".indexOf(c)).join(""));
+  if (id === "interes-simple") {
+    if ((m = expr.match(/^Simple: \$([\d.]+) al (\d+) % (?:mensual )?por (\d+) (?:años|meses)(, total)?$/))) {
+      const i = (n(m[1]) * m[2] * m[3]) / 100;
+      return m[4] ? n(m[1]) + i : i;
+    }
+    if ((m = expr.match(/^Simple: \$([\d.]+) con \$([\d.]+) al (\d+) %: ¿años\?$/))) return n(m[1]) / ((n(m[2]) * m[3]) / 100);
+  }
+  if (id === "interes-compuesto") {
+    if ((m = expr.match(/^Compuesto: (interés de )?\$([\d.]+) al (\d+) % por (\d+) años$/))) {
+      const total = r2(n(m[2]) * (1 + m[3] / 100) ** m[4]);
+      return m[1] ? r2(total - n(m[2])) : total;
+    }
+    if ((m = expr.match(/^\$([\d.]+) al (\d+) % por (\d+) años: compuesto − simple$/))) {
+      const [P, r, t] = [n(m[1]), m[2] / 100, Number(m[3])];
+      return r2(P * (1 + r) ** t - P * (1 + r * t));
+    }
+  }
+  if (id === "logaritmo-base") {
+    if ((m = expr.match(/^log (\d+)$/))) return Math.round(Math.log10(m[1]));
+    if ((m = expr.match(/^log ([\d,]+)$/))) return Math.round(Math.log10(n(m[1])));
+    if ((m = expr.match(/^log([₀-₉]+) (\d+)(?: = log \2 ÷ log \d+)?$/))) return Math.round(Math.log(m[2]) / Math.log(subd(m[1])));
+  }
+  if (id === "numero-e") {
+    if ((m = expr.match(/^ln\(e([⁰¹²³⁴⁵⁶⁷⁸⁹]+)\)$/))) return supd(m[1]);
+    if (expr === "ln 1") return 0;
+    if ((m = expr.match(/^\(1 \+ 1\/(\d)\)([²³⁴])$/))) return r2((1 + 1 / m[1]) ** supd(m[2]));
+    if ((m = expr.match(/^e([²³]) con e ≈ 2,7$/))) return r2(2.7 ** supd(m[1]));
+  }
+  return null;
+}
+
 // Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
 function solveSystem(expr) {
   const letters = [...new Set(expr.match(/[a-z]/g))];
@@ -698,7 +735,7 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
         else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos", "crecimiento-exponencial", "cono", "homotecia", "cambio-porcentual", "esfera", "funcion-inversa"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);

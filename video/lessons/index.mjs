@@ -93,7 +93,6 @@ import dispersion from "./dispersion.mjs";
 import probCond from "./probabilidad-condicional.mjs";
 import modExpLog from "./modelos-exp-log.mjs";
 import circAng from "./circunferencia-angulos.mjs";
-import interes from "./interes.mjs";
 import credito from "./credito.mjs";
 import sueldo from "./sueldo-impuestos.mjs";
 import binomial from "./binomial.mjs";
@@ -113,14 +112,19 @@ import composicion from "./composicion.mjs";
 import limites from "./limites.mjs";
 import derivadas from "./derivadas.mjs";
 import integrales from "./integrales.mjs";
+import interesSimple from "./interes-simple.mjs";
+import interesComp from "./interes-compuesto.mjs";
+import logBase from "./logaritmo-base.mjs";
+import numeroE from "./numero-e.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  interesSimple, interesComp, logBase, numeroE,
   talloHojas, teselados, construcciones, pit3d, engano, euclides, rectaAj, probSoc, valAbs, composicion, limites, derivadas, integrales,
-  complejos, complejosMult, dispersion, probCond, modExpLog, circAng, interes, credito, sueldo, binomial, normal, fPot, fTrig,
+  complejos, complejosMult, dispersion, probCond, modExpLog, circAng, credito, sueldo, binomial, normal, fPot, fTrig,
   raicesSimp, raicesEn, logaritmos, fCuad, eCuad, fInv, cambioPct, esfera, trigo, vectores, varAl, perm,
   racOp, crecExp, f2v, sectores, cono, homotecia, tales, semejanza, dobleEntrada, reglasProb, galton,
   entMult, racMult, variacion, algProd, isometrias, cuartiles,

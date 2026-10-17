@@ -5489,6 +5489,96 @@ export const curriculumLessons = [
     ]
   },
   {
+    "id": "logaritmo-base",
+    "since": "2026-10-20",
+    "title": "La base de un logaritmo",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 02 · El número que se repite",
+    "concept": "La base es el número que se multiplica una y otra vez. En log₂ 8 la base es 2: ¿cuántos 2 multiplico para llegar a 8? Tres. La base puede ser cualquier número positivo distinto de 1 (con 1 siempre da 1). La base 10 es la más usada porque es la de nuestro sistema de numeración: log 1.000 = 3 cuenta los ceros. Si tu calculadora solo tiene log (base 10), cambia de base así: log₂ 8 = log 8 ÷ log 2.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-02\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "log 100.000 = 5 (cinco ceros). log₄ 64 = 3, porque 4 · 4 · 4 = 64. log 0,01 = −2, porque 0,01 = 1/100 = 10⁻².",
+    "status": "published",
+    "questions": [
+      [
+        "log 100000",
+        5,
+        "Calcula. Sin base escrita, la base es 10.",
+        "🔟 Cuenta los ceros de 100.000.",
+        "100.000 = 10⁵, así que log 100.000 = 5.",
+        [
+          [
+            10000,
+            "Dividiste por 10. El logaritmo cuenta los ceros: 5."
+          ],
+          [
+            6,
+            "Contaste también el 1. Solo los ceros: 5."
+          ]
+        ]
+      ],
+      [
+        "log₄ 64",
+        3,
+        "Calcula. Aquí la base es 4.",
+        "¿Cuántos 4 multiplico para llegar a 64?",
+        "4 · 4 · 4 = 64: tres veces. log₄ 64 = 3.",
+        [
+          [
+            16,
+            "Dividiste 64 ÷ 4. Cuenta cuántas veces se multiplica el 4: 3."
+          ],
+          [
+            2,
+            "4 · 4 = 16, no 64. Una vez más: 3."
+          ]
+        ]
+      ],
+      [
+        "log 0,01",
+        -2,
+        "Calcula. Sin base escrita, la base es 10.",
+        "0,01 = 1/100 = 10⁻².",
+        "0,01 = 10⁻², así que log 0,01 = −2.",
+        [
+          [
+            2,
+            "Los números menores que 1 tienen logaritmo negativo: 0,01 = 10⁻², log = −2."
+          ]
+        ]
+      ],
+      [
+        "log₂ 8 = log 8 ÷ log 2",
+        3,
+        "Tu calculadora dice log 8 ≈ 0,903 y log 2 ≈ 0,301. Calcula log₂ 8 con el cambio de base.",
+        "Divide: log 8 ÷ log 2.",
+        "0,903 ÷ 0,301 = 3. Comprueba: 2³ = 8.",
+        [
+          [
+            0.602,
+            "Restaste. El cambio de base divide: 0,903 ÷ 0,301 = 3."
+          ],
+          [
+            0.333,
+            "Dividiste al revés: log 8 ÷ log 2 = 3."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "log₅ 125",
+      3,
+      "Calcula. Aquí la base es 5.",
+      "¿Cuántos 5 multiplico para llegar a 125?",
+      "5 · 5 · 5 = 125: log₅ 125 = 3.",
+      [
+        [
+          25,
+          "Dividiste 125 ÷ 5. Cuenta las veces: 3."
+        ]
+      ]
+    ]
+  },
+  {
     "id": "funcion-cuadratica",
     "since": "2026-10-16",
     "title": "Función cuadrática",
@@ -6677,6 +6767,96 @@ export const curriculumLessons = [
     ]
   },
   {
+    "id": "numero-e",
+    "since": "2026-10-20",
+    "title": "El número e y el logaritmo natural",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "FG-3M OA 3 · El crecimiento continuo",
+    "concept": "Si un banco te diera 100 % de interés al año, $1 llegaría a $2. Si lo pagara en dos mitades, (1 + 1/2)² = 2,25. En 12 meses, (1 + 1/12)¹² ≈ 2,61. Mientras más seguido, más se acerca a un número especial: e ≈ 2,718. El logaritmo en base e se llama logaritmo natural y se escribe ln: ln e³ = 3. Se usa para el crecimiento continuo, como poblaciones o interés continuo.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "ln(e⁴) = 4. ln 1 = 0, porque e⁰ = 1. Con e ≈ 2,7, e² ≈ 2,7 · 2,7 = 7,29.",
+    "status": "published",
+    "questions": [
+      [
+        "ln(e⁴)",
+        4,
+        "Calcula. ln es el logaritmo en base e.",
+        "🔁 ¿A qué exponente elevo e para obtener e⁴?",
+        "ln(e⁴) = 4: el exponente.",
+        [
+          [
+            54.6,
+            "No hace falta calcular e⁴: ln deshace la potencia de e y queda 4."
+          ],
+          [
+            1,
+            "ln(e) = 1, pero ln(e⁴) = 4."
+          ]
+        ]
+      ],
+      [
+        "ln 1",
+        0,
+        "Calcula.",
+        "¿A qué exponente elevo e para obtener 1?",
+        "e⁰ = 1, así que ln 1 = 0.",
+        [
+          [
+            1,
+            "e¹ = e, no 1. Todo número elevado a 0 da 1: ln 1 = 0."
+          ],
+          [
+            2.718,
+            "Ese es e. ln 1 = 0."
+          ]
+        ]
+      ],
+      [
+        "(1 + 1/2)²",
+        2.25,
+        "Un banco paga 100 % al año, pero en dos mitades (50 % cada semestre). ¿En cuánto se convierte $1 al año?",
+        "Cada semestre se multiplica por 1,5.",
+        "1,5 · 1,5 = 2,25.",
+        [
+          [
+            2,
+            "Eso es con un solo pago. Con dos pagos, el segundo 50 % es sobre 1,5: 2,25."
+          ],
+          [
+            3,
+            "No se suma 1 + 1/2 + 1/2 + …: se multiplica. 1,5 · 1,5 = 2,25."
+          ]
+        ]
+      ],
+      [
+        "e² con e ≈ 2,7",
+        7.29,
+        "Usa e ≈ 2,7 para calcular e² aproximadamente.",
+        "2,7 · 2,7.",
+        "2,7 · 2,7 = 7,29.",
+        [
+          [
+            5.4,
+            "e² es e · e, no e · 2: 2,7 · 2,7 = 7,29."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "ln(e²)",
+      2,
+      "Calcula.",
+      "ln deshace la potencia de e.",
+      "ln(e²) = 2.",
+      [
+        [
+          7.39,
+          "No hace falta calcular e²: ln(e²) = 2."
+        ]
+      ]
+    ]
+  },
+  {
     "id": "circunferencia-angulos",
     "since": "2026-10-18",
     "title": "Ángulos y cuerdas en la circunferencia",
@@ -6763,26 +6943,26 @@ export const curriculumLessons = [
     ]
   },
   {
-    "id": "interes",
-    "since": "2026-10-18",
-    "title": "Interés simple y compuesto",
+    "id": "interes-simple",
+    "since": "2026-10-20",
+    "title": "Interés simple",
     "subject": "matematica",
     "grade": "4m",
-    "description": "FG-4M OA 1 · Lo que crece tu ahorro",
-    "concept": "El interés es lo que paga el banco por tu dinero (o lo que cobra si te presta). Con interés simple, cada año se gana el mismo monto, calculado sobre lo inicial. Con interés compuesto, el interés se suma al ahorro y el año siguiente se gana interés también sobre él: crece más.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
-    "examples": "$100.000 al 10 % anual por 2 años. Simple: 10.000 + 10.000 = $20.000 de interés. Compuesto: 100.000 · 1,1 · 1,1 = $121.000, es decir $21.000 de interés.",
+    "description": "FG-4M OA 1 · Siempre sobre lo inicial",
+    "concept": "Con interés simple, cada período se gana (o se paga) el mismo monto, calculado siempre sobre el capital inicial. Interés = capital · tasa · tiempo. Paso a paso: 1) pasa la tasa a decimal (5 % = 0,05); 2) calcula el interés de un período: capital · tasa; 3) multiplícalo por la cantidad de períodos; 4) si te piden el total, súmale el capital.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "$100.000 al 5 % anual por 3 años: 1) 0,05; 2) 100.000 · 0,05 = 5.000 por año; 3) 5.000 · 3 = $15.000 de interés; 4) total $115.000.",
     "status": "published",
     "questions": [
       [
         "Simple: $100.000 al 5 % por 3 años",
         15000,
         "Depositas $100.000 al 5 % de interés simple anual. ¿Cuánto interés ganas en 3 años?",
-        "💰 Cada año: 5 % de 100.000 = 5.000.",
-        "5.000 · 3 = $15.000.",
+        "💰 Interés de un año: 100.000 · 0,05.",
+        "5.000 por año; 5.000 · 3 = $15.000.",
         [
           [
             5000,
-            "Ese es un año. Son 3: 15.000."
+            "Ese es un año. Multiplica por 3: 15.000."
           ],
           [
             115000,
@@ -6791,23 +6971,10 @@ export const curriculumLessons = [
         ]
       ],
       [
-        "Compuesto: $100.000 al 10 % por 2 años",
-        121000,
-        "Depositas $100.000 al 10 % de interés compuesto anual. ¿Cuánto tienes después de 2 años?",
-        "Cada año se multiplica por 1,1.",
-        "100.000 → 110.000 → 121.000.",
-        [
-          [
-            120000,
-            "Eso es interés simple. En el compuesto, el segundo año el 10 % es de 110.000: 121.000."
-          ]
-        ]
-      ],
-      [
         "Simple: $200.000 al 3 % por 4 años, total",
         224000,
         "Depositas $200.000 al 3 % de interés simple anual. ¿Cuánto tienes en total después de 4 años?",
-        "Interés por año: 6.000.",
+        "Interés por año: 6.000. Después súmale el capital.",
         "6.000 · 4 = 24.000; 200.000 + 24.000 = $224.000.",
         [
           [
@@ -6817,15 +6984,32 @@ export const curriculumLessons = [
         ]
       ],
       [
-        "Compuesto: $50.000 al 20 % por 2 años",
-        72000,
-        "Un préstamo de $50.000 cobra 20 % de interés compuesto anual y no se paga nada en 2 años. ¿Cuánto se debe?",
-        "Por 1,2 dos veces.",
-        "50.000 → 60.000 → 72.000.",
+        "Simple: $50.000 al 2 % mensual por 6 meses",
+        6000,
+        "Un préstamo de $50.000 cobra 2 % de interés simple mensual. ¿Cuánto interés se paga en 6 meses?",
+        "Interés de un mes: 50.000 · 0,02.",
+        "1.000 por mes; 1.000 · 6 = $6.000.",
         [
           [
-            70000,
-            "En el compuesto, el segundo año el 20 % es de 60.000 (12.000): 72.000."
+            1000,
+            "Ese es un mes. Son 6: 6.000."
+          ],
+          [
+            12000,
+            "La tasa es 2 %, no 4 %: 1.000 por mes, 6.000 en total."
+          ]
+        ]
+      ],
+      [
+        "Simple: $30.000 con $100.000 al 6 %: ¿años?",
+        5,
+        "¿Cuántos años necesitas para ganar $30.000 de interés simple con $100.000 al 6 % anual?",
+        "Interés por año: 6.000. ¿Cuántos años para llegar a 30.000?",
+        "30.000 ÷ 6.000 = 5 años.",
+        [
+          [
+            6,
+            "6 es la tasa. Divide el interés total por el de un año: 30.000 ÷ 6.000 = 5."
           ]
         ]
       ]
@@ -6840,6 +7024,88 @@ export const curriculumLessons = [
         [
           4000,
           "Ese es un año. Son 2: 8.000."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "interes-compuesto",
+    "since": "2026-10-20",
+    "title": "Interés compuesto",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "FG-4M OA 1 · El interés también gana interés",
+    "concept": "Con interés compuesto, el interés de cada período se suma al capital, y el período siguiente se gana interés sobre todo. Paso a paso: 1) pasa la tasa a factor: 10 % → 1,10; 2) multiplica el capital por el factor una vez por cada período; 3) el interés ganado es el total menos el capital. Fórmula: total = capital · (1 + tasa)ᵗ.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "$100.000 al 10 % anual por 2 años: 1) 1,10; 2) 100.000 · 1,10 = 110.000 y 110.000 · 1,10 = 121.000; 3) interés $21.000 (con interés simple serían $20.000).",
+    "status": "published",
+    "questions": [
+      [
+        "Compuesto: $100.000 al 10 % por 2 años",
+        121000,
+        "Depositas $100.000 al 10 % de interés compuesto anual. ¿Cuánto tienes después de 2 años?",
+        "📈 Multiplica por 1,10 dos veces.",
+        "100.000 → 110.000 → 121.000.",
+        [
+          [
+            120000,
+            "Eso es interés simple. En el compuesto, el segundo año el 10 % es de 110.000: 121.000."
+          ]
+        ]
+      ],
+      [
+        "Compuesto: interés de $100.000 al 10 % por 2 años",
+        21000,
+        "En el mismo caso, ¿cuánto interés ganaste?",
+        "Total menos capital.",
+        "121.000 − 100.000 = $21.000.",
+        [
+          [
+            121000,
+            "Ese es el total. El interés es 121.000 − 100.000 = 21.000."
+          ],
+          [
+            20000,
+            "Eso sería interés simple. Con compuesto: 21.000."
+          ]
+        ]
+      ],
+      [
+        "Compuesto: $50.000 al 20 % por 2 años",
+        72000,
+        "Una deuda de $50.000 crece 20 % compuesto anual y no se paga nada en 2 años. ¿Cuánto se debe?",
+        "Multiplica por 1,20 dos veces.",
+        "50.000 → 60.000 → 72.000.",
+        [
+          [
+            70000,
+            "El segundo año el 20 % es de 60.000 (12.000): 72.000."
+          ]
+        ]
+      ],
+      [
+        "$100.000 al 10 % por 3 años: compuesto − simple",
+        3100,
+        "Con $100.000 al 10 % anual por 3 años, ¿cuánto más da el interés compuesto que el simple?",
+        "Simple: 130.000. Compuesto: 100.000 · 1,1 · 1,1 · 1,1.",
+        "Compuesto 133.100 − simple 130.000 = $3.100.",
+        [
+          [
+            33100,
+            "Ese es el interés compuesto. La diferencia con el simple es 3.100."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Compuesto: $200.000 al 10 % por 2 años",
+      242000,
+      "Depositas $200.000 al 10 % de interés compuesto anual. ¿Cuánto tienes después de 2 años?",
+      "Por 1,10 dos veces.",
+      "200.000 → 220.000 → 242.000.",
+      [
+        [
+          240000,
+          "Eso es interés simple. Compuesto: 242.000."
         ]
       ]
     ]

@@ -99,7 +99,6 @@ export const lessonVideos = {
   "probabilidad-condicional": {"src":"/media/lessons/probabilidad-condicional-fa00c5cba3.mp4","title":"Probabilidad condicional: explicado en video","duration":42},
   "modelos-exp-log": {"src":"/media/lessons/modelos-exp-log-cd39bf57ea.mp4","title":"Modelos exponenciales y logarítmicos: explicado en video","duration":51},
   "circunferencia-angulos": {"src":"/media/lessons/circunferencia-angulos-970d7c46f0.mp4","title":"Ángulos y cuerdas en la circunferencia: explicado en video","duration":52},
-  "interes": {"src":"/media/lessons/interes-0a1cd35a35.mp4","title":"Interés simple y compuesto: explicado en video","duration":50},
   "credito": {"src":"/media/lessons/credito-662386826a.mp4","title":"El costo de un crédito: explicado en video","duration":39},
   "sueldo-impuestos": {"src":"/media/lessons/sueldo-impuestos-6f287efe12.mp4","title":"Sueldo e impuestos: explicado en video","duration":45},
   "binomial": {"src":"/media/lessons/binomial-037002f882.mp4","title":"Distribución binomial: explicado en video","duration":46},
@@ -119,4 +118,8 @@ export const lessonVideos = {
   "limites": {"src":"/media/lessons/limites-d62910725a.mp4","title":"Límites: explicado en video","duration":51},
   "derivadas": {"src":"/media/lessons/derivadas-f0d0cbce7a.mp4","title":"Derivadas: explicado en video","duration":48},
   "integrales": {"src":"/media/lessons/integrales-59c901a83a.mp4","title":"Integrales: explicado en video","duration":44},
+  "interes-simple": {"src":"/media/lessons/interes-simple-f41713123d.mp4","title":"Interés simple: explicado en video","duration":52},
+  "interes-compuesto": {"src":"/media/lessons/interes-compuesto-3591b64e2c.mp4","title":"Interés compuesto: explicado en video","duration":59},
+  "logaritmo-base": {"src":"/media/lessons/logaritmo-base-861c66827e.mp4","title":"La base de un logaritmo: explicado en video","duration":66},
+  "numero-e": {"src":"/media/lessons/numero-e-d409a9f87f.mp4","title":"El número e y el logaritmo natural: explicado en video","duration":65},
 };

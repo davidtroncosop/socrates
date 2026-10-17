@@ -2086,21 +2086,90 @@ function circunferenciaAngulos(rng, level) {
 
 // Lote 9: 4° Medio.
 
-function interes(rng, level) {
+function interesSimple(rng, level) {
   const P = 50000 * int(rng, 1, 8);
-  if (level === 0 || level === 2) {
-    const [r, t] = [int(rng, 2, 8), int(rng, 2, 5)];
-    const i = (P * r * t) / 100;
-    if (level === 0)
-      return [`Simple: $${pesos(P)} al ${r} % por ${t} años`, i, `Depositas $${pesos(P)} al ${r} % de interés simple anual. ¿Cuánto interés ganas en ${t} años?`,
-        `💰 Cada año: ${r} % de ${pesos(P)} = ${pesos((P * r) / 100)}.`, `${pesos((P * r) / 100)} · ${t} = $${pesos(i)}.`, [[(P * r) / 100, "Ese es un año."], [P + i, "Ese es el total. Pide solo el interés."]]];
-    return [`Simple: $${pesos(P)} al ${r} % por ${t} años, total`, P + i, `Depositas $${pesos(P)} al ${r} % de interés simple anual. ¿Cuánto tienes en total después de ${t} años?`,
-      `Interés por año: ${pesos((P * r) / 100)}.`, `${pesos(i)} de interés; ${pesos(P)} + ${pesos(i)} = $${pesos(P + i)}.`, [[i, "Ese es solo el interés. Súmale el depósito."]]];
+  if (level === 2) {
+    const [r, m] = [int(rng, 1, 3), int(rng, 3, 12)];
+    const month = (P * r) / 100;
+    return [`Simple: $${pesos(P)} al ${r} % mensual por ${m} meses`, month * m, `Un préstamo de $${pesos(P)} cobra ${r} % de interés simple mensual. ¿Cuánto interés se paga en ${m} meses?`,
+      `Interés de un mes: ${pesos(P)} · ${dec(r / 100)}.`, `${pesos(month)} por mes; ${pesos(month)} · ${m} = $${pesos(month * m)}.`, [[month, "Ese es un mes. Multiplica por los meses."]]];
   }
+  if (level === 3) {
+    const [r, t] = [int(rng, 2, 8), int(rng, 2, 6)];
+    const year = (100000 * r) / 100;
+    return [`Simple: $${pesos(year * t)} con $100.000 al ${r} %: ¿años?`, t, `¿Cuántos años necesitas para ganar $${pesos(year * t)} de interés simple con $100.000 al ${r} % anual?`,
+      `Interés por año: ${pesos(year)}.`, `${pesos(year * t)} ÷ ${pesos(year)} = ${t} años.`, [[r, `${r} es la tasa. Divide el interés total por el de un año.`]]];
+  }
+  const [r, t] = [int(rng, 2, 8), int(rng, 2, 5)];
+  const i = (P * r * t) / 100;
+  if (level === 0)
+    return [`Simple: $${pesos(P)} al ${r} % por ${t} años`, i, `Depositas $${pesos(P)} al ${r} % de interés simple anual. ¿Cuánto interés ganas en ${t} años?`,
+      `💰 Interés de un año: ${pesos(P)} · ${dec(r / 100)}.`, `${pesos((P * r) / 100)} por año; · ${t} = $${pesos(i)}.`, [[(P * r) / 100, "Ese es un año."], [P + i, "Ese es el total. Pide solo el interés."]]];
+  return [`Simple: $${pesos(P)} al ${r} % por ${t} años, total`, P + i, `Depositas $${pesos(P)} al ${r} % de interés simple anual. ¿Cuánto tienes en total después de ${t} años?`,
+    `Interés por año: ${pesos((P * r) / 100)}. Después súmale el capital.`, `${pesos(i)} de interés; ${pesos(P)} + ${pesos(i)} = $${pesos(P + i)}.`, [[i, "Ese es solo el interés. Súmale el depósito."]]];
+}
+
+function interesCompuesto(rng, level) {
+  const P = 50000 * int(rng, 1, 8);
   const r = pick(rng, [10, 20]);
   const f = 1 + r / 100;
-  return [`Compuesto: $${pesos(P)} al ${r} % por 2 años`, cents(P * f * f), level === 1 ? `Depositas $${pesos(P)} al ${r} % de interés compuesto anual. ¿Cuánto tienes después de 2 años?` : `Un préstamo de $${pesos(P)} cobra ${r} % de interés compuesto anual y no se paga nada en 2 años. ¿Cuánto se debe?`,
-    `Cada año se multiplica por ${dec(f)}.`, `${pesos(P)} → ${pesos(cents(P * f))} → ${pesos(cents(P * f * f))}.`, [[P * (1 + (2 * r) / 100), "Eso es interés simple. En el compuesto, el segundo año el interés es sobre el monto nuevo."]]];
+  if (level === 3) {
+    const simple = P * (1 + (3 * r) / 100);
+    const comp = cents(P * f ** 3);
+    return [`$${pesos(P)} al ${r} % por 3 años: compuesto − simple`, cents(comp - simple), `Con $${pesos(P)} al ${r} % anual por 3 años, ¿cuánto más da el interés compuesto que el simple?`,
+      `Simple: ${pesos(simple)}. Compuesto: ${pesos(P)} · ${dec(f)} · ${dec(f)} · ${dec(f)}.`, `Compuesto ${pesos(comp)} − simple ${pesos(simple)} = $${pesos(cents(comp - simple))}.`,
+      [[cents(comp - P), "Ese es el interés compuesto. Pide la diferencia con el simple."]]];
+  }
+  const total = cents(P * f * f);
+  if (level === 1)
+    return [`Compuesto: interés de $${pesos(P)} al ${r} % por 2 años`, cents(total - P), `Depositas $${pesos(P)} al ${r} % de interés compuesto anual. ¿Cuánto interés ganas en 2 años?`,
+      `Total: ${pesos(P)} · ${dec(f)} · ${dec(f)}. Réstale el capital.`, `${pesos(total)} − ${pesos(P)} = $${pesos(cents(total - P))}.`,
+      [[total, "Ese es el total. El interés es total menos capital."], [(P * 2 * r) / 100, "Eso sería interés simple."]]];
+  return [`Compuesto: $${pesos(P)} al ${r} % por 2 años`, total, level === 0 ? `Depositas $${pesos(P)} al ${r} % de interés compuesto anual. ¿Cuánto tienes después de 2 años?` : `Una deuda de $${pesos(P)} crece ${r} % compuesto anual y no se paga nada en 2 años. ¿Cuánto se debe?`,
+    `📈 Multiplica por ${dec(f)} dos veces.`, `${pesos(P)} → ${pesos(cents(P * f))} → ${pesos(total)}.`, [[P * (1 + (2 * r) / 100), "Eso es interés simple. En el compuesto, el segundo año el interés es sobre el monto nuevo."]]];
+}
+
+function logaritmoBase(rng, level) {
+  if (level === 0) {
+    const k = int(rng, 2, 7);
+    return [`log ${10 ** k}`, k, "Calcula. Sin base escrita, la base es 10.", `🔟 Cuenta los ceros de ${pesos(10 ** k)}.`, `${pesos(10 ** k)} = 10${sup(k)}, así que el logaritmo es ${k}.`,
+      [[10 ** (k - 1), "Dividiste por 10. Cuenta los ceros."], [k + 1, "Contaste también el 1. Solo los ceros."]]];
+  }
+  if (level === 1) {
+    const [b, k] = pick(rng, [[4, 2], [4, 3], [6, 2], [7, 2], [8, 2], [9, 2], [6, 3]]);
+    return [`log${SUB(b)} ${b ** k}`, k, `Calcula. Aquí la base es ${b}.`, `¿Cuántos ${b} multiplico para llegar a ${b ** k}?`, `${Array(k).fill(b).join(" · ")} = ${b ** k}: log${SUB(b)} ${b ** k} = ${k}.`,
+      [[b ** k / b, `Dividiste ${b ** k} ÷ ${b}. Cuenta las veces.`]]];
+  }
+  if (level === 2) {
+    const k = int(rng, 1, 4);
+    const v = 10 ** -k;
+    return [`log ${dec(Number(v.toFixed(k)))}`, -k, "Calcula. Sin base escrita, la base es 10.", `${dec(Number(v.toFixed(k)))} = 1/${pesos(10 ** k)} = 10${sup(-k)}.`, `log = −${k}.`,
+      [[k, "Los números menores que 1 tienen logaritmo negativo."]]];
+  }
+  const [b, k] = pick(rng, [[2, 3], [2, 4], [3, 2], [5, 2], [2, 5], [3, 3]]);
+  const [la, lb] = [Math.log10(b ** k), Math.log10(b)];
+  const r3 = (x) => Math.round(x * 1000) / 1000;
+  return [`log${SUB(b)} ${b ** k} = log ${b ** k} ÷ log ${b}`, k, `Tu calculadora dice log ${b ** k} ≈ ${dec(r3(la))} y log ${b} ≈ ${dec(r3(lb))}. Calcula log${SUB(b)} ${b ** k} con el cambio de base (redondea al entero).`,
+    `Divide: log ${b ** k} ÷ log ${b}.`, `${dec(r3(la))} ÷ ${dec(r3(lb))} ≈ ${k}. Comprueba: ${b}${sup(k)} = ${b ** k}.`, [[r3(la - lb), "Restaste. El cambio de base divide."]]];
+}
+
+function numeroE(rng, level) {
+  if (level === 0) {
+    const k = int(rng, 2, 9);
+    return [`ln(e${sup(k)})`, k, "Calcula. ln es el logaritmo en base e.", `🔁 ¿A qué exponente elevo e para obtener e${sup(k)}?`, `ln(e${sup(k)}) = ${k}.`,
+      [[1, `ln(e) = 1, pero ln(e${sup(k)}) = ${k}.`]]];
+  }
+  if (level === 1)
+    return ["ln 1", 0, "Calcula.", "¿A qué exponente elevo e para obtener 1?", "e⁰ = 1, así que ln 1 = 0.", [[1, "e¹ = e, no 1: ln 1 = 0."]]];
+  if (level === 2) {
+    const n = pick(rng, [2, 4]);
+    const v = cents((1 + 1 / n) ** n);
+    return [`(1 + 1/${n})${sup(n)}`, v, `Un banco paga 100 % al año, pero en ${n} partes iguales. ¿En cuánto se convierte $1 al año? Redondea a 2 decimales.`,
+      `Cada parte se multiplica por ${dec(1 + 1 / n)}.`, `${dec(1 + 1 / n)} multiplicado ${n} veces ≈ ${dec(v)}.`, [[2, "Eso es con un solo pago."]]];
+  }
+  const k = pick(rng, [2, 3]);
+  return [`e${sup(k)} con e ≈ 2,7`, cents(2.7 ** k), `Usa e ≈ 2,7 para calcular e${sup(k)}. Redondea a 2 decimales.`, `2,7 multiplicado ${k} veces.`, `${Array(k).fill("2,7").join(" · ")} = ${dec(cents(2.7 ** k))}.`,
+    [[cents(2.7 * k), `e${sup(k)} es multiplicar e por sí mismo, no por ${k}.`]]];
 }
 
 function credito(rng, level) {
@@ -2541,7 +2610,10 @@ export const generators = {
   "probabilidad-condicional": probabilidadCondicional,
   "modelos-exp-log": modelosExpLog,
   "circunferencia-angulos": circunferenciaAngulos,
-  interes,
+  "interes-simple": interesSimple,
+  "interes-compuesto": interesCompuesto,
+  "logaritmo-base": logaritmoBase,
+  "numero-e": numeroE,
   credito,
   "sueldo-impuestos": sueldoImpuestos,
   binomial,

@@ -129,7 +129,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "Potencias, raíces y logaritmos son tres caras de lo mismo: 2³ = 8, ∛8 = 2 y log₂ 8 = 3. En la función cuadrática, la x al cuadrado dibuja una parábola.",
     rule: "🔁 Deshaz en orden contrario: la raíz deshace la potencia, el logaritmo encuentra el exponente y la función inversa recorre la máquina al revés.",
     notebookTip: "Escribe la misma relación de las tres formas: potencia, raíz y logaritmo.",
-    lessonIds: ["raices-simplificar", "raices-enesimas", "logaritmos", "funcion-cuadratica", "ecuacion-cuadratica", "funcion-inversa", "cambio-porcentual"],
+    lessonIds: ["raices-simplificar", "raices-enesimas", "logaritmos", "logaritmo-base", "funcion-cuadratica", "ecuacion-cuadratica", "funcion-inversa", "cambio-porcentual"],
   },
   {
     id: "unit-math-2m-geo",
@@ -155,7 +155,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "Los números complejos agregan i, con i² = −1. Para decidir con datos, no basta el promedio: también importa qué tan repartidos están y qué información ya sabes.",
     rule: "🔍 Antes de calcular, pregúntate qué sabes: en la probabilidad condicional, el total son solo los casos que cumplen lo que ya sabes.",
     notebookTip: "Haz una tabla o un diagrama con los casos antes de calcular probabilidades.",
-    lessonIds: ["complejos", "complejos-mult", "dispersion", "probabilidad-condicional", "modelos-exp-log", "circunferencia-angulos"],
+    lessonIds: ["complejos", "complejos-mult", "dispersion", "probabilidad-condicional", "modelos-exp-log", "numero-e", "circunferencia-angulos"],
   },
   {
     id: "unit-math-4m",
@@ -168,7 +168,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "Las decisiones de dinero se apoyan en porcentajes: interés, CAE, IVA y descuentos del sueldo. En el azar, la binomial cuenta éxitos y la normal describe la campana.",
     rule: "💰 Compara siempre lo que pagas en total con lo que recibes: la diferencia es el costo real.",
     notebookTip: "Anota cada porcentaje como número (19 % = 0,19) antes de multiplicar.",
-    lessonIds: ["interes", "credito", "sueldo-impuestos", "binomial", "normal", "funcion-potencia", "funciones-trigonometricas"],
+    lessonIds: ["interes-simple", "interes-compuesto", "credito", "sueldo-impuestos", "binomial", "normal", "funcion-potencia", "funciones-trigonometricas"],
   },
   {
     id: "unit-math-electivo",
