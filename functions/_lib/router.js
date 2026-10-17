@@ -95,7 +95,15 @@ const adminEmails = (env) =>
     .split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
-const isAdmin = (env, user) => Boolean(user.email) && adminEmails(env).includes(user.email);
+// ADMIN_IDS (IDs de usuario) es lo más seguro: no depende de quién registre
+// un correo. ADMIN_EMAILS queda para compatibilidad.
+const adminIds = (env) =>
+  String(env.ADMIN_IDS || "")
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean);
+const isAdmin = (env, user) =>
+  adminIds(env).includes(String(user.id)) || (Boolean(user.email) && adminEmails(env).includes(user.email));
 const publicUser = (env, u) => ({
   id: u.id,
   name: u.name,

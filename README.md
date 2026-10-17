@@ -78,7 +78,7 @@ El acceso ofrece **Entrar** (con correo o usuario), **Crear cuenta** y **Probar 
 - **Recuperar la contraseña sin correo:** al registrarse se muestra una sola vez un código de recuperación (`XXXX-XXXX-XXXX`) para copiar o descargar. Con él se crea una contraseña nueva en «¿Olvidaste tu contraseña?»; se cierran las demás sesiones y se entrega un código nuevo. Las cuentas de menores se recuperan a través del apoderado.
 - **Progreso sincronizado:** se guarda en el navegador (clave `socatres.v1.<id>`) y en el servidor. Entre dispositivos se fusiona: lecciones completadas, intentos, notas y videos se suman; el dominio, los repasos, el curso y la meta se toman del dispositivo con la actividad más reciente. Los intentos de más de 30 días (o más allá de los 2 000 más recientes) se resumen en días de práctica, aciertos y última práctica por lección, así el progreso no crece sin límite. Las fotos se guardan en una clave aparte (`…photos`): si el navegador se queda sin espacio, se pierde la foto nueva y se avisa, pero nunca el progreso.
 - **Las fotos no salen del dispositivo:** el cliente las quita antes de sincronizar y el servidor rechaza cualquier foto.
-- **Catálogo central:** el mantenedor («Contenido») solo aparece para las cuentas cuyo correo está en `ADMIN_EMAILS`. Cada cambio guardado se publica para todos, incluida la demo. Los clientes lo reciben al abrir la app o al volver a ella, y guardan una copia para usarla sin conexión.
+- **Catálogo central:** el mantenedor («Contenido») solo aparece para las cuentas cuyo ID está en `ADMIN_IDS` (o cuyo correo está en `ADMIN_EMAILS`). Cada cambio guardado se publica para todos, incluida la demo. Los clientes lo reciben al abrir la app o al volver a ella, y guardan una copia para usarla sin conexión.
 - **Mis datos:** borrar el progreso lo elimina aquí y en la cuenta. «Eliminar mi cuenta» borra usuario, sesiones, progreso, vínculos y recordatorios; si es un apoderado, también las cuentas de menores que creó.
 
 ### Seguridad
@@ -89,7 +89,7 @@ El acceso ofrece **Entrar** (con correo o usuario), **Crear cuenta** y **Probar 
 - Las peticiones que modifican datos exigen `Content-Type: application/json`; junto con `SameSite=Lax`, eso bloquea peticiones forjadas desde otros sitios.
 - El login responde igual, y con el mismo costo, exista o no el correo.
 - El rol se valida en el servidor (`student` o `parent`); cualquier otro valor se registra como estudiante. Registrarse como estudiante exige confirmar 14 años o más.
-- Los permisos de administración se deciden en el servidor con `ADMIN_EMAILS`; lo que guarda el navegador solo sirve para mostrar u ocultar el menú.
+- Los permisos de administración se deciden en el servidor con `ADMIN_IDS` o `ADMIN_EMAILS`; lo que guarda el navegador solo sirve para mostrar u ocultar el menú.
 - Del código de recuperación solo se guarda su hash.
 - Recordatorios: el servidor solo envía avisos a los servicios de push conocidos (Google, Mozilla, Apple, Microsoft), así que no se puede usar para hacer peticiones a cualquier URL. Los avisos van sin contenido: el texto lo pide el service worker a `/api/reminder` con la sesión del usuario, así que ningún dato del estudiante pasa por esos servicios.
 - **Pendiente:** limitar intentos de login. Se recomienda una regla de *rate limiting* de Cloudflare sobre `/api/auth/*`.
@@ -120,7 +120,7 @@ La base D1 `socatres` ya existe y su ID está en `wrangler.toml`. Para publicar 
 
 Configuración que se hace una sola vez:
 
-- **Administración:** `npx wrangler pages secret put ADMIN_EMAILS --project-name=socatres` (correos separados por coma).
+- **Administración:** `npx wrangler pages secret put ADMIN_IDS --project-name=socatres` (IDs de usuario separados por coma; el ID se ve en «Mis datos»). Es más seguro que `ADMIN_EMAILS` (correos): un correo lo puede registrar cualquiera antes que su dueño. Los cambios de secretos se aplican en el siguiente deploy.
 - **Recordatorios:**
   1. `node scripts/vapid-keys.mjs` genera el par de claves.
   2. La **pública** va en `VAPID_PUBLIC_KEY` de `wrangler.toml` y de `workers/reminders/wrangler.toml`.

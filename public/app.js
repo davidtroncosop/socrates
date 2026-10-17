@@ -1699,6 +1699,11 @@ if (synced) {
   $("#privacy-delete-note").textContent =
     "Borrar el progreso lo elimina aquí y en tu cuenta. Eliminar la cuenta borra además tus datos personales y tus vínculos familiares. Si eres apoderado, también se eliminan las cuentas de estudiantes que creaste.";
   $("#delete-account").hidden = false;
+  // Identificador de la cuenta, para configurar administradores (ADMIN_IDS).
+  const id = document.createElement("p");
+  id.className = "muted";
+  id.textContent = `Identificador de tu cuenta: ${account.userId}`;
+  $("#privacy-delete-note").after(id);
 }
 $("#delete-account").onclick = async () => {
   if (

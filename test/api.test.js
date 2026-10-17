@@ -284,3 +284,14 @@ test("summaries tolerate missing progress", () => {
     completed: [], mastered: [], videosWatched: 0, attemptsWeek: 0, accuracyWeek: null, lastActivity: null,
   });
 });
+
+test("ADMIN_IDS makes an account admin by user id, regardless of its email", async () => {
+  const e = env({ ADMIN_EMAILS: "" });
+  const first = client(e);
+  const me = await parent(first, "Dueño", "dueno@correo.cl");
+  assert.equal(me.body.user.isAdmin, false);
+  e.ADMIN_IDS = ` ${me.body.user.id} , otro`;
+  assert.equal((await first.call("GET", "/api/me")).body.user.isAdmin, true);
+  const other = client(e);
+  assert.equal((await parent(other, "Otra", "otra@correo.cl")).body.user.isAdmin, false);
+});
