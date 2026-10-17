@@ -192,9 +192,38 @@ const requireRole = (user, role, message) => {
   if (user.role !== role) fail(403, message);
 };
 
+// Límite de intentos: cuenta por clave dentro de una ventana fija. Frena a
+// quien intenta adivinar contraseñas, códigos de recuperación o de vínculo.
+const LIMITS = {
+  loginIp: [30, 15 * 60_000],
+  loginAccount: [10, 15 * 60_000],
+  register: [10, 60 * 60_000],
+  recover: [5, 60 * 60_000],
+  link: [10, 15 * 60_000],
+};
+const clientIp = (request) => request.headers.get("cf-connecting-ip") || "local";
+async function limit(env, kind, who) {
+  const [max, windowMs] = LIMITS[kind];
+  const now = Date.now();
+  const key = `${kind}:${String(who).toLowerCase().slice(0, 200)}`;
+  const row = await env.DB.prepare(
+    `INSERT INTO rate_limits (key, window_start, count) VALUES (?, ?, 1)
+     ON CONFLICT(key) DO UPDATE SET
+       count = CASE WHEN window_start <= ? THEN 1 ELSE count + 1 END,
+       window_start = CASE WHEN window_start <= ? THEN ? ELSE window_start END
+     RETURNING count`,
+  )
+    .bind(key, now, now - windowMs, now - windowMs, now)
+    .first();
+  if (row && row.count > max) fail(429, "Demasiados intentos. Espera unos minutos y vuelve a probar.");
+  // Limpieza ocasional de ventanas viejas.
+  if (Math.random() < 0.02) await env.DB.prepare("DELETE FROM rate_limits WHERE window_start < ?").bind(now - 24 * 60 * 60_000).run();
+}
+
 const routes = {
   // Registro propio: apoderados y estudiantes de 14 años o más (Ley 21.719).
   async "POST /api/auth/register"({ request, env }) {
+    await limit(env, "register", clientIp(request));
     const body = await readJson(request);
     const role = body.role === "parent" ? "parent" : "student";
     if (role === "student" && body.age14 !== true)
@@ -216,6 +245,8 @@ const routes = {
 
   async "POST /api/auth/login"({ request, env }) {
     const body = await readJson(request);
+    await limit(env, "loginIp", clientIp(request));
+    await limit(env, "loginAccount", String(body.login ?? body.email ?? ""));
     const user = await findByLogin(env, body.login ?? body.email);
     // Mismo mensaje y mismo trabajo exista o no la cuenta.
     dummyHash ??= await hashPassword(randomToken());
@@ -228,6 +259,8 @@ const routes = {
   // contraseña, cierra las demás sesiones y entrega un código nuevo.
   async "POST /api/auth/recover"({ request, env }) {
     const body = await readJson(request);
+    await limit(env, "recover", String(body.login ?? ""));
+    await limit(env, "recover", clientIp(request));
     const user = await findByLogin(env, body.login);
     const hash = await sha256(normalizeCode(body.code));
     if (!user || !user.recovery_hash || user.recovery_hash !== hash)
@@ -348,6 +381,7 @@ const routes = {
 
   async "POST /api/family/link"({ request, env, user }) {
     requireRole(user, "parent", "Solo un apoderado puede vincular estudiantes.");
+    await limit(env, "link", user.id);
     const code = normalizeCode((await readJson(request)).code);
     const found = await env.DB.prepare("SELECT child_id FROM link_codes WHERE code = ? AND expires_at > ?")
       .bind(code, Date.now())

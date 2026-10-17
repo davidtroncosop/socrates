@@ -89,6 +89,7 @@ El acceso ofrece **Entrar** (con correo o usuario), **Crear cuenta** y **Probar 
 - Las peticiones que modifican datos exigen `Content-Type: application/json`; junto con `SameSite=Lax`, eso bloquea peticiones forjadas desde otros sitios.
 - El login responde igual, y con el mismo costo, exista o no el correo.
 - El rol se valida en el servidor (`student` o `parent`); cualquier otro valor se registra como estudiante. Registrarse como estudiante exige confirmar 14 años o más.
+- Inicio de sesión, registro, recuperación y vinculación familiar tienen límite de intentos por IP y por cuenta (tabla `rate_limits`, migración 0004).
 - Los permisos de administración se deciden en el servidor con `ADMIN_IDS` o `ADMIN_EMAILS`; lo que guarda el navegador solo sirve para mostrar u ocultar el menú.
 - Del código de recuperación solo se guarda su hash.
 - Recordatorios: el servidor solo envía avisos a los servicios de push conocidos (Google, Mozilla, Apple, Microsoft), así que no se puede usar para hacer peticiones a cualquier URL. Los avisos van sin contenido: el texto lo pide el service worker a `/api/reminder` con la sesión del usuario, así que ningún dato del estudiante pasa por esos servicios.

@@ -295,3 +295,23 @@ test("ADMIN_IDS makes an account admin by user id, regardless of its email", asy
   const other = client(e);
   assert.equal((await parent(other, "Otra", "otra@correo.cl")).body.user.isAdmin, false);
 });
+
+test("login, recovery and family links are rate limited", async () => {
+  const e = env();
+  const c = client(e);
+  await parent(c, "Ana", "ana@correo.cl");
+  const statuses = [];
+  for (let i = 0; i < 11; i++) statuses.push((await c.call("POST", "/api/auth/login", { login: "ana@correo.cl", password: "malamala1" })).status);
+  assert.deepEqual(statuses.slice(0, 10), Array(10).fill(401));
+  assert.equal(statuses[10], 429, "11th attempt on the same account is blocked");
+  // La ventana vence: se puede volver a intentar.
+  e.DB.raw.prepare("UPDATE rate_limits SET window_start = window_start - 16 * 60 * 1000").run();
+  assert.equal((await c.call("POST", "/api/auth/login", { login: "ana@correo.cl", password: "malamala1" })).status, 401);
+  const recover = [];
+  for (let i = 0; i < 6; i++) recover.push((await c.call("POST", "/api/auth/recover", { login: "ana@correo.cl", code: "AAAA-AAAA-AAAA", password: "nuevaclave1" })).status);
+  assert.equal(recover[5], 429);
+  const links = [];
+  for (let i = 0; i < 11; i++) links.push((await c.call("POST", "/api/family/link", { code: "ZZZZ-ZZZZ-ZZZZ" })).status);
+  assert.equal(links[9], 404);
+  assert.equal(links[10], 429);
+});
