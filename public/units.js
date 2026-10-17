@@ -77,7 +77,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "Medir es contar unidades: grados para los ángulos, cuadraditos para el área y cubitos para el volumen. En triángulos rectángulos, el Teorema de Pitágoras (a² + b² = c²) relaciona catetos con hipotenusa.",
     rule: "📐 Dibuja primero: anota las medidas en la figura y decide si cuentas grados, cuadraditos o cubitos antes de usar una fórmula.",
     notebookTip: "Dibuja siempre la figura en tu cuaderno anotando las medidas conocidas en cada lado antes de calcular fórmulas.",
-    lessonIds: ["angulos", "angulos-poligonos", "plano-cartesiano", "isometrias", "area-superficie", "area-triangulos", "area-trapecio", "circulos", "volumen", "pitagoras"],
+    lessonIds: ["angulos", "teselados", "angulos-poligonos", "construcciones", "plano-cartesiano", "isometrias", "area-superficie", "area-triangulos", "area-trapecio", "circulos", "volumen", "pitagoras", "pitagoras-3d"],
   },
   {
     id: "unit-math-datos",
@@ -90,7 +90,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "Los datos se ordenan en tablas y gráficos para compararlos. La probabilidad mide qué tan posible es algo: casos favorables ÷ casos posibles.",
     rule: "📊 Compara con el total: una cantidad sola dice poco; dividida por el total se puede comparar.",
     notebookTip: "Haz una tabla con lo que cuentas antes de calcular promedios, porcentajes o probabilidades.",
-    lessonIds: ["graficos", "frecuencias", "promedio", "cuartiles", "muestreo", "probabilidad-experimental", "probabilidad-teorica", "combinatoria"],
+    lessonIds: ["graficos", "tallo-hojas", "graficos-enganosos", "frecuencias", "promedio", "cuartiles", "muestreo", "probabilidad-experimental", "probabilidad-teorica", "combinatoria"],
   },
   {
     id: "unit-math-4",
@@ -116,7 +116,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "Dos figuras semejantes tienen la misma forma: todos sus lados se multiplican por el mismo número. En probabilidad, «o» suma y «y» multiplica.",
     rule: "🔍 Busca el factor: ¿por cuánto se multiplicó? Ese mismo número sirve para todos los lados.",
     notebookTip: "Dibuja las dos figuras una al lado de la otra y une con flechas los lados que se corresponden.",
-    lessonIds: ["sectores-circulares", "cono", "homotecia", "tales", "semejanza", "doble-entrada", "reglas-probabilidad", "galton"],
+    lessonIds: ["sectores-circulares", "cono", "homotecia", "tales", "semejanza", "euclides", "doble-entrada", "recta-ajuste", "reglas-probabilidad", "galton"],
   },
   {
     id: "unit-math-2m-alg",
@@ -142,7 +142,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "En un triángulo rectángulo, las razones entre lados (seno, coseno, tangente) dependen solo del ángulo. Para contar órdenes, cada lugar tiene una opción menos.",
     rule: "📐 SOH-CAH-TOA: Seno = Opuesto ÷ Hipotenusa, Coseno = Adyacente ÷ Hipotenusa, Tangente = Opuesto ÷ Adyacente.",
     notebookTip: "Marca en el triángulo cuál es el lado opuesto, el adyacente y la hipotenusa antes de calcular.",
-    lessonIds: ["esfera", "trigonometria", "vectores", "variable-aleatoria", "permutaciones"],
+    lessonIds: ["esfera", "trigonometria", "vectores", "variable-aleatoria", "permutaciones", "probabilidad-sociedad"],
   },
   {
     id: "unit-math-3m",
@@ -169,6 +169,19 @@ export const UNIT_DEFINITIONS = [
     rule: "💰 Compara siempre lo que pagas en total con lo que recibes: la diferencia es el costo real.",
     notebookTip: "Anota cada porcentaje como número (19 % = 0,19) antes de multiplicar.",
     lessonIds: ["interes", "credito", "sueldo-impuestos", "binomial", "normal", "funcion-potencia", "funciones-trigonometricas"],
+  },
+  {
+    id: "unit-math-electivo",
+    unitNumber: 14,
+    subject: "matematica",
+    theme: "theme-blue",
+    subtitle: "Unidad 14 · Electivo 3° y 4° Medio",
+    title: "Límites, derivadas e integrales",
+    description: "Valor absoluto y funciones por tramos, composición de funciones, límites, derivadas e integrales.",
+    concepts: "El cálculo estudia el cambio. El límite dice a qué valor se acerca una función, la derivada mide qué tan rápido cambia y la integral suma lo acumulado: el área bajo la curva.",
+    rule: "🎯 Primero simplifica: factoriza antes de calcular un límite y usa las reglas de derivación antes de reemplazar.",
+    notebookTip: "Dibuja la función y marca el punto o el área que te piden antes de calcular.",
+    lessonIds: ["valor-absoluto", "composicion", "limites", "derivadas", "integrales"],
   },
   {
     id: "unit-lang-1",

@@ -100,12 +100,26 @@ import binomial from "./binomial.mjs";
 import normal from "./normal.mjs";
 import fPot from "./funcion-potencia.mjs";
 import fTrig from "./funciones-trigonometricas.mjs";
+import talloHojas from "./tallo-hojas.mjs";
+import teselados from "./teselados.mjs";
+import construcciones from "./construcciones.mjs";
+import pit3d from "./pitagoras-3d.mjs";
+import engano from "./graficos-enganosos.mjs";
+import euclides from "./euclides.mjs";
+import rectaAj from "./recta-ajuste.mjs";
+import probSoc from "./probabilidad-sociedad.mjs";
+import valAbs from "./valor-absoluto.mjs";
+import composicion from "./composicion.mjs";
+import limites from "./limites.mjs";
+import derivadas from "./derivadas.mjs";
+import integrales from "./integrales.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  talloHojas, teselados, construcciones, pit3d, engano, euclides, rectaAj, probSoc, valAbs, composicion, limites, derivadas, integrales,
   complejos, complejosMult, dispersion, probCond, modExpLog, circAng, interes, credito, sueldo, binomial, normal, fPot, fTrig,
   raicesSimp, raicesEn, logaritmos, fCuad, eCuad, fInv, cambioPct, esfera, trigo, vectores, varAl, perm,
   racOp, crecExp, f2v, sectores, cono, homotecia, tales, semejanza, dobleEntrada, reglasProb, galton,

@@ -27,6 +27,11 @@ function baseAnswer(expr, id, prompt) {
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
+  if (LOTE10.includes(id)) {
+    const answer = lote10Answer(expr, id, prompt);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
   if (LOTE9.includes(id)) {
     const answer = lote9Answer(expr, id);
     assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
@@ -542,6 +547,98 @@ function lote9Answer(expr, id) {
   return null;
 }
 
+// Lote 10: temas que faltaban y electivo de cálculo.
+const LOTE10 = ["tallo-hojas", "teselados", "construcciones", "pitagoras-3d", "graficos-enganosos", "euclides", "recta-ajuste", "probabilidad-sociedad", "valor-absoluto", "composicion", "limites", "derivadas", "integrales"];
+function lote10Answer(expr, id, prompt) {
+  let m;
+  const n = (v) => Number(v.replace(/\./g, "").replace(",", "."));
+  const digits = (v, set) => Number([...v].map((c) => set.indexOf(c)).join(""));
+  if (id === "tallo-hojas") {
+    const rows = [...expr.matchAll(/(\d) \| ([\d ]+?)(?= y |:|$)/g)].map(([, st, lv]) => lv.trim().split(" ").map((l) => st * 10 + Number(l)));
+    const data = rows.flat().sort((a, b) => a - b);
+    if (expr.includes("¿cuántos datos?")) return data.length;
+    if (expr.endsWith("mayor dato")) return data.at(-1);
+    if (expr.endsWith("menor dato")) return data[0];
+    if (expr.endsWith("mediana")) return data[(data.length - 1) / 2];
+  }
+  if (id === "teselados") {
+    if ((m = expr.match(/^Ángulos de 90° y (\d) figuras$/))) return 90 * m[1];
+    const ang = Number(prompt.match(/(\d+)°/)[1]);
+    if (/en una esquina$/.test(expr) && !/4 baldosas/.test(prompt)) return 360 / ang;
+    if ((m = prompt.match(/Si juntas (\d+)/))) return 360 - m[1] * ang;
+    if ((m = expr.match(/^Ángulos de 90° y (\d) figuras$/))) return 90 * m[1];
+  }
+  if (id === "construcciones") {
+    if ((m = expr.match(/^Simetral de (\d+) cm$/))) return m[1] / 2;
+    if ((m = expr.match(/^Bisectriz de (\d+)°$/))) return m[1] / 2;
+    if (expr.startsWith("Simetral: ¿ángulo")) return 90;
+    if ((m = expr.match(/^Transversal de (\d+) cm: hasta el centro$/))) return (2 * m[1]) / 3;
+  }
+  if (id === "pitagoras-3d") {
+    if ((m = expr.match(/^Piso de (\d+) por (\d+): diagonal$/))) return Math.hypot(m[1], m[2]);
+    if ((m = expr.match(/^Caja (\d+), (\d+) y (\d+): diagonal$/))) return Math.hypot(m[1], m[2], m[3]);
+    if ((m = expr.match(/^Cubo de arista (\d+): diagonal²$/))) return 3 * m[1] ** 2;
+  }
+  if (id === "graficos-enganosos") {
+    if ((m = expr.match(/^Barras (\d+) y (\d+): diferencia$/))) return m[2] - m[1];
+    if ((m = expr.match(/^Eje desde (\d+): altura de (?:A \()?(\d+)\)?$/))) return m[2] - m[1];
+    if ((m = expr.match(/^Ventas (\d+) y (\d+): % de aumento$/))) return ((m[2] - m[1]) * 100) / m[1];
+    if (expr.startsWith("Eje que parte en")) return 0;
+  }
+  if (id === "euclides") {
+    if ((m = expr.match(/^p = (\d+), q = (\d+): altura$/))) return Math.sqrt(m[1] * m[2]);
+    if ((m = expr.match(/^p = (\d+), c = (\d+): cateto$/))) return Math.sqrt(m[1] * m[2]);
+    if ((m = expr.match(/^altura (\d+), p = (\d+): q$/))) return m[1] ** 2 / m[2];
+  }
+  if (id === "recta-ajuste") {
+    if ((m = expr.match(/^y = (.+) con x = (\d+)$/))) return evaluate(m[1].replace(/(\d),(\d)/g, "$1.$2"), Number(m[2]));
+    if ((m = expr.match(/^Pendiente de \((\d+), (\d+)\) a \((\d+), (\d+)\)$/))) return (m[4] - m[2]) / (m[3] - m[1]);
+  }
+  if (id === "probabilidad-sociedad") {
+    if ((m = expr.match(/^1 de cada (\d+) en %$/))) return 100 / m[1];
+    if ((m = expr.match(/^(\d+) % de (\d+)$/))) return (m[1] * m[2]) / 100;
+    if ((m = expr.match(/^De (\d+) % a (\d+) %: ¿cuántas veces\?$/))) return m[2] / m[1];
+    if ((m = expr.match(/^(\d+) % de lluvia: no llueve$/))) return 100 - m[1];
+  }
+  if (id === "valor-absoluto") {
+    if ((m = expr.match(/^\|(.+)\|$/))) return Math.abs(evaluate(m[1], 0));
+    if ((m = expr.match(/^f\((\d+)\) con f\(x\) = \|x − (\d+)\|$/))) return Math.abs(m[1] - m[2]);
+    if ((m = expr.match(/^Estacionamiento: (\d+) horas$/))) {
+      const [, first, next] = prompt.match(/\$([\d.]+) la primera hora y \$([\d.]+)/);
+      return n(first) + (m[1] - 1) * n(next);
+    }
+  }
+  if (id === "composicion" && (m = expr.match(/^f\(x\) = (.+), g\(x\) = (.+): ([fg])\(([fg])\((\d+)\)\)$/))) {
+    const F = { f: (v) => evaluate(m[1], v), g: (v) => evaluate(m[2], v) };
+    return F[m[3]](F[m[4]](Number(m[5])));
+  }
+  if (id === "limites") {
+    if ((m = expr.match(/^lím x→(\d+) de \((.+) \+ (\d+)\)$/))) return evaluate(m[2], Number(m[1])) + Number(m[3]);
+    if ((m = expr.match(/^lím x→(\d+) de \(x² − (\d+)\)\/\(x − \1\)$/))) {
+      const x = Number(m[1]) + 1e-7;
+      return Math.round(((x * x - m[2]) / (x - m[1])) * 1e4) / 1e4;
+    }
+    if (expr === "lím x→∞ de 1/x") return 0;
+  }
+  if (id === "derivadas") {
+    // Derivada numérica, redondeada.
+    const d = (f, x) => Math.round(((f(x + 1e-5) - f(x - 1e-5)) / 2e-5) * 1000) / 1000;
+    if ((m = expr.match(/^f\(x\) = (.+): f'\((\d+)\)$/))) return d((x) => evaluate(m[1], x), Number(m[2]));
+    if ((m = expr.match(/^f\(x\) = (.+): f'\(x\)$/))) return d((x) => evaluate(m[1], x), 1.7);
+  }
+  if (id === "integrales") {
+    if ((m = expr.match(/^∫([₀-₉]+)([⁰¹²³⁴⁵⁶⁷⁸⁹]+) (.+) dx$/))) {
+      const [a, b] = [digits(m[1], "₀₁₂₃₄₅₆₇₈₉"), digits(m[2], "⁰¹²³⁴⁵⁶⁷⁸⁹")];
+      let area = 0;
+      const steps = 1000;
+      for (let i = 0; i < steps; i++) area += evaluate(m[3], a + ((b - a) * (i + 0.5)) / steps) * ((b - a) / steps);
+      return Math.round(area * 1000) / 1000;
+    }
+    if ((m = expr.match(/^Velocidad (\d+) km\/h por (\d+) h$/))) return m[1] * m[2];
+  }
+  return null;
+}
+
 // Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
 function solveSystem(expr) {
   const letters = [...new Set(expr.match(/[a-z]/g))];
@@ -601,7 +698,7 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
         else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos", "crecimiento-exponencial", "cono", "homotecia", "cambio-porcentual", "esfera", "funcion-inversa"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);

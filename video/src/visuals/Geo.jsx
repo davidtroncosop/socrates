@@ -133,6 +133,7 @@ export function Bars({ prev, cur, t, beat }) {
   const o = same ? 1 : during(t, beat, 0.6);
   const series = cur.series ?? [""];
   const max = cur.ymax;
+  const min = cur.ymin ?? 0;
   const x0 = 420;
   const y0 = 780;
   const H = 440;
@@ -140,9 +141,9 @@ export function Bars({ prev, cur, t, beat }) {
   const barW = Math.min(120, (groupW - 80) / series.length);
   return (
     <svg width={1920} height={1080} style={svgFill}>
-      {Array.from({ length: max / cur.ystep + 1 }, (_, i) => {
-        const v = i * cur.ystep;
-        const y = y0 - (v / max) * H;
+      {Array.from({ length: (max - min) / cur.ystep + 1 }, (_, i) => {
+        const v = min + i * cur.ystep;
+        const y = y0 - ((v - min) / (max - min)) * H;
         return (
           <g key={v}>
             <line x1={x0} y1={y} x2={x0 + 1080} y2={y} stroke={C.soft} strokeWidth={3} />
@@ -155,7 +156,7 @@ export function Bars({ prev, cur, t, beat }) {
         return (
           <g key={b.label}>
             {b.values.map((v, k) => {
-              const h = (v / max) * H * o;
+              const h = ((v - min) / (max - min)) * H * o;
               const lit = cur.highlight === undefined || cur.highlight === i;
               return (
                 <g key={k} opacity={lit ? 1 : 0.35}>
@@ -280,6 +281,16 @@ export function Plane({ prev, cur, t, beat }) {
           opacity={0.45}
         />
       )}
+      {cur.line && (() => {
+        const [m, b] = cur.line;
+        // Solo el tramo que queda dentro de la cuadrícula.
+        const inside = (y) => (m === 0 ? [min, max] : [(y - b) / m]);
+        const xs = [min, max, ...inside(min), ...inside(max)].filter((x) => x >= min && x <= max && m * x + b >= min - 1e-9 && m * x + b <= max + 1e-9);
+        const [x1, x2] = [Math.min(...xs), Math.max(...xs)];
+        const [ax, ay] = P([x1, m * x1 + b]);
+        const [bx, by] = P([x2, m * x2 + b]);
+        return <line x1={ax} y1={ay} x2={bx} y2={by} stroke={C.amber} strokeWidth={6} opacity={o} />;
+      })()}
       {cur.walk && (() => {
         const [x, y] = cur.walk;
         const [ax, ay] = P([0, 0]);
@@ -536,7 +547,7 @@ export function Bell({ prev, cur, t, beat }) {
 // Curvas: potencia a · xⁿ, exponencial a · bˣ, k / x y A · sen(B · x) + D (x en grados).
 export function Curve({ prev, cur, t, beat }) {
   const o = prev && JSON.stringify(prev.f) === JSON.stringify(cur.f) ? 1 : during(t, beat, 0.7);
-  const { kind, a = 1, b = 2, n = 2, k = 1, A = 1, B = 1, D = 0 } = cur.f;
+  const { kind, a = 1, b = 2, n = 2, k = 1, A = 1, B = 1, D = 0, c = 0, m = 1 } = cur.f;
   const [xmin, xmax, ymin, ymax] = cur.window;
   const W = 1000;
   const H = 560;
@@ -545,7 +556,12 @@ export function Curve({ prev, cur, t, beat }) {
   const X = (x) => x0 + ((x - xmin) / (xmax - xmin)) * W;
   const Y = (y) => y0 + ((ymax - y) / (ymax - ymin)) * H;
   const f = (x) =>
-    kind === "pow" ? a * x ** n : kind === "exp" ? a * b ** x : kind === "inv" ? k / x : A * Math.sin((B * x * Math.PI) / 180) + D;
+    kind === "pow" ? a * x ** n
+    : kind === "exp" ? a * b ** x
+    : kind === "inv" ? k / x
+    : kind === "abs" ? Math.abs(x - c)
+    : kind === "lin" ? m * x + b
+    : A * Math.sin((B * x * Math.PI) / 180) + D;
   const steps = 300;
   const segs = [[]];
   for (let i = 0; i <= steps * o; i++) {
@@ -568,6 +584,22 @@ export function Curve({ prev, cur, t, beat }) {
           <text x={x0 + W + 16} y={Y(y) + 12} fontSize={36} fontWeight={800} fill={C.red}>{label}</text>
         </g>
       ))}
+      {cur.area && (() => {
+        const [from, to] = cur.area;
+        const xs = Array.from({ length: 81 }, (_, i) => from + ((to - from) * i * Math.min(1, o * 1.2)) / 80);
+        return <polygon points={[[X(from), Y(0)], ...xs.map((x) => [X(x), Y(f(x))]), [X(xs.at(-1)), Y(0)]].map((p) => p.join(",")).join(" ")} fill={C.amberSoft} stroke={C.amber} strokeWidth={3} />;
+      })()}
+      {cur.tangent && (() => {
+        const { x, slope } = cur.tangent;
+        const y = f(x);
+        const dx = (xmax - xmin) / 4;
+        return (
+          <g opacity={o}>
+            <line x1={X(x - dx)} y1={Y(y - slope * dx)} x2={X(x + dx)} y2={Y(y + slope * dx)} stroke={C.red} strokeWidth={6} />
+            <circle cx={X(x)} cy={Y(y)} r={13} fill={C.red} />
+          </g>
+        );
+      })()}
       {segs.filter((sg) => sg.length > 1).map((sg, i) => (
         <polyline key={i} points={sg.map((p) => p.join(",")).join(" ")} fill="none" stroke={C.blue} strokeWidth={7} />
       ))}

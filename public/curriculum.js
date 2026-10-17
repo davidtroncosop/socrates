@@ -7343,5 +7343,1095 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "tallo-hojas",
+    "since": "2026-10-19",
+    "title": "Diagrama de tallo y hojas",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 22 · Las decenas a la izquierda",
+    "concept": "Un diagrama de tallo y hojas ordena datos de dos cifras. El tallo es la decena (a la izquierda) y cada hoja es una unidad (a la derecha). La fila 2 | 3 5 8 representa los datos 23, 25 y 28.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-22\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "3 | 1 4 6 son los datos 31, 34 y 36. Contando todas las hojas sabes cuántos datos hay.",
+    "status": "published",
+    "questions": [
+      [
+        "2 | 3 5 8: mayor dato",
+        28,
+        "En la fila 2 | 3 5 8, ¿cuál es el dato mayor?",
+        "🌿 El tallo es la decena y la hoja, la unidad.",
+        "Los datos son 23, 25 y 28. El mayor es 28.",
+        [
+          [
+            8,
+            "La hoja sola es la unidad. Júntala con el tallo: 28."
+          ],
+          [
+            2,
+            "Ese es el tallo. El dato completo es 28."
+          ]
+        ]
+      ],
+      [
+        "Tallos 1 | 2 7 y 2 | 0 4 9: ¿cuántos datos?",
+        5,
+        "Un diagrama tiene las filas 1 | 2 7 y 2 | 0 4 9. ¿Cuántos datos hay en total?",
+        "Cuenta las hojas: cada una es un dato.",
+        "2 hojas + 3 hojas = 5 datos.",
+        [
+          [
+            2,
+            "Esos son los tallos. Cada hoja es un dato: 5."
+          ],
+          [
+            3,
+            "Cuenta las hojas de las dos filas: 2 + 3 = 5."
+          ]
+        ]
+      ],
+      [
+        "3 | 1 4 6: menor dato",
+        31,
+        "En la fila 3 | 1 4 6, ¿cuál es el dato menor?",
+        "La primera hoja junto al tallo.",
+        "Los datos son 31, 34 y 36. El menor es 31.",
+        [
+          [
+            1,
+            "Junta la hoja con el tallo: 31."
+          ]
+        ]
+      ],
+      [
+        "Edades 1 | 5 8 y 2 | 2: mediana",
+        18,
+        "Las edades de un grupo son 1 | 5 8 y 2 | 2. ¿Cuál es la mediana?",
+        "Los datos ordenados son 15, 18 y 22.",
+        "El del medio es 18.",
+        [
+          [
+            22,
+            "Ese es el mayor. El del medio es 18."
+          ],
+          [
+            8,
+            "Junta tallo y hoja: 18."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "4 | 0 3 9: mayor dato",
+      49,
+      "En la fila 4 | 0 3 9, ¿cuál es el dato mayor?",
+      "Tallo 4 y hoja 9.",
+      "Los datos son 40, 43 y 49. El mayor es 49.",
+      [
+        [
+          9,
+          "Junta la hoja con el tallo: 49."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "teselados",
+    "since": "2026-10-19",
+    "title": "Teselados",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 14 · Baldosas sin huecos",
+    "concept": "Un teselado cubre el piso con figuras sin dejar huecos ni encimarse, como las baldosas. En cada esquina donde se juntan las figuras, los ángulos deben sumar 360°. Por eso teselan los cuadrados (4 · 90°), los triángulos equiláteros (6 · 60°) y los hexágonos regulares (3 · 120°).\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-14\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Un hexágono regular tiene ángulos de 120°: 360 ÷ 120 = 3 hexágonos se juntan en cada esquina.",
+    "status": "published",
+    "questions": [
+      [
+        "Cuadrados en una esquina",
+        4,
+        "En un piso de baldosas cuadradas (ángulos de 90°), ¿cuántas baldosas se juntan en cada esquina?",
+        "🧱 Alrededor de un punto hay 360°.",
+        "360 ÷ 90 = 4 baldosas.",
+        [
+          [
+            3,
+            "3 · 90 = 270: quedaría un hueco. 360 ÷ 90 = 4."
+          ]
+        ]
+      ],
+      [
+        "Triángulos equiláteros en una esquina",
+        6,
+        "Con triángulos equiláteros (ángulos de 60°), ¿cuántos se juntan en cada esquina?",
+        "360 ÷ 60.",
+        "360 ÷ 60 = 6 triángulos.",
+        [
+          [
+            3,
+            "Un triángulo tiene 3 ángulos, pero en la esquina se juntan 360 ÷ 60 = 6."
+          ]
+        ]
+      ],
+      [
+        "Hexágonos en una esquina",
+        3,
+        "Con hexágonos regulares (ángulos de 120°), ¿cuántos se juntan en cada esquina?",
+        "360 ÷ 120.",
+        "360 ÷ 120 = 3 hexágonos.",
+        [
+          [
+            6,
+            "El hexágono tiene 6 lados, pero en la esquina se juntan 360 ÷ 120 = 3."
+          ]
+        ]
+      ],
+      [
+        "Pentágono: ¿falta o sobra?",
+        36,
+        "Un pentágono regular tiene ángulos de 108°. Si juntas 3 en una esquina, ¿cuántos grados faltan para completar 360°? (Por eso el pentágono regular no tesela.)",
+        "3 · 108 = 324.",
+        "360 − 324 = 36° de hueco.",
+        [
+          [
+            324,
+            "Esa es la suma. Lo que falta: 360 − 324 = 36."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Ángulos de 90° y 4 figuras",
+      360,
+      "En una esquina se juntan 4 baldosas cuadradas. ¿Cuántos grados suman sus ángulos?",
+      "4 · 90.",
+      "4 · 90 = 360°.",
+      [
+        [
+          180,
+          "Alrededor de un punto se completa una vuelta: 360°."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "construcciones",
+    "since": "2026-10-19",
+    "title": "Elementos del triángulo",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 12 · Rectas especiales",
+    "concept": "Algunas rectas tienen nombre. La simetral corta un segmento justo por la mitad, en ángulo recto. La bisectriz parte un ángulo en dos iguales. La transversal de gravedad va de un vértice al punto medio del lado opuesto; las tres se juntan en el centro de gravedad, que queda a 2/3 desde el vértice.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-12\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Bisectriz de un ángulo de 80°: dos ángulos de 40°. Simetral de un segmento de 10 cm: lo corta en dos de 5 cm.",
+    "status": "published",
+    "questions": [
+      [
+        "Simetral de 10 cm",
+        5,
+        "La simetral corta un segmento de 10 cm. ¿Cuánto mide cada parte?",
+        "📐 La simetral corta justo por la mitad.",
+        "10 ÷ 2 = 5 cm.",
+        [
+          [
+            10,
+            "La simetral divide el segmento en dos partes iguales: 5."
+          ]
+        ]
+      ],
+      [
+        "Bisectriz de 80°",
+        40,
+        "La bisectriz parte un ángulo de 80°. ¿Cuánto mide cada parte?",
+        "La bisectriz divide el ángulo en dos iguales.",
+        "80 ÷ 2 = 40°.",
+        [
+          [
+            160,
+            "La bisectriz divide, no duplica: 40°."
+          ]
+        ]
+      ],
+      [
+        "Simetral: ¿ángulo con el segmento?",
+        90,
+        "¿Qué ángulo forma la simetral con el segmento que corta?",
+        "La simetral es perpendicular.",
+        "Forma un ángulo recto: 90°.",
+        [
+          [
+            180,
+            "Perpendicular es una esquina recta: 90°."
+          ]
+        ]
+      ],
+      [
+        "Transversal de 9 cm: hasta el centro",
+        6,
+        "Una transversal de gravedad mide 9 cm. El centro de gravedad está a 2/3 desde el vértice. ¿A cuántos cm del vértice está?",
+        "2/3 de 9.",
+        "9 ÷ 3 = 3; 3 · 2 = 6 cm.",
+        [
+          [
+            3,
+            "Ese es 1/3. Desde el vértice son 2/3: 6."
+          ],
+          [
+            4.5,
+            "No es la mitad: 2/3 de 9 = 6."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Bisectriz de 120°",
+      60,
+      "La bisectriz parte un ángulo de 120°. ¿Cuánto mide cada parte?",
+      "La mitad.",
+      "120 ÷ 2 = 60°.",
+      [
+        [
+          240,
+          "La bisectriz divide: 60°."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "pitagoras-3d",
+    "since": "2026-10-19",
+    "title": "Pitágoras en tres dimensiones",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 12 · La diagonal de una caja",
+    "concept": "Para la diagonal de una caja usas Pitágoras dos veces. Primero la diagonal del piso: √(largo² + ancho²). Después esa diagonal y la altura forman otro triángulo rectángulo. Atajo: diagonal = √(largo² + ancho² + alto²).\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-12\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Caja de 3, 4 y 12: el piso tiene diagonal √(9 + 16) = 5, y la caja √(25 + 144) = 13.",
+    "status": "published",
+    "questions": [
+      [
+        "Piso de 3 por 4: diagonal",
+        5,
+        "El piso de una caja mide 3 por 4. ¿Cuánto mide la diagonal del piso?",
+        "📦 Pitágoras: √(3² + 4²).",
+        "√(9 + 16) = √25 = 5.",
+        [
+          [
+            7,
+            "No se suman directo: √(9 + 16) = 5."
+          ]
+        ]
+      ],
+      [
+        "Caja 3, 4 y 12: diagonal",
+        13,
+        "Una caja mide 3 de largo, 4 de ancho y 12 de alto. ¿Cuánto mide su diagonal (de una esquina a la opuesta)?",
+        "Diagonal del piso: 5. Después √(5² + 12²).",
+        "√(25 + 144) = √169 = 13.",
+        [
+          [
+            12,
+            "Esa es la altura. Usa Pitágoras con la diagonal del piso: 13."
+          ],
+          [
+            19,
+            "No se suman directo: √(9 + 16 + 144) = 13."
+          ]
+        ]
+      ],
+      [
+        "Caja 2, 3 y 6: diagonal",
+        7,
+        "¿Cuánto mide la diagonal de una caja de 2, 3 y 6?",
+        "√(2² + 3² + 6²).",
+        "√(4 + 9 + 36) = √49 = 7.",
+        [
+          [
+            11,
+            "No se suman directo: √49 = 7."
+          ],
+          [
+            49,
+            "Falta la raíz: √49 = 7."
+          ]
+        ]
+      ],
+      [
+        "Cubo de arista 1: diagonal²",
+        3,
+        "En un cubo de arista 1, ¿cuánto vale el cuadrado de la diagonal (diagonal²)?",
+        "1² + 1² + 1².",
+        "1 + 1 + 1 = 3 (la diagonal es √3).",
+        [
+          [
+            2,
+            "Ese es el de una cara. En el cubo son tres: 3."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Caja 1, 2 y 2: diagonal",
+      3,
+      "¿Cuánto mide la diagonal de una caja de 1, 2 y 2?",
+      "√(1 + 4 + 4).",
+      "√9 = 3.",
+      [
+        [
+          5,
+          "No se suman directo: √9 = 3."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "graficos-enganosos",
+    "since": "2026-10-19",
+    "title": "Gráficos engañosos",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 16 · Mira dónde parte el eje",
+    "concept": "Un gráfico puede engañar si su eje no parte en cero: una barra de 100 puede verse el doble que una de 98, aunque la diferencia es solo 2. Antes de concluir, lee los números del eje y calcula la diferencia real.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico/ma08-oa-16\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Barras de 98 y 100 con un eje que parte en 96: la segunda se ve el doble de alta, pero 100 − 98 = 2, apenas un 2 % más.",
+    "status": "published",
+    "questions": [
+      [
+        "Barras 98 y 100: diferencia",
+        2,
+        "Un gráfico muestra la barra A en 98 y la B en 100, y la B se ve el doble de alta. ¿Cuál es la diferencia real?",
+        "🔍 Resta los valores, no compares las alturas.",
+        "100 − 98 = 2.",
+        [
+          [
+            98,
+            "No es el doble: la diferencia es 100 − 98 = 2."
+          ]
+        ]
+      ],
+      [
+        "Eje desde 96: altura de 98",
+        2,
+        "En ese gráfico el eje parte en 96. ¿Cuántas unidades de alto se dibuja la barra A (98)?",
+        "La barra se dibuja desde 96.",
+        "98 − 96 = 2 unidades (y la B, 4: por eso parece el doble).",
+        [
+          [
+            98,
+            "Se dibuja desde 96, no desde 0: 98 − 96 = 2."
+          ]
+        ]
+      ],
+      [
+        "Ventas 50 y 55: % de aumento",
+        10,
+        "Un gráfico muestra ventas de 50 y 55, con barras que parecen triplicarse. ¿En qué porcentaje aumentaron de verdad?",
+        "Aumentó 5 de 50.",
+        "5 ÷ 50 = 10 %.",
+        [
+          [
+            200,
+            "Las barras engañan. El aumento real es 5 de 50: 10 %."
+          ],
+          [
+            5,
+            "Esa es la diferencia. En porcentaje: 10 %."
+          ]
+        ]
+      ],
+      [
+        "Eje que parte en: ¿qué valor es honesto?",
+        0,
+        "Para que la altura de las barras se pueda comparar, ¿en qué valor debe partir el eje?",
+        "Si parte en cero, la altura es proporcional al valor.",
+        "En 0.",
+        [
+          [
+            1,
+            "Debe partir en 0."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Barras 50 y 52: diferencia",
+      2,
+      "Las barras muestran 50 y 52. ¿Cuál es la diferencia real?",
+      "Resta.",
+      "52 − 50 = 2.",
+      [
+        [
+          50,
+          "Resta los valores: 2."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "euclides",
+    "since": "2026-10-19",
+    "title": "Teorema de Euclides",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "1° Medio · Alturas en el triángulo rectángulo",
+    "concept": "En un triángulo rectángulo, la altura desde el ángulo recto parte la hipotenusa en dos trozos, p y q. El teorema de Euclides dice: altura² = p · q. Y cada cateto² = su trozo · hipotenusa: a² = p · c.\nReferencia curricular: tema complementario, sin un objetivo de aprendizaje vigente asociado.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Si p = 4 y q = 9, la altura es √(4 · 9) = √36 = 6.",
+    "status": "published",
+    "questions": [
+      [
+        "p = 4, q = 9: altura",
+        6,
+        "La altura parte la hipotenusa en trozos de 4 y 9. ¿Cuánto mide la altura?",
+        "📐 altura² = p · q.",
+        "altura² = 36, altura = 6.",
+        [
+          [
+            36,
+            "Ese es altura². Saca la raíz: 6."
+          ],
+          [
+            13,
+            "No se suman: altura² = 4 · 9 = 36, altura = 6."
+          ]
+        ]
+      ],
+      [
+        "p = 2, q = 8: altura",
+        4,
+        "Los trozos de la hipotenusa miden 2 y 8. ¿Cuánto mide la altura?",
+        "altura² = 2 · 8.",
+        "16 → altura = 4.",
+        [
+          [
+            16,
+            "Falta la raíz: 4."
+          ]
+        ]
+      ],
+      [
+        "p = 4, c = 9: cateto",
+        6,
+        "Un trozo de la hipotenusa mide 4 y la hipotenusa completa, 9. ¿Cuánto mide el cateto que está sobre ese trozo?",
+        "cateto² = p · c.",
+        "cateto² = 36, cateto = 6.",
+        [
+          [
+            36,
+            "Ese es el cateto². Raíz: 6."
+          ]
+        ]
+      ],
+      [
+        "altura 6, p = 3: q",
+        12,
+        "La altura mide 6 y un trozo de la hipotenusa mide 3. ¿Cuánto mide el otro trozo?",
+        "6² = 3 · q.",
+        "36 = 3q, q = 12.",
+        [
+          [
+            2,
+            "altura² = 36, no 6: 36 ÷ 3 = 12."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "p = 1, q = 9: altura",
+      3,
+      "Los trozos de la hipotenusa miden 1 y 9. ¿Cuánto mide la altura?",
+      "√(1 · 9).",
+      "√9 = 3.",
+      [
+        [
+          9,
+          "Falta la raíz: 3."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "recta-ajuste",
+    "since": "2026-10-19",
+    "title": "Recta de ajuste",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 13 · Una recta que pasa por el medio",
+    "concept": "En una nube de puntos, a veces los puntos siguen una tendencia: cuando uno sube, el otro también. Una recta de ajuste pasa por el medio de la nube y sirve para estimar. Si la recta es y = 2x + 1, para x = 5 se estima y = 11.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-13\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Horas de estudio (x) y nota (y): con la recta y = 0,5x + 4, quien estudia 4 horas tendría cerca de 6,0.",
+    "status": "published",
+    "questions": [
+      [
+        "y = 2x + 1 con x = 5",
+        11,
+        "La recta de ajuste es y = 2x + 1. ¿Qué y estimas para x = 5?",
+        "📈 Reemplaza x por 5.",
+        "2 · 5 + 1 = 11.",
+        [
+          [
+            8,
+            "2x es 2 · 5 = 10, más 1: 11."
+          ]
+        ]
+      ],
+      [
+        "y = 0,5x + 4 con x = 4",
+        6,
+        "Nota y horas de estudio: y = 0,5x + 4. ¿Qué nota estimas para 4 horas?",
+        "0,5 · 4 + 4.",
+        "2 + 4 = 6,0.",
+        [
+          [
+            4.5,
+            "0,5 · 4 = 2, no 0,5: 2 + 4 = 6."
+          ]
+        ]
+      ],
+      [
+        "Pendiente de (1, 3) a (3, 7)",
+        2,
+        "Una recta de ajuste pasa por (1, 3) y (3, 7). ¿Cuál es su pendiente?",
+        "Cuánto sube y ÷ cuánto avanza x.",
+        "(7 − 3) ÷ (3 − 1) = 4 ÷ 2 = 2.",
+        [
+          [
+            0.5,
+            "Al revés: lo que sube (4) ÷ lo que avanza (2) = 2."
+          ],
+          [
+            4,
+            "Falta dividir por lo que avanza x (2): 2."
+          ]
+        ]
+      ],
+      [
+        "y = 3x con x = 7",
+        21,
+        "Si la recta de ajuste es y = 3x, ¿qué y estimas para x = 7?",
+        "3 · 7.",
+        "21.",
+        [
+          [
+            10,
+            "3x es multiplicar: 21."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "y = 2x + 3 con x = 4",
+      11,
+      "La recta de ajuste es y = 2x + 3. ¿Qué y estimas para x = 4?",
+      "2 · 4 + 3.",
+      "11.",
+      [
+        [
+          9,
+          "2 · 4 = 8, más 3: 11."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "probabilidad-sociedad",
+    "since": "2026-10-19",
+    "title": "La probabilidad en las noticias",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 12 · Leer con cuidado los números",
+    "concept": "Las noticias usan probabilidades y porcentajes: «1 de cada 4», «riesgo de 2 %». Para entenderlas, pásalas a un mismo idioma y piensa en cantidades concretas. Un riesgo de 2 % en 500 personas son unas 10 personas.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-12\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "«1 de cada 4 jóvenes» es el 25 %. Si un riesgo pasa de 1 % a 2 %, se duplica, aunque solo sube 1 punto.",
+    "status": "published",
+    "questions": [
+      [
+        "1 de cada 4 en %",
+        25,
+        "Una noticia dice «1 de cada 4 jóvenes hace deporte». ¿Qué porcentaje es?",
+        "📰 1 ÷ 4.",
+        "1 ÷ 4 = 0,25 = 25 %.",
+        [
+          [
+            4,
+            "1 de cada 4 es 1 ÷ 4 = 25 %."
+          ],
+          [
+            0.25,
+            "En porcentaje: 25."
+          ]
+        ]
+      ],
+      [
+        "2 % de 500",
+        10,
+        "Un riesgo es de 2 %. ¿Cuántas personas de 500 se verían afectadas aproximadamente?",
+        "2 de cada 100.",
+        "500 · 0,02 = 10.",
+        [
+          [
+            2,
+            "2 % no son 2 personas: de 500 son 10."
+          ]
+        ]
+      ],
+      [
+        "De 1 % a 2 %: ¿cuántas veces?",
+        2,
+        "Un riesgo sube de 1 % a 2 %. ¿Cuántas veces mayor es ahora?",
+        "2 ÷ 1.",
+        "El doble: 2 veces.",
+        [
+          [
+            1,
+            "Sube 1 punto, pero es el doble: 2 veces."
+          ]
+        ]
+      ],
+      [
+        "70 % de lluvia: no llueve",
+        30,
+        "El pronóstico dice 70 % de probabilidad de lluvia. ¿Cuál es la probabilidad (en %) de que no llueva?",
+        "Las dos suman 100 %.",
+        "100 − 70 = 30 %.",
+        [
+          [
+            70,
+            "Esa es la de lluvia. La de no lluvia: 30 %."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "1 de cada 5 en %",
+      20,
+      "«1 de cada 5 personas usa lentes». ¿Qué porcentaje es?",
+      "1 ÷ 5.",
+      "20 %.",
+      [
+        [
+          5,
+          "1 de cada 5 es 1 ÷ 5 = 20 %."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "valor-absoluto",
+    "since": "2026-10-19",
+    "title": "Valor absoluto y funciones por tramos",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "Electivo · Distancia al cero",
+    "concept": "El valor absoluto es la distancia al cero, y una distancia nunca es negativa: |−5| = 5 y |5| = 5. Una función por tramos usa reglas distintas según el valor de x: por ejemplo, un estacionamiento cobra $1.000 la primera hora y $500 cada hora siguiente.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación Diferenciada Humanista-Científica, electivo «Límites, derivadas e integrales» (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "|3 − 8| = |−5| = 5. Con f(x) = |x − 3|, f(1) = |−2| = 2.",
+    "status": "published",
+    "questions": [
+      [
+        "|−7|",
+        7,
+        "Calcula el valor absoluto.",
+        "📏 Es la distancia al cero.",
+        "−7 está a 7 del cero: |−7| = 7.",
+        [
+          [
+            -7,
+            "Una distancia nunca es negativa: 7."
+          ]
+        ]
+      ],
+      [
+        "|3 − 8|",
+        5,
+        "Calcula.",
+        "Primero lo de adentro: 3 − 8.",
+        "|−5| = 5.",
+        [
+          [
+            -5,
+            "El valor absoluto quita el signo: 5."
+          ],
+          [
+            11,
+            "Primero resta adentro: 3 − 8 = −5; |−5| = 5."
+          ]
+        ]
+      ],
+      [
+        "f(1) con f(x) = |x − 3|",
+        2,
+        "Calcula f(1).",
+        "|1 − 3|.",
+        "|−2| = 2.",
+        [
+          [
+            -2,
+            "El valor absoluto es positivo: 2."
+          ],
+          [
+            4,
+            "Adentro es 1 − 3 = −2: |−2| = 2."
+          ]
+        ]
+      ],
+      [
+        "Estacionamiento: 3 horas",
+        2000,
+        "Un estacionamiento cobra $1.000 la primera hora y $500 cada hora siguiente. ¿Cuánto pagas por 3 horas?",
+        "Primer tramo: 1 hora. Segundo tramo: 2 horas más.",
+        "1.000 + 2 · 500 = $2.000.",
+        [
+          [
+            1500,
+            "Son 2 horas después de la primera: 1.000 + 500 + 500 = 2.000."
+          ],
+          [
+            3000,
+            "Solo la primera hora cuesta 1.000: 2.000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "|−12|",
+      12,
+      "Calcula el valor absoluto.",
+      "Distancia al cero.",
+      "12.",
+      [
+        [
+          -12,
+          "Una distancia es positiva: 12."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "composicion",
+    "since": "2026-10-19",
+    "title": "Composición de funciones",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "Electivo · Una máquina después de otra",
+    "concept": "Componer es pasar un número por una máquina y el resultado por otra. f(g(x)) se lee «f de g de x»: primero g, después f. El orden importa: f(g(2)) y g(f(2)) suelen dar distinto.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación Diferenciada Humanista-Científica, electivo «Límites, derivadas e integrales» (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "f(x) = x + 1 y g(x) = 2x. f(g(3)) = f(6) = 7. g(f(3)) = g(4) = 8.",
+    "status": "published",
+    "questions": [
+      [
+        "f(x) = x + 1, g(x) = 2x: f(g(3))",
+        7,
+        "Calcula f(g(3)).",
+        "⚙️ Primero g(3), después f de ese resultado.",
+        "g(3) = 6; f(6) = 7.",
+        [
+          [
+            8,
+            "Ese es g(f(3)). Primero g: g(3) = 6, f(6) = 7."
+          ],
+          [
+            4,
+            "Falta aplicar g primero: g(3) = 6, f(6) = 7."
+          ]
+        ]
+      ],
+      [
+        "f(x) = x + 1, g(x) = 2x: g(f(3))",
+        8,
+        "Calcula g(f(3)).",
+        "Primero f(3).",
+        "f(3) = 4; g(4) = 8.",
+        [
+          [
+            7,
+            "Ese es f(g(3)). Primero f: f(3) = 4, g(4) = 8."
+          ]
+        ]
+      ],
+      [
+        "f(x) = x², g(x) = x − 2: f(g(5))",
+        9,
+        "Calcula f(g(5)).",
+        "Primero g(5).",
+        "g(5) = 3; f(3) = 9.",
+        [
+          [
+            23,
+            "Ese es g(f(5)). Primero g: g(5) = 3, f(3) = 9."
+          ]
+        ]
+      ],
+      [
+        "f(x) = 3x, g(x) = x + 4: f(g(1))",
+        15,
+        "Calcula f(g(1)).",
+        "Primero g(1).",
+        "g(1) = 5; f(5) = 15.",
+        [
+          [
+            7,
+            "Ese es g(f(1)). Primero g: 5, después f: 15."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "f(x) = x + 2, g(x) = 3x: f(g(2))",
+      8,
+      "Calcula f(g(2)).",
+      "Primero g(2).",
+      "g(2) = 6; f(6) = 8.",
+      [
+        [
+          12,
+          "Ese es g(f(2)). Primero g: 6, después f: 8."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "limites",
+    "since": "2026-10-19",
+    "title": "Límites",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "Electivo · ¿A dónde se acerca?",
+    "concept": "El límite pregunta a qué valor se acerca f(x) cuando x se acerca a un número, aunque no se pueda calcular justo ahí. En (x² − 4) ÷ (x − 2), x = 2 da 0 ÷ 0, pero factorizando queda x + 2, que se acerca a 4. Y cuando x crece sin parar, 1 ÷ x se acerca a 0.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación Diferenciada Humanista-Científica, electivo «Límites, derivadas e integrales» (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "lím (x → 3) de (2x + 1) = 7. lím (x → 2) de (x² − 4) ÷ (x − 2) = lím (x + 2) = 4.",
+    "status": "published",
+    "questions": [
+      [
+        "lím x→3 de (2x + 1)",
+        7,
+        "Calcula el límite.",
+        "🎯 La función es continua: reemplaza x por 3.",
+        "2 · 3 + 1 = 7.",
+        [
+          [
+            6,
+            "Falta sumar 1: 7."
+          ]
+        ]
+      ],
+      [
+        "lím x→2 de (x² − 4)/(x − 2)",
+        4,
+        "Calcula el límite.",
+        "Factoriza: x² − 4 = (x − 2)(x + 2).",
+        "Se cancela (x − 2): queda x + 2 → 4.",
+        [
+          [
+            0,
+            "0 ÷ 0 no es 0: factoriza y queda x + 2 → 4."
+          ],
+          [
+            2,
+            "Queda x + 2, con x → 2: 4."
+          ]
+        ]
+      ],
+      [
+        "lím x→∞ de 1/x",
+        0,
+        "¿A qué se acerca 1/x cuando x crece sin parar?",
+        "1/10, 1/100, 1/1.000…",
+        "Cada vez más chico: se acerca a 0.",
+        [
+          [
+            1,
+            "1/x se hace cada vez más chico: 0."
+          ]
+        ]
+      ],
+      [
+        "lím x→1 de (x² − 1)/(x − 1)",
+        2,
+        "Calcula el límite.",
+        "x² − 1 = (x − 1)(x + 1).",
+        "Queda x + 1 → 2.",
+        [
+          [
+            0,
+            "0 ÷ 0 no es 0: queda x + 1 → 2."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "lím x→4 de (x + 5)",
+      9,
+      "Calcula el límite.",
+      "Reemplaza x por 4.",
+      "4 + 5 = 9.",
+      [
+        [
+          5,
+          "Reemplaza x por 4: 9."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "derivadas",
+    "since": "2026-10-19",
+    "title": "Derivadas",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "Electivo · La pendiente en un punto",
+    "concept": "La derivada es la pendiente de una curva en un punto: qué tan rápido cambia. Reglas básicas: la derivada de xⁿ es n · xⁿ⁻¹, la de un número solo es 0, y la de a · x es a. Si la posición de un auto es x², su velocidad en el segundo 3 es 2 · 3 = 6.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación Diferenciada Humanista-Científica, electivo «Límites, derivadas e integrales» (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "f(x) = 3x² → f'(x) = 6x, y f'(1) = 6. g(x) = 5x + 2 → g'(x) = 5.",
+    "status": "published",
+    "questions": [
+      [
+        "f(x) = x²: f'(3)",
+        6,
+        "Calcula la derivada de f(x) = x² en x = 3.",
+        "📈 La derivada de x² es 2x.",
+        "f'(x) = 2x; f'(3) = 6.",
+        [
+          [
+            9,
+            "Ese es f(3). La derivada es 2x: 6."
+          ],
+          [
+            3,
+            "La derivada de x² es 2x, no x: 6."
+          ]
+        ]
+      ],
+      [
+        "f(x) = 5x + 2: f'(x)",
+        5,
+        "¿Cuál es la derivada de f(x) = 5x + 2?",
+        "La derivada de 5x es 5; la de 2 es 0.",
+        "f'(x) = 5.",
+        [
+          [
+            7,
+            "El 2 solo no cambia: su derivada es 0. Queda 5."
+          ],
+          [
+            2,
+            "La derivada de un número solo es 0: queda 5."
+          ]
+        ]
+      ],
+      [
+        "f(x) = 3x²: f'(1)",
+        6,
+        "Calcula f'(1) para f(x) = 3x².",
+        "f'(x) = 3 · 2x = 6x.",
+        "f'(1) = 6.",
+        [
+          [
+            3,
+            "Baja el 2: 3 · 2x = 6x. f'(1) = 6."
+          ]
+        ]
+      ],
+      [
+        "f(x) = x³: f'(2)",
+        12,
+        "Calcula f'(2) para f(x) = x³.",
+        "f'(x) = 3x².",
+        "3 · 4 = 12.",
+        [
+          [
+            8,
+            "Ese es f(2). La derivada es 3x²: 12."
+          ],
+          [
+            6,
+            "Es 3x², no 3x: 3 · 4 = 12."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "f(x) = x²: f'(5)",
+      10,
+      "Calcula f'(5) para f(x) = x².",
+      "f'(x) = 2x.",
+      "2 · 5 = 10.",
+      [
+        [
+          25,
+          "Ese es f(5). La derivada es 2x: 10."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "integrales",
+    "since": "2026-10-19",
+    "title": "Integrales",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "Electivo · El área bajo la curva",
+    "concept": "La integral entre dos valores mide el área bajo la curva. Si la función es constante, f(x) = 2 entre 0 y 4, el área es un rectángulo: 2 · 4 = 8. Si es f(x) = x entre 0 y 2, es un triángulo: 2 · 2 ÷ 2 = 2. Si la función es velocidad, la integral es la distancia recorrida.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación Diferenciada Humanista-Científica, electivo «Límites, derivadas e integrales» (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "∫ de 0 a 3 de 4 dx = 4 · 3 = 12. ∫ de 0 a 4 de x dx = 4 · 4 ÷ 2 = 8.",
+    "status": "published",
+    "questions": [
+      [
+        "∫₀⁴ 2 dx",
+        8,
+        "Calcula el área bajo f(x) = 2 entre x = 0 y x = 4.",
+        "🟦 Es un rectángulo de alto 2 y ancho 4.",
+        "2 · 4 = 8.",
+        [
+          [
+            6,
+            "Es un rectángulo: alto por ancho, 2 · 4 = 8."
+          ]
+        ]
+      ],
+      [
+        "∫₀² x dx",
+        2,
+        "Calcula el área bajo f(x) = x entre 0 y 2.",
+        "Es un triángulo de base 2 y altura 2.",
+        "2 · 2 ÷ 2 = 2.",
+        [
+          [
+            4,
+            "Es un triángulo: falta dividir por 2. 2."
+          ]
+        ]
+      ],
+      [
+        "∫₀⁴ x dx",
+        8,
+        "Calcula el área bajo f(x) = x entre 0 y 4.",
+        "Triángulo de base 4 y altura 4.",
+        "4 · 4 ÷ 2 = 8.",
+        [
+          [
+            16,
+            "Es un triángulo: 16 ÷ 2 = 8."
+          ]
+        ]
+      ],
+      [
+        "Velocidad 60 km/h por 3 h",
+        180,
+        "Un auto va a 60 km/h constante durante 3 horas. ¿Qué distancia recorre? (Es el área bajo la velocidad.)",
+        "Rectángulo de alto 60 y ancho 3.",
+        "60 · 3 = 180 km.",
+        [
+          [
+            63,
+            "Es un área: 60 · 3 = 180."
+          ],
+          [
+            20,
+            "Multiplica: 60 · 3 = 180."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "∫₀⁵ 3 dx",
+      15,
+      "Calcula el área bajo f(x) = 3 entre 0 y 5.",
+      "Rectángulo 3 por 5.",
+      "15.",
+      [
+        [
+          8,
+          "Es un rectángulo: 3 · 5 = 15."
+        ]
+      ]
+    ]
   }
 ];
