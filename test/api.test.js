@@ -315,3 +315,23 @@ test("login, recovery and family links are rate limited", async () => {
   assert.equal(links[9], 404);
   assert.equal(links[10], 429);
 });
+
+test("anonymous metrics count events per lesson and exercise; only admins read them", async () => {
+  const e = env();
+  const anon = client(e), admin = client(e), user = client(e);
+  const send = (events) => anon.call("POST", "/api/metrics", { events });
+  assert.equal((await send([{ lesson: "equations", step: 0, kind: "wrong" }, { lesson: "equations", step: 0, kind: "wrong" }, { lesson: "equations", step: 0, kind: "correct" }])).status, 200);
+  assert.equal((await send([{ lesson: "equations", step: 0, kind: "nombre: Ana" }])).status, 400);
+  assert.equal((await send([{ lesson: "<script>", step: 0, kind: "wrong" }])).status, 400);
+  assert.equal((await send(Array(21).fill({ lesson: "equations", step: 1, kind: "hint" }))).status, 400);
+  const columns = e.DB.raw.prepare("PRAGMA table_info(lesson_metrics)").all().map((c) => c.name);
+  assert.deepEqual(columns.sort(), ["count", "day", "kind", "lesson", "step"], "no user, ip or answer is stored");
+  await parent(admin, "Admin", "admin@socatres.cl");
+  await student(user, "Ana", "ana@correo.cl");
+  assert.equal((await user.call("GET", "/api/metrics")).status, 403);
+  const { metrics } = (await admin.call("GET", "/api/metrics")).body;
+  assert.deepEqual(
+    metrics.map((m) => [m.lesson, m.step, m.kind, m.count]).sort(),
+    [["equations", 0, "correct", 1], ["equations", 0, "wrong", 2]],
+  );
+});

@@ -152,6 +152,11 @@ if (new URLSearchParams(location.search).has("login")) {
   show("panel-login");
   dialog.showModal();
 }
+// Desde el aviso de la demo: abre directamente el registro.
+if (new URLSearchParams(location.search).has("registro") && !getSession()) {
+  show("panel-register");
+  dialog.showModal();
+}
 if (destinations.includes(location.hash)) {
   if (getSession()) location.replace(destination());
   else if (!dialog.open) {

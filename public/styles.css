@@ -1430,6 +1430,35 @@ select {
   line-height: 1.45;
 }
 
+/* Lección inicial por pasos: dónde estoy y qué falta. */
+.intro-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+}
+
+.intro-steps li {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.intro-steps li.current {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.intro-steps li.done {
+  color: var(--blue);
+}
+
 .intro-lesson-actions {
   display: flex;
   gap: 12px;
@@ -3361,4 +3390,27 @@ details.handwritten-section[open] .handwritten-toggle {
   .duo-stats-bar {
     padding: 8px 12px;
   }
+}
+
+/* Medición anónima en el panel de contenido. */
+.metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.metrics-table th,
+.metrics-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.metrics-table td:not(:first-child),
+.metrics-table th:not(:first-child) {
+  text-align: right;
+}
+
+.table-scroll {
+  overflow-x: auto;
 }

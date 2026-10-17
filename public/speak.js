@@ -64,3 +64,24 @@ export const speakButton = (target, label = "Escuchar") =>
   canSpeak()
     ? `<button type="button" class="speak-btn" data-action="speak:${target}" aria-label="${label} en voz alta">🔊 ${label}</button>`
     : "";
+
+// Lectura automática: preferencia de este dispositivo (lo de cada uno no se
+// sincroniza: en un computador compartido cada quien decide).
+const AUTO_KEY = "socatres.autoRead";
+export function autoRead() {
+  try {
+    return localStorage.getItem(AUTO_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+export function setAutoRead(on) {
+  try {
+    localStorage.setItem(AUTO_KEY, on ? "1" : "0");
+  } catch {}
+}
+// Botón para activar o desactivar la lectura automática.
+export const autoReadButton = () =>
+  canSpeak()
+    ? `<button type="button" class="speak-btn auto-read-btn" data-action="toggle-auto-read" aria-pressed="${autoRead()}">${autoRead() ? "🔁 Leer siempre: sí" : "🔁 Leer siempre: no"}</button>`
+    : "";

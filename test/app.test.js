@@ -88,6 +88,12 @@ async function harness(saved, { session, key = "socatres.v1", fetch, catalog, su
     },
   };
 }
+// La lección inicial va por pasos: avanza hasta que aparezca `pattern`.
+function stepTo(h, pattern) {
+  for (let i = 0; i < 5 && !pattern.test(h.node("#app").innerHTML); i++) h.click("intro-next");
+  return h.node("#app").innerHTML;
+}
+
 test("guided completion persists work, unlocks next lesson, schedules review without mastery", async () => {
   const h = await harness();
   h.click("lesson:equations");
@@ -394,7 +400,11 @@ test("Engagement mechanics: effort XP, reward tokens, streak shield, belts, triu
   const streakInfo = h.mod.getStreakInfo(h.read());
   assert.ok(streakInfo.streak >= 2);
 
-  // 4. Verify Route UI:
+  // 4. Verify Route UI. Por defecto, modo sencillo: sin XP, fichas ni cinturones.
+  const simpleHtml = h.node("#app").innerHTML;
+  assert.doesNotMatch(simpleHtml, /duo-chip-xp|belt-tag|PREMIOS EN CASA · FICHAS/);
+  assert.match(simpleHtml, /data-action="toggle-rewards"/);
+  h.click("toggle-rewards");
   const appHtml = h.node("#app").innerHTML;
   // Stats bar chips:
   // La barra superior solo muestra racha y XP; premios y papás van al costado.
@@ -467,7 +477,7 @@ test("practicing a completed lesson again uses new generated exercises", async (
     reviews: [],
   });
   h.click("lesson:equations");
-  assert.match(h.node("#app").innerHTML, /ejercicios nuevos/);
+  assert.match(stepTo(h, /ejercicios nuevos/), /ejercicios nuevos/);
   h.click("begin-exercises");
   for (let i = 0; i < 4; i++) {
     h.answer(h.shownAnswer());
@@ -565,7 +575,7 @@ test("lesson videos stay offline until played, are recorded, and never help in t
   if (own) lessonVideos.equations = own;
   assert.match(h.node("#app").innerHTML, /🎬 Video/);
   h.click("lesson:equations");
-  let html = h.node("#app").innerHTML;
+  let html = stepTo(h, /La balanza en video/);
   assert.match(html, /La balanza en video/);
   assert.doesNotMatch(html, /<iframe/, "nothing loads before ▶");
   h.click("play-video:equations");
@@ -604,7 +614,7 @@ const { lessonVideos } = await import("../public/lesson-videos.js");
 test("lessons play their own animated video from our domain", { skip: !lessonVideos.equations && "sin videos subidos" }, async () => {
   const h = await harness();
   h.click("lesson:equations");
-  const html = h.node("#app").innerHTML;
+  const html = stepTo(h, /Video animado de socatres/);
   assert.match(html, /Video animado de socatres/);
   assert.doesNotMatch(html, /<video|youtube/i, "nothing loads before ▶");
   h.click("play-video:equations");
@@ -847,4 +857,38 @@ test("a brand-new student starts with two easy wins, then is invited to the diag
   assert.deepEqual(s.reviews, [], "nor schedules reviews");
   h.click("exit");
   assert.match(h.node("#app").innerHTML, /¿Por dónde te conviene seguir\?/, "next time, the diagnostic is the next step");
+});
+
+test("the initial lesson shows one idea per screen, with back, next and skip", async () => {
+  const h = await harness();
+  h.click("lesson:equations");
+  let html = h.node("#app").innerHTML;
+  assert.match(html, /1\. La idea/);
+  assert.match(html, /pedagogical-banner/);
+  assert.doesNotMatch(html, /intro-example-card/, "the example waits for its own screen");
+  assert.match(html, /data-action="begin-exercises"/, "students who already know can skip");
+  h.click("intro-next");
+  html = h.node("#app").innerHTML;
+  assert.doesNotMatch(html, /pedagogical-banner/);
+  h.click("intro-prev");
+  assert.match(h.node("#app").innerHTML, /pedagogical-banner/);
+  html = stepTo(h, /handwritten-reminder-box/);
+  assert.doesNotMatch(html, /data-action="intro-next"/, "the last step starts the exercises");
+  assert.match(html, /Comenzar ejercicios/);
+  h.click("begin-exercises");
+  h.click("view-intro");
+  html = h.node("#app").innerHTML;
+  assert.match(html, /pedagogical-banner/);
+  assert.match(html, /intro-example-card/, "reviewing from an exercise shows everything");
+});
+
+test("the demo warns when its session ends and offers to create an account", async () => {
+  const later = Date.now() + 3 * 3600000;
+  const h = await harness(null, { session: { mode: "demo", role: "student", name: "Estudiante demo", expiresAt: later } });
+  const html = h.node("#app").innerHTML;
+  assert.match(html, /Estás probando socatres sin cuenta/);
+  assert.match(html, /conservas lo que ya practicaste/);
+  assert.match(html, /data-action="demo-signup"/);
+  const account = await harness(null, { session: { mode: "account", userId: "u1", name: "Ana", role: "student", expiresAt: later } });
+  assert.doesNotMatch(account.node("#app").innerHTML, /sin cuenta/, "accounts see no demo notice");
 });

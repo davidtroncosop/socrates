@@ -32,15 +32,15 @@ export default {
       visual: { type: "lines", lines: ["3⁴ ÷ 3² = (~~3 · 3~~ · 3 · 3) ÷ (~~3 · 3~~)", "= 3² = 9"] },
     },
     {
-      say: "Con base negativa, cuenta los signos menos. Menos dos al cubo tiene tres factores negativos: un número impar de signos menos, así que el resultado es negativo. Menos ocho.",
-      visual: { type: "lines", lines: ["(−2)³ = (−2) · (−2) · (−2)", "= −8"] },
+      say: "¿Y una potencia de una potencia? Dos al cuadrado, elevado al cubo, es usar tres veces la máquina de dos al cuadrado: dos más dos más dos, seis usos. Los exponentes se multiplican: dos a la seis, sesenta y cuatro.",
+      visual: { type: "lines", lines: ["(2²)³ = 2² · 2² · 2²", "= 2⁶ = 64"] },
     },
     {
-      say: "Recuerda: al multiplicar potencias de igual base, se suman los exponentes; al dividir, se restan. Y con base negativa y exponente impar, el resultado es negativo.",
+      say: "Recuerda: al multiplicar potencias de igual base, se suman los exponentes; al dividir, se restan. Y en una potencia de potencia, se multiplican.",
       visual: {
         type: "list",
         title: "Potencias de igual base",
-        items: ["✖️ Multiplicar: se suman los exponentes.", "➗ Dividir: se restan los exponentes.", "➖ Base negativa con exponente impar: resultado negativo."],
+        items: ["✖️ Multiplicar: se suman los exponentes.", "➗ Dividir: se restan los exponentes.", "🔁 Potencia de potencia: se multiplican los exponentes."],
       },
     },
   ],

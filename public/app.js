@@ -29,7 +29,8 @@ import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
 import { videoFacade, videoPlayer, withLessonVideos } from "./video.js";
 import { ACTIVE_SUBJECTS } from "./subjects.js";
-import { speak, speakButton, stopSpeaking } from "./speak.js";
+import { autoRead, autoReadButton, setAutoRead, speak, speakButton, stopSpeaking } from "./speak.js";
+import { track } from "./metrics.js";
 import { diagnoseMistake } from "./mistakes.js";
 import {
   buildDailyPlan,
@@ -147,6 +148,16 @@ function lockedBy(l) {
   return prev && !state.completed.includes(prev.id) ? prev : null;
 }
 const isLocked = (l) => Boolean(lockedBy(l));
+// Modo sencillo por defecto: puntos, fichas y cinturones quedan ocultos para no
+// distraer. El apoderado que los use en casa los muestra con un botón.
+const REWARDS_KEY = "socatres.rewards";
+const fullRewards = () => {
+  try {
+    return localStorage.getItem(REWARDS_KEY) === "full";
+  } catch {
+    return false;
+  }
+};
 // Siguiente paso sugerido: primero el curso del estudiante.
 function nextLesson() {
   const open = (l) => !state.completed.includes(l.id) && !isLocked(l);
@@ -328,6 +339,14 @@ function dailyHero(next) {
     </div>
   </section>`;
 }
+// La demo no tiene cuenta: avisa cuándo vence y cómo conservar lo practicado.
+function demoNotice() {
+  if (account?.mode !== "demo" || !Number.isFinite(account.expiresAt)) return "";
+  const end = new Date(account.expiresAt);
+  const hour = end.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" });
+  const when = end.toDateString() === new Date().toDateString() ? `hoy a las ${hour}` : `mañana a las ${hour}`;
+  return `<section class="callout demo-notice" role="note"><strong>🕒 Estás probando socatres sin cuenta.</strong> La sesión termina ${when} y tu avance queda solo en este navegador. Si creas tu cuenta, conservas lo que ya practicaste (si tienes menos de 14 años, pídele a tu apoderado que la cree). ${button("Crear mi cuenta", "demo-signup", "secondary")}</section>`;
+}
 function route() {
   if (!lessons.length) {
     app.innerHTML =
@@ -415,7 +434,7 @@ function route() {
             const sub = getSubject(l);
             const isLang = sub === "lenguaje";
             const subjectBadge = `<span class="subject-tag ${isLang ? "subject-lang" : "subject-math"}">${isLang ? "📖 Lenguaje" : "📐 Matemática"}</span>`;
-            const beltBadge = `<span class="belt-tag ${belt.badgeClass}" title="${belt.desc}">${belt.icon} ${belt.name}</span>`;
+            const beltBadge = fullRewards() ? `<span class="belt-tag ${belt.badgeClass}" title="${belt.desc}">${belt.icon} ${belt.name}</span>` : "";
             const statusText = mastered
               ? "Dominio confirmado en un repaso"
               : done
@@ -499,11 +518,11 @@ function route() {
           <span class="duo-chip-label">día${streakDays > 1 ? "s" : ""}</span>
           ${streakInfo.hasFreeze ? `<span class="duo-freeze-badge" title="Protector de racha activo">🛡️</span>` : ""}
         </div>
-        <div class="duo-stat-chip duo-chip-xp" title="Puntos de Experiencia ganados practicando">
+        ${fullRewards() ? `<div class="duo-stat-chip duo-chip-xp" title="Puntos de Experiencia ganados practicando">
           <span class="duo-chip-icon">⭐</span>
           <span class="duo-chip-value">${xp}</span>
           <span class="duo-chip-label">XP</span>
-        </div>
+        </div>` : ""}
         ${dueCount > 0 ? `<button class="duo-stat-chip duo-chip-clickable duo-chip-alert" data-action="go:repaso" title="Repasos listos">
           <span class="duo-chip-icon">↺</span>
           <span class="duo-chip-value">${dueCount}</span>
@@ -512,6 +531,7 @@ function route() {
       </div>
     </div>
 
+    ${demoNotice()}
     <div class="dashboard">
       <div>
         ${
@@ -606,7 +626,7 @@ ${bothSubjects ? `<div class="subject-progress-grid">
           </div>
         </section>
 
-        <section class="card duo-side-rewards duo-side-habitribu">
+        ${fullRewards() ? `<section class="card duo-side-rewards duo-side-habitribu">
           <div class="mini-label">PREMIOS EN CASA · FICHAS</div>
           <div class="ht-side-row">
             <span class="ht-side-coin">🪙</span>
@@ -622,7 +642,12 @@ ${bothSubjects ? `<div class="subject-progress-grid">
             Faltan <strong>${xpInfo.xpToNextFicha} XP</strong> para tu próxima ficha
           </small>
           <button class="secondary ht-side-btn" data-action="rewards-modal" style="width:100%;margin-top:10px;">Ver catálogo de premios →</button>
-        </section>
+          <button class="link-button" data-action="toggle-rewards" style="margin-top:8px;">Ocultar puntos y premios</button>
+        </section>` : `<section class="card duo-side-rewards duo-side-simple">
+          <div class="mini-label">PREMIOS EN CASA</div>
+          <p class="muted">Los puntos, fichas y cinturones están ocultos para que te concentres en aprender.</p>
+          <button class="secondary" data-action="toggle-rewards" style="width:100%;">Mostrar puntos y premios</button>
+        </section>`}
 
         <section class="card duo-side-parents">
           <div class="mini-label">TRANQUILIDAD PARA PAPÁS</div>
@@ -727,6 +752,8 @@ function startDiagnostic(grade) {
 }
 // Sesiones con varias lecciones (diagnóstico, práctica del día) llevan un plan.
 const lessonAt = (s) => (s.plan ? s.plan[s.index] : s.lesson);
+// Ejercicio 0–3 de una lección; 9 para repasos, práctica diaria y diagnóstico.
+const metricStep = (s) => (s.mode === "lesson" ? s.index : 9);
 const dailyGoal = () => state.dailyGoal ?? DEFAULT_GOAL;
 function startDaily() {
   const items = buildDailyPlan({ lessons, state });
@@ -796,11 +823,19 @@ function start(id, mode = "lesson") {
   }
 }
 
+const STEP_NAMES = { idea: "La idea", video: "El video", example: "Un ejemplo", practice: "A practicar" };
 function renderIntroLesson(fromExercise = false) {
   const s = session,
     l = s.lesson;
   const isMath = getSubject(l) === "matematica";
   const grade = ALL_GRADES_LESSONS.has(l.id) ? "Base" : GRADES[inferGrade(l)];
+  // Una idea por pantalla: la idea, el video, el ejemplo y a practicar. Al
+  // volver desde un ejercicio para repasar, se muestra todo junto.
+  const steps = ["idea", ...(l.video ? ["video"] : []), "example", "practice"];
+  const stepped = !fromExercise;
+  const step = stepped ? Math.min(s.introStep ?? 0, steps.length - 1) : 0;
+  const show = (name) => !stepped || steps[step] === name;
+  const readNow = stepped && autoRead() ? { idea: "concept", example: "example", practice: "practice" }[steps[step]] : null;
 
   app.innerHTML = `
     ${button(
@@ -826,12 +861,20 @@ function renderIntroLesson(fromExercise = false) {
           <h2>El concepto que necesitas comprender</h2>
         </div>
 
+        ${
+          stepped
+            ? `<ol class="intro-steps" aria-label="Paso ${step + 1} de ${steps.length}">${steps
+                .map((st, i) => `<li class="${i === step ? "current" : i < step ? "done" : ""}">${i + 1}. ${STEP_NAMES[st]}</li>`)
+                .join("")}</ol>`
+            : ""
+        }
+        ${show("idea") ? `
         <div class="pedagogical-banner ${isMath ? "math-balance" : "lang-strategy"}">
           <div class="pedagogical-banner-icon">${BALANCE_LESSONS.has(l.id) ? "⚖️" : isMath ? "🧠" : "💡"}</div>
           <div class="pedagogical-banner-body">
             <h3>${BALANCE_LESSONS.has(l.id) ? "El Principio de la Balanza en Equilibrio" : isMath ? "La idea clave" : "Estrategia de Comprensión Lectora"}</h3>
             <p class="pedagogical-banner-text">${escape(forStudent(l.concept))}</p>
-            ${speakButton("concept", "Escuchar la explicación")}
+            ${speakButton("concept", "Escuchar la explicación")} ${autoReadButton()}
             ${
               BALANCE_LESSONS.has(l.id)
                 ? `<div class="balance-rule-highlight">
@@ -851,12 +894,16 @@ function renderIntroLesson(fromExercise = false) {
           </div>
         </div>
 
+        ` : ""}
+        ${show("video") ? `
         ${
           l.video
             ? `<section class="intro-video" aria-label="Video explicativo"><div class="intro-example-header"><span class="example-pill">Video explicativo · opcional</span><h3>Míralo explicado en video</h3></div>${videoFacade(l.video, l.id)}</section>`
             : ""
         }
 
+        ` : ""}
+        ${show("example") ? `
         <div class="intro-example-card">
           <div class="intro-example-header">
             <span class="example-pill">Ejemplo modelo guiado</span>
@@ -864,6 +911,7 @@ function renderIntroLesson(fromExercise = false) {
           </div>
           <div class="intro-example-content">
             <p class="intro-example-text">${escape(l.examples)}</p>
+            ${speakButton("example", "Escuchar el ejemplo")}
             ${
               BALANCE_LESSONS.has(l.id)
                 ? `<div class="intro-balance-demo">
@@ -876,6 +924,8 @@ function renderIntroLesson(fromExercise = false) {
           </div>
         </div>
 
+        ` : ""}
+        ${show("practice") ? `
         <div class="handwritten-reminder-box">
           <span class="reminder-icon">✍️</span>
           <div>
@@ -884,14 +934,22 @@ function renderIntroLesson(fromExercise = false) {
           </div>
         </div>
 
+        ` : ""}
         <div class="intro-lesson-actions">
-          ${button(
-            fromExercise
-              ? `Continuar con el ejercicio (${s.index + 1} de ${s.questions.length}) →`
-              : `Comenzar ejercicios (1 de ${s.questions.length}) →`,
-            fromExercise ? "return-exercise" : "begin-exercises",
-            "primary btn-start-exercises",
-          )}
+          ${
+            stepped && step > 0 ? button("← Anterior", "intro-prev") : ""
+          }
+          ${
+            stepped && step < steps.length - 1
+              ? button("Siguiente →", "intro-next", "primary btn-start-exercises") + button("Saltar a los ejercicios", "begin-exercises")
+              : button(
+                  fromExercise
+                    ? `Continuar con el ejercicio (${s.index + 1} de ${s.questions.length}) →`
+                    : `Comenzar ejercicios (1 de ${s.questions.length}) →`,
+                  fromExercise ? "return-exercise" : "begin-exercises",
+                  "primary btn-start-exercises",
+                )
+          }
           ${fromExercise ? "" : button("Volver a mi ruta", "exit")}
         </div>
       </article>
@@ -913,6 +971,7 @@ function renderIntroLesson(fromExercise = false) {
       </aside>
     </div>
   `;
+  if (readNow) speakTarget(readNow);
 }
 
 function attachPhotoListeners() {
@@ -999,7 +1058,7 @@ function renderExercise() {
           : "EXPLORACIÓN"
   } · ${s.mode === "diagnostic" ? `PREGUNTA ${s.results.length + 1} · HASTA ${s.questions.length}` : `${s.index + 1} DE ${s.questions.length}`}</div><div class="steps">${s.questions
     .map((_, i) => `<span class="${i <= s.index ? "on" : ""}"></span>`)
-    .join("")}</div><div class="statement-row"><p class="exercise-statement">${escape(q[2])}</p>${speakButton("question")}</div><div class="equation ${
+    .join("")}</div><div class="statement-row"><p class="exercise-statement">${escape(q[2])}</p>${speakButton("question")}${autoReadButton()}</div><div class="equation ${
     q[0].includes("\n") ? "reading-passage" : ""
   }">${escape(q[0])}</div><form id="answer-form"><div class="answer-section"><label for="answer">${
     q[0] === "5x − 2x" ? "Coeficiente" : "Tu respuesta"
@@ -1024,6 +1083,7 @@ function renderExercise() {
   }</section></aside></div>`;
   $("#answer-form").addEventListener("submit", check);
   attachPhotoListeners();
+  if (autoRead()) speakTarget("question");
 }
 
 // Teclado numérico propio en pantallas táctiles: el del teléfono tapa media
@@ -1049,7 +1109,9 @@ function typeKey(key) {
 }
 // Qué se lee en voz alta con cada botón 🔊.
 const SPEAK_TARGETS = {
-  concept: [".pedagogical-banner-text", ".intro-example-text"],
+  concept: [".pedagogical-banner-text"],
+  example: [".intro-example-text"],
+  practice: [".handwritten-reminder-box"],
   question: [".exercise-statement", ".equation"],
   hint: ["#hints > .hint:last-child"],
 };
@@ -1081,6 +1143,7 @@ function reveal() {
   const q = s.questions[s.index];
   s.answered = true;
   s.results.push({ lesson: lessonAt(s).id, origin: s.origins?.[s.index], independent: false, revealed: true });
+  track(lessonAt(s).id, metricStep(s), "revealed");
   const f = $("#feedback");
   f.className = "feedback";
   f.textContent = `Así se resuelve: ${q[4]} La respuesta es ${String(q[1]).replace(".", ",")}.`;
@@ -1133,6 +1196,8 @@ function hint() {
       `<div class="hint"><strong>${title}</strong><div style="margin-top:6px;">${body}</div>${speakButton("hint")}</div>`,
     );
     s.hints++;
+    track(lessonAt(s).id, metricStep(s), "hint");
+    if (autoRead()) speakTarget("hint");
   }
   if (s.hints === 3) $("#hint-button").disabled = true;
 }
@@ -1152,6 +1217,7 @@ function check(e) {
   const correct = isCorrect(raw, q[1]),
     lesson = lessonAt(s).id;
   state.attempts.push({ lesson, correct, hints: s.hints, at: Date.now() });
+  track(lesson, metricStep(s), correct ? "correct" : "wrong");
   const work = $("#work") ? $("#work").value.trim() : "";
   const photo = s.workPhoto || null;
   const hasWork = Boolean(work || photo);
@@ -1644,6 +1710,30 @@ app.addEventListener("click", (e) => {
       session.showingIntro = false;
       renderExercise();
     }
+  } else if (action === "demo-signup") {
+    try {
+      endSession(localStorage);
+    } catch {}
+    location.assign("./?registro");
+  } else if (action === "toggle-rewards") {
+    try {
+      localStorage.setItem(REWARDS_KEY, fullRewards() ? "simple" : "full");
+    } catch {}
+    route();
+  } else if (action === "toggle-auto-read") {
+    setAutoRead(!autoRead());
+    for (const b of document.querySelectorAll(".auto-read-btn")) {
+      b.textContent = autoRead() ? "🔁 Leer siempre: sí" : "🔁 Leer siempre: no";
+      b.setAttribute("aria-pressed", String(autoRead()));
+    }
+    if (autoRead()) speakTarget(session?.showingIntro === false ? "question" : "concept");
+    else stopSpeaking();
+  } else if (action === "intro-next" || action === "intro-prev") {
+    if (session) {
+      session.introStep = Math.max(0, (session.introStep ?? 0) + (action === "intro-next" ? 1 : -1));
+      renderIntroLesson();
+      window.scrollTo?.(0, 0);
+    }
   } else if (action === "view-intro") {
     if (session) renderIntroLesson(true);
   } else if (action === "return-exercise") {
@@ -1695,7 +1785,7 @@ const contentLink = document.querySelector('[data-nav="contenido"]');
 if (contentLink) contentLink.hidden = !isAdmin;
 if (synced) {
   $("#privacy-summary").textContent =
-    "Tu progreso se guarda en este navegador y en tu cuenta, para continuar en otros dispositivos. Tus fotos quedan solo en este dispositivo. Si vinculaste a tu apoderado, ve cuántas lecciones completas y dominas, cuánto practicas y cuántos videos viste, no tus notas ni fotos.";
+    "Tu progreso se guarda en este navegador y en tu cuenta, para continuar en otros dispositivos. Tus fotos quedan solo en este dispositivo. Si vinculaste a tu apoderado, ve cuántas lecciones completas y dominas, cuánto practicas y cuántos videos viste, no tus notas ni fotos. Para mejorar las lecciones se cuentan, sin tu nombre ni tu cuenta, los aciertos, errores y pistas de cada ejercicio.";
   $("#privacy-delete-note").textContent =
     "Borrar el progreso lo elimina aquí y en tu cuenta. Eliminar la cuenta borra además tus datos personales y tus vínculos familiares. Si eres apoderado, también se eliminan las cuentas de estudiantes que creaste.";
   $("#delete-account").hidden = false;

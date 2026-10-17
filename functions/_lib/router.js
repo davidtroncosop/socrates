@@ -200,6 +200,7 @@ const LIMITS = {
   register: [10, 60 * 60_000],
   recover: [5, 60 * 60_000],
   link: [10, 15 * 60_000],
+  metrics: [200, 15 * 60_000],
 };
 const clientIp = (request) => request.headers.get("cf-connecting-ip") || "local";
 async function limit(env, kind, who) {
@@ -457,6 +458,38 @@ const routes = {
     return json(reminderText(row ? JSON.parse(row.state) : null));
   },
 
+  // Medición anónima ----------------------------------------------------------------
+  // Contadores por lección y ejercicio: dónde se traban los estudiantes. No se
+  // guarda quién, ni la IP, ni la respuesta.
+  async "POST /api/metrics"({ request, env }) {
+    await limit(env, "metrics", clientIp(request));
+    const events = (await readJson(request)).events;
+    if (!Array.isArray(events) || events.length > 20) fail(400, "Eventos inválidos.");
+    const day = new Date().toISOString().slice(0, 10);
+    for (const e of events) {
+      if (!/^[a-z0-9][a-z0-9-]{0,79}$/.test(String(e?.lesson)) || !Number.isInteger(e.step) || e.step < 0 || e.step > 9 || !METRIC_KINDS.includes(e.kind))
+        fail(400, "Eventos inválidos.");
+      await env.DB.prepare(
+        `INSERT INTO lesson_metrics (lesson, step, kind, day, count) VALUES (?, ?, ?, ?, 1)
+         ON CONFLICT(lesson, step, kind, day) DO UPDATE SET count = count + 1`,
+      )
+        .bind(e.lesson, e.step, e.kind, day)
+        .run();
+    }
+    return json({ ok: true });
+  },
+
+  async "GET /api/metrics"({ env, user }) {
+    if (!isAdmin(env, user)) fail(403, "Solo la administración puede ver las métricas.");
+    const since = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10);
+    const { results } = await env.DB.prepare(
+      "SELECT lesson, step, kind, SUM(count) AS count FROM lesson_metrics WHERE day >= ? GROUP BY lesson, step, kind",
+    )
+      .bind(since)
+      .all();
+    return json({ since, metrics: results });
+  },
+
   // Catálogo central ------------------------------------------------------------
   async "GET /api/catalog"({ env }) {
     const row = await env.DB.prepare("SELECT data, updated_at FROM catalog WHERE id = 1").first();
@@ -483,7 +516,10 @@ const routes = {
   },
 };
 
+const METRIC_KINDS = ["correct", "wrong", "hint", "revealed"];
+
 const PUBLIC = new Set([
+  "POST /api/metrics",
   "POST /api/auth/register",
   "POST /api/auth/login",
   "POST /api/auth/recover",

@@ -52,7 +52,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
     pending = null;
     dirty = false;
     const catalog = getCatalog();
-    app.innerHTML = `<div class="eyebrow">ESTUDIO DE CONTENIDO</div><h1>Lo que enseñas empieza aquí.</h1><p class="intro">Crea lecciones, prepara las pistas y decide cuándo están listas para tu ruta.</p><div class="callout">Catálogo central · Cada cambio que guardas se publica para todos los estudiantes. Las lecciones en borrador no se muestran. Exporta un respaldo JSON antes de cambios grandes.</div><div class="admin-toolbar"><button class="primary" data-admin="new">＋ Nueva lección</button><button data-admin="import">Subir CSV o JSON</button><button data-admin="export">Respaldo JSON</button><button data-admin="export-csv">Exportar CSV</button><button data-admin="template">Plantilla para Excel (CSV)</button><input id="content-file" type="file" accept=".csv,.json,text/csv,application/json" hidden></div><div id="admin-message" role="status" class="feedback ${warning() ? "" : "good"}">${esc(warning() || notice)}</div><label for="import-mode">Al importar</label><select id="import-mode"><option value="add">Añadir lecciones nuevas como borradores</option><option value="replace">Restaurar catálogo: reemplazar el contenido actual</option></select><p class="muted">En Excel, guarda la plantilla como CSV UTF-8. Usa cuatro filas de tipo ejercicio (orden 1–4) y una de tipo repaso por lección. No se admiten archivos .xlsx directamente.</p><div id="import-preview"></div><div class="section-title"><h2>Biblioteca de lecciones</h2><span class="muted">${catalog.lessons.length} lecciones · ${catalog.lessons.filter((l) => l.status === "published").length} publicadas</span></div><label for="content-search">Buscar por título</label><input id="content-search" type="search" placeholder="Busca una lección…"><div id="content-list"></div>`;
+    app.innerHTML = `<div class="eyebrow">ESTUDIO DE CONTENIDO</div><h1>Lo que enseñas empieza aquí.</h1><p class="intro">Crea lecciones, prepara las pistas y decide cuándo están listas para tu ruta.</p><div class="callout">Catálogo central · Cada cambio que guardas se publica para todos los estudiantes. Las lecciones en borrador no se muestran. Exporta un respaldo JSON antes de cambios grandes.</div><div class="admin-toolbar"><button class="primary" data-admin="new">＋ Nueva lección</button><button data-admin="import">Subir CSV o JSON</button><button data-admin="export">Respaldo JSON</button><button data-admin="export-csv">Exportar CSV</button><button data-admin="template">Plantilla para Excel (CSV)</button><button data-admin="metrics">📊 Dónde se traban</button><input id="content-file" type="file" accept=".csv,.json,text/csv,application/json" hidden></div><div id="admin-message" role="status" class="feedback ${warning() ? "" : "good"}">${esc(warning() || notice)}</div><label for="import-mode">Al importar</label><select id="import-mode"><option value="add">Añadir lecciones nuevas como borradores</option><option value="replace">Restaurar catálogo: reemplazar el contenido actual</option></select><p class="muted">En Excel, guarda la plantilla como CSV UTF-8. Usa cuatro filas de tipo ejercicio (orden 1–4) y una de tipo repaso por lección. No se admiten archivos .xlsx directamente.</p><div id="import-preview"></div><div class="section-title"><h2>Biblioteca de lecciones</h2><span class="muted">${catalog.lessons.length} lecciones · ${catalog.lessons.filter((l) => l.status === "published").length} publicadas</span></div><label for="content-search">Buscar por título</label><input id="content-search" type="search" placeholder="Busca una lección…"><div id="content-list"></div>`;
     list("");
     $("#content-search").oninput = (e) => list(e.target.value);
     $("#content-file").onchange = async (e) => {
@@ -167,6 +167,45 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
     };
     return validateCatalog({ version: 1, lessons: [lesson] }).lessons[0];
   }
+  // Medición anónima: lecciones ordenadas de la que más cuesta a la que menos.
+  async function metricsView() {
+    app.innerHTML = `<button class="back" data-admin="back">← Biblioteca de contenido</button><div class="eyebrow">MEDICIÓN ANÓNIMA</div><h1>Dónde se traban</h1><p class="intro">Contadores de los últimos 90 días, sin datos de quién respondió. Una lección con muchos errores o muchas soluciones vistas necesita una mejor explicación o ejercicios más graduales.</p><div id="metrics-body" class="muted">Cargando…</div>`;
+    let data;
+    try {
+      const res = await fetch("/api/metrics", { credentials: "same-origin" });
+      data = await res.json();
+      if (!res.ok) throw new Error(data.error || "No se pudieron cargar las métricas.");
+    } catch (err) {
+      app.querySelector("#metrics-body").textContent = err.message;
+      return;
+    }
+    const titles = new Map(getCatalog().lessons.map((l) => [l.id, l.title]));
+    const byLesson = new Map();
+    for (const m of data.metrics) {
+      const row = byLesson.get(m.lesson) ?? { correct: 0, wrong: 0, hint: 0, revealed: 0, steps: {} };
+      row[m.kind] += m.count;
+      if (m.step <= 3) {
+        const st = (row.steps[m.step] ??= { correct: 0, wrong: 0 });
+        if (m.kind in st) st[m.kind] += m.count;
+      }
+      byLesson.set(m.lesson, row);
+    }
+    const rows = [...byLesson]
+      .map(([id, r]) => {
+        const tries = r.correct + r.wrong;
+        const hardest = Object.entries(r.steps)
+          .filter(([, st]) => st.correct + st.wrong >= 3)
+          .sort(([, a], [, b]) => b.wrong / (b.correct + b.wrong) - a.wrong / (a.correct + a.wrong))[0];
+        return { id, tries, rate: tries ? r.wrong / tries : 0, ...r, hardest: hardest ? Number(hardest[0]) + 1 : null };
+      })
+      .filter((r) => r.tries > 0)
+      .sort((a, b) => b.rate - a.rate);
+    app.querySelector("#metrics-body").outerHTML = rows.length
+      ? `<div class="table-scroll"><table class="metrics-table"><thead><tr><th>Lección</th><th>Respuestas</th><th>Errores</th><th>Pistas</th><th>Soluciones vistas</th><th>Ejercicio más difícil</th></tr></thead><tbody>${rows
+          .map((r) => `<tr><td>${esc(titles.get(r.id) ?? r.id)}</td><td>${r.tries}</td><td>${Math.round(r.rate * 100)} %</td><td>${r.hint}</td><td>${r.revealed}</td><td>${r.hardest ?? "—"}</td></tr>`)
+          .join("")}</tbody></table></div>`
+      : `<p class="muted">Todavía no hay respuestas registradas.</p>`;
+  }
   async function handle(e) {
     const b = e.target.closest("[data-admin]");
     if (!b || b.disabled) return;
@@ -174,6 +213,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
       id = b.dataset.id;
     try {
       if (action === "new") editor(newLesson());
+      else if (action === "metrics") await metricsView();
       else if (action === "edit")
         editor(getCatalog().lessons.find((l) => l.id === id));
       else if (action === "back") {

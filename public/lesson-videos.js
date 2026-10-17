@@ -10,7 +10,7 @@ export const lessonVideos = {
   "enteros": {"src":"/media/lessons/enteros-d25863117e.mp4","title":"Suma y resta de enteros en Z: explicado en video","duration":71},
   "semejantes": {"src":"/media/lessons/semejantes-e47d29d496.mp4","title":"Reducción de términos semejantes: explicado en video","duration":75},
   "proporciones": {"src":"/media/lessons/proporciones-882a8dc1e6.mp4","title":"Proporcionalidad directa y regla de tres: explicado en video","duration":73},
-  "potencias": {"src":"/media/lessons/potencias-f1a0b9ae35.mp4","title":"Potencias y propiedades de exponentes: explicado en video","duration":74},
+  "potencias": {"src":"/media/lessons/potencias-42eeacd011.mp4","title":"Potencias y propiedades de exponentes: explicado en video","duration":75},
   "funcion": {"src":"/media/lessons/funcion-56264c3a99.mp4","title":"Función afín y pendiente: explicado en video","duration":82},
   "notables": {"src":"/media/lessons/notables-6b769a85a5.mp4","title":"Productos notables y binomios: explicado en video","duration":76},
   "porcentajes": {"src":"/media/lessons/porcentajes-ddef16970b.mp4","title":"Porcentajes en la vida diaria: explicado en video","duration":81},

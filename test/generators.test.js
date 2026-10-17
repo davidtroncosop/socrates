@@ -475,7 +475,7 @@ function lote8Answer(expr, id) {
       return d.reduce((a, b) => a + (b - mean) ** 2, 0) / d.length;
     }
     if ((m = expr.match(/^Desviación estándar con varianza (\d+)$/))) return Math.sqrt(m[1]);
-    if ((m = expr.match(/^Curso A: desviación (\d+); curso B: desviación (\d+)$/))) return Number(m[1]) < Number(m[2]) ? 1 : 2;
+    if ((m = expr.match(/^Curso A: desviación (\d+); curso B: desviación (\d+)$/))) return Math.min(m[1], m[2]);
   }
   if (id === "probabilidad-condicional") {
     const conds = { par: (f) => f % 2 === 0, impar: (f) => f % 2 === 1, "mayor que 3": (f) => f > 3, "menor que 4": (f) => f < 4 };

@@ -6573,13 +6573,13 @@ export const curriculumLessons = [
       [
         "Curso A: desviación 1; curso B: desviación 3",
         1,
-        "Dos cursos tienen promedio 5,5. El A tiene desviación estándar 1 y el B, 3. ¿Cuál es más parejo? Responde 1 si es el A o 2 si es el B.",
+        "Dos cursos tienen promedio 5,5. El A tiene desviación estándar 1 y el B, 3. ¿Cuál es la desviación estándar del curso más parejo?",
         "Menos desviación = datos más juntos.",
-        "El A (desviación 1): sus notas están más cerca del promedio.",
+        "El más parejo es el A, con desviación 1: sus notas están más cerca del promedio.",
         [
           [
-            2,
-            "Más desviación significa más repartido. El más parejo es el A."
+            3,
+            "Esa es la desviación del curso más repartido. El más parejo tiene la menor: 1."
           ]
         ]
       ]

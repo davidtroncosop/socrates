@@ -2010,8 +2010,8 @@ function dispersion(rng, level) {
   const [lo, hi] = [int(rng, 1, 3), int(rng, 4, 8)];
   const aFirst = rng() < 0.5;
   const [sa, sb] = aFirst ? [lo, hi] : [hi, lo];
-  return [`Curso A: desviación ${sa}; curso B: desviación ${sb}`, aFirst ? 1 : 2, `Dos cursos tienen el mismo promedio. El A tiene desviación estándar ${sa} y el B, ${sb}. ¿Cuál es más parejo? Responde 1 si es el A o 2 si es el B.`,
-    "Menos desviación = datos más juntos.", `El ${aFirst ? "A" : "B"} (desviación ${lo}): sus datos están más cerca del promedio.`, [[aFirst ? 2 : 1, "Más desviación significa más repartido."]]];
+  return [`Curso A: desviación ${sa}; curso B: desviación ${sb}`, lo, `Dos cursos tienen el mismo promedio. El A tiene desviación estándar ${sa} y el B, ${sb}. ¿Cuál es la desviación estándar del curso más parejo?`,
+    "Menos desviación = datos más juntos.", `El más parejo es el ${aFirst ? "A" : "B"}, con desviación ${lo}: sus datos están más cerca del promedio.`, [[hi, "Esa es la del curso más repartido. El más parejo tiene la menor."]]];
 }
 
 function probabilidadCondicional(rng, level) {
