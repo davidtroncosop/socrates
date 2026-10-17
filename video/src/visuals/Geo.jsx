@@ -414,3 +414,172 @@ export function Galton({ prev, cur, t, beat }) {
     </svg>
   );
 }
+
+// Parábola y = a(x − h)² + k, con el vértice y el corte con el eje y marcados.
+export function Parabola({ prev, cur, t, beat }) {
+  const o = prev && prev.a === cur.a && prev.h === cur.h && prev.k === cur.k ? 1 : during(t, beat, 0.7);
+  const { a, h, k } = cur;
+  const [xmin, xmax, ymin, ymax] = cur.window ?? [-2, 8, -6, 10];
+  const W = 900;
+  const H = 560;
+  const x0 = 960 - W / 2;
+  const y0 = 260;
+  const X = (x) => x0 + ((x - xmin) / (xmax - xmin)) * W;
+  const Y = (y) => y0 + ((ymax - y) / (ymax - ymin)) * H;
+  const f = (x) => a * (x - h) ** 2 + k;
+  const steps = 120;
+  const pts = [];
+  for (let i = 0; i <= steps * o; i++) {
+    const x = xmin + ((xmax - xmin) * i) / steps;
+    const y = f(x);
+    if (y >= ymin - 1 && y <= ymax + 1) pts.push([X(x), Y(Math.max(ymin, Math.min(ymax, y)))]);
+  }
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      <rect x={x0} y={y0} width={W} height={H} fill="#ffffff" stroke={C.soft} strokeWidth={2} />
+      <line x1={x0} y1={Y(0)} x2={x0 + W} y2={Y(0)} stroke={C.beam} strokeWidth={4} />
+      <line x1={X(0)} y1={y0} x2={X(0)} y2={y0 + H} stroke={C.beam} strokeWidth={4} />
+      <polyline points={pts.map((p) => p.join(",")).join(" ")} fill="none" stroke={C.blue} strokeWidth={7} />
+      {o > 0.95 && cur.vertex && (
+        <g>
+          <circle cx={X(h)} cy={Y(k)} r={14} fill={C.red} />
+          <text x={X(h) + 22} y={Y(k) + (a > 0 ? 44 : -20)} fontSize={40} fontWeight={800} fill={C.red}>vértice ({num(h)}, {num(k)})</text>
+        </g>
+      )}
+      {o > 0.95 && cur.yint && (
+        <g>
+          <circle cx={X(0)} cy={Y(f(0))} r={14} fill={C.green} />
+          <text x={X(0) + 22} y={Y(f(0)) - 16} fontSize={40} fontWeight={800} fill={C.green}>(0, {num(f(0))})</text>
+        </g>
+      )}
+      {o > 0.95 && (cur.roots ?? []).map((r) => (
+        <g key={r}>
+          <circle cx={X(r)} cy={Y(0)} r={14} fill={C.amber} />
+          <text x={X(r)} y={Y(0) + 50} textAnchor="middle" fontSize={40} fontWeight={800} fill={C.amberDark}>{num(r)}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+// Ángulo del centro y ángulo inscrito que abarcan el mismo arco.
+export function Inscribed({ prev, cur, t, beat }) {
+  const o = prev && prev.central === cur.central && prev.show === cur.show ? 1 : during(t, beat, 0.6);
+  const cx = 960;
+  const cy = 650;
+  const R = 250;
+  const half = cur.central / 2;
+  const A = at(cx, cy, R, -90 - half);
+  const B = at(cx, cy, R, -90 + half);
+  const P = at(cx, cy, R, 90);
+  const show = cur.show ?? ["central", "inscribed"];
+  const dir = (p, q) => (Math.atan2(-(q[1] - p[1]), q[0] - p[0]) * 180) / Math.PI;
+  const iStart = dir(P, A);
+  const iSpan = (((dir(P, B) - iStart) % 360) + 360) % 360;
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      <circle cx={cx} cy={cy} r={R} fill="#f8fafc" stroke={C.beam} strokeWidth={5} />
+      <path d={(() => { const [x1, y1] = at(cx, cy, R, -90 - half); const [x2, y2] = at(cx, cy, R, -90 + half); return `M ${x1} ${y1} A ${R} ${R} 0 ${cur.central > 180 ? 1 : 0} 0 ${x2} ${y2}`; })()} fill="none" stroke={C.red} strokeWidth={12} />
+      {show.includes("central") && (
+        <g opacity={o}>
+          <path d={arc(cx, cy, 70, -90 - half, cur.central)} fill="#bfdbfe" stroke={C.blue} strokeWidth={4} />
+          <line x1={cx} y1={cy} x2={A[0]} y2={A[1]} stroke={C.blue} strokeWidth={6} />
+          <line x1={cx} y1={cy} x2={B[0]} y2={B[1]} stroke={C.blue} strokeWidth={6} />
+          <text x={cx} y={cy + 120} textAnchor="middle" fontSize={44} fontWeight={800} fill={C.blueDark}>{cur.labels?.central ?? `${cur.central}°`}</text>
+        </g>
+      )}
+      {show.includes("inscribed") && (
+        <g opacity={show.includes("central") ? o : 1}>
+          <path d={arc(P[0], P[1], 60, iStart, iSpan)} fill={C.amberSoft} stroke={C.amber} strokeWidth={4} />
+          <line x1={P[0]} y1={P[1]} x2={A[0]} y2={A[1]} stroke={C.amber} strokeWidth={6} />
+          <line x1={P[0]} y1={P[1]} x2={B[0]} y2={B[1]} stroke={C.amber} strokeWidth={6} />
+          <text x={P[0] + 110} y={P[1] + 20} textAnchor="start" fontSize={44} fontWeight={800} fill={C.amberDark}>{cur.labels?.inscribed ?? `${half}°`}</text>
+        </g>
+      )}
+      <circle cx={cx} cy={cy} r={9} fill={C.beam} />
+    </svg>
+  );
+}
+
+// Campana normal con franjas de 1 y 2 desviaciones.
+export function Bell({ prev, cur, t, beat }) {
+  const o = prev && prev.band === cur.band ? 1 : during(t, beat, 0.6);
+  const x0 = 360;
+  const W = 1200;
+  const base = 800;
+  const H = 440;
+  const X = (z) => x0 + ((z + 3.2) / 6.4) * W;
+  const Y = (z) => base - H * Math.exp((-z * z) / 2);
+  const curve = Array.from({ length: 161 }, (_, i) => -3.2 + (6.4 * i) / 160);
+  const band = cur.band ?? 0;
+  const area = curve.filter((z) => Math.abs(z) <= band * o);
+  const labels = cur.labels ?? [];
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      {band > 0 && area.length > 1 && (
+        <polygon points={[[X(area[0]), base], ...area.map((z) => [X(z), Y(z)]), [X(area.at(-1)), base]].map((p) => p.join(",")).join(" ")} fill={band === 1 ? "#bfdbfe" : C.amberSoft} />
+      )}
+      {cur.half && <polygon points={[[X(0), base], ...curve.filter((z) => z >= 0).map((z) => [X(z), Y(z)]), [X(3.2), base]].map((p) => p.join(",")).join(" ")} fill={C.greenSoft} opacity={o} />}
+      <polyline points={curve.map((z) => [X(z), Y(z)].join(",")).join(" ")} fill="none" stroke={C.blue} strokeWidth={7} />
+      <line x1={x0} y1={base} x2={x0 + W} y2={base} stroke={C.beam} strokeWidth={4} />
+      {[-2, -1, 0, 1, 2].map((z, i) => (
+        <g key={z}>
+          <line x1={X(z)} y1={base} x2={X(z)} y2={base + 16} stroke={C.beam} strokeWidth={4} />
+          <text x={X(z)} y={base + 56} textAnchor="middle" fontSize={36} fontWeight={700} fill={C.ink}>{labels[i] ?? (z === 0 ? "promedio" : `${z > 0 ? "+" : "−"}${Math.abs(z)}`)}</text>
+        </g>
+      ))}
+      {cur.text && o > 0.9 && <text x={X(0)} y={Y(0) + 160} textAnchor="middle" fontSize={64} fontWeight={800} fill={C.ink}>{cur.text}</text>}
+    </svg>
+  );
+}
+
+// Curvas: potencia a · xⁿ, exponencial a · bˣ, k / x y A · sen(B · x) + D (x en grados).
+export function Curve({ prev, cur, t, beat }) {
+  const o = prev && JSON.stringify(prev.f) === JSON.stringify(cur.f) ? 1 : during(t, beat, 0.7);
+  const { kind, a = 1, b = 2, n = 2, k = 1, A = 1, B = 1, D = 0 } = cur.f;
+  const [xmin, xmax, ymin, ymax] = cur.window;
+  const W = 1000;
+  const H = 560;
+  const x0 = 960 - W / 2;
+  const y0 = 250;
+  const X = (x) => x0 + ((x - xmin) / (xmax - xmin)) * W;
+  const Y = (y) => y0 + ((ymax - y) / (ymax - ymin)) * H;
+  const f = (x) =>
+    kind === "pow" ? a * x ** n : kind === "exp" ? a * b ** x : kind === "inv" ? k / x : A * Math.sin((B * x * Math.PI) / 180) + D;
+  const steps = 300;
+  const segs = [[]];
+  for (let i = 0; i <= steps * o; i++) {
+    const x = xmin + ((xmax - xmin) * i) / steps;
+    const y = f(x);
+    if (!Number.isFinite(y) || y < ymin - 0.5 || y > ymax + 0.5) {
+      if (segs.at(-1).length) segs.push([]);
+      continue;
+    }
+    segs.at(-1).push([X(x), Y(y)]);
+  }
+  return (
+    <svg width={1920} height={1080} style={svgFill}>
+      <rect x={x0} y={y0} width={W} height={H} fill="#ffffff" stroke={C.soft} strokeWidth={2} />
+      {ymin < 0 && ymax > 0 && <line x1={x0} y1={Y(0)} x2={x0 + W} y2={Y(0)} stroke={C.beam} strokeWidth={4} />}
+      {xmin < 0 && xmax > 0 && <line x1={X(0)} y1={y0} x2={X(0)} y2={y0 + H} stroke={C.beam} strokeWidth={4} />}
+      {(cur.hlines ?? []).map(([y, label]) => (
+        <g key={label}>
+          <line x1={x0} y1={Y(y)} x2={x0 + W} y2={Y(y)} stroke={C.red} strokeWidth={3} strokeDasharray="12 10" />
+          <text x={x0 + W + 16} y={Y(y) + 12} fontSize={36} fontWeight={800} fill={C.red}>{label}</text>
+        </g>
+      ))}
+      {segs.filter((sg) => sg.length > 1).map((sg, i) => (
+        <polyline key={i} points={sg.map((p) => p.join(",")).join(" ")} fill="none" stroke={C.blue} strokeWidth={7} />
+      ))}
+      {(cur.points ?? []).map(([x, y, label]) => (
+        <g key={label}>
+          <circle cx={X(x)} cy={Y(y)} r={13} fill={C.green} />
+          <text x={X(x) + 20} y={Y(y) - 16} fontSize={38} fontWeight={800} fill={C.green}>{label}</text>
+        </g>
+      ))}
+      {cur.xLabels && cur.xLabels.map(([x, label]) => (
+        <text key={label} x={X(x)} y={y0 + H + 44} textAnchor="middle" fontSize={32} fill={C.muted}>{label}</text>
+      ))}
+    </svg>
+  );
+}

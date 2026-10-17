@@ -75,12 +75,39 @@ import semejanza from "./semejanza.mjs";
 import dobleEntrada from "./doble-entrada.mjs";
 import reglasProb from "./reglas-probabilidad.mjs";
 import galton from "./galton.mjs";
+import raicesSimp from "./raices-simplificar.mjs";
+import raicesEn from "./raices-enesimas.mjs";
+import logaritmos from "./logaritmos.mjs";
+import fCuad from "./funcion-cuadratica.mjs";
+import eCuad from "./ecuacion-cuadratica.mjs";
+import fInv from "./funcion-inversa.mjs";
+import cambioPct from "./cambio-porcentual.mjs";
+import esfera from "./esfera.mjs";
+import trigo from "./trigonometria.mjs";
+import vectores from "./vectores.mjs";
+import varAl from "./variable-aleatoria.mjs";
+import perm from "./permutaciones.mjs";
+import complejos from "./complejos.mjs";
+import complejosMult from "./complejos-mult.mjs";
+import dispersion from "./dispersion.mjs";
+import probCond from "./probabilidad-condicional.mjs";
+import modExpLog from "./modelos-exp-log.mjs";
+import circAng from "./circunferencia-angulos.mjs";
+import interes from "./interes.mjs";
+import credito from "./credito.mjs";
+import sueldo from "./sueldo-impuestos.mjs";
+import binomial from "./binomial.mjs";
+import normal from "./normal.mjs";
+import fPot from "./funcion-potencia.mjs";
+import fTrig from "./funciones-trigonometricas.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  complejos, complejosMult, dispersion, probCond, modExpLog, circAng, interes, credito, sueldo, binomial, normal, fPot, fTrig,
+  raicesSimp, raicesEn, logaritmos, fCuad, eCuad, fInv, cambioPct, esfera, trigo, vectores, varAl, perm,
   racOp, crecExp, f2v, sectores, cono, homotecia, tales, semejanza, dobleEntrada, reglasProb, galton,
   entMult, racMult, variacion, algProd, isometrias, cuartiles,
   pot10, inecuaciones, angPoli, trapecio, plano, frecuencias, probTeo, muestreo, propInv,

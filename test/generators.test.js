@@ -27,6 +27,21 @@ function baseAnswer(expr, id, prompt) {
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
+  if (LOTE9.includes(id)) {
+    const answer = lote9Answer(expr, id);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
+  if (LOTE8.includes(id)) {
+    const answer = lote8Answer(expr, id);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
+  if (LOTE7.includes(id)) {
+    const answer = lote7Answer(expr, id);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
   if (LOTE6.includes(id)) {
     const answer = lote6Answer(expr, id);
     assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
@@ -320,6 +335,213 @@ function lote6Answer(expr, id) {
   return null;
 }
 
+// Lote 7 (2° Medio).
+const LOTE7 = ["raices-simplificar", "raices-enesimas", "logaritmos", "funcion-cuadratica", "ecuacion-cuadratica", "funcion-inversa", "cambio-porcentual", "esfera", "trigonometria", "vectores", "variable-aleatoria", "permutaciones"];
+function lote7Answer(expr, id) {
+  let m;
+  const n = (v) => Number(v.replace(/\./g, "").replace(",", "."));
+  const val = (v) => Number(v.replace("−", "-"));
+  const supd = (v) => Number([...v].map((c) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)).join(""));
+  const subd = (v) => Number([...v].map((c) => "₀₁₂₃₄₅₆₇₈₉".indexOf(c)).join(""));
+  if (id === "raices-simplificar") {
+    if ((m = expr.match(/^√(\d+) = \?√(\d+)$/))) return Math.sqrt(m[1] / m[2]);
+    if ((m = expr.match(/^√(\d+) · √(\d+)$/))) return Math.sqrt(m[1] * m[2]);
+    if ((m = expr.match(/^√(\d+) \+ √(\d+) = \?√(\d+)$/))) return Math.sqrt(m[1] / m[3]) + Math.sqrt(m[2] / m[3]);
+  }
+  if (id === "raices-enesimas") {
+    if ((m = expr.match(/^([∛∜])(\d+)$/))) return Math.round(Number(m[2]) ** (1 / (m[1] === "∛" ? 3 : 4)));
+    if ((m = expr.match(/^(\d+)\^\((\d+)\/(\d+)\)$/))) return Math.round(Number(m[1]) ** (1 / m[3])) ** m[2];
+  }
+  if (id === "logaritmos") {
+    if ((m = expr.match(/^log (\d+)$/))) return Math.round(Math.log10(m[1]));
+    if ((m = expr.match(/^log([₀-₉]+) (\d+)$/))) return Math.round(Math.log(m[2]) / Math.log(subd(m[1])));
+  }
+  if (id === "funcion-cuadratica") {
+    if ((m = expr.match(/^f\((−?\d+)\) con f\(x\) = (.+)$/))) return evaluate(m[2], val(m[1]));
+    if ((m = expr.match(/^Vértice de (.+): ¿x\?$/))) {
+      const f = (x) => evaluate(m[1], x);
+      const b = (f(1) - f(-1)) / 2;
+      const a = f(1) - f(0) - b;
+      return -b / (2 * a);
+    }
+    if ((m = expr.match(/^f\(x\) = (.+): corte con eje y$/))) return evaluate(m[1], 0);
+    if ((m = expr.match(/^Altura: h\(t\) = (.+); h\((\d+)\)$/))) return evaluate(m[1].replace(/t/g, "x"), Number(m[2]));
+  }
+  if (id === "ecuacion-cuadratica") {
+    const [eq, which] = expr.split(", ");
+    const [left, right] = eq.split(" = ");
+    const roots = [];
+    for (let x = -50; x <= 50; x++) if (Math.abs(evaluate(left, x) - evaluate(right, x)) < 1e-9) roots.push(x);
+    if (which === "solución positiva") return roots.find((r) => r > 0);
+    if (which === "solución mayor") return Math.max(...roots);
+    if (which === "solución distinta de 0") return roots.find((r) => r !== 0);
+  }
+  if (id === "funcion-inversa" && (m = expr.match(/^f\(x\) = (.+); f⁻¹\((\d+)\)$/))) {
+    const f = m[1].replace("x/2", "(x/2)");
+    for (let x = -100; x <= 200; x += 0.5) if (Math.abs(evaluate(f, x) - Number(m[2])) < 1e-9) return x;
+  }
+  if (id === "cambio-porcentual") {
+    if ((m = expr.match(/^(\d+) · ([\d,]+)([²³⁴]?)$/))) return Math.round(Number(m[1]) * n(m[2]) ** (m[3] ? supd(m[3]) : 1) * 100) / 100;
+  }
+  if (id === "esfera") {
+    if ((m = expr.match(/^\D+: radio (\d+) cm, volumen$/))) return (4 / 3) * 3.14 * m[1] ** 3;
+    if ((m = expr.match(/^\D+: radio (\d+) cm, área$/))) return 4 * 3.14 * m[1] ** 2;
+  }
+  if (id === "trigonometria") {
+    if ((m = expr.match(/^Triángulo (\d+)-(\d+)-(\d+): (seno|coseno|tangente)$/))) {
+      const [a, b, c] = [+m[1], +m[2], +m[3]];
+      assert.equal(a * a + b * b, c * c, expr);
+      return { seno: a / c, coseno: b / c, tangente: a / b }[m[4]];
+    }
+    if ((m = expr.match(/^Hipotenusa (\d+), sen 30° = 0,5: opuesto$/))) return m[1] * Math.sin(Math.PI / 6);
+  }
+  if (id === "vectores") {
+    if ((m = expr.match(/^\((−?\d+), (−?\d+)\) \+ \((−?\d+), (−?\d+)\): ¿(x|y)\?$/))) return m[5] === "x" ? val(m[1]) + val(m[3]) : val(m[2]) + val(m[4]);
+    if ((m = expr.match(/^Módulo de \((\d+), (\d+)\)$/))) return Math.hypot(m[1], m[2]);
+    if ((m = expr.match(/^(\d+) · \((−?\d+), (−?\d+)\): ¿y\?$/))) return m[1] * val(m[3]);
+  }
+  if (id === "variable-aleatoria") {
+    if ((m = expr.match(/^(\d) monedas: P\(X = (\d)( caras?)?\)$/))) {
+      let count = 0;
+      for (let mask = 0; mask < 2 ** m[1]; mask++) if (mask.toString(2).split("1").length - 1 === Number(m[2])) count++;
+      return count / 2 ** m[1];
+    }
+    if ((m = expr.match(/^2 dados: P\(suma = (\d+)\)$/))) {
+      let count = 0;
+      for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) if (a + b === Number(m[1])) count++;
+      return count / 36;
+    }
+    if ((m = expr.match(/^Dado(?: de (\d) caras)?: valor esperado$/))) return (Number(m[1] ?? 6) + 1) / 2;
+  }
+  if (id === "permutaciones") {
+    const f = (k) => (k <= 1 ? 1 : k * f(k - 1));
+    if ((m = expr.match(/^(\d)!$/))) return f(m[1]);
+    if ((m = expr.match(/^Podio de 3 entre (\d)$/))) return m[1] * (m[1] - 1) * (m[1] - 2);
+    if ((m = expr.match(/^Elegir 2 de (\d)$/))) return (m[1] * (m[1] - 1)) / 2;
+    if ((m = expr.match(/^P\(Ana primera de (\d)\)$/))) return 1 / m[1];
+  }
+  return null;
+}
+
+// Lote 8 (3° Medio). Los complejos se calculan con pares [real, imaginaria].
+const LOTE8 = ["complejos", "complejos-mult", "dispersion", "probabilidad-condicional", "modelos-exp-log", "circunferencia-angulos"];
+function lote8Answer(expr, id) {
+  let m;
+  const val = (v) => Number(v.replace("−", "-"));
+  const cplx = (t) => {
+    const c = t.match(/^(−?\d+) ([+−]) (\d*)i$/);
+    return [val(c[1]), (c[2] === "−" ? -1 : 1) * (c[3] === "" ? 1 : Number(c[3]))];
+  };
+  const part = (z, name) => (name === "real" ? z[0] : z[1]);
+  if (id === "complejos" || id === "complejos-mult") {
+    if ((m = expr.match(/^\((.+)\) ([+−]) \((.+)\): parte (real|imaginaria)$/))) {
+      const [x, y] = [cplx(m[1]), cplx(m[3])];
+      const k = m[2] === "+" ? 1 : -1;
+      return part([x[0] + k * y[0], x[1] + k * y[1]], m[4]);
+    }
+    if ((m = expr.match(/^\((.+)\)\((.+)\)(?:: parte (real|imaginaria))?$/))) {
+      const [x, y] = [cplx(m[1]), cplx(m[2])];
+      const z = [x[0] * y[0] - x[1] * y[1], x[0] * y[1] + x[1] * y[0]];
+      if (!m[3]) assert.equal(z[1], 0, `${expr}: el producto por el conjugado es real`);
+      return m[3] ? part(z, m[3]) : z[0];
+    }
+    if ((m = expr.match(/^i([²⁴])$/))) return m[1] === "²" ? -1 : 1;
+    if ((m = expr.match(/^Módulo de (\d+) \+ (\d+)i$/))) return Math.hypot(m[1], m[2]);
+    if ((m = expr.match(/^Conjugado de (.+): parte imaginaria$/))) return -cplx(m[1])[1];
+  }
+  if (id === "dispersion") {
+    if ((m = expr.match(/^Rango de (.+)$/))) {
+      const d = m[1].split(", ").map(Number);
+      return Math.max(...d) - Math.min(...d);
+    }
+    if ((m = expr.match(/^Varianza de (.+)$/))) {
+      const d = m[1].split(", ").map(Number);
+      const mean = d.reduce((a, b) => a + b, 0) / d.length;
+      return d.reduce((a, b) => a + (b - mean) ** 2, 0) / d.length;
+    }
+    if ((m = expr.match(/^Desviación estándar con varianza (\d+)$/))) return Math.sqrt(m[1]);
+    if ((m = expr.match(/^Curso A: desviación (\d+); curso B: desviación (\d+)$/))) return Number(m[1]) < Number(m[2]) ? 1 : 2;
+  }
+  if (id === "probabilidad-condicional") {
+    const conds = { par: (f) => f % 2 === 0, impar: (f) => f % 2 === 1, "mayor que 3": (f) => f > 3, "menor que 4": (f) => f < 4 };
+    if ((m = expr.match(/^Fútbol: (\d+); de ellos mujeres: (\d+)$/))) return m[2] / m[1];
+    if ((m = expr.match(/^Dado: (\d) sabiendo que salió (.+)$/))) {
+      const cases = [1, 2, 3, 4, 5, 6].filter(conds[m[2]]);
+      assert.ok(cases.includes(Number(m[1])), expr);
+      return 1 / cases.length;
+    }
+    if ((m = expr.match(/^Tabla: (\d+) vacunados, (\d+) enfermos$/))) return m[2] / m[1];
+    if ((m = expr.match(/^(?:Fichas: (\d) rojas y (\d) azules, sin devolver|Dos fichas rojas sin devolver)$/))) {
+      const [r, a] = m[1] ? [+m[1], +m[2]] : [2, 2];
+      return (r - 1) / (r + a - 1);
+    }
+  }
+  if (id === "modelos-exp-log") {
+    if ((m = expr.match(/^(\d+) → (\d+) duplicando$/))) return Math.log2(m[2] / m[1]);
+    if ((m = expr.match(/^f\(t\) = (\d+) · (\d+)ᵗ; f\((\d+)\)$/))) return m[1] * m[2] ** m[3];
+    if ((m = expr.match(/^Richter: magnitud (\d+) vs (\d+)$/))) return 10 ** (m[1] - m[2]);
+    if ((m = expr.match(/^pH con \[H⁺\] = 10⁻([⁰¹²³⁴⁵⁶⁷⁸⁹])$/))) return "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(m[1]);
+  }
+  if (id === "circunferencia-angulos") {
+    if ((m = expr.match(/^Del centro (\d+)°: inscrito$/))) return m[1] / 2;
+    if ((m = expr.match(/^Inscrito (\d+)°: del centro$/))) return m[1] * 2;
+    if (expr === "Inscrito en un diámetro") return 90;
+    if ((m = expr.match(/^Cuerdas: (\d+) · (\d+) = (\d+) · x$/))) return (m[1] * m[2]) / m[3];
+  }
+  return null;
+}
+
+// Lote 9 (4° Medio).
+const LOTE9 = ["interes", "credito", "sueldo-impuestos", "binomial", "normal", "funcion-potencia", "funciones-trigonometricas"];
+function lote9Answer(expr, id) {
+  let m;
+  const n = (v) => Number(v.replace(/\./g, "").replace(",", "."));
+  const val = (v) => Number(v.replace("−", "-"));
+  if (id === "interes") {
+    if ((m = expr.match(/^Simple: \$([\d.]+) al (\d+) % por (\d+) años(, total)?$/))) {
+      const i = (n(m[1]) * m[2] * m[3]) / 100;
+      return m[4] ? n(m[1]) + i : i;
+    }
+    if ((m = expr.match(/^Compuesto: \$([\d.]+) al (\d+) % por (\d+) años$/))) return Math.round(n(m[1]) * (1 + m[2] / 100) ** m[3]);
+  }
+  if (id === "credito") {
+    if ((m = expr.match(/^(\d+) cuotas de \$([\d.]+) por \$([\d.]+)$/))) return m[1] * n(m[2]) - n(m[3]);
+    if ((m = expr.match(/^Costo \$([\d.]+) de \$([\d.]+): %$/))) return (n(m[1]) * 100) / n(m[2]);
+    if ((m = expr.match(/^CAE (\d+) % vs (\d+) %: ¿cuál conviene\?$/))) return Math.min(m[1], m[2]);
+  }
+  if (id === "sueldo-impuestos") {
+    if ((m = expr.match(/^IVA de \$([\d.]+)$/))) return Math.round(n(m[1]) * 0.19);
+    if ((m = expr.match(/^Precio con IVA de \$([\d.]+) neto$/))) return Math.round(n(m[1]) * 1.19);
+    if ((m = expr.match(/^Salud 7 % de \$([\d.]+)$/))) return Math.round(n(m[1]) * 0.07);
+    if ((m = expr.match(/^Bruto \$([\d.]+), descuentos (\d+) %$/))) return Math.round((n(m[1]) * (100 - m[2])) / 100);
+  }
+  if (id === "binomial") {
+    const choose = (a, b) => { let r = 1; for (let i = 0; i < b; i++) r = (r * (a - i)) / (i + 1); return r; };
+    if ((m = expr.match(/^(\d) monedas: (?:exactamente )?(\d) caras$/))) return choose(+m[1], +m[2]) / 2 ** m[1];
+    if ((m = expr.match(/^Esperanza: (\d+) \D+, p = ([\d,]+)$/))) return Math.round(m[1] * n(m[2]) * 100) / 100;
+  }
+  if (id === "normal") {
+    if ((m = expr.match(/^Promedio (\d+), desv\. (\d+): % entre (\d+) y (\d+)$/))) {
+      const k = (m[4] - m[1]) / m[2];
+      assert.equal((m[1] - m[3]) / m[2], k, expr);
+      return { 1: 68, 2: 95 }[k];
+    }
+    if ((m = expr.match(/^z de (\d+) con promedio (\d+) y desv\. (\d+)$/))) return (m[1] - m[2]) / m[3];
+    if (expr === "% sobre el promedio") return 50;
+  }
+  if (id === "funcion-potencia") {
+    if ((m = expr.match(/^f\((−?\d+)\) con f\(x\) = (.+)$/))) return evaluate(m[2].replace(/(\d+)\/x/, "$1/(x)"), val(m[1]));
+  }
+  if (id === "funciones-trigonometricas") {
+    const rad = (d) => (d * Math.PI) / 180;
+    if ((m = expr.match(/^(sen|cos) (\d+)°$/))) return Math.round((m[1] === "sen" ? Math.sin : Math.cos)(rad(m[2])));
+    if ((m = expr.match(/^Amplitud de (\d+) · sen\(x\)$/))) return +m[1];
+    if ((m = expr.match(/^(Máximo|Mínimo) de (\d+) · sen\(t\) \+ (\d+)$/))) return +m[3] + (m[1] === "Máximo" ? 1 : -1) * m[2];
+    if ((m = expr.match(/^Período de sen\((\d+)x\)$/))) return 360 / m[1];
+  }
+  return null;
+}
+
 // Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
 function solveSystem(expr) {
   const letters = [...new Set(expr.match(/[a-z]/g))];
@@ -379,8 +601,8 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton"].includes(id)) assert.ok((q[1] > 0 || id === "racionales-mult") && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
-        else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos", "crecimiento-exponencial", "cono", "homotecia"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos", "crecimiento-exponencial", "cono", "homotecia", "cambio-porcentual", "esfera", "funcion-inversa"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);
       }

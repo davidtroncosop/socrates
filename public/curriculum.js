@@ -5237,5 +5237,2111 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "raices-simplificar",
+    "since": "2026-10-16",
+    "title": "Simplificar raíces",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 01 · Sacar los cuadrados",
+    "concept": "Algunas raíces no son exactas, como √2: son números irracionales, con infinitos decimales sin patrón. Para simplificar una raíz, busca un cuadrado escondido adentro: √50 = √(25 · 2) = 5√2. Y √a · √b = √(a · b): √2 · √8 = √16 = 4.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-01\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "√12 = √(4 · 3) = 2√3. √3 · √12 = √36 = 6.",
+    "status": "published",
+    "questions": [
+      [
+        "√50 = ?√2",
+        5,
+        "Simplifica √50. ¿Qué número va delante de √2?",
+        "🔍 50 = 25 · 2, y 25 es un cuadrado.",
+        "√50 = √25 · √2 = 5√2.",
+        [
+          [
+            25,
+            "Sacaste el 25 sin su raíz. √25 = 5: 5√2."
+          ],
+          [
+            10,
+            "50 = 25 · 2, no 10 · 5. Sale √25 = 5."
+          ]
+        ]
+      ],
+      [
+        "√2 · √8",
+        4,
+        "Calcula.",
+        "Junta las raíces: √(2 · 8).",
+        "√2 · √8 = √16 = 4.",
+        [
+          [
+            16,
+            "Falta la raíz: √16 = 4."
+          ],
+          [
+            10,
+            "Sumaste 2 + 8. Adentro de la raíz se multiplica: √16 = 4."
+          ]
+        ]
+      ],
+      [
+        "√12 = ?√3",
+        2,
+        "Simplifica √12. ¿Qué número va delante de √3?",
+        "12 = 4 · 3.",
+        "√12 = √4 · √3 = 2√3.",
+        [
+          [
+            4,
+            "Sacaste el 4 sin su raíz. √4 = 2: 2√3."
+          ]
+        ]
+      ],
+      [
+        "√18 + √8 = ?√2",
+        5,
+        "Simplifica y suma: √18 + √8. ¿Qué número va delante de √2?",
+        "√18 = 3√2 y √8 = 2√2.",
+        "3√2 + 2√2 = 5√2.",
+        [
+          [
+            26,
+            "No se suma adentro de la raíz. Simplifica primero: 3√2 + 2√2 = 5√2."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "√45 = ?√5",
+      3,
+      "Simplifica √45. ¿Qué número va delante de √5?",
+      "45 = 9 · 5.",
+      "√45 = √9 · √5 = 3√5.",
+      [
+        [
+          9,
+          "Sacaste el 9 sin su raíz. √9 = 3: 3√5."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "raices-enesimas",
+    "since": "2026-10-16",
+    "title": "Raíces enésimas y exponentes racionales",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 02 · La potencia al revés",
+    "concept": "La raíz cúbica pregunta qué número multiplicado 3 veces por sí mismo da el número: ∛8 = 2, porque 2 · 2 · 2 = 8. Un exponente fraccionario es una raíz: 8^(1/3) = ∛8 = 2. Y 8^(2/3) es (∛8)² = 4.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-02\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "∜81 = 3, porque 3 · 3 · 3 · 3 = 81. 27^(2/3) = (∛27)² = 3² = 9.",
+    "status": "published",
+    "questions": [
+      [
+        "∛8",
+        2,
+        "Calcula la raíz cúbica.",
+        "🧊 ¿Qué número multiplicado 3 veces da 8?",
+        "2 · 2 · 2 = 8, así que ∛8 = 2.",
+        [
+          [
+            2.6666666666666665,
+            "No es dividir por 3. Busca un número que, multiplicado 3 veces, dé 8: 2."
+          ]
+        ]
+      ],
+      [
+        "∛125",
+        5,
+        "Calcula la raíz cúbica.",
+        "¿Qué número multiplicado 3 veces da 125?",
+        "5 · 5 · 5 = 125.",
+        [
+          [
+            41.666666666666664,
+            "No es dividir por 3: 5 · 5 · 5 = 125."
+          ]
+        ]
+      ],
+      [
+        "16^(1/2)",
+        4,
+        "Calcula. El exponente 1/2 es la raíz cuadrada.",
+        "16^(1/2) = √16.",
+        "√16 = 4.",
+        [
+          [
+            8,
+            "No es la mitad de 16. Exponente 1/2 es raíz cuadrada: 4."
+          ]
+        ]
+      ],
+      [
+        "27^(2/3)",
+        9,
+        "Calcula.",
+        "Primero la raíz cúbica de 27; después al cuadrado.",
+        "∛27 = 3; 3² = 9.",
+        [
+          [
+            18,
+            "No es 27 · 2/3. Primero ∛27 = 3, después 3² = 9."
+          ],
+          [
+            3,
+            "Falta elevar al cuadrado: 3² = 9."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "∛64",
+      4,
+      "Calcula la raíz cúbica.",
+      "¿Qué número multiplicado 3 veces da 64?",
+      "4 · 4 · 4 = 64.",
+      [
+        [
+          8,
+          "8 · 8 = 64 es la raíz cuadrada. La cúbica es 4 (4 · 4 · 4)."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "logaritmos",
+    "since": "2026-10-16",
+    "title": "Logaritmos",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 02 · ¿Cuántas veces se multiplica?",
+    "concept": "El logaritmo pregunta por el exponente: log₂ 8 pregunta «¿cuántas veces multiplico 2 para llegar a 8?». 2 · 2 · 2 = 8, así que log₂ 8 = 3. Si no se escribe la base, es 10: log 1.000 = 3, porque 10³ = 1.000.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-02\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "log₃ 81 = 4, porque 3⁴ = 81. log₅ 1 = 0, porque 5⁰ = 1.",
+    "status": "published",
+    "questions": [
+      [
+        "log₂ 8",
+        3,
+        "Calcula.",
+        "🔁 ¿Cuántas veces multiplicas 2 para llegar a 8?",
+        "2 · 2 · 2 = 8: tres veces. log₂ 8 = 3.",
+        [
+          [
+            4,
+            "Dividiste 8 ÷ 2. El logaritmo cuenta cuántas veces se multiplica: 3."
+          ]
+        ]
+      ],
+      [
+        "log 1000",
+        3,
+        "Calcula. Sin base escrita, la base es 10.",
+        "1.000 = 10 · 10 · 10.",
+        "10³ = 1.000, así que log 1.000 = 3.",
+        [
+          [
+            100,
+            "Dividiste por 10. Cuenta los ceros: 3."
+          ]
+        ]
+      ],
+      [
+        "log₃ 81",
+        4,
+        "Calcula.",
+        "3 → 9 → 27 → 81.",
+        "3⁴ = 81, así que log₃ 81 = 4.",
+        [
+          [
+            27,
+            "Dividiste por 3. Cuenta cuántas veces multiplicas 3: 4."
+          ]
+        ]
+      ],
+      [
+        "log₅ 1",
+        0,
+        "Calcula.",
+        "¿A qué exponente hay que elevar 5 para obtener 1?",
+        "5⁰ = 1, así que log₅ 1 = 0.",
+        [
+          [
+            1,
+            "5¹ = 5, no 1. Todo número elevado a 0 da 1: log₅ 1 = 0."
+          ],
+          [
+            5,
+            "El logaritmo es el exponente, no la base: 0."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "log₂ 32",
+      5,
+      "Calcula.",
+      "2 → 4 → 8 → 16 → 32.",
+      "2⁵ = 32, así que log₂ 32 = 5.",
+      [
+        [
+          16,
+          "Dividiste por 2. Cuenta las veces: 5."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "funcion-cuadratica",
+    "since": "2026-10-16",
+    "title": "Función cuadrática",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 03 · La parábola",
+    "concept": "En f(x) = ax² + bx + c, la x está al cuadrado y el gráfico es una curva llamada parábola. Si a es positivo, se abre hacia arriba (como una sonrisa); si es negativo, hacia abajo. El vértice es la punta y está en x = −b ÷ (2a). La curva corta el eje y en c.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-03\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "f(x) = x² − 6x + 5: vértice en x = 6 ÷ 2 = 3, y f(3) = 9 − 18 + 5 = −4. Corta el eje y en 5.",
+    "status": "published",
+    "questions": [
+      [
+        "f(3) con f(x) = x² − 4",
+        5,
+        "Calcula f(3).",
+        "📈 Reemplaza x por 3: 3² − 4.",
+        "3² = 9; 9 − 4 = 5.",
+        [
+          [
+            2,
+            "3² no es 3 · 2. Es 3 · 3 = 9; 9 − 4 = 5."
+          ]
+        ]
+      ],
+      [
+        "Vértice de x² − 6x + 5: ¿x?",
+        3,
+        "¿En qué x está el vértice de f(x) = x² − 6x + 5?",
+        "x = −b ÷ (2a), con a = 1 y b = −6.",
+        "x = 6 ÷ 2 = 3.",
+        [
+          [
+            -3,
+            "Cuidado con el signo: −b = −(−6) = 6. x = 6 ÷ 2 = 3."
+          ],
+          [
+            6,
+            "Falta dividir por 2a = 2: x = 3."
+          ]
+        ]
+      ],
+      [
+        "f(x) = 2x² − 3x + 7: corte con eje y",
+        7,
+        "¿En qué valor corta el eje y la parábola f(x) = 2x² − 3x + 7?",
+        "En el eje y, x = 0.",
+        "f(0) = 0 − 0 + 7 = 7.",
+        [
+          [
+            2,
+            "Ese es a. Con x = 0 queda solo c: 7."
+          ]
+        ]
+      ],
+      [
+        "Altura: h(t) = −5t² + 20t; h(2)",
+        20,
+        "Una pelota se lanza hacia arriba y su altura es h(t) = −5t² + 20t metros. ¿A qué altura está a los 2 segundos?",
+        "Reemplaza t por 2.",
+        "−5 · 4 + 20 · 2 = −20 + 40 = 20 m.",
+        [
+          [
+            60,
+            "2² es 4, y −5 · 4 = −20: −20 + 40 = 20."
+          ],
+          [
+            -60,
+            "Revisa: −5 · 2² = −20 y 20 · 2 = 40. Total 20."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "f(4) con f(x) = x² + 1",
+      17,
+      "Calcula f(4).",
+      "4² + 1.",
+      "4² = 16; 16 + 1 = 17.",
+      [
+        [
+          9,
+          "4² no es 4 · 2. Es 16; 16 + 1 = 17."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "ecuacion-cuadratica",
+    "since": "2026-10-16",
+    "title": "Ecuación cuadrática",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 04 · Dos soluciones",
+    "concept": "Una ecuación cuadrática tiene x². Puede tener dos soluciones: x² = 49 tiene x = 7 y x = −7. Si está factorizada, (x − 3)(x + 5) = 0, uno de los paréntesis vale 0: x = 3 o x = −5. Si no, busca dos números que sumen b y multipliquen c, o usa la fórmula general.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-04\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "x² − 5x + 6 = 0: dos números que sumen 5 y multipliquen 6 son 2 y 3, así que (x − 2)(x − 3) = 0 y x = 2 o x = 3.",
+    "status": "published",
+    "questions": [
+      [
+        "x² = 49, solución positiva",
+        7,
+        "Resuelve x² = 49. Escribe la solución positiva.",
+        "🔁 ¿Qué número al cuadrado da 49?",
+        "x = 7 o x = −7. La positiva es 7.",
+        [
+          [
+            24.5,
+            "No es dividir por 2. Busca un número que al cuadrado dé 49: 7."
+          ]
+        ]
+      ],
+      [
+        "(x − 3)(x + 5) = 0, solución positiva",
+        3,
+        "Resuelve. Escribe la solución positiva.",
+        "Uno de los paréntesis vale 0.",
+        "x − 3 = 0 → x = 3; x + 5 = 0 → x = −5. La positiva es 3.",
+        [
+          [
+            -3,
+            "Si x − 3 = 0, entonces x = 3 (positivo)."
+          ],
+          [
+            5,
+            "x + 5 = 0 da x = −5, que es negativa. La positiva es 3."
+          ]
+        ]
+      ],
+      [
+        "x² − 5x + 6 = 0, solución mayor",
+        3,
+        "Resuelve. Escribe la solución mayor.",
+        "Busca dos números que sumen 5 y multipliquen 6.",
+        "2 y 3: (x − 2)(x − 3) = 0. Las soluciones son 2 y 3; la mayor es 3.",
+        [
+          [
+            2,
+            "Esa es la menor. La mayor es 3."
+          ],
+          [
+            6,
+            "Ese es c. Las soluciones son 2 y 3."
+          ]
+        ]
+      ],
+      [
+        "x² + 3x = 0, solución distinta de 0",
+        -3,
+        "Resuelve x² + 3x = 0. Una solución es 0; ¿cuál es la otra?",
+        "Saca x factor común: x(x + 3) = 0.",
+        "x = 0 o x + 3 = 0 → x = −3.",
+        [
+          [
+            3,
+            "x + 3 = 0 da x = −3, con signo menos."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "x² = 81, solución positiva",
+      9,
+      "Resuelve x² = 81. Escribe la solución positiva.",
+      "¿Qué número al cuadrado da 81?",
+      "x = 9 o x = −9. La positiva es 9.",
+      [
+        [
+          40.5,
+          "No es dividir por 2: 9 · 9 = 81."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "funcion-inversa",
+    "since": "2026-10-16",
+    "title": "Función inversa",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 05 · La máquina al revés",
+    "concept": "Una función es una máquina: entra un número y sale otro. La función inversa es la máquina al revés: entra el resultado y sale el número original. Para f(x) = 2x + 3, la inversa deshace en orden contrario: primero resta 3, después divide por 2.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-05\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "f(x) = 2x + 3 y f(4) = 11. La inversa: f⁻¹(11) = (11 − 3) ÷ 2 = 4.",
+    "status": "published",
+    "questions": [
+      [
+        "f(x) = 2x + 3; f⁻¹(11)",
+        4,
+        "La máquina f(x) = 2x + 3 entregó 11. ¿Qué número entró? Es decir, calcula f⁻¹(11).",
+        "⚙️ Deshaz al revés: primero resta 3, después divide por 2.",
+        "11 − 3 = 8; 8 ÷ 2 = 4.",
+        [
+          [
+            25,
+            "Aplicaste f otra vez. La inversa deshace: (11 − 3) ÷ 2 = 4."
+          ],
+          [
+            7,
+            "Deshaz en orden contrario: primero resta 3, después divide: 4."
+          ]
+        ]
+      ],
+      [
+        "f(x) = x − 5; f⁻¹(2)",
+        7,
+        "Calcula f⁻¹(2) para f(x) = x − 5.",
+        "La inversa de restar 5 es sumar 5.",
+        "2 + 5 = 7.",
+        [
+          [
+            -3,
+            "Restaste otra vez. La inversa suma 5: 7."
+          ]
+        ]
+      ],
+      [
+        "f(x) = 3x; f⁻¹(12)",
+        4,
+        "Calcula f⁻¹(12) para f(x) = 3x.",
+        "La inversa de multiplicar por 3 es dividir por 3.",
+        "12 ÷ 3 = 4.",
+        [
+          [
+            36,
+            "Multiplicaste. La inversa divide: 4."
+          ]
+        ]
+      ],
+      [
+        "f(x) = x/2 + 1; f⁻¹(5)",
+        8,
+        "Calcula f⁻¹(5) para f(x) = x/2 + 1.",
+        "Primero resta 1, después multiplica por 2.",
+        "5 − 1 = 4; 4 · 2 = 8.",
+        [
+          [
+            3.5,
+            "Aplicaste f. La inversa: (5 − 1) · 2 = 8."
+          ],
+          [
+            9,
+            "Al revés: primero resta 1 y después multiplica: 8."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "f(x) = x + 4; f⁻¹(10)",
+      6,
+      "Calcula f⁻¹(10) para f(x) = x + 4.",
+      "La inversa resta 4.",
+      "10 − 4 = 6.",
+      [
+        [
+          14,
+          "Sumaste otra vez. La inversa resta 4: 6."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "cambio-porcentual",
+    "since": "2026-10-16",
+    "title": "Cambio porcentual constante",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 06 · El porcentaje se aplica sobre lo nuevo",
+    "concept": "Cuando algo cambia en el mismo porcentaje cada período, el porcentaje se aplica sobre la cantidad nueva. Crecer un 10 % es multiplicar por 1,1; bajar un 20 % es multiplicar por 0,8. En 2 años: por 1,1 y otra vez por 1,1.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-06\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Un auto de $10.000.000 pierde el 20 % de su valor cada año: 10.000.000 → 8.000.000 → 6.400.000.",
+    "status": "published",
+    "questions": [
+      [
+        "1000 · 1,1²",
+        1210,
+        "Un pueblo tiene 1.000 habitantes y crece 10 % cada año. ¿Cuántos tiene después de 2 años?",
+        "📈 1.000 · 1,1 = 1.100; después 1.100 · 1,1.",
+        "1.000 → 1.100 → 1.210.",
+        [
+          [
+            1200,
+            "El segundo año el 10 % es de 1.100 (110), no de 1.000: 1.210."
+          ]
+        ]
+      ],
+      [
+        "10000 · 0,8²",
+        6400,
+        "Un celular de $10.000 pierde el 20 % de su valor cada año. ¿Cuánto vale después de 2 años?",
+        "Cada año se multiplica por 0,8.",
+        "10.000 → 8.000 → 6.400.",
+        [
+          [
+            6000,
+            "El segundo año baja el 20 % de 8.000 (1.600), no de 10.000: 6.400."
+          ]
+        ]
+      ],
+      [
+        "200 · 1,5",
+        300,
+        "Una planta mide 200 mm y crece un 50 % cada semana. ¿Cuánto mide después de 1 semana?",
+        "Crecer 50 % es multiplicar por 1,5.",
+        "200 · 1,5 = 300 mm.",
+        [
+          [
+            250,
+            "El 50 % de 200 es 100: 300."
+          ]
+        ]
+      ],
+      [
+        "500 · 2³",
+        4000,
+        "Un video tiene 500 visitas y cada día se duplican (crecen 100 %). ¿Cuántas tiene después de 3 días?",
+        "Duplicar es multiplicar por 2, tres veces.",
+        "500 → 1.000 → 2.000 → 4.000.",
+        [
+          [
+            3000,
+            "Se duplica: se multiplica por 2, no se suma 500 cada vez. 4.000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "1000 · 0,9²",
+      810,
+      "Algo de $1.000 baja 10 % cada mes. ¿Cuánto vale después de 2 meses?",
+      "Por 0,9 dos veces.",
+      "1.000 → 900 → 810.",
+      [
+        [
+          800,
+          "El segundo mes baja el 10 % de 900 (90): 810."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "esfera",
+    "since": "2026-10-16",
+    "title": "Área y volumen de la esfera",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 07 · La pelota",
+    "concept": "Una esfera es una pelota. Su volumen es 4/3 · π · r³ y su superficie es 4 · π · r². Usa π ≈ 3,14. El radio va al cubo en el volumen (es espacio) y al cuadrado en el área (es superficie).\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-07\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Esfera de radio 3: volumen 4/3 · 3,14 · 27 = 113,04; área 4 · 3,14 · 9 = 113,04.",
+    "status": "published",
+    "questions": [
+      [
+        "Esfera: radio 3 cm, volumen",
+        113.04,
+        "Calcula el volumen en cm³. Usa π = 3,14.",
+        "⚽ 4/3 · 3,14 · 3 · 3 · 3.",
+        "3³ = 27; 4/3 · 27 = 36; 36 · 3,14 = 113,04 cm³.",
+        [
+          [
+            28.26,
+            "Usaste r², que es para el área. El volumen usa r³: 113,04."
+          ]
+        ]
+      ],
+      [
+        "Esfera: radio 2 cm, área",
+        50.24,
+        "Calcula el área de la superficie en cm². Usa π = 3,14.",
+        "4 · 3,14 · 2 · 2.",
+        "4 · 3,14 · 4 = 50,24 cm².",
+        [
+          [
+            25.12,
+            "Usaste r · 2. Es r · r = 4: 4 · 3,14 · 4 = 50,24."
+          ]
+        ]
+      ],
+      [
+        "Esfera: radio 6 cm, volumen",
+        904.32,
+        "Calcula el volumen en cm³. Usa π = 3,14.",
+        "6³ = 216; 4/3 · 216 = 288.",
+        "288 · 3,14 = 904,32 cm³.",
+        [
+          [
+            452.16,
+            "Revisa: 4/3 · 216 = 288; 288 · 3,14 = 904,32."
+          ]
+        ]
+      ],
+      [
+        "Pelota: radio 10 cm, área",
+        1256,
+        "¿Cuánto cuero se necesita para cubrir una pelota de radio 10 cm? Usa π = 3,14.",
+        "4 · 3,14 · 10 · 10.",
+        "4 · 3,14 · 100 = 1.256 cm².",
+        [
+          [
+            125.6,
+            "r² es 100, no 10: 1.256."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Esfera: radio 1 cm, área",
+      12.56,
+      "Calcula el área en cm². Usa π = 3,14.",
+      "4 · 3,14 · 1 · 1.",
+      "4 · 3,14 = 12,56 cm².",
+      [
+        [
+          3.14,
+          "Falta multiplicar por 4: 12,56."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "trigonometria",
+    "since": "2026-10-16",
+    "title": "Seno, coseno y tangente",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 08 · Razones en el triángulo rectángulo",
+    "concept": "En un triángulo rectángulo, mirando desde un ángulo: el cateto opuesto está enfrente, el adyacente está al lado y la hipotenusa es el lado mayor. Seno = opuesto ÷ hipotenusa. Coseno = adyacente ÷ hipotenusa. Tangente = opuesto ÷ adyacente. Se recuerda como SOH-CAH-TOA.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-08\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Triángulo 3-4-5, desde el ángulo frente al 3: seno = 3/5 = 0,6; coseno = 4/5 = 0,8; tangente = 3/4 = 0,75.",
+    "status": "published",
+    "questions": [
+      [
+        "Triángulo 3-4-5: seno",
+        0.6,
+        "En un triángulo rectángulo de catetos 3 y 4 e hipotenusa 5, ¿cuál es el seno del ángulo opuesto al lado 3? Responde como fracción o decimal.",
+        "📐 Seno = opuesto ÷ hipotenusa.",
+        "3 ÷ 5 = 0,6.",
+        [
+          [
+            0.75,
+            "Esa es la tangente (3 ÷ 4). Seno es opuesto ÷ hipotenusa: 3/5."
+          ],
+          [
+            0.8,
+            "Ese es el coseno. Seno: 3/5."
+          ]
+        ]
+      ],
+      [
+        "Triángulo 3-4-5: coseno",
+        0.8,
+        "En el mismo triángulo, ¿cuál es el coseno de ese ángulo?",
+        "Coseno = adyacente ÷ hipotenusa.",
+        "4 ÷ 5 = 0,8.",
+        [
+          [
+            0.6,
+            "Ese es el seno. Coseno: adyacente ÷ hipotenusa = 4/5."
+          ]
+        ]
+      ],
+      [
+        "Triángulo 3-4-5: tangente",
+        0.75,
+        "En el mismo triángulo, ¿cuál es la tangente de ese ángulo?",
+        "Tangente = opuesto ÷ adyacente.",
+        "3 ÷ 4 = 0,75.",
+        [
+          [
+            1.3333333333333333,
+            "Dividiste al revés. Tangente: opuesto ÷ adyacente = 3/4."
+          ]
+        ]
+      ],
+      [
+        "Hipotenusa 10, sen 30° = 0,5: opuesto",
+        5,
+        "Una escalera de 10 m forma 30° con el suelo. ¿A qué altura llega? (sen 30° = 0,5)",
+        "Opuesto = hipotenusa · seno.",
+        "10 · 0,5 = 5 m.",
+        [
+          [
+            20,
+            "Dividiste. Opuesto = hipotenusa · seno: 5."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Triángulo 6-8-10: seno",
+      0.6,
+      "Un triángulo rectángulo tiene catetos 6 y 8 e hipotenusa 10. ¿Cuál es el seno del ángulo opuesto al lado 6?",
+      "Opuesto ÷ hipotenusa.",
+      "6 ÷ 10 = 0,6.",
+      [
+        [
+          0.75,
+          "Esa es la tangente. Seno: 6/10 = 0,6."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "vectores",
+    "since": "2026-10-16",
+    "title": "Vectores",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 09 · Flechas que se suman",
+    "concept": "Un vector es una flecha: dice cuánto avanzar en x y cuánto en y. Para sumar vectores, suma las x con las x y las y con las y. El largo (módulo) de (a, b) se calcula con Pitágoras: √(a² + b²).\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-09\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "(2, 3) + (4, −1) = (6, 2). El módulo de (3, 4) es √(9 + 16) = 5.",
+    "status": "published",
+    "questions": [
+      [
+        "(2, 3) + (4, −1): ¿x?",
+        6,
+        "Suma los vectores. ¿Cuál es la componente x del resultado?",
+        "➡️ Suma las x: 2 + 4.",
+        "(2 + 4, 3 − 1) = (6, 2).",
+        [
+          [
+            2,
+            "Esa es la y. La x es 2 + 4 = 6."
+          ],
+          [
+            5,
+            "Sumaste en cruz. x con x: 2 + 4 = 6."
+          ]
+        ]
+      ],
+      [
+        "(5, −2) + (−1, 6): ¿y?",
+        4,
+        "Suma los vectores. ¿Cuál es la componente y del resultado?",
+        "Suma las y: −2 + 6.",
+        "(4, 4).",
+        [
+          [
+            8,
+            "−2 + 6 = 4, no 8."
+          ]
+        ]
+      ],
+      [
+        "Módulo de (3, 4)",
+        5,
+        "¿Cuánto mide el vector (3, 4)?",
+        "Pitágoras: √(3² + 4²).",
+        "√(9 + 16) = √25 = 5.",
+        [
+          [
+            7,
+            "No se suman directo. Es √(9 + 16) = 5."
+          ],
+          [
+            25,
+            "Falta la raíz: √25 = 5."
+          ]
+        ]
+      ],
+      [
+        "3 · (2, −1): ¿y?",
+        -3,
+        "Multiplica el vector (2, −1) por 3. ¿Cuál es la componente y?",
+        "Multiplica cada componente por 3.",
+        "3 · (2, −1) = (6, −3).",
+        [
+          [
+            2,
+            "Sumaste 3. Se multiplica: 3 · (−1) = −3."
+          ],
+          [
+            3,
+            "Cuidado con el signo: 3 · (−1) = −3."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Módulo de (6, 8)",
+      10,
+      "¿Cuánto mide el vector (6, 8)?",
+      "√(36 + 64).",
+      "√100 = 10.",
+      [
+        [
+          14,
+          "No se suman directo: √(36 + 64) = 10."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "variable-aleatoria",
+    "since": "2026-10-16",
+    "title": "Variable aleatoria",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 10 · Ponerle números al azar",
+    "concept": "Una variable aleatoria le pone un número a cada resultado de un experimento. Por ejemplo, X = número de caras al lanzar 2 monedas puede valer 0, 1 o 2. Su probabilidad se calcula contando: X = 1 pasa en CS y SC, 2 de 4 casos. El valor esperado es el promedio a la larga: en un dado, 3,5.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-10\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Lanzar dos dados y X = la suma: X = 7 pasa de 6 maneras de 36, P(X = 7) = 6/36 = 1/6.",
+    "status": "published",
+    "questions": [
+      [
+        "2 monedas: P(X = 1 cara)",
+        0.5,
+        "Lanzas 2 monedas y X es el número de caras. ¿Cuál es P(X = 1)?",
+        "🪙 Casos: CC, CS, SC, SS. ¿En cuántos hay 1 cara?",
+        "CS y SC: 2 de 4 = 1/2.",
+        [
+          [
+            0.25,
+            "Hay 2 casos con una cara (CS y SC), no 1: 2/4 = 1/2."
+          ],
+          [
+            0.3333333333333333,
+            "Los casos son 4 (CS y SC son distintos): 2/4."
+          ]
+        ]
+      ],
+      [
+        "2 dados: P(suma = 7)",
+        0.16666666666666666,
+        "Lanzas 2 dados y X es la suma. ¿Cuál es P(X = 7)? Responde como fracción.",
+        "Hay 36 casos. Sumas 7: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1).",
+        "6 de 36 = 1/6.",
+        [
+          [
+            0.09090909090909091,
+            "Los resultados de la suma no son igual de probables. Cuenta los 36 casos: 6/36."
+          ]
+        ]
+      ],
+      [
+        "Dado: valor esperado",
+        3.5,
+        "¿Cuál es el valor esperado al lanzar un dado (el promedio a la larga)?",
+        "Promedio de 1, 2, 3, 4, 5 y 6.",
+        "21 ÷ 6 = 3,5.",
+        [
+          [
+            3,
+            "Suma 1 + 2 + … + 6 = 21 y divide por 6: 3,5."
+          ],
+          [
+            21,
+            "Esa es la suma. Divide por 6: 3,5."
+          ]
+        ]
+      ],
+      [
+        "2 monedas: P(X = 0)",
+        0.25,
+        "Lanzas 2 monedas y X es el número de caras. ¿Cuál es P(X = 0)?",
+        "Cero caras: solo SS.",
+        "1 caso de 4: 1/4.",
+        [
+          [
+            0,
+            "Sí puede pasar: SS. P = 1/4."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "2 monedas: P(X = 2)",
+      0.25,
+      "Lanzas 2 monedas. ¿Cuál es la probabilidad de 2 caras?",
+      "Solo CC.",
+      "1 de 4: 1/4.",
+      [
+        [
+          0.5,
+          "Solo CC tiene 2 caras: 1/4."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "permutaciones",
+    "since": "2026-10-16",
+    "title": "Permutaciones y combinaciones",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 11 · ¿Importa el orden?",
+    "concept": "Para ordenar 4 personas en una fila: el primer lugar tiene 4 opciones, el segundo 3, el tercero 2 y el último 1. 4 · 3 · 2 · 1 = 24 (se escribe 4!, «4 factorial»). Si el orden no importa, como elegir 2 de 5 para un equipo, divide por las formas de ordenar a los elegidos: 5 · 4 ÷ 2 = 10.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-11\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Podio de 3 entre 5 corredores (importa el orden): 5 · 4 · 3 = 60. Elegir 3 de 5 sin orden: 60 ÷ 6 = 10.",
+    "status": "published",
+    "questions": [
+      [
+        "4!",
+        24,
+        "¿De cuántas formas se pueden ordenar 4 personas en una fila?",
+        "🔢 4 · 3 · 2 · 1.",
+        "4 · 3 · 2 · 1 = 24.",
+        [
+          [
+            16,
+            "No es 4 · 4: cada lugar tiene una opción menos. 4 · 3 · 2 · 1 = 24."
+          ],
+          [
+            10,
+            "Sumaste. Se multiplica: 24."
+          ]
+        ]
+      ],
+      [
+        "Podio de 3 entre 5",
+        60,
+        "En una carrera hay 5 corredores. ¿De cuántas formas puede quedar el podio (1°, 2° y 3°)?",
+        "Primer lugar: 5 opciones; segundo: 4; tercero: 3.",
+        "5 · 4 · 3 = 60.",
+        [
+          [
+            125,
+            "Un corredor no puede repetir lugar: 5 · 4 · 3 = 60."
+          ],
+          [
+            10,
+            "En el podio importa el orden: 60."
+          ]
+        ]
+      ],
+      [
+        "Elegir 2 de 5",
+        10,
+        "¿De cuántas formas puedes elegir 2 amigos de 5 para un equipo (el orden no importa)?",
+        "5 · 4 = 20, pero cada pareja se contó 2 veces.",
+        "20 ÷ 2 = 10.",
+        [
+          [
+            20,
+            "Ana-Beto y Beto-Ana son la misma pareja: 20 ÷ 2 = 10."
+          ]
+        ]
+      ],
+      [
+        "P(Ana primera de 3)",
+        0.3333333333333333,
+        "Ana, Beto y Cata se ordenan al azar. ¿Cuál es la probabilidad de que Ana quede primera?",
+        "Órdenes posibles: 3! = 6. ¿En cuántos Ana va primera?",
+        "Ana primera: 2 órdenes de 6 = 1/3.",
+        [
+          [
+            0.16666666666666666,
+            "Ana va primera en 2 órdenes (ABC y ACB): 2/6 = 1/3."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "3!",
+      6,
+      "¿De cuántas formas se pueden ordenar 3 libros en un estante?",
+      "3 · 2 · 1.",
+      "3 · 2 · 1 = 6.",
+      [
+        [
+          9,
+          "No es 3 · 3: 3 · 2 · 1 = 6."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "complejos",
+    "since": "2026-10-18",
+    "title": "Números complejos",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "FG-3M OA 1 · Un número con dos partes",
+    "concept": "No hay número real que al cuadrado dé −1. Por eso se inventó i, con i² = −1. Un número complejo tiene dos partes: 3 + 2i tiene parte real 3 y parte imaginaria 2. Para sumar, junta reales con reales e imaginarios con imaginarios, como sumar manzanas y peras.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "(3 + 2i) + (1 + 4i) = 4 + 6i. (5 + 3i) − (2 + i) = 3 + 2i.",
+    "status": "published",
+    "questions": [
+      [
+        "(3 + 2i) + (1 + 4i): parte real",
+        4,
+        "Suma los complejos. ¿Cuál es la parte real del resultado?",
+        "🍎 Junta los números sin i: 3 + 1.",
+        "(3 + 1) + (2 + 4)i = 4 + 6i. La parte real es 4.",
+        [
+          [
+            6,
+            "Esa es la parte imaginaria (2 + 4). La real es 3 + 1 = 4."
+          ],
+          [
+            10,
+            "No se juntan todos: reales con reales, 3 + 1 = 4."
+          ]
+        ]
+      ],
+      [
+        "(5 + 3i) − (2 + i): parte imaginaria",
+        2,
+        "Resta los complejos. ¿Cuál es la parte imaginaria del resultado?",
+        "Resta los que tienen i: 3 − 1.",
+        "(5 − 2) + (3 − 1)i = 3 + 2i. La parte imaginaria es 2.",
+        [
+          [
+            3,
+            "Esa es la parte real. La imaginaria es 3 − 1 = 2."
+          ],
+          [
+            4,
+            "Es resta: 3 − 1 = 2."
+          ]
+        ]
+      ],
+      [
+        "i²",
+        -1,
+        "¿Cuánto vale i²?",
+        "Así se definió i.",
+        "i² = −1.",
+        [
+          [
+            1,
+            "No es 1: i se inventó justo para que i² = −1."
+          ]
+        ]
+      ],
+      [
+        "Módulo de 3 + 4i",
+        5,
+        "El módulo de 3 + 4i es su distancia al 0, como la hipotenusa de catetos 3 y 4. ¿Cuánto mide?",
+        "√(3² + 4²).",
+        "√(9 + 16) = √25 = 5.",
+        [
+          [
+            7,
+            "No se suman directo: Pitágoras, √(9 + 16) = 5."
+          ],
+          [
+            25,
+            "Falta la raíz: √25 = 5."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "(2 + 5i) + (4 + i): parte imaginaria",
+      6,
+      "Suma. ¿Cuál es la parte imaginaria del resultado?",
+      "Junta los que tienen i: 5 + 1.",
+      "6 + 6i. La parte imaginaria es 6.",
+      [
+        [
+          12,
+          "Junta solo los que tienen i: 5 + 1 = 6."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "complejos-mult",
+    "since": "2026-10-18",
+    "title": "Multiplicar números complejos",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "FG-3M OA 1 · Cada parte con cada parte",
+    "concept": "Para multiplicar (2 + i)(3 + i), multiplica cada parte por cada parte, como en álgebra: 2 · 3 + 2 · i + i · 3 + i · i = 6 + 5i + i². Como i² = −1, queda 6 + 5i − 1 = 5 + 5i. El conjugado de 3 + 4i es 3 − 4i: se cambia el signo de la parte imaginaria.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "(1 + 2i)(1 − 2i) = 1 − 4i² = 1 + 4 = 5. Un número por su conjugado da un número real.",
+    "status": "published",
+    "questions": [
+      [
+        "(2 + i)(3 + i): parte real",
+        5,
+        "Multiplica. ¿Cuál es la parte real del resultado?",
+        "🔁 6 + 2i + 3i + i², y i² = −1.",
+        "6 + 5i − 1 = 5 + 5i. La parte real es 5.",
+        [
+          [
+            6,
+            "Falta el i² = −1: 6 − 1 = 5."
+          ],
+          [
+            7,
+            "i² es −1, no +1: 6 − 1 = 5."
+          ]
+        ]
+      ],
+      [
+        "(2 + i)(3 + i): parte imaginaria",
+        5,
+        "En el mismo producto, ¿cuál es la parte imaginaria?",
+        "2 · i + i · 3.",
+        "2i + 3i = 5i.",
+        [
+          [
+            2,
+            "Junta las dos: 2i + 3i = 5i."
+          ]
+        ]
+      ],
+      [
+        "Conjugado de 3 + 4i: parte imaginaria",
+        -4,
+        "¿Cuál es la parte imaginaria del conjugado de 3 + 4i?",
+        "El conjugado cambia el signo de la parte imaginaria.",
+        "Conjugado: 3 − 4i. La parte imaginaria es −4.",
+        [
+          [
+            4,
+            "El conjugado cambia el signo: −4."
+          ],
+          [
+            -3,
+            "Solo cambia la parte imaginaria: 3 − 4i."
+          ]
+        ]
+      ],
+      [
+        "(1 + 2i)(1 − 2i)",
+        5,
+        "Multiplica un complejo por su conjugado.",
+        "1 − 2i + 2i − 4i², y i² = −1.",
+        "1 − 4i² = 1 + 4 = 5.",
+        [
+          [
+            -3,
+            "i² = −1, así que −4i² = +4: 1 + 4 = 5."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "(1 + i)(1 + i): parte imaginaria",
+      2,
+      "Multiplica. ¿Cuál es la parte imaginaria?",
+      "1 + i + i + i².",
+      "1 + 2i − 1 = 2i. La parte imaginaria es 2.",
+      [
+        [
+          1,
+          "Hay dos términos con i: i + i = 2i."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "dispersion",
+    "since": "2026-10-18",
+    "title": "Medidas de dispersión",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "FG-3M OA 2 · ¿Qué tan repartidos están?",
+    "concept": "El promedio dice dónde está el centro; la dispersión dice qué tan repartidos están los datos. El rango es el mayor menos el menor. La desviación estándar mide cuánto se alejan, en promedio, del promedio: se restan, se elevan al cuadrado, se promedian (varianza) y se saca la raíz.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Datos 2, 4, 4, 4, 5, 5, 7, 9: promedio 5. Diferencias al cuadrado: 9, 1, 1, 1, 0, 0, 4, 16, que suman 32. Varianza 32 ÷ 8 = 4; desviación estándar √4 = 2.",
+    "status": "published",
+    "questions": [
+      [
+        "Rango de 3, 8, 5, 12, 7",
+        9,
+        "Calcula el rango.",
+        "📏 Mayor menos menor.",
+        "12 − 3 = 9.",
+        [
+          [
+            7,
+            "El rango no es el promedio: mayor menos menor, 12 − 3 = 9."
+          ],
+          [
+            15,
+            "Sumaste. Es la resta: 12 − 3 = 9."
+          ]
+        ]
+      ],
+      [
+        "Varianza de 2, 4, 4, 4, 5, 5, 7, 9",
+        4,
+        "El promedio es 5. Calcula la varianza: el promedio de las diferencias al cuadrado.",
+        "Diferencias: −3, −1, −1, −1, 0, 0, 2, 4. Elévalas al cuadrado.",
+        "9 + 1 + 1 + 1 + 0 + 0 + 4 + 16 = 32; 32 ÷ 8 = 4.",
+        [
+          [
+            32,
+            "Esa es la suma. Divide por los 8 datos: 4."
+          ],
+          [
+            0,
+            "Sin elevar al cuadrado, las diferencias se cancelan. Al cuadrado suman 32: 32 ÷ 8 = 4."
+          ]
+        ]
+      ],
+      [
+        "Desviación estándar con varianza 4",
+        2,
+        "Si la varianza es 4, ¿cuál es la desviación estándar?",
+        "Es la raíz de la varianza.",
+        "√4 = 2.",
+        [
+          [
+            16,
+            "Elevaste al cuadrado. Es la raíz: √4 = 2."
+          ]
+        ]
+      ],
+      [
+        "Curso A: desviación 1; curso B: desviación 3",
+        1,
+        "Dos cursos tienen promedio 5,5. El A tiene desviación estándar 1 y el B, 3. ¿Cuál es más parejo? Responde 1 si es el A o 2 si es el B.",
+        "Menos desviación = datos más juntos.",
+        "El A (desviación 1): sus notas están más cerca del promedio.",
+        [
+          [
+            2,
+            "Más desviación significa más repartido. El más parejo es el A."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Rango de 10, 4, 15, 9",
+      11,
+      "Calcula el rango.",
+      "Mayor menos menor.",
+      "15 − 4 = 11.",
+      [
+        [
+          19,
+          "Sumaste. Es la resta: 15 − 4 = 11."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "probabilidad-condicional",
+    "since": "2026-10-18",
+    "title": "Probabilidad condicional",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "FG-3M OA 2 · Sabiendo que…",
+    "concept": "La probabilidad condicional usa una información que ya sabes. «La probabilidad de A sabiendo que pasó B» se calcula mirando solo los casos de B: P(A | B) = casos con A y B ÷ casos con B. El total cambia: ya no son todos, solo los que cumplen B.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "En un curso de 30, 12 juegan fútbol y 8 de ellos son mujeres. P(mujer | juega fútbol) = 8 ÷ 12 = 2/3.",
+    "status": "published",
+    "questions": [
+      [
+        "Fútbol: 12; de ellos mujeres: 8",
+        0.6666666666666666,
+        "En un curso, 12 estudiantes juegan fútbol y 8 de ellos son mujeres. Si eliges a alguien que juega fútbol, ¿cuál es la probabilidad de que sea mujer? Responde como fracción.",
+        "🔍 Mira solo a los que juegan fútbol: 12.",
+        "8 ÷ 12 = 2/3.",
+        [
+          [
+            0.26666666666666666,
+            "Dividiste por todo el curso. Sabiendo que juega fútbol, el total es 12: 8/12."
+          ]
+        ]
+      ],
+      [
+        "Dado: 6 sabiendo que salió par",
+        0.3333333333333333,
+        "Lanzas un dado y te dicen que salió par. ¿Cuál es la probabilidad de que sea 6?",
+        "Los pares son 2, 4 y 6: ahora solo hay 3 casos.",
+        "1 de 3: 1/3.",
+        [
+          [
+            0.16666666666666666,
+            "Ya sabes que salió par: solo quedan 2, 4 y 6. 1/3."
+          ]
+        ]
+      ],
+      [
+        "Tabla: 20 vacunados, 2 enfermos",
+        0.1,
+        "De 20 personas vacunadas, 2 se enfermaron. ¿Cuál es la probabilidad de enfermarse sabiendo que se vacunó?",
+        "Divide por los vacunados.",
+        "2 ÷ 20 = 0,1.",
+        [
+          [
+            10,
+            "Dividiste al revés: 2 ÷ 20 = 0,1."
+          ]
+        ]
+      ],
+      [
+        "Dos fichas rojas sin devolver",
+        0.3333333333333333,
+        "Una caja tiene 2 fichas rojas y 2 azules. Sacas una roja y no la devuelves. ¿Cuál es la probabilidad de que la segunda sea roja? Responde como fracción.",
+        "Quedan 3 fichas: ¿cuántas rojas?",
+        "Queda 1 roja de 3 fichas: 1/3.",
+        [
+          [
+            0.5,
+            "Ya sacaste una roja y no la devolviste: queda 1 roja de 3 fichas, 1/3."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Dado: 5 sabiendo que salió impar",
+      0.3333333333333333,
+      "Lanzas un dado y salió impar. ¿Cuál es la probabilidad de que sea 5?",
+      "Impares: 1, 3, 5.",
+      "1 de 3: 1/3.",
+      [
+        [
+          0.16666666666666666,
+          "Ya sabes que es impar: solo 3 casos. 1/3."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "modelos-exp-log",
+    "since": "2026-10-18",
+    "title": "Modelos exponenciales y logarítmicos",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "FG-3M OA 3 · Cuántas veces y cuánto tiempo",
+    "concept": "Un modelo exponencial multiplica por el mismo número cada vez: f(t) = a · bᵗ. El logaritmo responde la pregunta al revés: ¿cuántos pasos faltan? Escalas como la de Richter o el pH son logarítmicas: subir 1 punto es multiplicar por 10.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Algo que se duplica cada hora pasa de 100 a 800 en log₂ 8 = 3 horas. Un sismo de magnitud 7 libera 10 veces más amplitud que uno de 6.",
+    "status": "published",
+    "questions": [
+      [
+        "100 → 800 duplicando",
+        3,
+        "Una colonia de 100 bacterias se duplica cada hora. ¿En cuántas horas llega a 800?",
+        "📈 800 ÷ 100 = 8. ¿Cuántas veces duplicas para llegar a 8?",
+        "2³ = 8: 3 horas.",
+        [
+          [
+            4,
+            "Dividiste 8 ÷ 2. Cuenta las duplicaciones: 100 → 200 → 400 → 800, 3 horas."
+          ],
+          [
+            7,
+            "No se suma 100 cada hora: se duplica. 3 horas."
+          ]
+        ]
+      ],
+      [
+        "f(t) = 50 · 3ᵗ; f(2)",
+        450,
+        "Una población sigue f(t) = 50 · 3ᵗ. ¿Cuánto vale después de 2 períodos?",
+        "3² = 9.",
+        "50 · 9 = 450.",
+        [
+          [
+            300,
+            "3² no es 3 · 2: es 9. 50 · 9 = 450."
+          ],
+          [
+            22500,
+            "Primero la potencia (3² = 9) y después por 50: 450."
+          ]
+        ]
+      ],
+      [
+        "Richter: magnitud 7 vs 5",
+        100,
+        "En la escala de Richter, cada punto multiplica la amplitud por 10. ¿Cuántas veces mayor es la amplitud de un sismo de 7 que uno de 5?",
+        "Son 2 puntos: 10 · 10.",
+        "10² = 100 veces.",
+        [
+          [
+            2,
+            "Cada punto multiplica por 10: dos puntos son 10 · 10 = 100."
+          ],
+          [
+            20,
+            "Se multiplica, no se suma: 10 · 10 = 100."
+          ]
+        ]
+      ],
+      [
+        "pH con [H⁺] = 10⁻³",
+        3,
+        "El pH es −log[H⁺]. Si [H⁺] = 10⁻³, ¿cuál es el pH?",
+        "log 10⁻³ = −3.",
+        "pH = −(−3) = 3.",
+        [
+          [
+            -3,
+            "El pH lleva un signo menos delante: −(−3) = 3."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "200 → 1600 duplicando",
+      3,
+      "Algo pasa de 200 a 1.600 duplicándose cada año. ¿Cuántos años tarda?",
+      "1.600 ÷ 200 = 8.",
+      "2³ = 8: 3 años.",
+      [
+        [
+          4,
+          "Cuenta las duplicaciones: 200 → 400 → 800 → 1.600, 3 años."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "circunferencia-angulos",
+    "since": "2026-10-18",
+    "title": "Ángulos y cuerdas en la circunferencia",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "FG-3M OA 4 · El inscrito es la mitad",
+    "concept": "Un ángulo del centro tiene su vértice en el centro. Un ángulo inscrito tiene su vértice en la circunferencia. Si abarcan el mismo arco, el inscrito mide la mitad del del centro. Si dos cuerdas se cortan, los productos de sus trozos son iguales: a · b = c · d.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Ángulo del centro de 80° → inscrito de 40°. Un inscrito que abarca un diámetro mide 90°. Cuerdas: 3 · 8 = 4 · x → x = 6.",
+    "status": "published",
+    "questions": [
+      [
+        "Del centro 80°: inscrito",
+        40,
+        "Un ángulo del centro mide 80°. ¿Cuánto mide un ángulo inscrito que abarca el mismo arco?",
+        "⭕ El inscrito es la mitad del del centro.",
+        "80 ÷ 2 = 40°.",
+        [
+          [
+            160,
+            "Al revés: el inscrito es la mitad, 40°."
+          ],
+          [
+            80,
+            "Son distintos: el inscrito mide la mitad, 40°."
+          ]
+        ]
+      ],
+      [
+        "Inscrito 35°: del centro",
+        70,
+        "Un ángulo inscrito mide 35°. ¿Cuánto mide el ángulo del centro que abarca el mismo arco?",
+        "El del centro es el doble.",
+        "35 · 2 = 70°.",
+        [
+          [
+            17.5,
+            "Al revés: el del centro es el doble, 70°."
+          ]
+        ]
+      ],
+      [
+        "Inscrito en un diámetro",
+        90,
+        "Un ángulo inscrito abarca un diámetro (media circunferencia). ¿Cuánto mide?",
+        "El ángulo del centro de un diámetro es 180°.",
+        "180 ÷ 2 = 90°.",
+        [
+          [
+            180,
+            "Ese es el del centro. El inscrito es la mitad: 90°."
+          ]
+        ]
+      ],
+      [
+        "Cuerdas: 3 · 8 = 4 · x",
+        6,
+        "Dos cuerdas se cortan. Una queda en trozos de 3 y 8; la otra en trozos de 4 y x. ¿Cuánto mide x?",
+        "3 · 8 = 4 · x.",
+        "24 = 4x → x = 6.",
+        [
+          [
+            7,
+            "No se suma: los productos son iguales, 3 · 8 = 4 · x, x = 6."
+          ],
+          [
+            24,
+            "Ese es el producto. Divide por 4: 6."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Del centro 120°: inscrito",
+      60,
+      "Un ángulo del centro mide 120°. ¿Cuánto mide el inscrito que abarca el mismo arco?",
+      "La mitad.",
+      "120 ÷ 2 = 60°.",
+      [
+        [
+          240,
+          "Al revés: el inscrito es la mitad, 60°."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "interes",
+    "since": "2026-10-18",
+    "title": "Interés simple y compuesto",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "FG-4M OA 1 · Lo que crece tu ahorro",
+    "concept": "El interés es lo que paga el banco por tu dinero (o lo que cobra si te presta). Con interés simple, cada año se gana el mismo monto, calculado sobre lo inicial. Con interés compuesto, el interés se suma al ahorro y el año siguiente se gana interés también sobre él: crece más.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "$100.000 al 10 % anual por 2 años. Simple: 10.000 + 10.000 = $20.000 de interés. Compuesto: 100.000 · 1,1 · 1,1 = $121.000, es decir $21.000 de interés.",
+    "status": "published",
+    "questions": [
+      [
+        "Simple: $100.000 al 5 % por 3 años",
+        15000,
+        "Depositas $100.000 al 5 % de interés simple anual. ¿Cuánto interés ganas en 3 años?",
+        "💰 Cada año: 5 % de 100.000 = 5.000.",
+        "5.000 · 3 = $15.000.",
+        [
+          [
+            5000,
+            "Ese es un año. Son 3: 15.000."
+          ],
+          [
+            115000,
+            "Ese es el total con el depósito. El interés es 15.000."
+          ]
+        ]
+      ],
+      [
+        "Compuesto: $100.000 al 10 % por 2 años",
+        121000,
+        "Depositas $100.000 al 10 % de interés compuesto anual. ¿Cuánto tienes después de 2 años?",
+        "Cada año se multiplica por 1,1.",
+        "100.000 → 110.000 → 121.000.",
+        [
+          [
+            120000,
+            "Eso es interés simple. En el compuesto, el segundo año el 10 % es de 110.000: 121.000."
+          ]
+        ]
+      ],
+      [
+        "Simple: $200.000 al 3 % por 4 años, total",
+        224000,
+        "Depositas $200.000 al 3 % de interés simple anual. ¿Cuánto tienes en total después de 4 años?",
+        "Interés por año: 6.000.",
+        "6.000 · 4 = 24.000; 200.000 + 24.000 = $224.000.",
+        [
+          [
+            24000,
+            "Ese es solo el interés. Súmale el depósito: 224.000."
+          ]
+        ]
+      ],
+      [
+        "Compuesto: $50.000 al 20 % por 2 años",
+        72000,
+        "Un préstamo de $50.000 cobra 20 % de interés compuesto anual y no se paga nada en 2 años. ¿Cuánto se debe?",
+        "Por 1,2 dos veces.",
+        "50.000 → 60.000 → 72.000.",
+        [
+          [
+            70000,
+            "En el compuesto, el segundo año el 20 % es de 60.000 (12.000): 72.000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Simple: $100.000 al 4 % por 2 años",
+      8000,
+      "Depositas $100.000 al 4 % de interés simple anual. ¿Cuánto interés ganas en 2 años?",
+      "4.000 por año.",
+      "4.000 · 2 = $8.000.",
+      [
+        [
+          4000,
+          "Ese es un año. Son 2: 8.000."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "credito",
+    "since": "2026-10-18",
+    "title": "El costo de un crédito",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "FG-4M OA 1 · Lo que pagas de más",
+    "concept": "Al pedir un crédito, devuelves más de lo que te prestaron. El costo total es lo que pagas en todas las cuotas menos lo que recibiste. Para comparar créditos se usa la CAE (Carga Anual Equivalente): un porcentaje que incluye intereses y gastos. Menor CAE, crédito más barato.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Te prestan $100.000 y pagas 12 cuotas de $10.000: pagas $120.000, así que el crédito costó $20.000 (el 20 % de lo prestado).",
+    "status": "published",
+    "questions": [
+      [
+        "12 cuotas de $10.000 por $100.000",
+        20000,
+        "Te prestan $100.000 y pagas 12 cuotas de $10.000. ¿Cuánto te costó el crédito?",
+        "💳 Total pagado: 12 · 10.000. Réstale lo prestado.",
+        "120.000 − 100.000 = $20.000.",
+        [
+          [
+            120000,
+            "Eso es todo lo que pagaste. El costo es lo que pagaste de más: 20.000."
+          ]
+        ]
+      ],
+      [
+        "Costo $20.000 de $100.000: %",
+        20,
+        "Si el crédito de $100.000 costó $20.000, ¿qué porcentaje de lo prestado pagaste de más?",
+        "20.000 de 100.000.",
+        "20.000 ÷ 100.000 = 0,2 = 20 %.",
+        [
+          [
+            0.2,
+            "En porcentaje: 0,2 · 100 = 20."
+          ]
+        ]
+      ],
+      [
+        "CAE 28 % vs 35 %: ¿cuál conviene?",
+        28,
+        "Dos créditos iguales tienen CAE de 28 % y 35 %. Escribe la CAE del que conviene.",
+        "Menor CAE, crédito más barato.",
+        "Conviene el de 28 %.",
+        [
+          [
+            35,
+            "Una CAE mayor cuesta más. Conviene el de 28 %."
+          ]
+        ]
+      ],
+      [
+        "6 cuotas de $25.000 por $120.000",
+        30000,
+        "Una tienda vende un celular de $120.000 en 6 cuotas de $25.000. ¿Cuánto pagas de más?",
+        "Total: 6 · 25.000.",
+        "150.000 − 120.000 = $30.000.",
+        [
+          [
+            150000,
+            "Eso es el total. De más: 150.000 − 120.000 = 30.000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "10 cuotas de $12.000 por $100.000",
+      20000,
+      "Te prestan $100.000 y pagas 10 cuotas de $12.000. ¿Cuánto te costó el crédito?",
+      "Total: 120.000.",
+      "120.000 − 100.000 = $20.000.",
+      [
+        [
+          120000,
+          "Eso es todo lo pagado. El costo es 20.000."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "sueldo-impuestos",
+    "since": "2026-10-18",
+    "title": "Sueldo e impuestos",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "FG-4M OA 1 · Del bruto al líquido",
+    "concept": "El sueldo bruto es lo pactado. A él se le descuentan cotizaciones: AFP (cerca del 10 % más comisión) y salud (7 %). Lo que llega a tu cuenta es el sueldo líquido. En las compras, el IVA es el 19 % del precio neto: precio final = neto · 1,19.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Sueldo bruto $600.000: salud 7 % = 42.000. Un producto de neto $10.000 cuesta 10.000 · 1,19 = $11.900 con IVA.",
+    "status": "published",
+    "questions": [
+      [
+        "IVA de $10.000",
+        1900,
+        "Un producto vale $10.000 sin IVA. ¿Cuánto es el IVA (19 %)?",
+        "🧾 19 % de 10.000.",
+        "10.000 · 0,19 = $1.900.",
+        [
+          [
+            11900,
+            "Ese es el precio con IVA. El IVA solo es 1.900."
+          ],
+          [
+            190,
+            "19 % de 10.000 es 1.900."
+          ]
+        ]
+      ],
+      [
+        "Precio con IVA de $20.000 neto",
+        23800,
+        "Un producto vale $20.000 neto. ¿Cuál es el precio final con IVA?",
+        "Multiplica por 1,19.",
+        "20.000 · 1,19 = $23.800.",
+        [
+          [
+            3800,
+            "Ese es solo el IVA. Súmalo: 23.800."
+          ]
+        ]
+      ],
+      [
+        "Salud 7 % de $500.000",
+        35000,
+        "Con un sueldo bruto de $500.000, ¿cuánto se descuenta para salud (7 %)?",
+        "7 % de 500.000.",
+        "500.000 · 0,07 = $35.000.",
+        [
+          [
+            3500,
+            "7 % de 500.000 es 35.000."
+          ]
+        ]
+      ],
+      [
+        "Bruto $500.000, descuentos 18 %",
+        410000,
+        "Sueldo bruto $500.000. Si los descuentos (AFP y salud) suman el 18 %, ¿cuál es el sueldo líquido?",
+        "Quedas con el 82 %.",
+        "500.000 · 0,82 = $410.000.",
+        [
+          [
+            90000,
+            "Esos son los descuentos. El líquido es 500.000 − 90.000 = 410.000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "IVA de $5.000",
+      950,
+      "Un producto vale $5.000 sin IVA. ¿Cuánto es el IVA (19 %)?",
+      "19 % de 5.000.",
+      "5.000 · 0,19 = $950.",
+      [
+        [
+          5950,
+          "Ese es el precio con IVA. El IVA es 950."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "binomial",
+    "since": "2026-10-18",
+    "title": "Distribución binomial",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "FG-4M OA 2 · Repetir el mismo intento",
+    "concept": "Cuando repites un intento con dos resultados (éxito o fracaso) y la misma probabilidad cada vez, la cantidad de éxitos sigue una distribución binomial. Para 3 lanzamientos de moneda, exactamente 2 caras pasa en 3 órdenes (CCS, CSC, SCC) de 8: 3/8. El promedio esperado de éxitos es n · p.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Un tirador acierta el 30 % de las veces. En 10 tiros espera acertar 10 · 0,3 = 3.",
+    "status": "published",
+    "questions": [
+      [
+        "3 monedas: exactamente 2 caras",
+        0.375,
+        "Lanzas 3 monedas. ¿Cuál es la probabilidad de exactamente 2 caras? Responde como fracción.",
+        "🪙 Casos con 2 caras: CCS, CSC, SCC. Total: 8.",
+        "3 de 8 = 3/8.",
+        [
+          [
+            0.125,
+            "Hay 3 órdenes con 2 caras, no 1: 3/8."
+          ],
+          [
+            0.6666666666666666,
+            "Los casos totales son 8: 3/8."
+          ]
+        ]
+      ],
+      [
+        "Esperanza: 10 tiros, p = 0,3",
+        3,
+        "Un jugador acierta el 30 % de sus tiros. ¿Cuántos aciertos espera en 10 tiros?",
+        "n · p.",
+        "10 · 0,3 = 3.",
+        [
+          [
+            30,
+            "0,3 · 10 = 3, no 30."
+          ]
+        ]
+      ],
+      [
+        "3 monedas: 3 caras",
+        0.125,
+        "Lanzas 3 monedas. ¿Cuál es la probabilidad de 3 caras?",
+        "Solo CCC.",
+        "(1/2)³ = 1/8.",
+        [
+          [
+            0.375,
+            "Con 3 caras hay un solo caso, CCC: 1/8."
+          ]
+        ]
+      ],
+      [
+        "Esperanza: 20 preguntas, p = 0,25",
+        5,
+        "En una prueba de 20 preguntas con 4 alternativas, alguien responde al azar. ¿Cuántas espera acertar?",
+        "p = 1/4.",
+        "20 · 0,25 = 5.",
+        [
+          [
+            4,
+            "Son 20 preguntas: 20 · 1/4 = 5."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Esperanza: 50 lanzamientos, p = 0,5",
+      25,
+      "Lanzas una moneda 50 veces. ¿Cuántas caras esperas?",
+      "50 · 0,5.",
+      "25.",
+      [
+        [
+          50,
+          "Es la mitad: 25."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "normal",
+    "since": "2026-10-18",
+    "title": "Distribución normal",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "FG-4M OA 2 · La campana",
+    "concept": "Muchas medidas (estaturas, notas) forman una campana: la mayoría cerca del promedio y pocos en los extremos. Regla útil: el 68 % está a menos de 1 desviación estándar del promedio, y el 95 %, a menos de 2. El valor z dice a cuántas desviaciones está un dato: z = (dato − promedio) ÷ desviación.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Estaturas con promedio 170 cm y desviación 10: el 68 % mide entre 160 y 180. Alguien de 190 tiene z = (190 − 170) ÷ 10 = 2.",
+    "status": "published",
+    "questions": [
+      [
+        "Promedio 170, desv. 10: % entre 160 y 180",
+        68,
+        "Las estaturas tienen promedio 170 cm y desviación estándar 10 cm. ¿Qué porcentaje mide entre 160 y 180?",
+        "🔔 Es 1 desviación a cada lado.",
+        "Entre −1 y +1 desviación está el 68 %.",
+        [
+          [
+            95,
+            "Ese es entre 2 desviaciones (150 y 190). Entre 160 y 180 hay 1: 68 %."
+          ],
+          [
+            50,
+            "La mitad está bajo el promedio, pero entre 160 y 180 hay 68 %."
+          ]
+        ]
+      ],
+      [
+        "z de 190 con promedio 170 y desv. 10",
+        2,
+        "¿Cuál es el valor z de una estatura de 190 cm (promedio 170, desviación 10)?",
+        "(190 − 170) ÷ 10.",
+        "20 ÷ 10 = 2.",
+        [
+          [
+            20,
+            "Falta dividir por la desviación: 20 ÷ 10 = 2."
+          ]
+        ]
+      ],
+      [
+        "Promedio 170, desv. 10: % entre 150 y 190",
+        95,
+        "Con promedio 170 y desviación 10, ¿qué porcentaje está entre 150 y 190?",
+        "Es 2 desviaciones a cada lado.",
+        "Entre −2 y +2 desviaciones está el 95 %.",
+        [
+          [
+            68,
+            "Ese es con 1 desviación. Con 2: 95 %."
+          ]
+        ]
+      ],
+      [
+        "% sobre el promedio",
+        50,
+        "En una distribución normal, ¿qué porcentaje de los datos está sobre el promedio?",
+        "La campana es simétrica.",
+        "La mitad: 50 %.",
+        [
+          [
+            68,
+            "La campana es simétrica: la mitad está sobre el promedio, 50 %."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "z de 60 con promedio 50 y desv. 5",
+      2,
+      "Notas con promedio 50 y desviación 5. ¿Cuál es el valor z de una nota 60?",
+      "(60 − 50) ÷ 5.",
+      "10 ÷ 5 = 2.",
+      [
+        [
+          10,
+          "Falta dividir por 5: 2."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "funcion-potencia",
+    "since": "2026-10-18",
+    "title": "Función potencia",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "FG-4M OA 3 · x elevado a un número",
+    "concept": "Una función potencia es f(x) = a · xⁿ. Si n es par (x², x⁴), f(−x) = f(x): la curva es simétrica, como un espejo en el eje y. Si n es impar (x³), f(−x) = −f(x). Con exponente negativo, como x⁻¹ = 1/x, la curva se acerca a los ejes sin tocarlos.\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "f(x) = 2x³: f(2) = 2 · 8 = 16 y f(−2) = −16. g(x) = x²: g(3) = g(−3) = 9.",
+    "status": "published",
+    "questions": [
+      [
+        "f(2) con f(x) = 2x³",
+        16,
+        "Calcula f(2).",
+        "📈 Primero la potencia: 2³ = 8.",
+        "2 · 8 = 16.",
+        [
+          [
+            12,
+            "2³ no es 2 · 3: es 8. 2 · 8 = 16."
+          ],
+          [
+            64,
+            "Primero 2³ = 8 y después por 2: 16."
+          ]
+        ]
+      ],
+      [
+        "f(−3) con f(x) = x²",
+        9,
+        "Calcula f(−3).",
+        "(−3)² = (−3) · (−3).",
+        "(−3) · (−3) = 9.",
+        [
+          [
+            -9,
+            "Menos por menos da más: 9."
+          ],
+          [
+            -6,
+            "(−3)² no es −3 · 2: es 9."
+          ]
+        ]
+      ],
+      [
+        "f(−2) con f(x) = x³",
+        -8,
+        "Calcula f(−2).",
+        "(−2) · (−2) · (−2).",
+        "4 · (−2) = −8.",
+        [
+          [
+            8,
+            "Son tres signos menos: queda negativo, −8."
+          ]
+        ]
+      ],
+      [
+        "f(4) con f(x) = 8/x",
+        2,
+        "Calcula f(4) para f(x) = 8 · x⁻¹ = 8/x.",
+        "x⁻¹ = 1/x.",
+        "8 ÷ 4 = 2.",
+        [
+          [
+            32,
+            "x⁻¹ es 1/x: 8 ÷ 4 = 2."
+          ],
+          [
+            -32,
+            "El exponente negativo da una fracción: 8 ÷ 4 = 2."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "f(3) con f(x) = x³",
+      27,
+      "Calcula f(3).",
+      "3 · 3 · 3.",
+      "27.",
+      [
+        [
+          9,
+          "x³ es tres veces: 27."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "funciones-trigonometricas",
+    "since": "2026-10-18",
+    "title": "Funciones seno y coseno",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "FG-4M OA 3 · Lo que se repite",
+    "concept": "Las funciones seno y coseno suben y bajan una y otra vez, como las mareas o una rueda de la fortuna. sen(x) va de −1 a 1. En f(x) = A · sen(x) + D, A es la amplitud (cuánto sube y baja) y D mueve la curva hacia arriba. El período es lo que tarda en repetirse: 360° para sen(x) y 180° para sen(2x).\nReferencia curricular (MINEDUC): Bases Curriculares de 3° y 4° Medio, Formación General (Decreto 193/2019).\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Una marea h(t) = 2 · sen(t) + 5: la amplitud es 2, la altura máxima 5 + 2 = 7 y la mínima 5 − 2 = 3.",
+    "status": "published",
+    "questions": [
+      [
+        "sen 90°",
+        1,
+        "¿Cuánto vale sen 90°?",
+        "🎡 Es el punto más alto de la rueda.",
+        "sen 90° = 1.",
+        [
+          [
+            90,
+            "El seno va de −1 a 1: sen 90° = 1."
+          ],
+          [
+            0,
+            "sen 0° = 0; sen 90° = 1, el punto más alto."
+          ]
+        ]
+      ],
+      [
+        "Amplitud de 3 · sen(x)",
+        3,
+        "¿Cuál es la amplitud de f(x) = 3 · sen(x)?",
+        "El número delante del seno.",
+        "Sube hasta 3 y baja hasta −3: amplitud 3.",
+        [
+          [
+            6,
+            "La amplitud es cuánto sube desde el centro: 3."
+          ]
+        ]
+      ],
+      [
+        "Máximo de 2 · sen(t) + 5",
+        7,
+        "Una marea sigue h(t) = 2 · sen(t) + 5 metros. ¿Cuál es la altura máxima?",
+        "El seno llega hasta 1.",
+        "2 · 1 + 5 = 7 m.",
+        [
+          [
+            5,
+            "Ese es el centro. Sube 2 más: 7."
+          ],
+          [
+            10,
+            "El seno vale como máximo 1, no 2,5: 2 · 1 + 5 = 7."
+          ]
+        ]
+      ],
+      [
+        "Período de sen(2x)",
+        180,
+        "¿Cuál es el período (en grados) de f(x) = sen(2x)?",
+        "El 2 hace que vaya el doble de rápido.",
+        "360° ÷ 2 = 180°.",
+        [
+          [
+            720,
+            "Al revés: va más rápido, se repite antes. 360 ÷ 2 = 180°."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Mínimo de 2 · sen(t) + 5",
+      3,
+      "Con h(t) = 2 · sen(t) + 5, ¿cuál es la altura mínima?",
+      "El seno baja hasta −1.",
+      "2 · (−1) + 5 = 3 m.",
+      [
+        [
+          5,
+          "Ese es el centro. Baja 2: 3."
+        ]
+      ]
+    ]
   }
 ];

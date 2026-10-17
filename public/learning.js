@@ -827,7 +827,7 @@ export function forStudent(text) {
     .filter((line) => !/^(Referencia curricular|Actividad original)/.test(line.trim()))
     .join("\n")
     .replace(/\s*\((?:Mineduc|MINEDUC)[^)]*\)/g, "")
-    .replace(/^\s*(?:(?:MA|LE)\w{2} OA \d{1,2}\s*(?:\/\s*)?)+·\s*/, "")
+    .replace(/^\s*(?:(?:(?:MA|LE)\w{2}|FG-\dM) OA \d{1,2}\s*(?:\/\s*)?)+·\s*/, "")
     .trim();
 }
 

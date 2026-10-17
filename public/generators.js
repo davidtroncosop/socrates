@@ -1711,6 +1711,507 @@ function galton(rng, level) {
     "ID y DI: 2 de 4 = 1/2.", [[0.25, "Al centro llegan 2 caminos (ID y DI)."]]];
 }
 
+// Lote 7: 2° Medio.
+
+function raicesSimplificar(rng, level) {
+  const inner = pick(rng, [2, 3, 5, 6, 7]);
+  const k = int(rng, 2, 6);
+  if (level === 0 || level === 2)
+    return [`√${k * k * inner} = ?√${inner}`, k, `Simplifica √${k * k * inner}. ¿Qué número va delante de √${inner}?`, `🔍 ${k * k * inner} = ${k * k} · ${inner}, y ${k * k} es un cuadrado.`,
+      `√${k * k * inner} = √${k * k} · √${inner} = ${k}√${inner}.`, [[k * k, `Sacaste el ${k * k} sin su raíz. √${k * k} = ${k}.`]]];
+  if (level === 1) {
+    const [a, m] = [pick(rng, [2, 3, 5]), int(rng, 2, 5)];
+    return [`√${a} · √${a * m * m}`, a * m, "Calcula.", `Junta las raíces: √(${a} · ${a * m * m}).`, `√${a * a * m * m} = ${a * m}.`,
+      [[a * a * m * m, "Falta la raíz."]]];
+  }
+  const [p, q] = [int(rng, 2, 4), int(rng, 1, 3)];
+  return [`√${p * p * 2} + √${q * q * 2} = ?√2`, p + q, `Simplifica y suma: √${p * p * 2} + √${q * q * 2}. ¿Qué número va delante de √2?`,
+    `√${p * p * 2} = ${p}√2 y √${q * q * 2} = ${q}√2.`, `${p}√2 + ${q}√2 = ${p + q}√2.`, [[(p * p + q * q) * 2, "No se suma adentro de la raíz. Simplifica primero."]]];
+}
+
+const ROOT = { 3: "∛", 4: "∜" };
+
+function raicesEnesimas(rng, level) {
+  if (level <= 1) {
+    const b = level === 0 ? int(rng, 2, 4) : int(rng, 3, 6);
+    const n = level === 0 ? 3 : pick(rng, b <= 4 ? [3, 4] : [3]);
+    return [`${ROOT[n]}${b ** n}`, b, `Calcula la raíz ${n === 3 ? "cúbica" : "cuarta"}.`, `🧊 ¿Qué número multiplicado ${n} veces da ${b ** n}?`,
+      `${Array(n).fill(b).join(" · ")} = ${b ** n}.`, [[b ** n / n, `No es dividir por ${n}.`]]];
+  }
+  if (level === 2) {
+    const [b, n] = pick(rng, [[4, 2], [5, 2], [6, 2], [7, 2], [9, 2], [2, 3], [3, 3], [4, 3]]);
+    return [`${b ** n}^(1/${n})`, b, `Calcula. El exponente 1/${n} es la raíz ${n === 2 ? "cuadrada" : "cúbica"}.`, `${b ** n}^(1/${n}) = ${n === 2 ? "√" : "∛"}${b ** n}.`,
+      `${n === 2 ? "√" : "∛"}${b ** n} = ${b}.`, [[b ** n / n, `No es dividir por ${n}.`]]];
+  }
+  const [b, m] = [int(rng, 2, 4), 2];
+  return [`${b ** 3}^(${m}/3)`, b ** m, "Calcula.", `Primero la raíz cúbica de ${b ** 3}; después al cuadrado.`, `∛${b ** 3} = ${b}; ${b}² = ${b * b}.`,
+    [[(b ** 3 * m) / 3, `No es ${b ** 3} · 2/3.`], [b, "Falta elevar al cuadrado."]]];
+}
+
+const SUB = (n) => String(n).replace(/\d/g, (d) => "₀₁₂₃₄₅₆₇₈₉"[d]);
+
+function logaritmos(rng, level) {
+  if (level === 1) {
+    const k = int(rng, 1, 6);
+    return [`log ${10 ** k}`, k, "Calcula. Sin base escrita, la base es 10.", `${pesos(10 ** k)} es un 1 con ${k} ceros.`, `10${sup(k)} = ${pesos(10 ** k)}, así que log ${pesos(10 ** k)} = ${k}.`,
+      [[10 ** (k - 1), "Dividiste por 10. Cuenta los ceros."]]];
+  }
+  if (level === 3 && rng() < 0.4) {
+    const b = int(rng, 2, 9);
+    return [`log${SUB(b)} 1`, 0, "Calcula.", `¿A qué exponente hay que elevar ${b} para obtener 1?`, `${b}⁰ = 1, así que log${SUB(b)} 1 = 0.`,
+      [[1, `${b}¹ = ${b}, no 1.`], [b, "El logaritmo es el exponente, no la base."]]];
+  }
+  const b = pick(rng, [2, 3, 5]);
+  const k = int(rng, 2, b === 2 ? 6 : b === 3 ? 4 : 3);
+  return [`log${SUB(b)} ${b ** k}`, k, "Calcula.", `🔁 ¿Cuántas veces multiplicas ${b} para llegar a ${b ** k}?`, `${b}${sup(k)} = ${b ** k}, así que log${SUB(b)} ${b ** k} = ${k}.`,
+    [[b ** k / b, `Dividiste por ${b}. Cuenta las veces que se multiplica.`]]];
+}
+
+function funcionCuadratica(rng, level) {
+  if (level === 0) {
+    const [x, c] = [int(rng, 2, 6), int(rng, -9, 9)];
+    return [`f(${x}) con f(x) = x² ${plus(c)}`, x * x + c, `Calcula f(${x}).`, `📈 Reemplaza x por ${x}: ${x}² ${plus(c)}.`, `${x}² = ${x * x}; ${x * x} ${plus(c)} = ${num(x * x + c)}.`,
+      [[2 * x + c, `${x}² no es ${x} · 2.`]]];
+  }
+  if (level === 1) {
+    const [h, c] = [int(rng, 1, 6), int(rng, -9, 9)];
+    return [`Vértice de x² − ${2 * h}x ${plus(c)}: ¿x?`, h, `¿En qué x está el vértice de f(x) = x² − ${2 * h}x ${plus(c)}?`, `x = −b ÷ (2a), con a = 1 y b = −${2 * h}.`,
+      `x = ${2 * h} ÷ 2 = ${h}.`, [[-h, "Cuidado con el signo: −b es positivo."], [2 * h, "Falta dividir por 2a = 2."]]];
+  }
+  if (level === 2) {
+    const [a, b, c] = [nonZero(rng, -5, 5), nonZero(rng, -9, 9), nonZero(rng, -12, 12)];
+    return [`f(x) = ${coef(a).replace("x", "x²")} ${plus(b).replace(/(\d+)$/, "$1x").replace(/^([+−]) 1x$/, "$1 x")} ${plus(c)}: corte con eje y`, c,
+      "¿En qué valor corta el eje y esta parábola?", "En el eje y, x = 0.", `f(0) = ${num(c)}.`, [[a, "Ese es a. Con x = 0 queda solo c."]]];
+  }
+  // Mientras la pelota está en el aire: t ≤ v ÷ 5.
+  const v = pick(rng, [10, 20, 30]);
+  const t = int(rng, 1, v / 5);
+  return [`Altura: h(t) = −5t² + ${v}t; h(${t})`, -5 * t * t + v * t, `Una pelota se lanza hacia arriba y su altura es h(t) = −5t² + ${v}t metros. ¿A qué altura está a los ${t} segundos?`,
+    `Reemplaza t por ${t}.`, `−5 · ${t * t} + ${v} · ${t} = ${-5 * t * t} + ${v * t} = ${-5 * t * t + v * t} m.`, [[5 * t * t + v * t, "−5 · t² es negativo."]]];
+}
+
+function ecuacionCuadratica(rng, level) {
+  if (level === 0) {
+    const r = int(rng, 2, 12);
+    return [`x² = ${r * r}, solución positiva`, r, `Resuelve x² = ${r * r}. Escribe la solución positiva.`, `🔁 ¿Qué número al cuadrado da ${r * r}?`, `x = ${r} o x = −${r}. La positiva es ${r}.`,
+      [[(r * r) / 2, "No es dividir por 2."]]];
+  }
+  if (level === 1) {
+    const [p, q] = [int(rng, 1, 9), int(rng, 1, 9)];
+    return [`(x − ${p})(x + ${q}) = 0, solución positiva`, p, "Resuelve. Escribe la solución positiva.", "Uno de los paréntesis vale 0.",
+      `x − ${p} = 0 → x = ${p}; x + ${q} = 0 → x = −${q}. La positiva es ${p}.`, [[-p, `Si x − ${p} = 0, entonces x = ${p}.`], [q, `x + ${q} = 0 da x = −${q}.`]]];
+  }
+  if (level === 2) {
+    const [p, q] = shuffle(rng, [1, 2, 3, 4, 5, 6, 7]).slice(0, 2).sort((a, b) => a - b);
+    return [`x² − ${p + q}x + ${p * q} = 0, solución mayor`, q, "Resuelve. Escribe la solución mayor.", `Busca dos números que sumen ${p + q} y multipliquen ${p * q}.`,
+      `${p} y ${q}: (x − ${p})(x − ${q}) = 0. La mayor es ${q}.`, [[p, "Esa es la menor."], [p * q, `Ese es el número sin x (${p * q}). Las soluciones son ${p} y ${q}.`]]];
+  }
+  const b = int(rng, 2, 9);
+  return [`x² + ${b}x = 0, solución distinta de 0`, -b, `Resuelve x² + ${b}x = 0. Una solución es 0; ¿cuál es la otra?`, `Saca x factor común: x(x + ${b}) = 0.`,
+    `x = 0 o x + ${b} = 0 → x = −${b}.`, [[b, "Cuidado con el signo."]]];
+}
+
+function funcionInversa(rng, level) {
+  const x = int(rng, 1, 10);
+  if (level === 0) {
+    const [a, b] = [int(rng, 2, 5), int(rng, 1, 9)];
+    const y = a * x + b;
+    return [`f(x) = ${a}x + ${b}; f⁻¹(${y})`, x, `La máquina f(x) = ${a}x + ${b} entregó ${y}. ¿Qué número entró? Es decir, calcula f⁻¹(${y}).`,
+      `⚙️ Deshaz al revés: primero resta ${b}, después divide por ${a}.`, `${y} − ${b} = ${y - b}; ${y - b} ÷ ${a} = ${x}.`, [[a * y + b, "Aplicaste f otra vez. La inversa deshace."]]];
+  }
+  if (level === 1) {
+    const b = int(rng, 2, 9);
+    return [`f(x) = x − ${b}; f⁻¹(${x})`, x + b, `Calcula f⁻¹(${x}) para f(x) = x − ${b}.`, `La inversa de restar ${b} es sumar ${b}.`, `${x} + ${b} = ${x + b}.`,
+      [[x - b, `Restaste otra vez. La inversa suma ${b}.`]]];
+  }
+  if (level === 2) {
+    const a = int(rng, 2, 6);
+    return [`f(x) = ${a}x; f⁻¹(${a * x})`, x, `Calcula f⁻¹(${a * x}) para f(x) = ${a}x.`, `La inversa de multiplicar por ${a} es dividir por ${a}.`, `${a * x} ÷ ${a} = ${x}.`,
+      [[a * a * x, "Multiplicaste. La inversa divide."]]];
+  }
+  const [b, y] = [int(rng, 1, 5), int(rng, 2, 9)];
+  return [`f(x) = x/2 + ${b}; f⁻¹(${y + b})`, 2 * y, `Calcula f⁻¹(${y + b}) para f(x) = x/2 + ${b}.`, `Primero resta ${b}, después multiplica por 2.`, `${y + b} − ${b} = ${y}; ${y} · 2 = ${2 * y}.`,
+    [[(y + b) / 2 + b, "Aplicaste f. La inversa deshace."], [2 * (y + b) - b, "Al revés: primero resta, después multiplica."]]];
+}
+
+function cambioPorcentual(rng, level) {
+  if (level === 0) {
+    const p = 1000 * int(rng, 1, 9);
+    return [`${p} · 1,1²`, cents(p * 1.21), `Un pueblo tiene ${pesos(p)} habitantes y crece 10 % cada año. ¿Cuántos tiene después de 2 años?`, `📈 ${pesos(p)} · 1,1; y otra vez · 1,1.`,
+      `${pesos(p)} → ${pesos(cents(p * 1.1))} → ${pesos(cents(p * 1.21))}.`, [[p * 1.2, "El segundo año el 10 % es del número nuevo."]]];
+  }
+  if (level === 1) {
+    const p = 10000 * int(rng, 1, 9);
+    const q = pick(rng, [10, 20, 50]);
+    const f = (100 - q) / 100;
+    return [`${p} · ${dec(f)}²`, cents(p * f * f), `Un celular de $${pesos(p)} pierde el ${q} % de su valor cada año. ¿Cuánto vale después de 2 años?`, `Cada año se multiplica por ${dec(f)}.`,
+      `${pesos(p)} → ${pesos(cents(p * f))} → ${pesos(cents(p * f * f))}.`, [[p * (1 - (2 * q) / 100), `El segundo año baja el ${q} % del valor nuevo.`]]];
+  }
+  if (level === 2) {
+    const p = 100 * int(rng, 1, 9);
+    const q = pick(rng, [10, 20, 25, 50]);
+    return [`${p} · ${dec(1 + q / 100)}`, cents(p * (1 + q / 100)), `Una planta mide ${p} mm y crece un ${q} % cada semana. ¿Cuánto mide después de 1 semana?`, `Crecer ${q} % es multiplicar por ${dec(1 + q / 100)}.`,
+      `${p} · ${dec(1 + q / 100)} = ${dec(cents(p * (1 + q / 100)))} mm.`, [[p + q, `El ${q} % de ${p} no es ${q}.`]]];
+  }
+  const [p, n] = [100 * int(rng, 1, 9), int(rng, 2, 4)];
+  return [`${p} · 2${sup(n)}`, p * 2 ** n, `Un video tiene ${p} visitas y cada día se duplican. ¿Cuántas tiene después de ${n} días?`, `Por 2, ${n} veces.`,
+    Array.from({ length: n + 1 }, (_, i) => pesos(p * 2 ** i)).join(" → ") + ".", [[p * (n + 1), "Se multiplica por 2, no se suma."]]];
+}
+
+function esfera(rng, level) {
+  if (level === 0 || level === 2) {
+    const r = level === 0 ? 3 : pick(rng, [3, 6]);
+    const v = cents((4 / 3) * PI * r ** 3);
+    return [`Esfera: radio ${r} cm, volumen`, v, "Calcula el volumen en cm³. Usa π = 3,14.", `⚽ 4/3 · 3,14 · ${r} · ${r} · ${r}.`,
+      `${r}³ = ${r ** 3}; 4/3 · ${r ** 3} = ${(4 * r ** 3) / 3}; · 3,14 = ${dec(v)} cm³.`, [[cents(PI * r * r * 4), "Esa es el área (r²). El volumen usa r³."]]];
+  }
+  const r = level === 1 ? int(rng, 1, 5) : pick(rng, [5, 10, 20]);
+  const a = cents(4 * PI * r * r);
+  return [`${level === 3 ? "Pelota" : "Esfera"}: radio ${r} cm, área`, a, level === 3 ? `¿Cuánto cuero se necesita para cubrir una pelota de radio ${r} cm? Usa π = 3,14.` : "Calcula el área de la superficie en cm². Usa π = 3,14.",
+    `4 · 3,14 · ${r} · ${r}.`, `4 · 3,14 · ${r * r} = ${dec(a)} cm².`, [[cents(4 * PI * r * 2), "r² es r · r, no r · 2."]]];
+}
+
+const TRIPLES = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15]];
+
+function trigonometria(rng, level) {
+  if (level === 3) {
+    const [h, [ang, s]] = [2 * int(rng, 2, 15), pick(rng, [[30, 0.5]])];
+    return [`Hipotenusa ${h}, sen ${ang}° = ${dec(s)}: opuesto`, h * s, `Una escalera de ${h} m forma ${ang}° con el suelo. ¿A qué altura llega? (sen ${ang}° = ${dec(s)})`,
+      "Opuesto = hipotenusa · seno.", `${h} · ${dec(s)} = ${h * s} m.`, [[h / s, "Dividiste. Opuesto = hipotenusa · seno."]]];
+  }
+  const [a, b, c] = pick(rng, TRIPLES);
+  const [name, val, hint] = [["seno", a / c, "Seno = opuesto ÷ hipotenusa."], ["coseno", b / c, "Coseno = adyacente ÷ hipotenusa."], ["tangente", a / b, "Tangente = opuesto ÷ adyacente."]][level];
+  return [`Triángulo ${a}-${b}-${c}: ${name}`, val, `En un triángulo rectángulo de catetos ${a} y ${b} e hipotenusa ${c}, ¿cuál es el ${name} del ángulo opuesto al lado ${a}? Responde como fracción o decimal.`,
+    `📐 ${hint}`, `${name[0].toUpperCase() + name.slice(1)}: ${level === 0 ? `${a}/${c}` : level === 1 ? `${b}/${c}` : `${a}/${b}`}.`,
+    [[level === 2 ? b / a : level === 0 ? b / c : a / c, "Revisa qué lado va arriba: SOH-CAH-TOA."], [level === 0 ? a / b : c / a, "Revisa qué lados usa esta razón."]]];
+}
+
+function vectores(rng, level) {
+  const [a, b, c, d] = [nonZero(rng, -6, 6), nonZero(rng, -6, 6), nonZero(rng, -6, 6), nonZero(rng, -6, 6)];
+  if (level <= 1) {
+    const askX = level === 0;
+    return [`(${num(a)}, ${num(b)}) + (${num(c)}, ${num(d)}): ¿${askX ? "x" : "y"}?`, askX ? a + c : b + d, `Suma los vectores. ¿Cuál es la componente ${askX ? "x" : "y"} del resultado?`,
+      askX ? `➡️ Suma las x: ${num(a)} + ${paren(c)}.` : `Suma las y: ${num(b)} + ${paren(d)}.`, `(${num(a + c)}, ${num(b + d)}).`,
+      [[askX ? b + d : a + c, "Esa es la otra componente."], [askX ? a + d : b + c, "Sumaste en cruz."]]];
+  }
+  if (level === 2) {
+    const [p, q, r] = pick(rng, TRIPLES);
+    return [`Módulo de (${p}, ${q})`, r, `¿Cuánto mide el vector (${p}, ${q})?`, `Pitágoras: √(${p}² + ${q}²).`, `√(${p * p} + ${q * q}) = √${r * r} = ${r}.`,
+      [[p + q, "No se suman directo: Pitágoras."], [r * r, "Falta la raíz."]]];
+  }
+  const k = int(rng, 2, 5);
+  return [`${k} · (${num(a)}, ${num(b)}): ¿y?`, k * b, `Multiplica el vector (${num(a)}, ${num(b)}) por ${k}. ¿Cuál es la componente y?`, `Multiplica cada componente por ${k}.`,
+    `${k} · (${num(a)}, ${num(b)}) = (${num(k * a)}, ${num(k * b)}).`, [[b + k, `Sumaste ${k}. Se multiplica.`], [k * a, "Esa es la x."]]];
+}
+
+function variableAleatoria(rng, level) {
+  if (level === 0 || level === 3) {
+    const n = level === 0 ? 2 : 3;
+    const k = int(rng, 0, n);
+    const w = n === 2 ? [1, 2, 1][k] : [1, 3, 3, 1][k];
+    return [`${n} monedas: P(X = ${k})`, w / 2 ** n, `Lanzas ${n} monedas y X es el número de caras. ¿Cuál es P(X = ${k})?`, `🪙 Hay ${2 ** n} casos. ¿En cuántos hay ${k} caras?`,
+      `${w} de ${2 ** n} = ${w}/${2 ** n}.`, [[1 / 2 ** n, `Hay ${w} casos con ${k} caras.`], [1 / (n + 1), "Los valores de X no son igual de probables: cuenta los casos."]]];
+  }
+  if (level === 1) {
+    const s = int(rng, 2, 12);
+    const w = 6 - Math.abs(7 - s);
+    return [`2 dados: P(suma = ${s})`, w / 36, `Lanzas 2 dados y X es la suma. ¿Cuál es P(X = ${s})? Responde como fracción.`, "Hay 36 casos. Cuenta los pares que suman.",
+      `${w} de 36 = ${w}/36.`, [[1 / 11, "Las sumas no son igual de probables. Cuenta los 36 casos."]]];
+  }
+  const faces = pick(rng, [4, 6, 8]);
+  return [`Dado de ${faces} caras: valor esperado`, (faces + 1) / 2, `¿Cuál es el valor esperado al lanzar un dado de ${faces} caras (del 1 al ${faces})?`, `Promedio de 1 a ${faces}.`,
+    `${(faces * (faces + 1)) / 2} ÷ ${faces} = ${dec((faces + 1) / 2)}.`, [[(faces * (faces + 1)) / 2, `Esa es la suma. Divide por ${faces}.`], [faces / 2, "Promedia todas las caras."]]];
+}
+
+const fact = (n) => (n <= 1 ? 1 : n * fact(n - 1));
+
+function permutaciones(rng, level) {
+  if (level === 0) {
+    const n = int(rng, 3, 6);
+    return [`${n}!`, fact(n), `¿De cuántas formas se pueden ordenar ${n} personas en una fila?`, `🔢 ${Array.from({ length: n }, (_, i) => n - i).join(" · ")}.`,
+      `${Array.from({ length: n }, (_, i) => n - i).join(" · ")} = ${fact(n)}.`, [[n * n, "Cada lugar tiene una opción menos."], [(n * (n + 1)) / 2, "Sumaste. Se multiplica."]]];
+  }
+  if (level === 1) {
+    const n = int(rng, 4, 8);
+    return [`Podio de 3 entre ${n}`, n * (n - 1) * (n - 2), `En una carrera hay ${n} corredores. ¿De cuántas formas puede quedar el podio (1°, 2° y 3°)?`, `${n} · ${n - 1} · ${n - 2}.`,
+      `${n} · ${n - 1} · ${n - 2} = ${n * (n - 1) * (n - 2)}.`, [[n ** 3, "Un corredor no puede repetir lugar."], [(n * (n - 1) * (n - 2)) / 6, "En el podio importa el orden."]]];
+  }
+  if (level === 2) {
+    const n = int(rng, 4, 9);
+    return [`Elegir 2 de ${n}`, (n * (n - 1)) / 2, `¿De cuántas formas puedes elegir 2 amigos de ${n} para un equipo (el orden no importa)?`, `${n} · ${n - 1}, pero cada pareja se contó 2 veces.`,
+      `${n * (n - 1)} ÷ 2 = ${(n * (n - 1)) / 2}.`, [[n * (n - 1), "Cada pareja se contó dos veces: divide por 2."]]];
+  }
+  const n = int(rng, 3, 5);
+  return [`P(Ana primera de ${n})`, 1 / n, `${n} amigos, entre ellos Ana, se ordenan al azar. ¿Cuál es la probabilidad de que Ana quede primera?`, `Órdenes: ${n}!. ¿En cuántos Ana va primera?`,
+    `${fact(n - 1)} de ${fact(n)} = 1/${n}.`, [[1 / fact(n), `Ana va primera en ${fact(n - 1)} órdenes, no en 1.`]]];
+}
+
+// Lote 8: 3° Medio.
+
+// «3 + 2i», «3 − i», «−2 + 5i».
+const cx = (a, b) => `${num(a)} ${b < 0 ? "−" : "+"} ${Math.abs(b) === 1 ? "" : Math.abs(b)}i`;
+
+function complejos(rng, level) {
+  const [a, b, c, d] = [int(rng, 1, 9), int(rng, 1, 9), int(rng, 1, 9), int(rng, 1, 9)];
+  if (level === 0)
+    return [`(${cx(a, b)}) + (${cx(c, d)}): parte real`, a + c, "Suma los complejos. ¿Cuál es la parte real del resultado?", `🍎 Junta los números sin i: ${a} + ${c}.`,
+      `${a + c} + ${b + d}i. La parte real es ${a + c}.`, [[b + d, "Esa es la parte imaginaria."], [a + b + c + d, "Junta reales con reales, no todo."]]];
+  if (level === 1) {
+    const [p, q] = [a + c, b + d];
+    return [`(${cx(p, q)}) − (${cx(c, d)}): parte imaginaria`, b, "Resta los complejos. ¿Cuál es la parte imaginaria del resultado?", `Resta los que tienen i: ${q} − ${d}.`,
+      `${cx(a, b)}. La parte imaginaria es ${b}.`, [[a, "Esa es la parte real."], [q + d, `Es resta, no suma: ${q} − ${d}.`]]];
+  }
+  if (level === 2) {
+    const k = pick(rng, [2, 4]);
+    return [`i${sup(k)}`, k === 2 ? -1 : 1, `¿Cuánto vale i${sup(k)}? (Recuerda: i² = −1)`, "Usa i² = −1.", k === 2 ? "i² = −1." : "i⁴ = i² · i² = (−1) · (−1) = 1.",
+      [[k === 2 ? 1 : -1, "Revisa los signos: i² = −1."]]];
+  }
+  const [p, q, r] = pick(rng, TRIPLES);
+  return [`Módulo de ${p} + ${q}i`, r, `¿Cuál es el módulo de ${p} + ${q}i (su distancia al 0)?`, `√(${p}² + ${q}²).`, `√(${p * p} + ${q * q}) = ${r}.`,
+    [[p + q, "No se suman directo: Pitágoras."], [r * r, "Falta la raíz."]]];
+}
+
+function complejosMult(rng, level) {
+  const [a, b, c, d] = [int(rng, 1, 5), int(rng, 1, 4), int(rng, 1, 5), int(rng, 1, 4)];
+  if (level <= 1) {
+    const [re, im] = [a * c - b * d, a * d + b * c];
+    const real = level === 0;
+    return [`(${cx(a, b)})(${cx(c, d)}): parte ${real ? "real" : "imaginaria"}`, real ? re : im, `Multiplica. ¿Cuál es la parte ${real ? "real" : "imaginaria"} del resultado?`,
+      `🔁 ${a * c} + ${a * d}i + ${b * c}i + ${b * d}i², y i² = −1.`, `${a * c} − ${b * d} + ${im}i = ${cx(re, im)}.`,
+      real ? [[a * c, `Falta el i² = −1: ${a * c} − ${b * d}.`], [a * c + b * d, "i² es −1, no +1."]] : [[a * d, "Hay dos términos con i: súmalos."]]];
+  }
+  if (level === 2)
+    return [`Conjugado de ${cx(a, b)}: parte imaginaria`, -b, `¿Cuál es la parte imaginaria del conjugado de ${cx(a, b)}?`, "El conjugado cambia el signo de la parte imaginaria.",
+      `Conjugado: ${cx(a, -b)}. La parte imaginaria es −${b}.`, [[b, "El conjugado cambia el signo."], [-a, "Solo cambia la parte imaginaria."]]];
+  return [`(${cx(a, b)})(${cx(a, -b)})`, a * a + b * b, "Multiplica un complejo por su conjugado.", `${a * a} − ${b * b}i², y i² = −1.`, `${a * a} + ${b * b} = ${a * a + b * b}.`,
+    [[a * a - b * b, "i² = −1, así que −b²i² es positivo."]]];
+}
+
+function dispersion(rng, level) {
+  if (level === 0) {
+    const data = shuffle(rng, Array.from({ length: 20 }, (_, i) => i + 1)).slice(0, 5);
+    const [mx, mn] = [Math.max(...data), Math.min(...data)];
+    return [`Rango de ${data.join(", ")}`, mx - mn, "Calcula el rango.", "📏 Mayor menos menor.", `${mx} − ${mn} = ${mx - mn}.`, [[mx + mn, "Sumaste. Es la resta."]]];
+  }
+  if (level === 1) {
+    // Datos simétricos alrededor del promedio: varianza entera.
+    const m = int(rng, 4, 9);
+    const devs = pick(rng, [[-2, 2, -1, 1], [-3, 3, -1, 1], [-2, 2, 0, 0], [-3, 3, -2, 2], [-1, 1, -1, 1]]);
+    const data = devs.map((d) => m + d).sort((a, b) => a - b);
+    const v = devs.reduce((s, d) => s + d * d, 0) / devs.length;
+    return [`Varianza de ${data.join(", ")}`, v, `El promedio es ${m}. Calcula la varianza: el promedio de las diferencias al cuadrado.`, `Diferencias: ${devs.map(num).join(", ")}. Elévalas al cuadrado.`,
+      `${devs.map((d) => d * d).join(" + ")} = ${v * 4}; ${v * 4} ÷ 4 = ${dec(v)}.`, [[v * 4, "Esa es la suma. Divide por los 4 datos."], [0, "Sin elevar al cuadrado, las diferencias se cancelan."]]];
+  }
+  if (level === 2) {
+    const sd = int(rng, 1, 9);
+    return [`Desviación estándar con varianza ${sd * sd}`, sd, `Si la varianza es ${sd * sd}, ¿cuál es la desviación estándar?`, "Es la raíz de la varianza.", `√${sd * sd} = ${sd}.`,
+      [[sd ** 4, "Elevaste al cuadrado. Es la raíz."], [(sd * sd) / 2, "No es la mitad: es la raíz."]]];
+  }
+  const [lo, hi] = [int(rng, 1, 3), int(rng, 4, 8)];
+  const aFirst = rng() < 0.5;
+  const [sa, sb] = aFirst ? [lo, hi] : [hi, lo];
+  return [`Curso A: desviación ${sa}; curso B: desviación ${sb}`, aFirst ? 1 : 2, `Dos cursos tienen el mismo promedio. El A tiene desviación estándar ${sa} y el B, ${sb}. ¿Cuál es más parejo? Responde 1 si es el A o 2 si es el B.`,
+    "Menos desviación = datos más juntos.", `El ${aFirst ? "A" : "B"} (desviación ${lo}): sus datos están más cerca del promedio.`, [[aFirst ? 2 : 1, "Más desviación significa más repartido."]]];
+}
+
+function probabilidadCondicional(rng, level) {
+  if (level === 0) {
+    const total = int(rng, 6, 20);
+    const both = int(rng, 1, total - 1);
+    return [`Fútbol: ${total}; de ellos mujeres: ${both}`, both / total, `En un curso, ${total} estudiantes juegan fútbol y ${both} de ellos son mujeres. Si eliges a alguien que juega fútbol, ¿cuál es la probabilidad de que sea mujer? Responde como fracción.`,
+      `🔍 Mira solo a los que juegan fútbol: ${total}.`, `${both} ÷ ${total} = ${both}/${total}.`, [[both / 40, "Dividiste por todo el curso. El total es solo los que juegan."]]];
+  }
+  if (level === 1) {
+    const [cond, cases, face] = pick(rng, [["par", [2, 4, 6], 6], ["par", [2, 4, 6], 4], ["impar", [1, 3, 5], 5], ["mayor que 3", [4, 5, 6], 6], ["menor que 4", [1, 2, 3], 2]]);
+    return [`Dado: ${face} sabiendo que salió ${cond}`, 1 / cases.length, `Lanzas un dado y te dicen que salió ${cond}. ¿Cuál es la probabilidad de que sea ${face}?`,
+      `Ahora solo quedan ${cases.join(", ")}.`, `1 de ${cases.length}: 1/${cases.length}.`, [[1 / 6, "Ya sabes algo: solo quedan esos casos."]]];
+  }
+  if (level === 2) {
+    // Totales con decimales exactos.
+    const n = pick(rng, [10, 20, 25, 50, 100]);
+    const k = int(rng, 1, n / 5);
+    return [`Tabla: ${n} vacunados, ${k} enfermos`, k / n, `De ${n} personas vacunadas, ${k} se enfermaron. ¿Cuál es la probabilidad de enfermarse sabiendo que se vacunó?`, "Divide por los vacunados.",
+      `${k} ÷ ${n} = ${dec(k / n)}.`, [[n / k, "Dividiste al revés."]]];
+  }
+  const [r, a] = [int(rng, 2, 4), int(rng, 1, 4)];
+  return [`Fichas: ${r} rojas y ${a} azules, sin devolver`, (r - 1) / (r + a - 1), `Una caja tiene ${r} fichas rojas y ${a} azules. Sacas una roja y no la devuelves. ¿Cuál es la probabilidad de que la segunda sea roja? Responde como fracción.`,
+    `Quedan ${r + a - 1} fichas: ¿cuántas rojas?`, `Quedan ${r - 1} rojas de ${r + a - 1}: ${r - 1}/${r + a - 1}.`, [[r / (r + a), "No la devolviste: hay una roja menos y una ficha menos."]]];
+}
+
+function modelosExpLog(rng, level) {
+  if (level === 0) {
+    const [start, n] = [pick(rng, [50, 100, 200, 300]), int(rng, 2, 5)];
+    return [`${start} → ${start * 2 ** n} duplicando`, n, `Una colonia de ${start} bacterias se duplica cada hora. ¿En cuántas horas llega a ${pesos(start * 2 ** n)}?`,
+      `📈 ${pesos(start * 2 ** n)} ÷ ${start} = ${2 ** n}. ¿Cuántas veces duplicas para llegar a ${2 ** n}?`, `2${sup(n)} = ${2 ** n}: ${n} horas.`,
+      [[2 ** (n - 1), `Dividiste ${2 ** n} ÷ 2. Cuenta las duplicaciones.`]]];
+  }
+  if (level === 1) {
+    const [a, b, t] = [pick(rng, [10, 20, 50, 100]), int(rng, 2, 4), int(rng, 2, 3)];
+    return [`f(t) = ${a} · ${b}ᵗ; f(${t})`, a * b ** t, `Una población sigue f(t) = ${a} · ${b}ᵗ. ¿Cuánto vale después de ${t} períodos?`, `${b}${sup(t)} = ${b ** t}.`,
+      `${a} · ${b ** t} = ${pesos(a * b ** t)}.`, [[a * b * t, `${b}${sup(t)} no es ${b} · ${t}.`], [(a * b) ** t, "Primero la potencia y después por " + a + "."]]];
+  }
+  if (level === 2) {
+    const [m1, d] = [int(rng, 3, 6), int(rng, 1, 3)];
+    return [`Richter: magnitud ${m1 + d} vs ${m1}`, 10 ** d, `En la escala de Richter, cada punto multiplica la amplitud por 10. ¿Cuántas veces mayor es la amplitud de un sismo de ${m1 + d} que uno de ${m1}?`,
+      `Son ${d} punto${d > 1 ? "s" : ""}: ${Array(d).fill(10).join(" · ")}.`, `10${sup(d)} = ${pesos(10 ** d)} veces.`, [[10 * d, "Se multiplica por 10 en cada punto, no se suma."]].filter(([v]) => v !== 10 ** d)];
+  }
+  const k = int(rng, 2, 9);
+  return [`pH con [H⁺] = 10⁻${sup(k)}`, k, `El pH es −log[H⁺]. Si [H⁺] = 10${sup(-k)}, ¿cuál es el pH?`, `log 10${sup(-k)} = −${k}.`, `pH = −(−${k}) = ${k}.`,
+    [[-k, "El pH lleva un signo menos delante."]]];
+}
+
+function circunferenciaAngulos(rng, level) {
+  if (level === 0) {
+    const c = 2 * int(rng, 15, 85);
+    return [`Del centro ${c}°: inscrito`, c / 2, `Un ángulo del centro mide ${c}°. ¿Cuánto mide un ángulo inscrito que abarca el mismo arco?`, "⭕ El inscrito es la mitad del del centro.",
+      `${c} ÷ 2 = ${c / 2}°.`, [[c * 2, "Al revés: el inscrito es la mitad."]]];
+  }
+  if (level === 1) {
+    const i = int(rng, 15, 85);
+    return [`Inscrito ${i}°: del centro`, 2 * i, `Un ángulo inscrito mide ${i}°. ¿Cuánto mide el ángulo del centro que abarca el mismo arco?`, "El del centro es el doble.",
+      `${i} · 2 = ${2 * i}°.`, [[i / 2, "Al revés: el del centro es el doble."]]];
+  }
+  if (level === 2)
+    return ["Inscrito en un diámetro", 90, "Un ángulo inscrito abarca un diámetro (media circunferencia). ¿Cuánto mide?", "El ángulo del centro de un diámetro es 180°.",
+      "180 ÷ 2 = 90°.", [[180, "Ese es el del centro. El inscrito es la mitad."]]];
+  const [a, x] = [int(rng, 2, 9), int(rng, 2, 9)];
+  const options = [2, 3, 4, 6].filter((v) => (v * x) % a === 0 && v !== a);
+  if (!options.length) return circunferenciaAngulos(rng, level);
+  const c = pick(rng, options);
+  const b = (c * x) / a;
+  if (b === x || b === c) return circunferenciaAngulos(rng, level);
+  return [`Cuerdas: ${a} · ${b} = ${c} · x`, (a * b) / c, `Dos cuerdas se cortan. Una queda en trozos de ${a} y ${b}; la otra en trozos de ${c} y x. ¿Cuánto mide x?`, `${a} · ${b} = ${c} · x.`,
+    `${a * b} = ${c}x → x = ${(a * b) / c}.`, [[a + b - c, "No se suma: los productos son iguales."], [a * b, `Ese es el producto. Divide por ${c}.`]]];
+}
+
+// Lote 9: 4° Medio.
+
+function interes(rng, level) {
+  const P = 50000 * int(rng, 1, 8);
+  if (level === 0 || level === 2) {
+    const [r, t] = [int(rng, 2, 8), int(rng, 2, 5)];
+    const i = (P * r * t) / 100;
+    if (level === 0)
+      return [`Simple: $${pesos(P)} al ${r} % por ${t} años`, i, `Depositas $${pesos(P)} al ${r} % de interés simple anual. ¿Cuánto interés ganas en ${t} años?`,
+        `💰 Cada año: ${r} % de ${pesos(P)} = ${pesos((P * r) / 100)}.`, `${pesos((P * r) / 100)} · ${t} = $${pesos(i)}.`, [[(P * r) / 100, "Ese es un año."], [P + i, "Ese es el total. Pide solo el interés."]]];
+    return [`Simple: $${pesos(P)} al ${r} % por ${t} años, total`, P + i, `Depositas $${pesos(P)} al ${r} % de interés simple anual. ¿Cuánto tienes en total después de ${t} años?`,
+      `Interés por año: ${pesos((P * r) / 100)}.`, `${pesos(i)} de interés; ${pesos(P)} + ${pesos(i)} = $${pesos(P + i)}.`, [[i, "Ese es solo el interés. Súmale el depósito."]]];
+  }
+  const r = pick(rng, [10, 20]);
+  const f = 1 + r / 100;
+  return [`Compuesto: $${pesos(P)} al ${r} % por 2 años`, cents(P * f * f), level === 1 ? `Depositas $${pesos(P)} al ${r} % de interés compuesto anual. ¿Cuánto tienes después de 2 años?` : `Un préstamo de $${pesos(P)} cobra ${r} % de interés compuesto anual y no se paga nada en 2 años. ¿Cuánto se debe?`,
+    `Cada año se multiplica por ${dec(f)}.`, `${pesos(P)} → ${pesos(cents(P * f))} → ${pesos(cents(P * f * f))}.`, [[P * (1 + (2 * r) / 100), "Eso es interés simple. En el compuesto, el segundo año el interés es sobre el monto nuevo."]]];
+}
+
+function credito(rng, level) {
+  if (level === 2) {
+    const [a, b] = shuffle(rng, [18, 22, 25, 28, 32, 35, 40]).slice(0, 2);
+    return [`CAE ${a} % vs ${b} %: ¿cuál conviene?`, Math.min(a, b), `Dos créditos iguales tienen CAE de ${a} % y ${b} %. Escribe la CAE del que conviene.`, "Menor CAE, crédito más barato.",
+      `Conviene el de ${Math.min(a, b)} %.`, [[Math.max(a, b), "Una CAE mayor cuesta más."]]];
+  }
+  const n = pick(rng, [6, 10, 12, 24]);
+  const loan = 10000 * int(rng, 5, 30);
+  const extra = loan * pick(rng, [0.1, 0.2, 0.25, 0.3]);
+  const cuota = (loan + extra) / n;
+  if (!Number.isInteger(cuota)) return credito(rng, level);
+  if (level === 1)
+    return [`Costo $${pesos(extra)} de $${pesos(loan)}: %`, (extra * 100) / loan, `Si un crédito de $${pesos(loan)} costó $${pesos(extra)}, ¿qué porcentaje de lo prestado pagaste de más?`,
+      `${pesos(extra)} de ${pesos(loan)}.`, `${pesos(extra)} ÷ ${pesos(loan)} = ${dec(extra / loan)} = ${(extra * 100) / loan} %.`, [[extra / loan, "Pásalo a porcentaje: por 100."]]];
+  return [`${n} cuotas de $${pesos(cuota)} por $${pesos(loan)}`, extra, level === 3 ? `Una tienda vende algo de $${pesos(loan)} en ${n} cuotas de $${pesos(cuota)}. ¿Cuánto pagas de más?` : `Te prestan $${pesos(loan)} y pagas ${n} cuotas de $${pesos(cuota)}. ¿Cuánto te costó el crédito?`,
+    `💳 Total pagado: ${n} · ${pesos(cuota)}. Réstale lo prestado.`, `${pesos(loan + extra)} − ${pesos(loan)} = $${pesos(extra)}.`, [[loan + extra, "Eso es todo lo pagado. El costo es lo que pagaste de más."]]];
+}
+
+function sueldoImpuestos(rng, level) {
+  if (level <= 1) {
+    const neto = 1000 * int(rng, 2, 50);
+    const iva = (neto * 19) / 100;
+    if (level === 0)
+      return [`IVA de $${pesos(neto)}`, iva, `Un producto vale $${pesos(neto)} sin IVA. ¿Cuánto es el IVA (19 %)?`, `🧾 19 % de ${pesos(neto)}.`, `${pesos(neto)} · 0,19 = $${pesos(iva)}.`,
+        [[neto + iva, "Ese es el precio con IVA. Pide solo el IVA."], [iva / 10, `19 % de ${pesos(neto)} es ${pesos(iva)}.`]]];
+    return [`Precio con IVA de $${pesos(neto)} neto`, neto + iva, `Un producto vale $${pesos(neto)} neto. ¿Cuál es el precio final con IVA?`, "Multiplica por 1,19.", `${pesos(neto)} · 1,19 = $${pesos(neto + iva)}.`,
+      [[iva, "Ese es solo el IVA. Súmalo."]]];
+  }
+  const bruto = 50000 * int(rng, 8, 30);
+  if (level === 2)
+    return [`Salud 7 % de $${pesos(bruto)}`, (bruto * 7) / 100, `Con un sueldo bruto de $${pesos(bruto)}, ¿cuánto se descuenta para salud (7 %)?`, `7 % de ${pesos(bruto)}.`, `${pesos(bruto)} · 0,07 = $${pesos((bruto * 7) / 100)}.`,
+      [[(bruto * 7) / 1000, `7 % de ${pesos(bruto)} es ${pesos((bruto * 7) / 100)}.`]]];
+  const d = pick(rng, [17, 18, 19, 20]);
+  return [`Bruto $${pesos(bruto)}, descuentos ${d} %`, (bruto * (100 - d)) / 100, `Sueldo bruto $${pesos(bruto)}. Si los descuentos (AFP y salud) suman el ${d} %, ¿cuál es el sueldo líquido?`, `Quedas con el ${100 - d} %.`,
+    `${pesos(bruto)} · ${dec((100 - d) / 100)} = $${pesos((bruto * (100 - d)) / 100)}.`, [[(bruto * d) / 100, "Esos son los descuentos. El líquido es lo que queda."]]];
+}
+
+function binomial(rng, level) {
+  if (level === 0 || level === 2) {
+    const n = level === 0 ? 3 : int(rng, 2, 4);
+    const k = level === 0 ? 2 : n;
+    const ways = fact(n) / (fact(k) * fact(n - k));
+    return [`${n} monedas: ${level === 0 ? "exactamente 2 caras" : `${n} caras`}`, ways / 2 ** n, `Lanzas ${n} monedas. ¿Cuál es la probabilidad de ${level === 0 ? "exactamente 2 caras" : `${n} caras`}? Responde como fracción.`,
+      `🪙 Cuenta los órdenes con ${k} caras. Total: ${2 ** n}.`, `${ways} de ${2 ** n} = ${ways}/${2 ** n}.`, level === 0 ? [[1 / 8, "Hay 3 órdenes con 2 caras (CCS, CSC, SCC), no 1."]] : [[0.5, `Cada moneda es 1/2, pero son ${n}: (1/2)${sup(n)}.`]]];
+  }
+  const [n, p] = level === 1 ? [10 * int(rng, 1, 5), pick(rng, [0.1, 0.2, 0.3, 0.4])] : [4 * int(rng, 3, 10), 0.25];
+  return [`Esperanza: ${n} ${level === 1 ? "tiros" : "preguntas"}, p = ${dec(p)}`, cents(n * p), level === 1 ? `Un jugador acierta el ${Math.round(p * 100)} % de sus tiros. ¿Cuántos aciertos espera en ${n} tiros?` : `En una prueba de ${n} preguntas con 4 alternativas, alguien responde al azar. ¿Cuántas espera acertar?`,
+    "n · p.", `${n} · ${dec(p)} = ${cents(n * p)}.`, [[n * p * 10, `${dec(p)} · ${n} = ${cents(n * p)}.`]]];
+}
+
+function normal(rng, level) {
+  const [mu, sd] = pick(rng, [[170, 10], [50, 5], [100, 15], [60, 8]]);
+  if (level === 0 || level === 2) {
+    const k = level === 0 ? 1 : 2;
+    return [`Promedio ${mu}, desv. ${sd}: % entre ${mu - k * sd} y ${mu + k * sd}`, k === 1 ? 68 : 95, `Una medida tiene promedio ${mu} y desviación estándar ${sd}. ¿Qué porcentaje está entre ${mu - k * sd} y ${mu + k * sd}?`,
+      `🔔 Es ${k} desviación${k > 1 ? "es" : ""} a cada lado.`, `Entre −${k} y +${k} desviaciones está el ${k === 1 ? 68 : 95} %.`, [[k === 1 ? 95 : 68, "Cuenta cuántas desviaciones hay a cada lado."]]];
+  }
+  if (level === 1) {
+    const z = pick(rng, [-2, -1, 1, 2, 3]);
+    return [`z de ${mu + z * sd} con promedio ${mu} y desv. ${sd}`, z, `¿Cuál es el valor z de ${mu + z * sd} (promedio ${mu}, desviación ${sd})?`, `(${mu + z * sd} − ${mu}) ÷ ${sd}.`,
+      `${num(z * sd)} ÷ ${sd} = ${num(z)}.`, [[z * sd, `Falta dividir por la desviación (${sd}).`]]];
+  }
+  return ["% sobre el promedio", 50, "En una distribución normal, ¿qué porcentaje de los datos está sobre el promedio?", "La campana es simétrica.", "La mitad: 50 %.",
+    [[68, "La campana es simétrica: la mitad está sobre el promedio."]]];
+}
+
+function funcionPotencia(rng, level) {
+  if (level === 0) {
+    const [a, x] = [int(rng, 2, 5), int(rng, 2, 3)];
+    return [`f(${x}) con f(x) = ${a}x³`, a * x ** 3, `Calcula f(${x}).`, `📈 Primero la potencia: ${x}³ = ${x ** 3}.`, `${a} · ${x ** 3} = ${a * x ** 3}.`,
+      [[a * x * 3, `${x}³ no es ${x} · 3.`], [(a * x) ** 3, `Primero ${x}³ y después por ${a}.`]]];
+  }
+  if (level === 1) {
+    const x = int(rng, 2, 9);
+    return [`f(−${x}) con f(x) = x²`, x * x, `Calcula f(−${x}).`, `(−${x})² = (−${x}) · (−${x}).`, `(−${x}) · (−${x}) = ${x * x}.`,
+      [[-x * x, "Menos por menos da más."], [-2 * x, `(−${x})² no es −${x} · 2.`]]];
+  }
+  if (level === 2) {
+    const x = int(rng, 2, 4);
+    return [`f(−${x}) con f(x) = x³`, -(x ** 3), `Calcula f(−${x}).`, `(−${x}) · (−${x}) · (−${x}).`, `${x * x} · (−${x}) = −${x ** 3}.`,
+      [[x ** 3, "Son tres signos menos: queda negativo."]]];
+  }
+  const [x, k] = [int(rng, 2, 6), int(rng, 2, 6)];
+  return [`f(${x}) con f(x) = ${x * k}/x`, k, `Calcula f(${x}) para f(x) = ${x * k} · x⁻¹ = ${x * k}/x.`, "x⁻¹ = 1/x.", `${x * k} ÷ ${x} = ${k}.`,
+    [[x * x * k, "x⁻¹ es 1/x: divide."]]];
+}
+
+function funcionesTrigonometricas(rng, level) {
+  if (level === 0) {
+    const [ang, v, name] = pick(rng, [[90, 1, "sen"], [0, 0, "sen"], [270, -1, "sen"], [0, 1, "cos"], [180, -1, "cos"], [90, 0, "cos"]]);
+    return [`${name} ${ang}°`, v, `¿Cuánto vale ${name} ${ang}°?`, "🎡 Piensa en la rueda: el seno es la altura y el coseno, el avance horizontal.", `${name} ${ang}° = ${num(v)}.`,
+      [[ang, "El seno y el coseno van de −1 a 1."]]];
+  }
+  if (level === 1) {
+    const A = int(rng, 2, 9);
+    return [`Amplitud de ${A} · sen(x)`, A, `¿Cuál es la amplitud de f(x) = ${A} · sen(x)?`, "El número delante del seno.", `Sube hasta ${A} y baja hasta −${A}: amplitud ${A}.`,
+      [[2 * A, "La amplitud es cuánto sube desde el centro."]]];
+  }
+  if (level === 2) {
+    const [A, D] = [int(rng, 2, 4), int(rng, 5, 9)];
+    const max = rng() < 0.5;
+    return [`${max ? "Máximo" : "Mínimo"} de ${A} · sen(t) + ${D}`, max ? D + A : D - A, `Una marea sigue h(t) = ${A} · sen(t) + ${D} metros. ¿Cuál es la altura ${max ? "máxima" : "mínima"}?`,
+      `El seno ${max ? "llega hasta 1" : "baja hasta −1"}.`, `${A} · ${max ? 1 : -1} + ${D} = ${max ? D + A : D - A} m.`, [[D, "Ese es el centro."]]];
+  }
+  const b = pick(rng, [2, 3, 4]);
+  return [`Período de sen(${b}x)`, 360 / b, `¿Cuál es el período (en grados) de f(x) = sen(${b}x)?`, `El ${b} hace que vaya ${b} veces más rápido.`, `360° ÷ ${b} = ${360 / b}°.`,
+    [[360 * b, "Al revés: va más rápido, se repite antes."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -1779,6 +2280,31 @@ export const generators = {
   "doble-entrada": dobleEntrada,
   "reglas-probabilidad": reglasProbabilidad,
   galton,
+  "raices-simplificar": raicesSimplificar,
+  "raices-enesimas": raicesEnesimas,
+  logaritmos,
+  "funcion-cuadratica": funcionCuadratica,
+  "ecuacion-cuadratica": ecuacionCuadratica,
+  "funcion-inversa": funcionInversa,
+  "cambio-porcentual": cambioPorcentual,
+  esfera,
+  trigonometria,
+  vectores,
+  "variable-aleatoria": variableAleatoria,
+  permutaciones,
+  complejos,
+  "complejos-mult": complejosMult,
+  dispersion,
+  "probabilidad-condicional": probabilidadCondicional,
+  "modelos-exp-log": modelosExpLog,
+  "circunferencia-angulos": circunferenciaAngulos,
+  interes,
+  credito,
+  "sueldo-impuestos": sueldoImpuestos,
+  binomial,
+  normal,
+  "funcion-potencia": funcionPotencia,
+  "funciones-trigonometricas": funcionesTrigonometricas,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);
