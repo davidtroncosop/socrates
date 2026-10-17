@@ -2524,6 +2524,274 @@ function integrales(rng, level) {
     `${v} · ${t} = ${v * t} km.`, [[v + t, "Es un área: se multiplica."], [v / t, "Multiplica, no dividas."]]];
 }
 
+// Lote 12: bases de 3° a 5° Básico y problemas de la vida diaria.
+
+function baseMultDosCifras(rng, level) {
+  const a = int(rng, 11, level < 2 ? 25 : 45);
+  const [t, u] = [int(rng, 1, level < 2 ? 2 : 4), int(rng, 1, 9)];
+  const b = 10 * t + u;
+  const [p1, p2] = [a * 10 * t, a * u];
+  if (level === 3)
+    return [`Cajas: ${a} · ${b}`, a * b, `Hay ${a} cajas con ${b} lápices cada una. ¿Cuántos lápices hay?`, `${a} · ${10 * t} y ${a} · ${u}.`, `${p1} + ${p2} = ${a * b} lápices.`,
+      [[a + b, "Sumaste. Son grupos iguales: se multiplica."], [p1, `Falta ${a} · ${u} = ${p2}.`]]];
+  return [`${a} · ${b}`, a * b, "Multiplica por partes.", `🧱 Separa ${b} en ${10 * t} y ${u}: ${a} · ${10 * t} y ${a} · ${u}.`, `${a} · ${10 * t} = ${p1}; ${a} · ${u} = ${p2}; ${p1} + ${p2} = ${a * b}.`,
+    [[p2, `Multiplicaste solo por ${u}. Falta ${a} · ${10 * t}.`], [p1, `Falta ${a} · ${u} = ${p2}.`], [a + b, "Sumaste. Es multiplicar."]]];
+}
+
+function baseDivisionLarga(rng, level) {
+  if (level === 3) {
+    const [d, q] = [int(rng, 3, 9), int(rng, 20, 99)];
+    const rest = int(rng, 1, d - 1);
+    const n = d * q + rest;
+    return [`Resto de ${n} ÷ ${d}`, rest, `Hay ${n} caramelos para repartir en bolsas de ${d}. ¿Cuántos sobran?`, `${n} ÷ ${d}: ¿cuántas bolsas completas y cuánto sobra?`,
+      `${d} · ${q} = ${d * q}, sobran ${rest}.`, [[q, "Esas son las bolsas. Lo que sobra es el resto."]]];
+  }
+  const d = int(rng, 2, 9);
+  const q = level === 2 ? 100 * int(rng, 1, 9) + int(rng, 1, 9) : int(rng, 112, Math.floor(999 / d));
+  const n = d * q;
+  if (n > 999) return baseDivisionLarga(rng, level);
+  return [`${n} ÷ ${d}`, q, "Divide paso a paso.", `📦 Reparte de izquierda a derecha: primero las centenas.`, `${n} ÷ ${d} = ${q}. Comprueba: ${q} · ${d} = ${n}.`,
+    level === 2 ? [[Number(String(q).replace("0", "")), "Cuando no alcanza, se escribe un 0 en el resultado."]] : [[q - 10, "Revisa el paso de las decenas: lo que sobra se junta con la cifra siguiente."]]];
+}
+
+function baseRedondeo(rng, level) {
+  if (level <= 1) {
+    const tens = int(rng, 1, 9);
+    const u = level === 0 ? int(rng, 5, 9) : int(rng, 1, 4);
+    const n = tens * 10 + u;
+    const r = Math.round(n / 10) * 10;
+    return [`${n} a la decena`, r, "Redondea a la decena.", `🎯 Mira la unidad: ${u}. ¿Es 5 o más?`, `${u} ${u >= 5 ? "es 5 o más: sube" : "es menos de 5: se queda"}: ${r}.`,
+      [[u >= 5 ? r - 10 : r + 10, u >= 5 ? "Con 5 o más se sube." : "Con menos de 5 se queda."]]];
+  }
+  if (level === 2) {
+    const n = int(rng, 101, 949);
+    const r = Math.round(n / 100) * 100;
+    return [`${n} a la centena`, r, "Redondea a la centena.", `Mira la decena: ${Math.floor(n / 10) % 10}.`, `${n} → ${r}.`,
+      [[Math.round(n / 10) * 10, "Eso es a la decena."], [r === Math.floor(n / 100) * 100 ? r + 100 : r - 100, "Revisa la cifra de las decenas."]]];
+  }
+  const [a, b] = [100 * int(rng, 1, 5) + pick(rng, [-3, -2, -1, 1, 2, 3]), 100 * int(rng, 1, 4) + pick(rng, [-2, -1, 1, 2, 4])];
+  const est = Math.round(a / 100) * 100 + Math.round(b / 100) * 100;
+  return [`Estimar ${a} + ${b}`, est, "Estima la suma redondeando a la centena.", `${a} ≈ ${Math.round(a / 100) * 100} y ${b} ≈ ${Math.round(b / 100) * 100}.`, `${est}.`,
+    [[a + b, "Esa es la suma exacta. La estimación usa números redondos."]]];
+}
+
+function baseLongitud(rng, level) {
+  if (level === 0) {
+    const k = int(rng, 2, 9);
+    return [`${k} km = ? m`, 1000 * k, "Convierte a metros.", "📏 1 km = 1.000 m. De grande a chica: multiplica.", `${k} · 1.000 = ${pesos(1000 * k)} m.`, [[100 * k, "1 km son 1.000 m, no 100."]]];
+  }
+  if (level === 1) {
+    const k = int(rng, 2, 9);
+    return [`${k} m = ? cm`, 100 * k, "Convierte a centímetros.", "1 m = 100 cm.", `${k} · 100 = ${100 * k} cm.`, [[10 * k, "1 m son 100 cm."]]];
+  }
+  if (level === 2) {
+    const cm = 10 * int(rng, 11, 99);
+    return [`${cm} cm = ? m`, cm / 100, "Convierte a metros.", "De chica a grande: divide por 100.", `${cm} ÷ 100 = ${dec(cm / 100)} m.`, [[cm / 10, "Se divide por 100, no por 10."], [cm * 100, "De chica a grande se divide."]]];
+  }
+  const m = 100 * int(rng, 11, 49);
+  return [`Caminar ${pesos(m)} m: ¿km?`, m / 1000, `Caminas ${pesos(m)} m hasta el colegio. ¿Cuántos kilómetros son?`, "1.000 m = 1 km.", `${pesos(m)} ÷ 1.000 = ${dec(m / 1000)} km.`, [[m / 100, "Se divide por 1.000."]]];
+}
+
+function baseTiempo(rng, level) {
+  if (level === 0) {
+    const h = int(rng, 2, 6);
+    return [`${h} horas = ? minutos`, 60 * h, "Convierte a minutos.", "⏰ 1 hora = 60 minutos.", `${h} · 60 = ${60 * h} minutos.`, [[100 * h, "Una hora tiene 60 minutos, no 100."]]];
+  }
+  if (level === 1) {
+    const [h, m] = [int(rng, 8, 16), 5 * int(rng, 7, 11)];
+    const after = 5 * int(rng, 1, 6);
+    const dur = 60 - m + after;
+    return [`De ${h}:${m} a ${h + 1}:${String(after).padStart(2, "0")}`, dur, `Una clase empieza a las ${h}:${m} y termina a las ${h + 1}:${String(after).padStart(2, "0")}. ¿Cuántos minutos dura?`,
+      `Hasta las ${h + 1}:00 hay ${60 - m} minutos.`, `${60 - m} + ${after} = ${dur} minutos.`, [[100 - m + after, "El tiempo no va de 100 en 100: una hora tiene 60 minutos."]]];
+  }
+  if (level === 2) {
+    const h = int(rng, 1, 11);
+    return [`${h} de la tarde en formato 24 h`, h + 12, `¿Cómo se escribe las ${h} de la tarde en formato de 24 horas? (Escribe solo la hora.)`, "Después del mediodía se suma 12.", `${h} + 12 = ${h + 12}.`,
+      [[h, "En 24 horas, la tarde se cuenta después de 12."]]];
+  }
+  const mins = pick(rng, [90, 150, 45, 30, 210]);
+  return [`${mins} minutos en horas`, mins / 60, `Una película dura ${mins} minutos. ¿Cuántas horas son? (Usa decimales: media hora es 0,5.)`, "60 minutos son 1 hora.", `${mins} ÷ 60 = ${dec(mins / 60)} horas.`,
+    [[mins / 100, "No se divide por 100: una hora tiene 60 minutos."]]];
+}
+
+function baseMasa(rng, level) {
+  if (level === 0) {
+    const k = int(rng, 2, 9);
+    return [`${k} kg = ? g`, 1000 * k, "Convierte a gramos.", "⚖️ 1 kg = 1.000 g.", `${k} · 1.000 = ${pesos(1000 * k)} g.`, [[100 * k, "1 kg son 1.000 g."]]];
+  }
+  if (level === 1) {
+    const [name, frac_] = pick(rng, [["Medio kilo", 0.5], ["Un cuarto de kilo", 0.25], ["Tres cuartos de kilo", 0.75]]);
+    return [`${name} en gramos`, 1000 * frac_, `¿Cuántos gramos son ${name.toLowerCase()}?`, `Parte de 1.000 g.`, `${dec(frac_)} · 1.000 = ${1000 * frac_} g.`, [[100 * frac_, "1 kg son 1.000 g."]]];
+  }
+  if (level === 2) {
+    const [a, b] = [50 * int(rng, 4, 18), 50 * int(rng, 4, 18)];
+    return [`${a} g + ${b} g en kg`, (a + b) / 1000, `Compras ${a} g de pan y ${b} g de queso. ¿Cuántos kilos son en total?`, "Suma los gramos y divide por 1.000.", `${pesos(a + b)} g = ${dec((a + b) / 1000)} kg.`,
+      [[a + b, "Eso son gramos. Pásalo a kilos."]]];
+  }
+  const [k, g] = [int(rng, 2, 5), 50 * int(rng, 2, 18)];
+  return [`${k} kg − ${g} g en g`, 1000 * k - g, `Tienes ${k} kg de harina y usas ${g} g. ¿Cuántos gramos quedan?`, `Primero pasa ${k} kg a gramos.`, `${pesos(1000 * k)} − ${g} = ${pesos(1000 * k - g)} g.`,
+    [[k - g, "Primero pasa todo a gramos."]]];
+}
+
+function basePerimetro(rng, level) {
+  if (level === 0 || level === 3) {
+    const [l, w] = [int(rng, 3, 12), int(rng, 2, 9)];
+    if (level === 3)
+      return [`Huerto de ${l} m por ${w} m: malla`, 2 * (l + w), `Quieres poner malla alrededor de un huerto de ${l} m por ${w} m. ¿Cuántos metros de malla necesitas?`, `Es el perímetro: (${l} + ${w}) · 2.`,
+        `${l + w} · 2 = ${2 * (l + w)} m.`, [[l * w, "Ese es el área. La malla va por el borde."], [l + w, "Eso es medio borde."]]];
+    return [`Rectángulo de ${l} cm por ${w} cm: perímetro`, 2 * (l + w), "Calcula el perímetro en cm.", `🚶 Suma los 4 lados: ${l} + ${w} + ${l} + ${w}.`, `${2 * (l + w)} cm.`,
+      [[l * w, "Ese es el área. El perímetro suma el borde."], [l + w, "Faltan los otros dos lados."]]];
+  }
+  if (level === 1) {
+    const a = int(rng, 3, 12);
+    return [`Cuadrado de lado ${a} cm: perímetro`, 4 * a, "Calcula el perímetro en cm.", "4 lados iguales.", `${a} · 4 = ${4 * a} cm.`, [[a * a, "Ese es el área."]]];
+  }
+  const [a, b, c] = pick(rng, [[3, 4, 5], [5, 5, 6], [6, 8, 10], [4, 4, 4], [5, 12, 13], [7, 7, 3]]);
+  return [`Triángulo de ${a}, ${b} y ${c} cm: perímetro`, a + b + c, "Calcula el perímetro en cm.", "Suma los 3 lados.", `${a} + ${b} + ${c} = ${a + b + c} cm.`, [[a * b * c, "Multiplicaste. El perímetro suma."]]];
+}
+
+function baseFraccionesEquivalentes(rng, level) {
+  const b = int(rng, 2, 5);
+  const a = int(rng, 1, b - 1);
+  const k = int(rng, 2, 5);
+  if (gcd(a, b) !== 1) return baseFraccionesEquivalentes(rng, level);
+  if (level <= 1)
+    return [`${a}/${b} = ?/${b * k}`, a * k, "¿Qué número va arriba?", `🍕 Abajo, ${b} se multiplicó por ${k}. Haz lo mismo arriba.`, `${a} · ${k} = ${a * k}: ${a}/${b} = ${a * k}/${b * k}.`,
+      [[a + b * k - b, "No se suma: se multiplica."]]];
+  return [`${a * k}/${b * k} = ${a}/?`, b, "Simplifica. ¿Qué número va abajo?", `Arriba se dividió por ${k}.`, `${b * k} ÷ ${k} = ${b}: ${a * k}/${b * k} = ${a}/${b}.`,
+    [[b * k - (a * k - a), "Se divide, no se resta."]]];
+}
+
+function problemasCompras(rng, level) {
+  if (level === 0) {
+    const [n, p, q] = [int(rng, 2, 6), 50 * int(rng, 4, 10), 100 * int(rng, 8, 20)];
+    return [`${n} · ${p} + ${q}`, n * p + q, `Compras ${n} panes de $${p} y una leche de $${pesos(q)}. ¿Cuánto pagas?`, `🛒 Primero los panes: ${n} · ${p}.`, `${pesos(n * p)} + ${pesos(q)} = $${pesos(n * p + q)}.`,
+      [[p + q, `Son ${n} panes: ${n} · ${p}.`]]];
+  }
+  if (level === 1) {
+    const bill = pick(rng, [5000, 10000, 20000]);
+    const total = 100 * int(rng, 10, bill / 100 - 5);
+    return [`Vuelto de $${pesos(bill)} con $${pesos(total)}`, bill - total, `Gastas $${pesos(total)} y pagas con $${pesos(bill)}. ¿Cuánto vuelto recibes?`, "Billete menos total.", `${pesos(bill)} − ${pesos(total)} = $${pesos(bill - total)}.`,
+      [[bill + total, "Sumaste. El vuelto es la resta."]]];
+  }
+  if (level === 2) {
+    const [unit, n] = [100 * int(rng, 3, 8), 3];
+    const offer = unit * n - 100 * int(rng, 1, 4);
+    return [`Oferta ${n} × $${pesos(offer)} o 1 × $${unit}`, unit * n - offer, `Un jugo cuesta $${unit}, o ${n} por $${pesos(offer)}. ¿Cuánto ahorras comprando ${n} con la oferta?`, `Sin oferta: ${n} · ${unit}.`,
+      `${pesos(unit * n)} − ${pesos(offer)} = $${pesos(unit * n - offer)}.`, [[offer - unit, `Sin oferta ${n} jugos cuestan ${pesos(unit * n)}.`]]];
+  }
+  const [n, p] = [int(rng, 2, 6), 50 * int(rng, 15, 40)];
+  return [`Cuadernos: ${n} de $${pesos(p)}`, n * p, `Compras ${n} cuadernos de $${pesos(p)}. ¿Cuánto pagas?`, `${pesos(p)} · ${n}.`, `$${pesos(n * p)}.`, [[p + n, `Son ${n} cuadernos: se multiplica.`]]];
+}
+
+function problemasAhorro(rng, level) {
+  const save = 1000 * int(rng, 2, 6);
+  if (level === 0) {
+    const [meta, have] = [5000 * int(rng, 4, 10), 1000 * int(rng, 2, 9)];
+    return [`Meta ${pesos(meta)}, tienes ${pesos(have)}`, meta - have, `Quieres algo de $${pesos(meta)} y tienes $${pesos(have)}. ¿Cuánto te falta?`, "🐷 Meta menos lo que tienes.", `${pesos(meta)} − ${pesos(have)} = $${pesos(meta - have)}.`,
+      [[meta + have, "Sumaste. Lo que falta es la resta."]]];
+  }
+  if (level === 1) {
+    const weeks = int(rng, 3, 9);
+    return [`Faltan ${pesos(save * weeks)}, ahorras ${pesos(save)}`, weeks, `Te faltan $${pesos(save * weeks)} y ahorras $${pesos(save)} por semana. ¿Cuántas semanas necesitas?`, "Divide lo que falta por lo de cada semana.",
+      `${pesos(save * weeks)} ÷ ${pesos(save)} = ${weeks} semanas.`, [[save * weeks - save, "Restaste. Es una división."]]];
+  }
+  if (level === 2) {
+    const weeks = int(rng, 3, 8);
+    const falta = save * weeks + 1000 * int(rng, 1, save / 1000 - 1);
+    return [`Faltan ${pesos(falta)}, ahorras ${pesos(save)}`, weeks + 1, `Te faltan $${pesos(falta)} y ahorras $${pesos(save)} por semana. ¿Cuántas semanas necesitas para completar?`,
+      `${pesos(falta)} ÷ ${pesos(save)} no es exacto. ¿Alcanza con ${weeks}?`, `Con ${weeks} semanas juntas ${pesos(save * weeks)}: falta. Necesitas ${weeks + 1}.`, [[weeks, `Con ${weeks} semanas aún falta: necesitas una más.`]]];
+  }
+  const [daily, days] = [100 * int(rng, 2, 10), pick(rng, [7, 14, 30])];
+  return [`Ahorro diario ${daily} por ${days} días`, daily * days, `Ahorras $${daily} cada día durante ${days} días. ¿Cuánto juntas?`, `${daily} · ${days}.`, `$${pesos(daily * days)}.`, [[daily + days, "Sumaste. Es multiplicar."]]];
+}
+
+function problemasRecetas(rng, level) {
+  if (level === 0) {
+    const [base, eggs, k] = [int(rng, 2, 4), int(rng, 1, 3), int(rng, 2, 3)];
+    return [`Receta para ${base} con ${eggs} huevo${eggs > 1 ? "s" : ""}; para ${base * k}`, eggs * k, `Una receta para ${base} personas lleva ${eggs} huevo${eggs > 1 ? "s" : ""}. ¿Cuántos huevos necesitas para ${base * k} personas?`,
+      `🍳 ${base * k} personas es ${k} veces ${base}.`, `${eggs} · ${k} = ${eggs * k} huevos.`, [[eggs + base * k - base, "No se suma: se multiplica."]]];
+  }
+  if (level === 1) {
+    const [k, per] = [int(rng, 2, 4), 50 * int(rng, 1, 4)];
+    const small = int(rng, 1, 3);
+    return [`Para ${small * k} con ${per * small * k} g de harina; para ${small}`, per * small, `Una receta para ${small * k} personas usa ${per * small * k} g de harina. ¿Cuánta harina necesitas para ${small} persona${small > 1 ? "s" : ""}?`,
+      `${small * k} personas es ${k} veces ${small}: divide por ${k}.`, `${per * small * k} ÷ ${k} = ${per * small} g.`, [[per * small * k * k, "Se divide, no se multiplica."]]];
+  }
+  if (level === 2) {
+    const k = int(rng, 2, 4);
+    return [`Para 4 con 1/2 taza de azúcar; para ${4 * k}`, k / 2, `Una receta para 4 usa 1/2 taza de azúcar. ¿Cuántas tazas para ${4 * k} personas?`, `${4 * k} es ${k} veces 4.`, `1/2 · ${k} = ${dec(k / 2)} tazas.`,
+      [[0.5, `Hay que multiplicar por ${k}.`]]];
+  }
+  const [n, per] = [int(rng, 3, 6), 50 * int(rng, 2, 6)];
+  return [`Para ${n} con ${per * n} ml de leche; para 1`, per, `Una receta para ${n} personas usa ${per * n} ml de leche. ¿Cuánta leche es por persona?`, `Divide por ${n}.`, `${per * n} ÷ ${n} = ${per} ml.`,
+    [[per * n * n, `Se reparte entre ${n}: se divide.`]]];
+}
+
+function problemasCuentas(rng, level) {
+  if (level === 0) {
+    const bill = 1000 * int(rng, 8, 60);
+    return [`Propina 10 % de ${pesos(bill)}`, bill / 10, `La cuenta del restorán es $${pesos(bill)}. ¿Cuánto es la propina del 10 %?`, "🧾 El 10 % es dividir por 10.", `${pesos(bill)} ÷ 10 = $${pesos(bill / 10)}.`,
+      [[bill / 100, "10 % es dividir por 10, no por 100."]]];
+  }
+  if (level === 1) {
+    const [n, each] = [int(rng, 2, 6), 100 * int(rng, 30, 120)];
+    return [`${pesos(n * each)} entre ${n}`, each, `Una cuenta de $${pesos(n * each)} la pagan ${n} personas por igual. ¿Cuánto paga cada una?`, `Divide por ${n}.`, `${pesos(n * each)} ÷ ${n} = $${pesos(each)}.`,
+      [[n * each * n, "Se reparte: se divide."]]];
+  }
+  if (level === 2) {
+    const [bill, pct] = [10000 * int(rng, 1, 5), pick(rng, [5, 10, 20])];
+    const up = (bill * pct) / 100;
+    return [`Luz: ${pesos(bill)} con ${pct} % de aumento`, bill + up, `La cuenta de la luz era $${pesos(bill)} y sube ${pct} %. ¿Cuánto será?`, `${pct} % de ${pesos(bill)} es ${pesos(up)}.`, `${pesos(bill)} + ${pesos(up)} = $${pesos(bill + up)}.`,
+      [[up, "Ese es el aumento. Súmalo a la cuenta."]]];
+  }
+  const [m3, price] = [int(rng, 8, 25), 100 * int(rng, 5, 12)];
+  return [`Agua: ${m3} m³ a $${price}`, m3 * price, `Una familia gastó ${m3} m³ de agua y cada m³ cuesta $${price}. ¿Cuánto paga?`, `${m3} · ${price}.`, `$${pesos(m3 * price)}.`, [[m3 + price, "Sumaste. Se multiplica."]]];
+}
+
+function problemasViajes(rng, level) {
+  if (level === 0) {
+    const [v, t] = [10 * int(rng, 4, 11), int(rng, 2, 5)];
+    return [`${v} km/h por ${t} h`, v * t, `Un bus va a ${v} km/h durante ${t} horas. ¿Cuántos km recorre?`, "🚌 Distancia = velocidad · tiempo.", `${v} · ${t} = ${v * t} km.`, [[v + t, "Sumaste. Se multiplica."]]];
+  }
+  if (level === 1 || level === 3) {
+    const [v, t] = level === 1 ? [10 * int(rng, 5, 12), int(rng, 2, 6)] : [5 * int(rng, 2, 4), int(rng, 2, 5)];
+    return [`${v * t} km a ${v} km/h`, t, `Un viaje de ${v * t} km a ${v} km/h, ¿cuántas horas dura?`, "Tiempo = distancia ÷ velocidad.", `${v * t} ÷ ${v} = ${t} horas.`, [[v * t * v, "Tiempo = distancia ÷ velocidad: se divide."]]];
+  }
+  const [h, m] = [int(rng, 7, 15), 5 * int(rng, 4, 11)];
+  const [dh, dm] = [int(rng, 1, 3), 5 * int(rng, 3, 11)];
+  const total = m + dm;
+  const arrive = total % 60;
+  return [`Sale ${h}:${String(m).padStart(2, "0")}, dura ${dh} h ${dm} min: ¿minutos de llegada?`, arrive,
+    `Un bus sale a las ${h}:${String(m).padStart(2, "0")} y el viaje dura ${dh} horas y ${dm} minutos. ¿Cuántos minutos marca el reloj al llegar?`,
+    `${m} + ${dm} = ${total} minutos${total >= 60 ? `: es 1 hora y ${arrive} minutos` : ""}.`, `Llega a las ${h + dh + Math.floor(total / 60)}:${String(arrive).padStart(2, "0")}.`,
+    total >= 60 ? [[total, `${total} minutos es 1 hora y ${arrive} minutos.`]] : []];
+}
+
+function problemasPintar(rng, level) {
+  if (level === 0) {
+    const [l, h] = [int(rng, 3, 8), int(rng, 2, 4)];
+    return [`Pared ${l} m por ${h} m: área`, l * h, `Quieres pintar una pared de ${l} m de largo y ${h} m de alto. ¿Cuántos m² tiene?`, "🎨 Área = largo · alto.", `${l} · ${h} = ${l * h} m².`,
+      [[2 * (l + h), "Ese es el perímetro. Para pintar se usa el área."], [l + h, "Sumaste. Es multiplicar."]]];
+  }
+  if (level === 1) {
+    const cover = pick(rng, [4, 5, 6]);
+    const area = cover * int(rng, 2, 5) + int(rng, 1, cover - 1);
+    const tins = Math.ceil(area / cover);
+    return [`${area} m², tarro de ${cover} m²: tarros`, tins, `Cada tarro pinta ${cover} m². ¿Cuántos tarros necesitas para ${area} m²?`, `${area} ÷ ${cover} no es exacto. ¿Alcanza con ${tins - 1}?`,
+      `Con ${tins - 1} tarros pintas ${cover * (tins - 1)} m²: falta. Compras ${tins}.`, [[tins - 1, "Con esos tarros falta pintar: compra uno más."]]];
+  }
+  const [l, w] = [int(rng, 3, 8), int(rng, 2, 6)];
+  if (level === 2) {
+    const box = pick(rng, [1, 2]);
+    if ((l * w) % box) return problemasPintar(rng, level);
+    return [`Piso ${l} m por ${w} m, caja de ${box} m²: cajas`, (l * w) / box, `Un piso mide ${l} m por ${w} m. Cada caja de baldosas cubre ${box} m². ¿Cuántas cajas necesitas?`, `Área: ${l} · ${w}. Después ÷ ${box}.`,
+      `${l * w} ÷ ${box} = ${(l * w) / box} cajas.`, [[(2 * (l + w)) / box, "Usaste el perímetro. Se usa el área."]]];
+  }
+  return [`Pieza ${l} m por ${w} m, baldosa de 1 m²: baldosas`, l * w, `Una pieza mide ${l} m por ${w} m. Cada baldosa mide 1 m². ¿Cuántas baldosas necesitas?`, `Área: ${l} · ${w}.`, `${l * w} baldosas.`,
+    [[2 * (l + w), "Ese es el perímetro. Para el piso, el área."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -2614,6 +2882,20 @@ export const generators = {
   "interes-compuesto": interesCompuesto,
   "logaritmo-base": logaritmoBase,
   "numero-e": numeroE,
+  "base-mult-dos-cifras": baseMultDosCifras,
+  "base-division-larga": baseDivisionLarga,
+  "base-redondeo": baseRedondeo,
+  "base-longitud": baseLongitud,
+  "base-tiempo": baseTiempo,
+  "base-masa": baseMasa,
+  "base-perimetro": basePerimetro,
+  "base-fracciones-equivalentes": baseFraccionesEquivalentes,
+  "problemas-compras": problemasCompras,
+  "problemas-ahorro": problemasAhorro,
+  "problemas-recetas": problemasRecetas,
+  "problemas-cuentas": problemasCuentas,
+  "problemas-viajes": problemasViajes,
+  "problemas-pintar": problemasPintar,
   credito,
   "sueldo-impuestos": sueldoImpuestos,
   binomial,

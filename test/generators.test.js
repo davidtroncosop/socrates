@@ -27,6 +27,11 @@ function baseAnswer(expr, id, prompt) {
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
+  if (LOTE12.includes(id)) {
+    const answer = lote12Answer(expr, id, prompt);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
   if (LOTE11.includes(id)) {
     const answer = lote11Answer(expr, id, prompt);
     assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
@@ -676,6 +681,89 @@ function lote11Answer(expr, id, prompt) {
   return null;
 }
 
+// Lote 12: bases de 3° a 5° Básico y problemas de la vida diaria.
+const LOTE12 = ["base-mult-dos-cifras", "base-division-larga", "base-redondeo", "base-longitud", "base-tiempo", "base-masa", "base-perimetro", "base-fracciones-equivalentes",
+  "problemas-compras", "problemas-ahorro", "problemas-recetas", "problemas-cuentas", "problemas-viajes", "problemas-pintar"];
+function lote12Answer(expr, id, prompt) {
+  let m;
+  const n = (v) => Number(v.replace(/\$/g, "").replace(/\./g, "").replace(",", "."));
+  const frac = (v) => { const [a, b] = v.split("/").map(Number); return a / b; };
+  switch (id) {
+    case "base-mult-dos-cifras":
+      if ((m = expr.match(/^(?:Cajas: )?(\d+) · (\d+)$/))) return m[1] * m[2];
+      break;
+    case "base-division-larga":
+      if ((m = expr.match(/^(\d+) ÷ (\d)$/))) { assert.equal(m[1] % m[2], 0, expr); return m[1] / m[2]; }
+      if ((m = expr.match(/^Resto de (\d+) ÷ (\d)$/))) return m[1] % m[2];
+      break;
+    case "base-redondeo":
+      if ((m = expr.match(/^(\d+) a la decena$/))) return Math.round(m[1] / 10) * 10;
+      if ((m = expr.match(/^(\d+) a la centena$/))) return Math.round(m[1] / 100) * 100;
+      if ((m = expr.match(/^Estimar (\d+) \+ (\d+)$/))) return Math.round(m[1] / 100) * 100 + Math.round(m[2] / 100) * 100;
+      break;
+    case "base-longitud": {
+      const f = { km: 100000, m: 100, cm: 1, mm: 0.1 };
+      if ((m = expr.match(/^([\d.,]+) (km|m|cm|mm) = \? (km|m|cm|mm)$/))) return Math.round(((n(m[1]) * f[m[2]]) / f[m[3]]) * 1000) / 1000;
+      if ((m = expr.match(/^Caminar ([\d.]+) m: ¿km\?$/))) return n(m[1]) / 1000;
+      break;
+    }
+    case "base-tiempo":
+      if ((m = expr.match(/^(\d+) horas = \? minutos$/))) return m[1] * 60;
+      if ((m = expr.match(/^De (\d+):(\d+) a (\d+):(\d+)$/))) return m[3] * 60 + Number(m[4]) - (m[1] * 60 + Number(m[2]));
+      if ((m = expr.match(/^(\d+) de la tarde en formato 24 h$/))) return Number(m[1]) + 12;
+      if ((m = expr.match(/^(\d+) minutos en horas$/))) return m[1] / 60;
+      break;
+    case "base-masa":
+      if ((m = expr.match(/^(\d+) kg = \? g$/))) return m[1] * 1000;
+      if ((m = expr.match(/^(Medio kilo|Un cuarto de kilo|Tres cuartos de kilo) en gramos$/))) return { "Medio kilo": 500, "Un cuarto de kilo": 250, "Tres cuartos de kilo": 750 }[m[1]];
+      if ((m = expr.match(/^(\d+) g \+ (\d+) g en kg$/))) return (+m[1] + +m[2]) / 1000;
+      if ((m = expr.match(/^(\d+) kg − (\d+) g en g$/))) return m[1] * 1000 - m[2];
+      break;
+    case "base-perimetro":
+      if ((m = expr.match(/^(?:Rectángulo de|Huerto de) (\d+) c?m por (\d+) c?m: (?:perímetro|malla)$/))) return 2 * (+m[1] + +m[2]);
+      if ((m = expr.match(/^Cuadrado de lado (\d+) cm: perímetro$/))) return 4 * m[1];
+      if ((m = expr.match(/^Triángulo de (\d+), (\d+) y (\d+) cm: perímetro$/))) return +m[1] + +m[2] + +m[3];
+      break;
+    case "base-fracciones-equivalentes":
+      if ((m = expr.match(/^(\d+)\/(\d+) = \?\/(\d+)$/))) return (m[1] * m[3]) / m[2];
+      if ((m = expr.match(/^(\d+)\/(\d+) = (\d+)\/\?$/))) return (m[3] * m[2]) / m[1];
+      break;
+    case "problemas-compras":
+      if ((m = expr.match(/^(\d+) · (\d+) \+ (\d+)$/))) return m[1] * m[2] + Number(m[3]);
+      if ((m = expr.match(/^Vuelto de (\$[\d.]+) con (\$[\d.]+)$/))) return n(m[1]) - n(m[2]);
+      if ((m = expr.match(/^Oferta (\d) × (\$[\d.]+) o 1 × (\$[\d.]+)$/))) return m[1] * n(m[3]) - n(m[2]);
+      if ((m = expr.match(/^Cuadernos: (\d+) de (\$[\d.]+)$/))) return m[1] * n(m[2]);
+      break;
+    case "problemas-ahorro":
+      if ((m = expr.match(/^Meta ([\d.]+), tienes ([\d.]+)$/))) return n(m[1]) - n(m[2]);
+      if ((m = expr.match(/^Faltan ([\d.]+), ahorras ([\d.]+)$/))) return Math.ceil(n(m[1]) / n(m[2]));
+      if ((m = expr.match(/^Ahorro diario (\d+) por (\d+) días$/))) return m[1] * m[2];
+      break;
+    case "problemas-recetas":
+      if ((m = expr.match(/^(?:Receta para|Para) (\d+) con ([\d/]+) (?:huevos?|g de harina|taza de azúcar|ml de leche|papas); para (\d+)$/))) return (frac(m[2].includes("/") ? m[2] : m[2] + "/1") * m[3]) / m[1];
+      break;
+    case "problemas-cuentas":
+      if ((m = expr.match(/^Propina 10 % de ([\d.]+)$/))) return n(m[1]) / 10;
+      if ((m = expr.match(/^([\d.]+) entre (\d+)$/))) return n(m[1]) / m[2];
+      if ((m = expr.match(/^Luz: ([\d.]+) con (\d+) % de aumento$/))) return n(m[1]) * (1 + m[2] / 100);
+      if ((m = expr.match(/^Agua: (\d+) m³ a \$(\d+)$/))) return m[1] * m[2];
+      break;
+    case "problemas-viajes":
+      if ((m = expr.match(/^(\d+) km\/h por (\d+) h$/))) return m[1] * m[2];
+      if ((m = expr.match(/^(\d+) km a (\d+) km\/h$/))) return m[1] / m[2];
+      if ((m = expr.match(/^Sale (\d+):(\d+), dura (\d+) h (\d+) min: ¿minutos de (?:llegada|la hora de llegada)\?$/))) return (Number(m[2]) + Number(m[4])) % 60;
+      if ((m = expr.match(/^Bicicleta (\d+) km\/h, (\d+) km$/))) return m[2] / m[1];
+      break;
+    case "problemas-pintar":
+      if ((m = expr.match(/^Pared (\d+) m por (\d+) m: área$/))) return m[1] * m[2];
+      if ((m = expr.match(/^(\d+) m², tarro de (\d+) m²: tarros$/))) return Math.ceil(m[1] / m[2]);
+      if ((m = expr.match(/^Piso (\d+) m por (\d+) m, caja de (\d+) m²: cajas$/))) return Math.ceil((m[1] * m[2]) / m[3]);
+      if ((m = expr.match(/^Pieza (\d+) m por (\d+) m, baldosa de 1 m²: baldosas$/))) return m[1] * m[2];
+      break;
+  }
+  return null;
+}
+
 // Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
 function solveSystem(expr) {
   const letters = [...new Set(expr.match(/[a-z]/g))];
@@ -735,7 +823,7 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e", "base-longitud", "base-tiempo", "base-masa", "problemas-recetas"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
         else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos", "crecimiento-exponencial", "cono", "homotecia", "cambio-porcentual", "esfera", "funcion-inversa"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);

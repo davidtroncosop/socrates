@@ -8699,5 +8699,1141 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "base-mult-dos-cifras",
+    "since": "2026-10-21",
+    "title": "Multiplicar por dos cifras",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 03 · Por partes, como un rectángulo",
+    "concept": "Para multiplicar 23 · 14, separa el 14 en 10 y 4. Paso 1: 23 · 10 = 230. Paso 2: 23 · 4 = 92. Paso 3: suma las partes: 230 + 92 = 322. Es como partir un rectángulo de 23 por 14 en dos rectángulos más fáciles.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-03\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "15 · 12: 15 · 10 = 150 y 15 · 2 = 30; 150 + 30 = 180.",
+    "status": "published",
+    "questions": [
+      [
+        "23 · 14",
+        322,
+        "Multiplica por partes.",
+        "🧱 Separa 14 en 10 y 4: 23 · 10 y 23 · 4.",
+        "23 · 10 = 230; 23 · 4 = 92; 230 + 92 = 322.",
+        [
+          [
+            92,
+            "Multiplicaste solo por 4. Falta 23 · 10 = 230: 230 + 92 = 322."
+          ],
+          [
+            37,
+            "Sumaste. Es multiplicar: 322."
+          ]
+        ]
+      ],
+      [
+        "15 · 12",
+        180,
+        "Multiplica por partes.",
+        "15 · 10 y 15 · 2.",
+        "150 + 30 = 180.",
+        [
+          [
+            150,
+            "Falta 15 · 2 = 30: 180."
+          ]
+        ]
+      ],
+      [
+        "31 · 21",
+        651,
+        "Multiplica.",
+        "31 · 20 y 31 · 1.",
+        "620 + 31 = 651.",
+        [
+          [
+            620,
+            "Falta 31 · 1 = 31: 651."
+          ],
+          [
+            52,
+            "Sumaste. Es multiplicar: 651."
+          ]
+        ]
+      ],
+      [
+        "Cajas: 24 · 15",
+        360,
+        "Hay 24 cajas con 15 lápices cada una. ¿Cuántos lápices hay?",
+        "24 · 10 y 24 · 5.",
+        "240 + 120 = 360 lápices.",
+        [
+          [
+            39,
+            "Sumaste. Son 24 grupos de 15: 360."
+          ],
+          [
+            240,
+            "Falta 24 · 5 = 120: 360."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "12 · 13",
+      156,
+      "Multiplica por partes.",
+      "12 · 10 y 12 · 3.",
+      "120 + 36 = 156.",
+      [
+        [
+          120,
+          "Falta 12 · 3 = 36: 156."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-division-larga",
+    "since": "2026-10-21",
+    "title": "División larga paso a paso",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 04 · Reparte de izquierda a derecha",
+    "concept": "Para dividir 852 ÷ 4, reparte de izquierda a derecha. Paso 1: 8 centenas ÷ 4 = 2 (escribe 2). Paso 2: 5 decenas ÷ 4 = 1 y sobra 1 decena. Paso 3: esa decena se junta con las 2 unidades: 12 ÷ 4 = 3. Resultado: 213. Comprueba: 213 · 4 = 852.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-04\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "936 ÷ 3: 9 ÷ 3 = 3; 3 ÷ 3 = 1; 6 ÷ 3 = 2. Resultado 312.",
+    "status": "published",
+    "questions": [
+      [
+        "852 ÷ 4",
+        213,
+        "Divide paso a paso.",
+        "📦 Primero las centenas: 8 ÷ 4.",
+        "8 ÷ 4 = 2; 5 ÷ 4 = 1 y sobra 1; 12 ÷ 4 = 3. Resultado 213.",
+        [
+          [
+            203,
+            "Olvidaste la decena que sobró: 1 decena + 2 unidades = 12; 12 ÷ 4 = 3. Resultado 213."
+          ]
+        ]
+      ],
+      [
+        "936 ÷ 3",
+        312,
+        "Divide paso a paso.",
+        "9 ÷ 3, luego 3 ÷ 3, luego 6 ÷ 3.",
+        "3, 1 y 2: 312.",
+        [
+          [
+            32,
+            "Cada cifra da una del resultado: 3, 1 y 2. Son 312."
+          ]
+        ]
+      ],
+      [
+        "525 ÷ 5",
+        105,
+        "Divide paso a paso.",
+        "Cuidado: 2 decenas ÷ 5 no alcanza.",
+        "5 ÷ 5 = 1; 2 ÷ 5 = 0 y sobran 2; 25 ÷ 5 = 5. Resultado 105.",
+        [
+          [
+            15,
+            "Cuando no alcanza, se escribe un 0: 1, 0 y 5 son 105."
+          ]
+        ]
+      ],
+      [
+        "Resto de 365 ÷ 7",
+        1,
+        "Un año tiene 365 días. ¿Cuántos días sobran si lo divides en semanas de 7 días?",
+        "365 ÷ 7: ¿cuántas semanas y cuánto sobra?",
+        "7 · 52 = 364, sobra 1 día.",
+        [
+          [
+            52,
+            "Esas son las semanas. Lo que sobra es 365 − 364 = 1."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "648 ÷ 2",
+      324,
+      "Divide paso a paso.",
+      "6 ÷ 2, 4 ÷ 2, 8 ÷ 2.",
+      "3, 2 y 4: 324.",
+      [
+        [
+          34,
+          "Cada cifra da una del resultado: 324."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-redondeo",
+    "since": "2026-10-21",
+    "title": "Redondear y estimar",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 03 · ¿Más cerca de cuál?",
+    "concept": "Redondear es buscar el número «redondo» más cercano. Para redondear a la decena: mira la unidad. Si es 5 o más, sube; si es menos de 5, se queda. 47 → 50 y 43 → 40. Estimar es calcular con números redondeados para saber si un resultado tiene sentido: 198 + 304 ≈ 200 + 300 = 500.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/4-basico/ma04-oa-03\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "362 redondeado a la centena: mira la decena (6), es 5 o más, sube: 400.",
+    "status": "published",
+    "questions": [
+      [
+        "47 a la decena",
+        50,
+        "Redondea a la decena.",
+        "🎯 Mira la unidad: 7. ¿Es 5 o más?",
+        "7 es 5 o más: sube a 50.",
+        [
+          [
+            40,
+            "La unidad es 7 (5 o más): sube a 50."
+          ]
+        ]
+      ],
+      [
+        "43 a la decena",
+        40,
+        "Redondea a la decena.",
+        "La unidad es 3.",
+        "3 es menos de 5: se queda en 40.",
+        [
+          [
+            50,
+            "La unidad es 3 (menos de 5): baja a 40."
+          ]
+        ]
+      ],
+      [
+        "362 a la centena",
+        400,
+        "Redondea a la centena.",
+        "Mira la decena: 6.",
+        "6 es 5 o más: sube a 400.",
+        [
+          [
+            300,
+            "La decena es 6 (5 o más): sube a 400."
+          ],
+          [
+            360,
+            "Eso es a la decena. A la centena: 400."
+          ]
+        ]
+      ],
+      [
+        "Estimar 198 + 304",
+        500,
+        "Estima la suma redondeando a la centena.",
+        "198 ≈ 200 y 304 ≈ 300.",
+        "200 + 300 = 500.",
+        [
+          [
+            502,
+            "Esa es la suma exacta. La estimación con números redondos es 500."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "85 a la decena",
+      90,
+      "Redondea a la decena.",
+      "La unidad es 5.",
+      "5 sube: 90.",
+      [
+        [
+          80,
+          "Con 5, se sube: 90."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-longitud",
+    "since": "2026-10-21",
+    "title": "Medidas de longitud",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 20 · km, m, cm y mm",
+    "concept": "Las medidas de longitud van de 10 en 10, de 100 en 100 o de 1.000 en 1.000. 1 km = 1.000 m. 1 m = 100 cm. 1 cm = 10 mm. Paso a paso: si vas de una unidad grande a una chica, multiplicas (hay más); si vas de chica a grande, divides.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-20\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "3 km = 3 · 1.000 = 3.000 m. 250 cm = 250 ÷ 100 = 2,5 m.",
+    "status": "published",
+    "questions": [
+      [
+        "3 km = ? m",
+        3000,
+        "Convierte a metros.",
+        "📏 1 km = 1.000 m. De grande a chica: multiplica.",
+        "3 · 1.000 = 3.000 m.",
+        [
+          [
+            300,
+            "1 km son 1.000 m, no 100: 3.000."
+          ],
+          [
+            0.003,
+            "De grande a chica se multiplica: 3.000."
+          ]
+        ]
+      ],
+      [
+        "4 m = ? cm",
+        400,
+        "Convierte a centímetros.",
+        "1 m = 100 cm.",
+        "4 · 100 = 400 cm.",
+        [
+          [
+            40,
+            "1 m son 100 cm: 400."
+          ]
+        ]
+      ],
+      [
+        "250 cm = ? m",
+        2.5,
+        "Convierte a metros.",
+        "De chica a grande: divide por 100.",
+        "250 ÷ 100 = 2,5 m.",
+        [
+          [
+            25000,
+            "De chica a grande se divide: 2,5."
+          ],
+          [
+            25,
+            "Se divide por 100, no por 10: 2,5."
+          ]
+        ]
+      ],
+      [
+        "Caminar 1.500 m: ¿km?",
+        1.5,
+        "Caminas 1.500 m hasta el colegio. ¿Cuántos kilómetros son?",
+        "1.000 m = 1 km.",
+        "1.500 ÷ 1.000 = 1,5 km.",
+        [
+          [
+            15,
+            "Se divide por 1.000: 1,5."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "5 cm = ? mm",
+      50,
+      "Convierte a milímetros.",
+      "1 cm = 10 mm.",
+      "5 · 10 = 50 mm.",
+      [
+        [
+          0.5,
+          "De grande a chica se multiplica: 50."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-tiempo",
+    "since": "2026-10-21",
+    "title": "Medidas de tiempo",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 21 · Horas, minutos y relojes",
+    "concept": "1 hora = 60 minutos y 1 minuto = 60 segundos. El tiempo no va de 10 en 10, va de 60 en 60. Para calcular cuánto dura algo: cuenta desde el inicio hasta la hora en punto, y después hasta el final. En formato de 24 horas, después de las 12 se suma 12: las 3 de la tarde son las 15:00.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/4-basico/ma04-oa-21\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "De 9:40 a 10:15: hasta las 10:00 son 20 minutos y después 15 más: 35 minutos.",
+    "status": "published",
+    "questions": [
+      [
+        "2 horas = ? minutos",
+        120,
+        "Convierte a minutos.",
+        "⏰ 1 hora = 60 minutos.",
+        "2 · 60 = 120 minutos.",
+        [
+          [
+            200,
+            "Una hora tiene 60 minutos, no 100: 120."
+          ]
+        ]
+      ],
+      [
+        "De 9:40 a 10:15",
+        35,
+        "Una clase empieza a las 9:40 y termina a las 10:15. ¿Cuántos minutos dura?",
+        "Hasta las 10:00 hay 20 minutos.",
+        "20 + 15 = 35 minutos.",
+        [
+          [
+            75,
+            "El tiempo no va de 100 en 100: hasta las 10:00 son 20 min, más 15: 35."
+          ],
+          [
+            25,
+            "Revisa: de 9:40 a 10:00 son 20 minutos, más 15: 35."
+          ]
+        ]
+      ],
+      [
+        "3 de la tarde en formato 24 h",
+        15,
+        "¿Cómo se escribe las 3 de la tarde en formato de 24 horas? (Escribe solo la hora.)",
+        "Después del mediodía se suma 12.",
+        "3 + 12 = 15: las 15:00.",
+        [
+          [
+            3,
+            "En 24 horas, la tarde se cuenta después de 12: 3 + 12 = 15."
+          ]
+        ]
+      ],
+      [
+        "90 minutos en horas",
+        1.5,
+        "Una película dura 90 minutos. ¿Cuántas horas son?",
+        "60 minutos son 1 hora; quedan 30, que es media hora.",
+        "1 hora y media: 1,5 horas.",
+        [
+          [
+            0.9,
+            "No se divide por 100: 90 minutos son 1 hora y 30 minutos, 1,5 horas."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "3 horas = ? minutos",
+      180,
+      "Convierte a minutos.",
+      "3 · 60.",
+      "180 minutos.",
+      [
+        [
+          300,
+          "Una hora tiene 60 minutos: 180."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-masa",
+    "since": "2026-10-21",
+    "title": "Medidas de masa",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA03 OA 22 · Gramos y kilogramos",
+    "concept": "La masa se mide en gramos (g) y kilogramos (kg). 1 kg = 1.000 g. Un paquete de azúcar pesa 1 kg; un clip, cerca de 1 g. Para pasar de kg a g multiplica por 1.000; de g a kg, divide por 1.000. Medio kilo es 500 g.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/3-basico/ma03-oa-22\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "2 kg = 2.000 g. 750 g + 250 g = 1.000 g = 1 kg.",
+    "status": "published",
+    "questions": [
+      [
+        "2 kg = ? g",
+        2000,
+        "Convierte a gramos.",
+        "⚖️ 1 kg = 1.000 g.",
+        "2 · 1.000 = 2.000 g.",
+        [
+          [
+            200,
+            "1 kg son 1.000 g: 2.000."
+          ]
+        ]
+      ],
+      [
+        "Medio kilo en gramos",
+        500,
+        "¿Cuántos gramos son medio kilo?",
+        "La mitad de 1.000 g.",
+        "1.000 ÷ 2 = 500 g.",
+        [
+          [
+            50,
+            "Medio kilo es la mitad de 1.000 g: 500."
+          ]
+        ]
+      ],
+      [
+        "750 g + 750 g en kg",
+        1.5,
+        "Compras 750 g de pan y 750 g de queso. ¿Cuántos kilos son en total?",
+        "Suma los gramos y divide por 1.000.",
+        "1.500 g = 1,5 kg.",
+        [
+          [
+            1500,
+            "Eso son gramos. En kilos: 1,5."
+          ]
+        ]
+      ],
+      [
+        "3 kg − 400 g en g",
+        2600,
+        "Tienes 3 kg de harina y usas 400 g. ¿Cuántos gramos quedan?",
+        "Primero pasa 3 kg a gramos: 3.000 g.",
+        "3.000 − 400 = 2.600 g.",
+        [
+          [
+            -397,
+            "Primero pasa todo a gramos: 3.000 − 400 = 2.600."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "5 kg = ? g",
+      5000,
+      "Convierte a gramos.",
+      "5 · 1.000.",
+      "5.000 g.",
+      [
+        [
+          500,
+          "1 kg son 1.000 g: 5.000."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-perimetro",
+    "since": "2026-10-21",
+    "title": "Perímetro",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA03 OA 21 · La vuelta completa",
+    "concept": "El perímetro es el largo del borde: lo que caminas al dar una vuelta completa a la figura. Paso a paso: anota todos los lados y súmalos. En un rectángulo hay dos largos y dos anchos: (largo + ancho) · 2. En un cuadrado, los 4 lados son iguales: lado · 4.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/3-basico/ma03-oa-21\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Rectángulo de 5 por 3: 5 + 3 + 5 + 3 = 16. Cuadrado de lado 6: 6 · 4 = 24.",
+    "status": "published",
+    "questions": [
+      [
+        "Rectángulo de 5 cm por 3 cm: perímetro",
+        16,
+        "Calcula el perímetro en cm.",
+        "🚶 Suma los 4 lados: 5 + 3 + 5 + 3.",
+        "16 cm.",
+        [
+          [
+            15,
+            "Ese es el área (5 · 3). El perímetro suma el borde: 16."
+          ],
+          [
+            8,
+            "Faltan los otros dos lados: 16."
+          ]
+        ]
+      ],
+      [
+        "Cuadrado de lado 6 cm: perímetro",
+        24,
+        "Calcula el perímetro en cm.",
+        "4 lados iguales.",
+        "6 · 4 = 24 cm.",
+        [
+          [
+            36,
+            "Ese es el área. El perímetro es 6 · 4 = 24."
+          ]
+        ]
+      ],
+      [
+        "Triángulo de 3, 4 y 5 cm: perímetro",
+        12,
+        "Calcula el perímetro en cm.",
+        "Suma los 3 lados.",
+        "3 + 4 + 5 = 12 cm.",
+        [
+          [
+            60,
+            "Multiplicaste. El perímetro suma: 12."
+          ]
+        ]
+      ],
+      [
+        "Huerto de 8 m por 4 m: malla",
+        24,
+        "Quieres poner malla alrededor de un huerto de 8 m por 4 m. ¿Cuántos metros de malla necesitas?",
+        "Es el perímetro: (8 + 4) · 2.",
+        "12 · 2 = 24 m.",
+        [
+          [
+            32,
+            "Ese es el área. La malla va por el borde: 24."
+          ],
+          [
+            12,
+            "Eso es medio borde. Hay dos largos y dos anchos: 24."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Rectángulo de 7 cm por 2 cm: perímetro",
+      18,
+      "Calcula el perímetro en cm.",
+      "7 + 2 + 7 + 2.",
+      "18 cm.",
+      [
+        [
+          14,
+          "Ese es el área. El perímetro: 18."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-fracciones-equivalentes",
+    "since": "2026-10-21",
+    "title": "Fracciones equivalentes",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 07 · La misma pizza, cortada distinto",
+    "concept": "1/2 y 2/4 son la misma cantidad: la pizza está cortada distinto. Para encontrar una fracción equivalente, multiplica arriba y abajo por el mismo número (amplificar): 1/2 = 3/6. Para simplificar, divide arriba y abajo por el mismo número: 6/8 = 3/4.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-07\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "2/3 = 8/12 (por 4). 10/15 = 2/3 (dividido en 5).",
+    "status": "published",
+    "questions": [
+      [
+        "1/2 = ?/6",
+        3,
+        "¿Qué número va arriba?",
+        "🍕 Abajo, 2 se multiplicó por 3. Haz lo mismo arriba.",
+        "1 · 3 = 3: 1/2 = 3/6.",
+        [
+          [
+            5,
+            "No se suma: se multiplica. 2 · 3 = 6, así que 1 · 3 = 3."
+          ]
+        ]
+      ],
+      [
+        "2/3 = ?/12",
+        8,
+        "¿Qué número va arriba?",
+        "3 · 4 = 12.",
+        "2 · 4 = 8: 2/3 = 8/12.",
+        [
+          [
+            11,
+            "No se suma: 3 · 4 = 12, así que 2 · 4 = 8."
+          ]
+        ]
+      ],
+      [
+        "6/8 = 3/?",
+        4,
+        "Simplifica. ¿Qué número va abajo?",
+        "Arriba se dividió por 2.",
+        "8 ÷ 2 = 4: 6/8 = 3/4.",
+        [
+          [
+            5,
+            "No se resta: se divide por 2. 8 ÷ 2 = 4."
+          ]
+        ]
+      ],
+      [
+        "10/15 = 2/?",
+        3,
+        "Simplifica. ¿Qué número va abajo?",
+        "10 ÷ 5 = 2.",
+        "15 ÷ 5 = 3: 2/3.",
+        [
+          [
+            7,
+            "Se divide, no se resta: 15 ÷ 5 = 3."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "1/3 = ?/9",
+      3,
+      "¿Qué número va arriba?",
+      "3 · 3 = 9.",
+      "1 · 3 = 3: 3/9.",
+      [
+        [
+          7,
+          "No se suma: se multiplica. 3/9."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "problemas-compras",
+    "since": "2026-10-21",
+    "title": "Problemas: compras y vuelto",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 06 · En el almacén",
+    "concept": "Para resolver un problema de compras: Paso 1, lee y anota qué compras y cuánto cuesta cada cosa. Paso 2, calcula el total (multiplica si hay varias iguales). Paso 3, si pagas con un billete, el vuelto es billete − total. Paso 4, revisa si la respuesta tiene sentido.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/5-basico/ma05-oa-06\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "3 panes de $300 y una leche de $1.100: 900 + 1.100 = $2.000. Pagas con $5.000: vuelto $3.000.",
+    "status": "published",
+    "questions": [
+      [
+        "3 · 300 + 1100",
+        2000,
+        "Compras 3 panes de $300 y una leche de $1.100. ¿Cuánto pagas?",
+        "🛒 Primero los panes: 3 · 300.",
+        "900 + 1.100 = $2.000.",
+        [
+          [
+            1400,
+            "Son 3 panes: 3 · 300 = 900. Total 2.000."
+          ]
+        ]
+      ],
+      [
+        "Vuelto de $5.000 con $2.000",
+        3000,
+        "Si pagas esos $2.000 con un billete de $5.000, ¿cuánto vuelto recibes?",
+        "Billete menos total.",
+        "5.000 − 2.000 = $3.000.",
+        [
+          [
+            7000,
+            "Sumaste. El vuelto es la resta: 3.000."
+          ]
+        ]
+      ],
+      [
+        "Oferta 3 × $1.000 o 1 × $400",
+        200,
+        "Un jugo cuesta $400, o 3 por $1.000. ¿Cuánto ahorras comprando 3 con la oferta?",
+        "Sin oferta: 3 · 400.",
+        "1.200 − 1.000 = $200.",
+        [
+          [
+            600,
+            "Sin oferta 3 jugos cuestan 1.200: ahorras 1.200 − 1.000 = 200."
+          ]
+        ]
+      ],
+      [
+        "Cuadernos: 4 de $1.250",
+        5000,
+        "Compras 4 cuadernos de $1.250. ¿Cuánto pagas?",
+        "1.250 · 4: el doble del doble.",
+        "1.250 · 2 = 2.500; · 2 = $5.000.",
+        [
+          [
+            1254,
+            "Son 4 cuadernos: se multiplica. 5.000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Vuelto de $10.000 con $6.500",
+      3500,
+      "Gastas $6.500 y pagas con $10.000. ¿Cuánto vuelto recibes?",
+      "Billete menos total.",
+      "10.000 − 6.500 = $3.500.",
+      [
+        [
+          16500,
+          "Sumaste. El vuelto es la resta: 3.500."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "problemas-ahorro",
+    "since": "2026-10-21",
+    "title": "Problemas: metas de ahorro",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 02 · ¿Cuánto me falta?",
+    "concept": "Para una meta de ahorro: Paso 1, calcula cuánto te falta: meta − lo que tienes. Paso 2, divide lo que falta por lo que ahorras cada semana. Paso 3, si la división no es exacta, necesitas una semana más para completar.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/6-basico/ma06-oa-02\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Quieres unas zapatillas de $30.000, tienes $6.000 y ahorras $4.000 por semana: faltan 24.000; 24.000 ÷ 4.000 = 6 semanas.",
+    "status": "published",
+    "questions": [
+      [
+        "Meta 30.000, tienes 6.000",
+        24000,
+        "Quieres unas zapatillas de $30.000 y tienes $6.000. ¿Cuánto te falta?",
+        "🐷 Meta menos lo que tienes.",
+        "30.000 − 6.000 = $24.000.",
+        [
+          [
+            36000,
+            "Sumaste. Lo que falta es la resta: 24.000."
+          ]
+        ]
+      ],
+      [
+        "Faltan 24.000, ahorras 4.000",
+        6,
+        "Te faltan $24.000 y ahorras $4.000 por semana. ¿Cuántas semanas necesitas?",
+        "Divide lo que falta por lo de cada semana.",
+        "24.000 ÷ 4.000 = 6 semanas.",
+        [
+          [
+            20000,
+            "Restaste. Es una división: 6 semanas."
+          ]
+        ]
+      ],
+      [
+        "Faltan 10.000, ahorras 3.000",
+        4,
+        "Te faltan $10.000 y ahorras $3.000 por semana. ¿Cuántas semanas necesitas para completar?",
+        "10.000 ÷ 3.000 = 3 y sobra. ¿Alcanza con 3?",
+        "Con 3 semanas juntas 9.000: falta. Necesitas 4.",
+        [
+          [
+            3,
+            "Con 3 semanas juntas 9.000 y aún faltan 1.000: necesitas 4."
+          ]
+        ]
+      ],
+      [
+        "Ahorro diario 500 por 30 días",
+        15000,
+        "Ahorras $500 cada día durante 30 días. ¿Cuánto juntas?",
+        "500 · 30.",
+        "$15.000.",
+        [
+          [
+            530,
+            "Sumaste. Es 500 cada día por 30 días: 15.000."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Meta 20.000, tienes 5.000",
+      15000,
+      "Quieres algo de $20.000 y tienes $5.000. ¿Cuánto te falta?",
+      "Meta menos lo que tienes.",
+      "15.000.",
+      [
+        [
+          25000,
+          "Sumaste. Falta 15.000."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "problemas-recetas",
+    "since": "2026-10-21",
+    "title": "Problemas: recetas",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 08 · Para más o menos personas",
+    "concept": "Una receta es para cierta cantidad de personas. Para cocinar para más o menos: Paso 1, busca por cuánto se multiplica (o divide) la cantidad de personas. Paso 2, multiplica (o divide) cada ingrediente por ese mismo número. Si te cuesta, calcula primero para 1 persona.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-08\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Panqueques para 4 con 2 huevos. Para 8 personas (el doble): 4 huevos. Para 2 personas (la mitad): 1 huevo.",
+    "status": "published",
+    "questions": [
+      [
+        "Receta para 4 con 2 huevos; para 8",
+        4,
+        "Una receta para 4 personas lleva 2 huevos. ¿Cuántos huevos necesitas para 8 personas?",
+        "🍳 8 personas es el doble de 4.",
+        "2 · 2 = 4 huevos.",
+        [
+          [
+            6,
+            "No se suma: 8 es el doble de 4, así que los huevos también: 4."
+          ]
+        ]
+      ],
+      [
+        "Para 6 con 300 g de harina; para 2",
+        100,
+        "Una receta para 6 personas usa 300 g de harina. ¿Cuánta harina necesitas para 2 personas?",
+        "2 es un tercio de 6.",
+        "300 ÷ 3 = 100 g.",
+        [
+          [
+            150,
+            "2 personas es un tercio de 6, no la mitad: 100 g."
+          ]
+        ]
+      ],
+      [
+        "Para 4 con 1/2 taza de azúcar; para 12",
+        1.5,
+        "Una receta para 4 usa 1/2 taza de azúcar. ¿Cuántas tazas para 12 personas?",
+        "12 es el triple de 4.",
+        "1/2 · 3 = 3/2 = 1,5 tazas.",
+        [
+          [
+            0.5,
+            "Hay que triplicar: 1/2 · 3 = 1,5."
+          ]
+        ]
+      ],
+      [
+        "Para 5 con 750 ml de leche; para 1",
+        150,
+        "Una receta para 5 personas usa 750 ml de leche. ¿Cuánta leche es por persona?",
+        "Divide por 5.",
+        "750 ÷ 5 = 150 ml.",
+        [
+          [
+            3750,
+            "Se divide: 750 ÷ 5 = 150."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Para 2 con 3 papas; para 6",
+      9,
+      "Una receta para 2 personas lleva 3 papas. ¿Cuántas para 6 personas?",
+      "6 es el triple de 2.",
+      "3 · 3 = 9 papas.",
+      [
+        [
+          7,
+          "No se suma: se triplica. 9."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "problemas-cuentas",
+    "since": "2026-10-21",
+    "title": "Problemas: cuentas de la casa",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 04 · Boletas, propinas y repartir",
+    "concept": "En las cuentas de la casa aparecen porcentajes y repartos. Propina del 10 %: divide por 10. Repartir una cuenta en partes iguales: divide por la cantidad de personas. Un aumento de tarifa: calcula el porcentaje y súmalo. Paso a paso: anota los datos, decide la operación, calcula y revisa.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-04\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Cuenta de $24.000 con 10 % de propina: 2.400; total 26.400. Entre 4 personas: 6.600 cada una.",
+    "status": "published",
+    "questions": [
+      [
+        "Propina 10 % de 24.000",
+        2400,
+        "La cuenta del restorán es $24.000. ¿Cuánto es la propina del 10 %?",
+        "🧾 El 10 % es dividir por 10.",
+        "24.000 ÷ 10 = $2.400.",
+        [
+          [
+            240,
+            "10 % es dividir por 10, no por 100: 2.400."
+          ]
+        ]
+      ],
+      [
+        "26.400 entre 4",
+        6600,
+        "Con propina la cuenta es $26.400 y la pagan 4 personas por igual. ¿Cuánto paga cada una?",
+        "Divide por 4.",
+        "26.400 ÷ 4 = $6.600.",
+        [
+          [
+            105600,
+            "Se reparte: se divide. 6.600."
+          ]
+        ]
+      ],
+      [
+        "Luz: 20.000 con 5 % de aumento",
+        21000,
+        "La cuenta de la luz era $20.000 y sube 5 %. ¿Cuánto será?",
+        "5 % de 20.000 es 1.000.",
+        "20.000 + 1.000 = $21.000.",
+        [
+          [
+            1000,
+            "Ese es el aumento. La cuenta nueva es 21.000."
+          ]
+        ]
+      ],
+      [
+        "Agua: 12 m³ a $800",
+        9600,
+        "Una familia gastó 12 m³ de agua y cada m³ cuesta $800. ¿Cuánto paga?",
+        "12 · 800.",
+        "$9.600.",
+        [
+          [
+            812,
+            "Sumaste. Son 12 m³ a 800 cada uno: 9.600."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Propina 10 % de 18.000",
+      1800,
+      "La cuenta es $18.000. ¿Cuánto es la propina del 10 %?",
+      "Divide por 10.",
+      "$1.800.",
+      [
+        [
+          180,
+          "10 % es dividir por 10: 1.800."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "problemas-viajes",
+    "since": "2026-10-21",
+    "title": "Problemas: viajes y horarios",
+    "subject": "matematica",
+    "grade": "7b",
+    "description": "MA07 OA 08 · Distancia, velocidad y tiempo",
+    "concept": "En un viaje se relacionan distancia, velocidad y tiempo. Distancia = velocidad · tiempo. Tiempo = distancia ÷ velocidad. Para horarios, suma la duración a la hora de salida, contando las horas y los minutos por separado (60 minutos son 1 hora).\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/7-basico/ma07-oa-08\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Un bus a 80 km/h por 3 horas recorre 240 km. Si sale a las 14:30 y el viaje dura 2 h 45 min, llega a las 17:15.",
+    "status": "published",
+    "questions": [
+      [
+        "80 km/h por 3 h",
+        240,
+        "Un bus va a 80 km/h durante 3 horas. ¿Cuántos km recorre?",
+        "🚌 Distancia = velocidad · tiempo.",
+        "80 · 3 = 240 km.",
+        [
+          [
+            83,
+            "Sumaste. Es multiplicar: 240 km."
+          ]
+        ]
+      ],
+      [
+        "300 km a 100 km/h",
+        3,
+        "Un viaje de 300 km a 100 km/h, ¿cuántas horas dura?",
+        "Tiempo = distancia ÷ velocidad.",
+        "300 ÷ 100 = 3 horas.",
+        [
+          [
+            30000,
+            "Se divide: 300 ÷ 100 = 3."
+          ]
+        ]
+      ],
+      [
+        "Sale 14:30, dura 2 h 45 min: ¿minutos de la hora de llegada?",
+        15,
+        "Un bus sale a las 14:30 y el viaje dura 2 horas y 45 minutos. Llega a las 17:?? ¿Cuántos minutos marca el reloj?",
+        "30 + 45 = 75 minutos: es 1 hora y 15 minutos.",
+        "14:30 + 2 h = 16:30; + 45 min = 17:15.",
+        [
+          [
+            75,
+            "75 minutos es 1 hora y 15 minutos: llega a las 17:15."
+          ]
+        ]
+      ],
+      [
+        "Bicicleta 15 km/h, 45 km",
+        3,
+        "En bicicleta vas a 15 km/h. ¿Cuántas horas tardas en recorrer 45 km?",
+        "45 ÷ 15.",
+        "3 horas.",
+        [
+          [
+            675,
+            "Se divide: 45 ÷ 15 = 3."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "60 km/h por 2 h",
+      120,
+      "Un auto va a 60 km/h durante 2 horas. ¿Cuántos km recorre?",
+      "60 · 2.",
+      "120 km.",
+      [
+        [
+          62,
+          "Se multiplica: 120."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "problemas-pintar",
+    "since": "2026-10-21",
+    "title": "Problemas: pintar y embaldosar",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 23 · Área en la casa",
+    "concept": "Para pintar una pared o poner baldosas necesitas el área. Paso 1: área = largo · alto (o largo · ancho). Paso 2: divide el área por lo que cubre cada tarro o cada caja. Paso 3: si no es exacto, compra uno más: no se puede comprar medio tarro.\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/1o-6o-basico/matematica/4-basico/ma04-oa-23\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Pared de 4 m por 3 m: 12 m². Un tarro pinta 5 m²: 12 ÷ 5 = 2,4, así que compras 3 tarros.",
+    "status": "published",
+    "questions": [
+      [
+        "Pared 4 m por 3 m: área",
+        12,
+        "Quieres pintar una pared de 4 m de largo y 3 m de alto. ¿Cuántos m² tiene?",
+        "🎨 Área = largo · alto.",
+        "4 · 3 = 12 m².",
+        [
+          [
+            14,
+            "Ese es el perímetro. Para pintar se usa el área: 12."
+          ],
+          [
+            7,
+            "Sumaste. Es multiplicar: 12."
+          ]
+        ]
+      ],
+      [
+        "12 m², tarro de 5 m²: tarros",
+        3,
+        "Cada tarro pinta 5 m². ¿Cuántos tarros necesitas para 12 m²?",
+        "12 ÷ 5 = 2,4. ¿Se puede comprar 2,4 tarros?",
+        "Con 2 tarros pintas 10 m²: falta. Compras 3.",
+        [
+          [
+            2,
+            "Con 2 tarros pintas 10 m² y faltan 2: compra 3."
+          ],
+          [
+            2.4,
+            "No se vende 0,4 tarro: compra 3."
+          ]
+        ]
+      ],
+      [
+        "Piso 5 m por 4 m, caja de 2 m²: cajas",
+        10,
+        "Un piso mide 5 m por 4 m. Cada caja de baldosas cubre 2 m². ¿Cuántas cajas necesitas?",
+        "Área: 5 · 4. Después ÷ 2.",
+        "20 ÷ 2 = 10 cajas.",
+        [
+          [
+            18,
+            "Usaste el perímetro. El área es 20: 10 cajas."
+          ]
+        ]
+      ],
+      [
+        "Pieza 3 m por 3 m, baldosa de 1 m²: baldosas",
+        9,
+        "Una pieza cuadrada mide 3 m por lado. Cada baldosa mide 1 m². ¿Cuántas baldosas necesitas?",
+        "Área: 3 · 3.",
+        "9 baldosas.",
+        [
+          [
+            12,
+            "Ese es el perímetro. Para el piso: 3 · 3 = 9."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Pared 5 m por 2 m: área",
+      10,
+      "¿Cuántos m² tiene una pared de 5 m por 2 m?",
+      "5 · 2.",
+      "10 m².",
+      [
+        [
+          14,
+          "Ese es el perímetro. El área: 10."
+        ]
+      ]
+    ]
   }
 ];

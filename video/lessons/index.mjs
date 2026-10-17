@@ -116,12 +116,27 @@ import interesSimple from "./interes-simple.mjs";
 import interesComp from "./interes-compuesto.mjs";
 import logBase from "./logaritmo-base.mjs";
 import numeroE from "./numero-e.mjs";
+import bMult2 from "./base-mult-dos-cifras.mjs";
+import bDivLarga from "./base-division-larga.mjs";
+import bRedondeo from "./base-redondeo.mjs";
+import bLongitud from "./base-longitud.mjs";
+import bTiempo from "./base-tiempo.mjs";
+import bMasa from "./base-masa.mjs";
+import bPerimetro from "./base-perimetro.mjs";
+import bFracEq from "./base-fracciones-equivalentes.mjs";
+import pCompras from "./problemas-compras.mjs";
+import pAhorro from "./problemas-ahorro.mjs";
+import pRecetas from "./problemas-recetas.mjs";
+import pCuentas from "./problemas-cuentas.mjs";
+import pViajes from "./problemas-viajes.mjs";
+import pPintar from "./problemas-pintar.mjs";
 import jerarquiaMult from "./jerarquia-mult.mjs";
 import jerarquiaParentesis from "./jerarquia-parentesis.mjs";
 import jerarquiaEnteros from "./jerarquia-enteros.mjs";
 import jerarquiaPotencias from "./jerarquia-potencias.mjs";
 
 export const lessons = [
+  bMult2, bDivLarga, bRedondeo, bLongitud, bTiempo, bMasa, bPerimetro, bFracEq, pCompras, pAhorro, pRecetas, pCuentas, pViajes, pPintar,
   interesSimple, interesComp, logBase, numeroE,
   talloHojas, teselados, construcciones, pit3d, engano, euclides, rectaAj, probSoc, valAbs, composicion, limites, derivadas, integrales,
   complejos, complejosMult, dispersion, probCond, modExpLog, circAng, credito, sueldo, binomial, normal, fPot, fTrig,
