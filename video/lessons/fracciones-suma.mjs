@@ -37,6 +37,11 @@ export default {
       eq: "1/2 + 1/4 = 2/4 + 1/4 = 3/4",
     },
     {
+      say: "Paso a paso, para un medio más un tercio. Paso uno: busca un número de abajo común: seis. Paso dos: transforma cada fracción. Paso tres: suma los de arriba y deja el de abajo.",
+      visual: { type: "lines", lines: ["Paso 1: abajo común: 6", "Paso 2: 1/2 = 3/6 y 1/3 = 2/6", "Paso 3: 3/6 + 2/6 = {{5/6}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: si los trozos son del mismo tamaño, suma solo los de arriba. Si no, primero córtalos en trozos iguales. Y el de abajo no se suma.",
       visual: {
         type: "list",

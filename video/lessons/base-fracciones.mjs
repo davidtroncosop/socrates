@@ -36,6 +36,11 @@ export default {
       eq: "1/2 = 4/8",
     },
     {
+      say: "Paso a paso, para tres cuartos de veinte. Paso uno: divide por el número de abajo. Paso dos: multiplica por el de arriba.",
+      visual: { type: "lines", lines: ["Paso 1: 20 ÷ 4 = 5", "Paso 2: 5 · 3 = {{15}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: el número de abajo dice en cuántas partes iguales se corta. El de arriba, cuántas tomas. Y para calcular tres cuartos de veinte, divide en cuatro y toma tres.",
       visual: {
         type: "list",

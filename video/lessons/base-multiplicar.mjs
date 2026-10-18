@@ -33,6 +33,11 @@ export default {
       visual: { type: "lines", lines: ["7 · 3 = 21", "7 · 6 = doble de 21 = [[42]]"] },
     },
     {
+      say: "Paso a paso, para seis por catorce. Paso uno: separa el catorce en diez y cuatro. Paso dos: multiplica cada parte. Paso tres: suma.",
+      visual: { type: "lines", lines: ["Paso 1: 14 = 10 + 4", "Paso 2: 6 · 10 = 60 y 6 · 4 = 24", "Paso 3: 60 + 24 = {{84}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda los atajos: por dos, el doble. Por cuatro, el doble del doble. Por cinco, la mitad de por diez. Y por nueve, por diez menos una vez.",
       visual: {
         type: "list",

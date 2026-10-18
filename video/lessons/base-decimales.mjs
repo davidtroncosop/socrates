@@ -32,6 +32,11 @@ export default {
       visual: { type: "lines", lines: ["3 − 0,4", "= 3[[,0]] − 0,4", "= 2,6"] },
     },
     {
+      say: "Paso a paso, para sumar uno coma cinco más dos coma treinta. Paso uno: alinea las comas. Paso dos: suma como siempre. Paso tres: baja la coma.",
+      visual: { type: "lines", lines: ["Paso 1:  1,50 + 2,30", "Paso 2: 150 + 230 = 380", "Paso 3: {{3,80}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: un metro tiene cien centímetros. La coma va debajo de la coma. Y si falta una cifra, agrega un cero.",
       visual: {
         type: "list",

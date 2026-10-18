@@ -31,6 +31,11 @@ export default {
       eq: "",
     },
     {
+      say: "Paso a paso, para treinta láminas entre cuatro amigos. Paso uno: busca qué número por cuatro se acerca a treinta sin pasarse. Paso dos: lo que sobra es el resto.",
+      visual: { type: "lines", lines: ["Paso 1: 4 · 7 = 28", "Paso 2: 30 − 28 = 2 de resto", "7 láminas cada uno, sobran {{2}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: dividir es repartir en partes iguales. Piensa en la multiplicación al revés. Y lo que no se puede repartir parejo es el resto.",
       visual: {
         type: "list",

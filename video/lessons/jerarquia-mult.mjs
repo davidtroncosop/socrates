@@ -48,6 +48,11 @@ export default {
       visual: { type: "lines", lines: ["18 − 2 · 5 + 4", "= 18 − [[10]] + 4", "= 8 + 4", "= 12"] },
     },
     {
+      say: "Paso a paso, con veinte menos dos por cinco. Paso uno: busca las multiplicaciones y divisiones y resuélvelas. Paso dos: después, sumas y restas de izquierda a derecha.",
+      visual: { type: "lines", lines: ["20 − 2 · 5", "Paso 1: 2 · 5 = 10 → 20 − 10", "Paso 2: 20 − 10 = {{10}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: primero se abren los paquetes, las multiplicaciones y divisiones. Después las sumas y restas. Y en el mismo nivel, de izquierda a derecha.",
       visual: {
         type: "list",

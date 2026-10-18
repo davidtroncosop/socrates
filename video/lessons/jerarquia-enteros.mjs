@@ -46,6 +46,11 @@ export default {
       visual: { type: "lines", lines: ["(−3 + 7) · 2 − 10", "= [[4]] · 2 − 10", "= [[8]] − 10", "= −2"] },
     },
     {
+      say: "Paso a paso, con menos tres por cuatro, más diez. Paso uno: multiplica, cuidando el signo. Paso dos: suma de izquierda a derecha.",
+      visual: { type: "lines", lines: ["−3 · 4 + 10", "Paso 1: −3 · 4 = −12", "Paso 2: −12 + 10 = {{−2}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: la jerarquía es la misma con negativos. Primero los paquetes, y después el ascensor: sumar es subir, restar es bajar.",
       visual: {
         type: "list",

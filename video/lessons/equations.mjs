@@ -81,6 +81,11 @@ export default {
       eq: "2 · 6 + 3 = 15 {{✓}}",
     },
     {
+      say: "Paso a paso, con tres equis más cuatro igual diecinueve. Paso uno: quita el cuatro restando en los dos lados. Paso dos: divide los dos lados por tres. Paso tres: comprueba.",
+      visual: { type: "lines", lines: ["Paso 1: 3x + 4 − 4 = 19 − 4 → 3x = 15", "Paso 2: 3x ÷ 3 = 15 ÷ 3 → x = 5", "Paso 3: 3 · 5 + 4 = 19 ✓"] },
+      eq: "",
+    },
+    {
       say: "Recuerda las dos reglas de la balanza: lo que haces en un lado, lo haces en el otro. Y deshaz las operaciones en orden inverso, como los zapatos y los calcetines.",
       visual: {
         type: "list",

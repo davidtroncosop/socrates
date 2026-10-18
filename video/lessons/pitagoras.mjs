@@ -51,6 +51,11 @@ export default {
       visual: { type: "lines", lines: ["4² + b² = 5²", "16 + b² = 25", "b² = 9  →  b = 3 m"] },
     },
     {
+      say: "Paso a paso, con catetos seis y ocho. Paso uno: eleva cada cateto al cuadrado. Paso dos: súmalos. Paso tres: saca la raíz.",
+      visual: { type: "lines", lines: ["Paso 1: 6² = 36 y 8² = 64", "Paso 2: 36 + 64 = 100", "Paso 3: √100 = {{10}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: Pitágoras funciona solo en triángulos rectángulos, y la hipotenusa es siempre el lado más largo, frente a la esquina recta.",
       visual: {
         type: "list",

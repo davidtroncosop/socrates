@@ -45,6 +45,11 @@ export default {
       eq: "",
     },
     {
+      say: "Paso a paso, para cuarenta y dos menos diecisiete. Paso uno: ordena por columnas. Paso dos: empieza por las unidades; si no alcanza, pide una decena prestada. Paso tres: sigue con las decenas.",
+      visual: { type: "lines", lines: ["Paso 1: 42 − 17 en columnas", "Paso 2: 2 − 7 no alcanza → 12 − 7 = 5", "Paso 3: 3 − 1 = 2 → {{25}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: suma y resta cada lugar por separado. Si juntas diez o más, lleva uno. Si no alcanza, haz el canje. Y comprueba: la resta se revisa con una suma.",
       visual: {
         type: "list",

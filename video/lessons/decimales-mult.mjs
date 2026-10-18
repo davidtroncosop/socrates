@@ -28,6 +28,11 @@ export default {
       visual: { type: "lines", lines: ["4 enteros ÷ 4 = 1", "8 décimas ÷ 4 = 2 décimas", "4,8 ÷ 4 = {{1,2}}"] },
     },
     {
+      say: "Paso a paso, para uno coma cinco por tres. Paso uno: multiplica sin la coma. Paso dos: cuenta los decimales. Paso tres: pon la coma.",
+      visual: { type: "lines", lines: ["Paso 1: 15 · 3 = 45", "Paso 2: 1,5 tiene 1 decimal", "Paso 3: {{4,5}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: multiplica como si no hubiera coma y después pon la coma con los mismos decimales. Por diez, corre la coma a la derecha.",
       visual: {
         type: "list",

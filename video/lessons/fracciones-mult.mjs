@@ -34,6 +34,11 @@ export default {
       eq: "3 ÷ 1/2 = 6",
     },
     {
+      say: "Paso a paso, para dos tercios dividido en un cuarto. Paso uno: da vuelta la segunda fracción. Paso dos: multiplica arriba por arriba y abajo por abajo. Paso tres: simplifica si se puede.",
+      visual: { type: "lines", lines: ["Paso 1: 2/3 ÷ 1/4 → 2/3 · 4/1", "Paso 2: 8/3", "Paso 3: ya no se simplifica: {{8/3}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: para multiplicar, arriba por arriba y abajo por abajo; es tomar una parte de una parte. Y dividir es contar cuántas veces cabe.",
       visual: {
         type: "list",

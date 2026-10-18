@@ -47,6 +47,11 @@ export default {
       visual: { type: "cards", items: [{ icon: "⚠️", title: "Todos los términos", text: "0,2x − 1 = 3 → 2x − 10 = 30, no 2x − 1 = 3" }] },
     },
     {
+      say: "Paso a paso, con equis medios más uno igual cuatro. Paso uno: quita el uno, restando en los dos lados. Paso dos: deshaz la división multiplicando por dos. Paso tres: comprueba.",
+      visual: { type: "lines", lines: ["Paso 1: x/2 = 4 − 1 = 3", "Paso 2: x = 3 · 2 = 6", "Paso 3: 6/2 + 1 = 4 ✓"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: un decimal delante de equis es una parte de la bolsa. Y si multiplicas todos los términos por el mismo número, la ecuación sigue en equilibrio, pero sin comas.",
       visual: {
         type: "list",

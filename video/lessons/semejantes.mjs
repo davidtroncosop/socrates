@@ -43,6 +43,11 @@ export default {
       visual: { type: "lines", lines: ["4x + 3y + 2x − y", "= (4x + 2x) + (3y − y)", "= 6x + 2y"] },
     },
     {
+      say: "Paso a paso, con tres equis más dos y más cinco equis menos uno. Paso uno: agrupa los términos con equis. Paso dos: agrupa los números. Paso tres: súmalos por separado.",
+      visual: { type: "lines", lines: ["Paso 1: 3x + 5x", "Paso 2: 2 − 1", "Paso 3: 8x + 1"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: se juntan solo los términos con el mismo apellido; se suman o restan sus coeficientes, y la letra se mantiene igual.",
       visual: {
         type: "list",

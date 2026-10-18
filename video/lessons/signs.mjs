@@ -69,6 +69,11 @@ export default {
       visual: { type: "lines", lines: ["−2(x − 3) = 10", "−2x + 6 = 10", "−2x + 6 [[− 6]] = 10 [[− 6]]", "−2x = 4", "x = 4 [[÷ (−2)]] = −2", "{{−2 · (−2 − 3) = −2 · (−5) = 10 ✓}}"] },
     },
     {
+      say: "Paso a paso, con menos dos por, abre paréntesis, equis menos tres. Paso uno: el menos dos multiplica a cada término. Paso dos: aplica la regla de los signos. Paso tres: escribe el resultado.",
+      visual: { type: "lines", lines: ["Paso 1: −2 · x  y  −2 · (−3)", "Paso 2: −2x  y  +6", "Paso 3: −2x + 6"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: cada signo menos es una media vuelta, y dos medias vueltas se cancelan. Y el cartero del paréntesis entrega en todas las casas.",
       visual: {
         type: "list",

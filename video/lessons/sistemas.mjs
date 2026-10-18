@@ -29,6 +29,11 @@ export default {
       visual: { type: "lines", lines: ["x = {{7}}", "7 + y = 10 → y = {{3}}", "7 − 3 = 4 ✓"] },
     },
     {
+      say: "Paso a paso, con equis más y igual doce y equis menos y igual cuatro. Paso uno: suma las ecuaciones para que la y desaparezca. Paso dos: despeja equis. Paso tres: reemplaza para encontrar y. Paso cuatro: comprueba en las dos.",
+      visual: { type: "lines", lines: ["Paso 1: 2x = 16", "Paso 2: x = 8", "Paso 3: 8 + y = 12 → y = 4", "Paso 4: 8 − 4 = 4 ✓"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: suma o resta las ecuaciones para que una letra desaparezca. Encuentra una, reemplaza para la otra, y comprueba en las dos.",
       visual: {
         type: "list",

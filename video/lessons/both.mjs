@@ -55,6 +55,11 @@ export default {
       eq: "",
     },
     {
+      say: "Paso a paso, con cinco equis más dos igual dos equis más once. Paso uno: junta las equis en un lado, restando dos equis. Paso dos: deja los números en el otro, restando dos. Paso tres: divide. Paso cuatro: comprueba.",
+      visual: { type: "lines", lines: ["Paso 1: 5x − 2x + 2 = 11 → 3x + 2 = 11", "Paso 2: 3x = 11 − 2 = 9", "Paso 3: x = 9 ÷ 3 = 3", "Paso 4: 5 · 3 + 2 = 17 = 2 · 3 + 11 ✓"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: junta las bolsas en un lado y las bolitas en el otro, quitando siempre lo mismo de ambos platos. Y comprueba al final.",
       visual: {
         type: "list",

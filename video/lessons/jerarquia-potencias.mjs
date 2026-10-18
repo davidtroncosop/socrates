@@ -36,6 +36,11 @@ export default {
       visual: { type: "lines", lines: ["3 · 2² − (6 − 1)", "= 3 · 2² − [[5]]", "= 3 · [[4]] − 5", "= [[12]] − 5", "= 7"] },
     },
     {
+      say: "Paso a paso, con dos más tres al cuadrado. Paso uno: paréntesis. Paso dos: potencias. Paso tres: multiplicaciones y divisiones. Paso cuatro: sumas y restas.",
+      visual: { type: "lines", lines: ["2 + 3²", "Paso 2: 3² = 9", "Paso 4: 2 + 9 = {{11}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda el orden completo: paréntesis, potencias, multiplicación y división, y al final adición y sustracción. En cada nivel, de izquierda a derecha.",
       visual: {
         type: "list",

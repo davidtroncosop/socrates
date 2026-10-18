@@ -41,6 +41,11 @@ export default {
       visual: { type: "lines", lines: ["3x = 45", "x = 45 [[÷ 3]]", "x = 15"] },
     },
     {
+      say: "Paso a paso: si tres cuadernos cuestan seis mil, ¿cuánto cuestan cinco? Paso uno: busca el valor de uno, dividiendo. Paso dos: multiplica por la cantidad que te piden.",
+      visual: { type: "lines", lines: ["Paso 1: 6.000 ÷ 3 = 2.000 cada uno", "Paso 2: 2.000 · 5 = {{10.000}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: busca el valor de uno, multiplícalo por la cantidad que te piden, y si el cociente es siempre igual, la relación es proporcional.",
       visual: {
         type: "list",

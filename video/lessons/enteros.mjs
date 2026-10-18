@@ -51,6 +51,11 @@ export default {
       eq: "−6 + 14 = 8",
     },
     {
+      say: "Paso a paso, con menos siete más cinco. Paso uno: ubica el primer número en la recta. Paso dos: si sumas un positivo, avanza; si es negativo, retrocede. Paso tres: lee dónde quedaste.",
+      visual: { type: "lines", lines: ["Paso 1: parte en −7", "Paso 2: + 5 → avanza 5", "Paso 3: llegas a {{−2}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: sumar es subir, restar es bajar, y restar un negativo es quitar una deuda: también es subir.",
       visual: {
         type: "list",

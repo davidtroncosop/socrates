@@ -25,6 +25,11 @@ export default {
       visual: { type: "lines", lines: ["desviación pequeña → parejo", "desviación grande → disperso"] },
     },
     {
+      say: "Paso a paso, para la desviación estándar de dos, cuatro, seis. Paso uno: calcula el promedio. Paso dos: resta el promedio a cada dato. Paso tres: eleva al cuadrado. Paso cuatro: promedia: es la varianza. Paso cinco: saca la raíz.",
+      visual: { type: "lines", lines: ["1: promedio 4  ·  2: −2, 0, 2", "3: 4, 0, 4", "4: 8 ÷ 3 ≈ 2,67", "5: √2,67 ≈ {{1,63}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: el promedio dice dónde está el centro y la dispersión, qué tan repartidos están los datos. Rango: mayor menos menor. Desviación: la raíz de la varianza.",
       visual: {
         type: "list",

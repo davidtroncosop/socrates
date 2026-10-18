@@ -45,6 +45,11 @@ export default {
       eq: "",
     },
     {
+      say: "Paso a paso, para el veinticinco por ciento de ochenta. Paso uno: multiplica por el porcentaje. Paso dos: divide por cien.",
+      visual: { type: "lines", lines: ["Paso 1: 80 · 25 = 2.000", "Paso 2: 2.000 ÷ 100 = {{20}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: un porcentaje es una parte de cada cien. Para calcularlo, multiplica por el porcentaje y divide por cien. Y en un descuento, resta lo que calculaste.",
       visual: {
         type: "list",

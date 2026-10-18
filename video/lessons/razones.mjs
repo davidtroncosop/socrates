@@ -34,6 +34,11 @@ export default {
       visual: { type: "lines", lines: ["3 : 1", "12 = 3 · [[4]]", "Leche: 1 · 4 = {{4}}"] },
     },
     {
+      say: "Paso a paso: por cada dos rojas hay tres azules. Con ocho rojas, ¿cuántas azules? Paso uno: busca por cuánto se multiplicó el dos. Paso dos: multiplica el tres por lo mismo.",
+      visual: { type: "lines", lines: ["Paso 1: 8 = 2 · 4", "Paso 2: 3 · 4 = {{12}} azules"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: una razón dice por cada tanto, hay tanto. Busca cuántas veces se repite el grupo y multiplica las dos cantidades por ese número.",
       visual: {
         type: "list",

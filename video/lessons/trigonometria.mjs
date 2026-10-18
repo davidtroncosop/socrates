@@ -32,6 +32,11 @@ export default {
       visual: { type: "lines", lines: ["opuesto = hipotenusa · sen", "10 · 0,5 = {{5 m}}"] },
     },
     {
+      say: "Paso a paso, para encontrar un lado con el seno. Paso uno: marca el ángulo y nombra los lados. Paso dos: elige la razón que une lo que sabes con lo que buscas. Paso tres: despeja y calcula.",
+      visual: { type: "lines", lines: ["Paso 1: hipotenusa 10, ángulo 30°", "Paso 2: sen = opuesto ÷ hipotenusa", "Paso 3: opuesto = 10 · 0,5 = {{5}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: identifica opuesto, adyacente e hipotenusa desde tu ángulo, y usa SOH CAH TOA.",
       visual: {
         type: "list",

@@ -27,6 +27,11 @@ export default {
       visual: { type: "lines", lines: ["x² + 3x = 0", "x(x + 3) = 0", "x = {{0}} o x = {{−3}}"] },
     },
     {
+      say: "Paso a paso, con equis al cuadrado menos siete equis más diez igual cero. Paso uno: busca dos números que sumen siete y multipliquen diez. Paso dos: factoriza. Paso tres: iguala cada factor a cero.",
+      visual: { type: "lines", lines: ["Paso 1: 2 y 5", "Paso 2: (x − 2)(x − 5) = 0", "Paso 3: x = {{2}} o x = {{5}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: una ecuación cuadrática puede tener dos soluciones. Factoriza y haz cero cada factor.",
       visual: {
         type: "list",

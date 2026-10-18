@@ -26,6 +26,11 @@ export default {
       eq: "",
     },
     {
+      say: "Paso a paso, con bases diez y seis y altura cuatro. Paso uno: suma las bases. Paso dos: multiplica por la altura. Paso tres: divide por dos.",
+      visual: { type: "lines", lines: ["Paso 1: 10 + 6 = 16", "Paso 2: 16 · 4 = 64", "Paso 3: 64 ÷ 2 = {{32}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: suma las dos bases, multiplica por la altura y no olvides dividir por dos.",
       visual: {
         type: "list",

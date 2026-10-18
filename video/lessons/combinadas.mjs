@@ -58,6 +58,11 @@ export default {
       visual: { type: "lines", lines: [...solve, "{{2(3 · 4 − 1) = 22   y   4 · 4 + 6 = 22 ✓}}"], size: 64 },
     },
     {
+      say: "Paso a paso, con dos por, abre paréntesis, equis más tres, igual a equis más diez. Paso uno: distribuye. Paso dos: junta las equis. Paso tres: despeja. Paso cuatro: comprueba.",
+      visual: { type: "lines", lines: ["Paso 1: 2x + 6 = x + 10", "Paso 2: 2x − x = 10 − 6", "Paso 3: x = 4", "Paso 4: 2 · (4 + 3) = 14 = 4 + 10 ✓"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: desempaca multiplicando cada término del paréntesis, ordena juntando las equis y los números, y despeja. Al final, comprueba.",
       visual: {
         type: "list",

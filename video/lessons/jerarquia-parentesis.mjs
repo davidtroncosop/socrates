@@ -46,6 +46,11 @@ export default {
       visual: PAPOMUDAS,
     },
     {
+      say: "Paso a paso, con tres por, abre paréntesis, cuatro más dos. Paso uno: resuelve el paréntesis. Paso dos: sigue con multiplicaciones y divisiones. Paso tres: al final, sumas y restas.",
+      visual: { type: "lines", lines: ["3 · (4 + 2)", "Paso 1: 4 + 2 = 6", "Paso 2: 3 · 6 = {{18}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: lo que está dentro del paréntesis va primero. Con cajas dentro de cajas, se empieza por la más chica. Y el orden completo es PAPOMUDAS.",
       visual: {
         type: "list",

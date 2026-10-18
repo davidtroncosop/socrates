@@ -29,6 +29,11 @@ export default {
       visual: { type: "lines", lines: ["40 → 50: aumentó 10", "10 ÷ [[40]] = 0,25 = {{25 %}}"] },
     },
     {
+      say: "Paso a paso, para un descuento del treinta por ciento sobre diez mil. Paso uno: calcula el porcentaje. Paso dos: réstalo si es descuento, o súmalo si es aumento.",
+      visual: { type: "lines", lines: ["Paso 1: 30 % de 10.000 = 3.000", "Paso 2: 10.000 − 3.000 = {{7.000}}"] },
+      eq: "",
+    },
+    {
       say: "Recuerda: calcula el porcentaje del precio. En un descuento, réstalo. En un aumento, súmalo. Y para saber el porcentaje de cambio, compara con lo de antes.",
       visual: {
         type: "list",

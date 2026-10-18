@@ -50,6 +50,11 @@ export default {
       visual: { type: "lines", lines: ["5 000 + 300x = 3 000 + 500x", "2 000 = 200x", "x = 10"] },
     },
     {
+      say: "Paso a paso, para un problema en palabras. Paso uno: decide qué es equis. Paso dos: escribe la ecuación con los datos. Paso tres: resuélvela. Paso cuatro: responde con una frase y revisa si tiene sentido.",
+      visual: { type: "lines", lines: ["Paso 1: x = lo que no sé", "Paso 2: traduce: «el doble más 5 es 21» → 2x + 5 = 21", "Paso 3: x = 8", "Paso 4: «El número es 8» ✓"] },
+      eq: "",
+    },
+    {
       say: "Para modelar: define la equis, traduce frase por frase, resuelve, y vuelve al problema para ver si la respuesta tiene sentido.",
       visual: {
         type: "list",
