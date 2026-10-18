@@ -12,7 +12,9 @@ const lessons = process.env.SCRIPT
 
 const wanted = process.argv.slice(2);
 const serveUrl = await bundle({ entryPoint: resolve(process.env.ENTRY || new URL("./src/index.jsx", import.meta.url).pathname) });
-for (const { id } of lessons.filter((l) => !wanted.length || wanted.includes(l.id))) {
+for (const { id: lessonId } of lessons.filter((l) => !wanted.length || wanted.includes(l.id))) {
+  // COMPOSITION elige otra composición del mismo guion (por ejemplo, la vertical).
+  const id = process.env.COMPOSITION || lessonId;
   const composition = await selectComposition({ serveUrl, id });
   const outputLocation = new URL(`./out/${id}.mp4`, import.meta.url).pathname;
   const started = Date.now();

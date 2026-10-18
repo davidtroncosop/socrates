@@ -55,6 +55,8 @@ El guion está en `promo/socatres.mjs` y usa capturas de la app (`public/promo/`
 ```sh
 FISH_AUDIO_VOICE_ID=<voz> SCRIPT=promo/socatres.mjs node --env-file=../.env narrate.mjs
 SCRIPT=promo/socatres.mjs ENTRY=src/promo.jsx node render.mjs   # → out/promo-socatres.mp4
+# Vertical (9:16), con la misma narración y capturas de celular (public/promo/*-celular.png):
+SCRIPT=promo/socatres-vertical.mjs ENTRY=src/promo-vertical.jsx COMPOSITION=promo-socatres-vertical node render.mjs
 ```
 
 Una variable ya definida en el entorno tiene prioridad sobre `../.env`. En un paso, `caption` reemplaza el subtítulo cuando la voz debe decir algo distinto (por ejemplo, una dirección web).
