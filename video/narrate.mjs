@@ -3,7 +3,13 @@
 // Solo vuelve a pedir las frases cuyo texto o voz cambió.
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile, access } from "node:fs/promises";
-import { lessons } from "./lessons/index.mjs";
+import { pathToFileURL } from "node:url";
+import { resolve } from "node:path";
+
+// SCRIPT=promo/socatres.mjs narra un guion suelto (por ejemplo, el promocional).
+const lessons = process.env.SCRIPT
+  ? [(await import(pathToFileURL(resolve(process.env.SCRIPT)).href)).default]
+  : (await import("./lessons/index.mjs")).lessons;
 
 const wanted = process.argv.slice(2);
 const env = process.env;

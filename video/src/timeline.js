@@ -19,7 +19,7 @@ export function buildTimeline(lesson, manifest) {
     const speak = Math.ceil(audio.seconds * FPS);
     const last = i === lesson.beats.length - 1;
     const duration = LEAD + speak + TAIL + (last ? END_HOLD : 0);
-    const item = { say: beat.say, eq, visual, audio: audio.file, from, duration, speak };
+    const item = { say: beat.say, caption: beat.caption ?? beat.say, eq, visual, audio: audio.file, from, duration, speak };
     from += duration;
     return item;
   });

@@ -48,6 +48,17 @@ pista, `{{…}}` una idea clave o comprobación y `~~…~~` lo que se descarta.
 Para cambiar una frase basta editarla y volver a correr `narrate`, `render` y
 `upload`: solo se vuelve a narrar lo que cambió.
 
+## Video promocional
+
+El guion está en `promo/socatres.mjs` y usa capturas de la app (`public/promo/`). Se narra y renderiza aparte del catálogo, con su propia voz:
+
+```sh
+FISH_AUDIO_VOICE_ID=<voz> SCRIPT=promo/socatres.mjs node --env-file=../.env narrate.mjs
+SCRIPT=promo/socatres.mjs ENTRY=src/promo.jsx node render.mjs   # → out/promo-socatres.mp4
+```
+
+Una variable ya definida en el entorno tiene prioridad sobre `../.env`. En un paso, `caption` reemplaza el subtítulo cuando la voz debe decir algo distinto (por ejemplo, una dirección web).
+
 ## Licencias
 
 - Remotion es gratis para personas y empresas de hasta 3 empleados; sobre eso

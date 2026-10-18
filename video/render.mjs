@@ -2,10 +2,16 @@
 // Uso: npm run render (todas) o npm run render -- equations signs
 import { bundle } from "@remotion/bundler";
 import { renderMedia, selectComposition } from "@remotion/renderer";
-import { lessons } from "./lessons/index.mjs";
+import { pathToFileURL } from "node:url";
+import { resolve } from "node:path";
+
+// SCRIPT=promo/socatres.mjs ENTRY=src/promo.jsx renderiza un guion suelto.
+const lessons = process.env.SCRIPT
+  ? [(await import(pathToFileURL(resolve(process.env.SCRIPT)).href)).default]
+  : (await import("./lessons/index.mjs")).lessons;
 
 const wanted = process.argv.slice(2);
-const serveUrl = await bundle({ entryPoint: new URL("./src/index.jsx", import.meta.url).pathname });
+const serveUrl = await bundle({ entryPoint: resolve(process.env.ENTRY || new URL("./src/index.jsx", import.meta.url).pathname) });
 for (const { id } of lessons.filter((l) => !wanted.length || wanted.includes(l.id))) {
   const composition = await selectComposition({ serveUrl, id });
   const outputLocation = new URL(`./out/${id}.mp4`, import.meta.url).pathname;

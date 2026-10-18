@@ -3,6 +3,7 @@ import { loadFont } from "@remotion/google-fonts/Fustat";
 import { LEAD } from "./timeline.js";
 import { C, clamp01 } from "./anim.js";
 import { Balance } from "./visuals/Balance.jsx";
+import { Screen } from "./visuals/Screen.jsx";
 import { Cards, List, Lines, Marked, Passage, Steps, Table } from "./visuals/Text.jsx";
 import { Angles, Bars, Bell, Curve, Galton, Inscribed, Parabola, Pie, Plane, Poly, Sector, Tales, Trapezoid } from "./visuals/Geo.jsx";
 import { Area, Bar, Chart, Circle, Freq, Grid100, NumberLine, Shape, Tokens, Triangle } from "./visuals/Math.jsx";
@@ -40,6 +41,7 @@ const VISUALS = {
   inscribed: Inscribed,
   bell: Bell,
   curve: Curve,
+  screen: Screen,
 };
 
 // Zona disponible para la visualización: bajo la ecuación (si hay) y sobre
@@ -102,7 +104,7 @@ export function Lesson({ lesson, timeline }) {
         </>
       )}
       <EquationLine prev={prev ?? cur} cur={cur} t={t} />
-      <div style={{ ...styles.caption, opacity: captionIn }}>{cur.say}</div>
+      <div style={{ ...styles.caption, opacity: captionIn }}>{cur.caption}</div>
       {beats.map((b) => (
         <Sequence key={b.audio} from={b.from + LEAD} durationInFrames={b.duration - LEAD}>
           <Audio src={staticFile(`audio/${lesson.id}/${b.audio}`)} />
