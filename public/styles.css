@@ -3197,12 +3197,15 @@ select {
 /* Leer en voz alta */
 .statement-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 8px 12px;
 }
+/* En celular, el enunciado ocupa la línea completa y los botones de lectura
+   pasan abajo, en vez de apretar el texto en una columna angosta. */
 .statement-row .exercise-statement {
   margin: 0;
+  flex: 1 1 260px;
 }
 .speak-btn {
   flex: none;
@@ -3557,4 +3560,21 @@ details.handwritten-section[open] .handwritten-toggle {
 }
 .ht-reward-item button {
   flex: none;
+}
+/* En celular, el nombre del premio usa todo el ancho y el costo y el botón
+   pasan a la línea de abajo. */
+.ht-reward-item {
+  flex-wrap: wrap;
+}
+.ht-reward-item div {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+@media (max-width: 480px) {
+  .ht-reward-item .ht-r-cost {
+    margin-left: 36px;
+  }
+  .ht-reward-item button {
+    margin-left: auto;
+  }
 }
