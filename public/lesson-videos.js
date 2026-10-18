@@ -1,13 +1,13 @@
 // Generado por `npm run upload` en video/. No editar a mano.
 // Videos propios de cada lección (animados y narrados), servidos desde R2.
 export const lessonVideos = {
-  "equations": {"src":"/media/lessons/equations-73c197a00b.mp4","title":"Encuentra el valor de x: explicado en video","duration":115},
-  "signs": {"src":"/media/lessons/signs-f4c1b61ab1.mp4","title":"Haz las paces con los signos: explicado en video","duration":102},
+  "equations": {"src":"/media/lessons/equations-77c5f5d61a.mp4","title":"Encuentra el valor de x: explicado en video","duration":127},
+  "signs": {"src":"/media/lessons/signs-c4ec399b73.mp4","title":"Haz las paces con los signos: explicado en video","duration":114},
   "both": {"src":"/media/lessons/both-891d181d4c.mp4","title":"Conecta las dos partes: explicado en video","duration":94},
-  "racionales": {"src":"/media/lessons/racionales-b4fb670a6c.mp4","title":"Ecuaciones con racionales y decimales: explicado en video","duration":81},
+  "racionales": {"src":"/media/lessons/racionales-4f83d2ad5f.mp4","title":"Ecuaciones con racionales y decimales: explicado en video","duration":93},
   "combinadas": {"src":"/media/lessons/combinadas-323d85a634.mp4","title":"Distribución y reducción combinada: explicado en video","duration":99},
   "problemas": {"src":"/media/lessons/problemas-8b1a0fdb5a.mp4","title":"Modelamiento y problemas reales: explicado en video","duration":92},
-  "enteros": {"src":"/media/lessons/enteros-d25863117e.mp4","title":"Suma y resta de enteros en Z: explicado en video","duration":71},
+  "enteros": {"src":"/media/lessons/enteros-0e0234646e.mp4","title":"Suma y resta de enteros en Z: explicado en video","duration":84},
   "semejantes": {"src":"/media/lessons/semejantes-58fb1b6dcf.mp4","title":"Reducción de términos semejantes: explicado en video","duration":88},
   "proporciones": {"src":"/media/lessons/proporciones-b8a56be693.mp4","title":"Proporcionalidad directa y regla de tres: explicado en video","duration":84},
   "potencias": {"src":"/media/lessons/potencias-42eeacd011.mp4","title":"Potencias y propiedades de exponentes: explicado en video","duration":75},
@@ -29,8 +29,8 @@ export const lessonVideos = {
   "lectura-critica-1m": {"src":"/media/lessons/lectura-critica-1m-6986c43e9b.mp4","title":"Lectura crítica, posturas y falacias: explicado en video","duration":65},
   "jerarquia-mult": {"src":"/media/lessons/jerarquia-mult-82052c9fce.mp4","title":"Primero multiplicar y dividir: explicado en video","duration":102},
   "jerarquia-parentesis": {"src":"/media/lessons/jerarquia-parentesis-d2d2c08eca.mp4","title":"Los paréntesis mandan: explicado en video","duration":96},
-  "jerarquia-enteros": {"src":"/media/lessons/jerarquia-enteros-f57e63cf76.mp4","title":"Jerarquía con números enteros: explicado en video","duration":81},
-  "jerarquia-potencias": {"src":"/media/lessons/jerarquia-potencias-a75244b528.mp4","title":"Las potencias en la fila: explicado en video","duration":81},
+  "jerarquia-enteros": {"src":"/media/lessons/jerarquia-enteros-96aca50400.mp4","title":"Jerarquía con números enteros: explicado en video","duration":91},
+  "jerarquia-potencias": {"src":"/media/lessons/jerarquia-potencias-172b880437.mp4","title":"Las potencias en la fila: explicado en video","duration":93},
   "base-valor-posicional": {"src":"/media/lessons/base-valor-posicional-b95d99201d.mp4","title":"Cada cifra vale según su lugar: explicado en video","duration":56},
   "base-suma-resta": {"src":"/media/lessons/base-suma-resta-5fcea77b83.mp4","title":"Sumar y restar con canje: explicado en video","duration":84},
   "base-multiplicar": {"src":"/media/lessons/base-multiplicar-535ab2bb13.mp4","title":"Multiplicar con atajos: explicado en video","duration":62},
