@@ -6,6 +6,7 @@ import {
   classCode,
 } from "./crypto.js";
 import { validateCatalog } from "../../public/content.js";
+import { earnedFichas } from "../../public/stats.js";
 import { isPushEndpoint } from "./push.js";
 import { reminderText, isTimeZone } from "./reminders.js";
 
@@ -16,6 +17,8 @@ const MAX_BODY = 256 * 1024;
 const MAX_CATALOG = 2 * 1024 * 1024;
 const MAX_CHILDREN = 10;
 const LINK_CODE_HOURS = 24;
+const MAX_REWARDS = 12;
+const MAX_PENDING_CLAIMS = 5;
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -158,6 +161,7 @@ export function summarize(state) {
     accuracyWeek: recent.length
       ? Math.round((recent.filter((a) => a.correct).length / recent.length) * 100)
       : null,
+    fichasEarned: earnedFichas(state).total,
     // Intentos de las últimas dos semanas para el resumen semanal (lo arma el
     // navegador con la zona horaria de la familia).
     recent: attempts
@@ -170,6 +174,46 @@ export function summarize(state) {
         ...Object.values(state?.archive?.last ?? {}).filter(Number.isFinite),
       ) || null,
   };
+}
+
+// Fichas: las ganadas salen del progreso; las pedidas (pendientes o
+// aprobadas) se descuentan, para no pedir dos premios con las mismas fichas.
+async function fichasOf(env, childId, earned) {
+  if (earned === undefined) {
+    const row = await env.DB.prepare("SELECT state FROM progress WHERE user_id = ?").bind(childId).first();
+    earned = earnedFichas(row ? JSON.parse(row.state) : null).total;
+  }
+  const { spent } = await env.DB.prepare(
+    "SELECT COALESCE(SUM(cost), 0) AS spent FROM reward_claims WHERE child_id = ? AND status IN ('pending', 'approved')",
+  )
+    .bind(childId)
+    .first();
+  return { earned, spent, balance: Math.max(0, earned - spent) };
+}
+// Canjes pendientes y los decididos en las últimas dos semanas.
+async function claimsOf(env, childId) {
+  const { results } = await env.DB.prepare(
+    `SELECT id, title, cost, status, created_at AS createdAt, decided_at AS decidedAt
+     FROM reward_claims WHERE child_id = ? AND (status = 'pending' OR decided_at > ?)
+     ORDER BY created_at DESC LIMIT 20`,
+  )
+    .bind(childId, Date.now() - 14 * DAY)
+    .all();
+  return results;
+}
+const cleanCost = (value) => {
+  const cost = Number(value);
+  if (!Number.isInteger(cost) || cost < 1 || cost > 200)
+    fail(400, "El costo debe ser un número entero de fichas, entre 1 y 200.");
+  return cost;
+};
+async function rewardsOfParent(env, parentId) {
+  const { results } = await env.DB.prepare(
+    "SELECT id, title, cost FROM family_rewards WHERE parent_id = ? ORDER BY cost, title",
+  )
+    .bind(parentId)
+    .all();
+  return results;
 }
 
 // Las fotos quedan en el dispositivo: el servidor no las acepta.
@@ -329,13 +373,18 @@ const routes = {
       )
         .bind(user.id, user.id)
         .all();
-      return json({
-        children: results.map(({ state, createdByMe, ...child }) => ({
+      const children = [];
+      for (const { state, createdByMe, ...child } of results) {
+        const summary = summarize(state ? JSON.parse(state) : null);
+        children.push({
           ...child,
           createdByMe: Boolean(createdByMe),
-          ...summarize(state ? JSON.parse(state) : null),
-        })),
-      });
+          ...summary,
+          fichas: await fichasOf(env, child.id, summary.fichasEarned),
+          claims: await claimsOf(env, child.id),
+        });
+      }
+      return json({ children, rewards: await rewardsOfParent(env, user.id) });
     }
     const { results } = await env.DB.prepare(
       `SELECT u.name FROM family_links f JOIN users u ON u.id = f.parent_id
@@ -428,6 +477,106 @@ const routes = {
         .bind(user.id, child.id)
         .run();
     return json({ ok: true, deleted: child.consent_by === user.id });
+  },
+
+  // Premios en casa ----------------------------------------------------------
+  // El estudiante ve los premios de todos sus apoderados vinculados.
+  async "GET /api/rewards"({ env, user }) {
+    requireRole(user, "student", "Los premios se ven desde la cuenta del estudiante.");
+    const { results: rewards } = await env.DB.prepare(
+      `SELECT r.id, r.title, r.cost, u.name AS parentName
+       FROM family_rewards r JOIN family_links f ON f.parent_id = r.parent_id
+       JOIN users u ON u.id = r.parent_id
+       WHERE f.child_id = ? ORDER BY r.cost, r.title`,
+    )
+      .bind(user.id)
+      .all();
+    const { linked } = await env.DB.prepare("SELECT COUNT(*) AS linked FROM family_links WHERE child_id = ?")
+      .bind(user.id)
+      .first();
+    return json({
+      rewards,
+      linked: linked > 0,
+      claims: await claimsOf(env, user.id),
+      fichas: await fichasOf(env, user.id),
+    });
+  },
+
+  async "POST /api/rewards"({ request, env, user }) {
+    requireRole(user, "parent", "Solo un apoderado puede agregar premios.");
+    const body = await readJson(request);
+    const title = cleanName(body.title, "el premio", 60);
+    const cost = cleanCost(body.cost);
+    const { count } = await env.DB.prepare("SELECT COUNT(*) AS count FROM family_rewards WHERE parent_id = ?")
+      .bind(user.id)
+      .first();
+    if (count >= MAX_REWARDS) fail(400, `Puedes tener hasta ${MAX_REWARDS} premios. Borra uno para agregar otro.`);
+    const reward = { id: crypto.randomUUID(), title, cost };
+    await env.DB.prepare("INSERT INTO family_rewards (id, parent_id, title, cost, created_at) VALUES (?, ?, ?, ?, ?)")
+      .bind(reward.id, user.id, title, cost, Date.now())
+      .run();
+    return json({ reward }, 201);
+  },
+
+  async "DELETE /api/rewards/:id"({ env, user, params }) {
+    requireRole(user, "parent", "Solo un apoderado puede borrar premios.");
+    const found = await env.DB.prepare("SELECT 1 FROM family_rewards WHERE id = ? AND parent_id = ?")
+      .bind(params.id, user.id)
+      .first();
+    if (!found) fail(404, "No encontramos ese premio.");
+    // Los canjes pendientes de este premio se rechazan y devuelven las fichas.
+    await env.DB.prepare(
+      "UPDATE reward_claims SET status = 'rejected', decided_at = ? WHERE reward_id = ? AND status = 'pending'",
+    )
+      .bind(Date.now(), params.id)
+      .run();
+    await env.DB.prepare("DELETE FROM family_rewards WHERE id = ?").bind(params.id).run();
+    return json({ ok: true });
+  },
+
+  async "POST /api/rewards/:id/claim"({ env, user, params }) {
+    requireRole(user, "student", "Solo el estudiante puede pedir un premio.");
+    const reward = await env.DB.prepare(
+      `SELECT r.* FROM family_rewards r JOIN family_links f ON f.parent_id = r.parent_id
+       WHERE r.id = ? AND f.child_id = ?`,
+    )
+      .bind(params.id, user.id)
+      .first();
+    if (!reward) fail(404, "Ese premio ya no está disponible.");
+    const { pending } = await env.DB.prepare(
+      "SELECT COUNT(*) AS pending FROM reward_claims WHERE child_id = ? AND status = 'pending'",
+    )
+      .bind(user.id)
+      .first();
+    if (pending >= MAX_PENDING_CLAIMS) fail(400, "Ya tienes varios premios esperando respuesta. Espera a que tu apoderado los revise.");
+    const { balance } = await fichasOf(env, user.id);
+    if (balance < reward.cost)
+      fail(400, `Te faltan ${reward.cost - balance} fichas para este premio. ¡Sigue practicando!`);
+    const claim = { id: crypto.randomUUID(), title: reward.title, cost: reward.cost, status: "pending", createdAt: Date.now() };
+    await env.DB.prepare(
+      `INSERT INTO reward_claims (id, child_id, parent_id, reward_id, title, cost, status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, 'pending', ?)`,
+    )
+      .bind(claim.id, user.id, reward.parent_id, reward.id, reward.title, reward.cost, claim.createdAt)
+      .run();
+    return json({ claim, fichas: await fichasOf(env, user.id) }, 201);
+  },
+
+  // Aprobar descuenta las fichas; «ahora no» las devuelve.
+  async "POST /api/claims/:id"({ request, env, user, params }) {
+    requireRole(user, "parent", "Solo un apoderado puede responder un canje.");
+    const { approve } = await readJson(request);
+    if (typeof approve !== "boolean") fail(400, "Indica si apruebas el canje.");
+    const claim = await env.DB.prepare(
+      "SELECT id FROM reward_claims WHERE id = ? AND parent_id = ? AND status = 'pending'",
+    )
+      .bind(params.id, user.id)
+      .first();
+    if (!claim) fail(404, "Ese canje ya fue respondido o no existe.");
+    await env.DB.prepare("UPDATE reward_claims SET status = ?, decided_at = ? WHERE id = ?")
+      .bind(approve ? "approved" : "rejected", Date.now(), claim.id)
+      .run();
+    return json({ ok: true, status: approve ? "approved" : "rejected" });
   },
 
   // Recordatorio diario ----------------------------------------------------------

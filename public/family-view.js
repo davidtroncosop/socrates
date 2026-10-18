@@ -2,6 +2,7 @@ import { api } from "./api.js";
 import { escape, heading } from "./ui.js";
 import { displayTitle } from "./learning.js";
 import { weeklySummary, compareText } from "./weekly.js";
+import { FICHAS_RULE_FAMILY } from "./stats.js";
 
 const dateTime = (ms) =>
   ms
@@ -11,7 +12,51 @@ const dateTime = (ms) =>
 const lessonList = (list) =>
   list.map((l) => `<li>${escape(l.title)} <span class="muted">· ${l.accuracy} % de aciertos en ${l.attempts} ejercicios</span></li>`).join("");
 
-function weeklyCard(w) {
+// Ideas para empezar: premios compartidos o de elección, mejor que pantalla.
+const REWARD_IDEAS = [
+  ["Elegir la película de la noche de cine", 5],
+  ["Elegir la comida del viernes", 6],
+  ["Tarde de parque o paseo", 10],
+  ["Invitar a un amigo a la casa", 10],
+  ["Elegir el panorama del fin de semana", 12],
+];
+const WEEK = 7 * 86400000;
+
+function rewardsCard(rewards) {
+  return `<section class="card rewards-card">
+    <h3>🎁 Premios en casa</h3>
+    <p class="muted">Acuerden juntos 3 a 5 premios y cuántas fichas cuesta cada uno. ${escape(FICHAS_RULE_FAMILY)} Cuando pida un premio, lo apruebas aquí.</p>
+    ${rewards.length
+      ? `<ul class="reward-list">${rewards
+          .map((r) => `<li><span>${escape(r.title)}</span><span class="ht-r-cost">${r.cost} fichas</span><button class="link-button" data-remove-reward="${escape(r.id)}" aria-label="Borrar ${escape(r.title)}">Borrar</button></li>`)
+          .join("")}</ul>`
+      : '<p class="muted">Todavía no hay premios.</p>'}
+    <form id="reward-form" class="reward-form">
+      <label for="reward-title">Premio</label>
+      <input id="reward-title" name="title" maxlength="60" required placeholder="Elegir la película">
+      <label for="reward-cost">Fichas</label>
+      <input id="reward-cost" name="cost" type="number" min="1" max="200" required inputmode="numeric" placeholder="5">
+      <button class="primary" type="submit">Agregar premio</button>
+    </form>
+    <p class="muted reward-ideas-label">Ideas (tócala para usarla):</p>
+    <div class="reward-ideas">${REWARD_IDEAS.map(([t, c]) => `<button type="button" class="chip" data-idea="${escape(t)}" data-cost="${c}">${escape(t)} · ${c}</button>`).join("")}</div>
+    <p class="muted small">Consejo: premien la constancia, cumplan siempre lo acordado y, cuando el hábito ya esté, espacien los premios.</p>
+  </section>`;
+}
+
+function claimsBlock(c) {
+  const pending = c.claims.filter((x) => x.status === "pending");
+  if (!pending.length) return "";
+  return `<div class="claim-requests">${pending
+    .map((x) => `<div class="claim-request" role="group" aria-label="Pedido de premio">
+      <p>🎁 <strong>${escape(c.name)}</strong> pide <strong>«${escape(x.title)}»</strong> (${x.cost} fichas).</p>
+      <div class="inline-row"><button class="primary" data-claim="${escape(x.id)}" data-approve="true">Aprobar</button><button class="secondary" data-claim="${escape(x.id)}" data-approve="false">Ahora no</button></div>
+    </div>`)
+    .join("")}</div>`;
+}
+
+function weeklyCard(w, claims = []) {
+  const got = claims.filter((x) => x.status === "approved" && x.decidedAt >= Date.now() - WEEK);
   const max = Math.max(1, ...w.days.map((d) => d.count));
   const days = w.days
     .map(
@@ -30,6 +75,7 @@ function weeklyCard(w) {
     ${summary}
     ${w.strong.length ? `<h5>👍 Le va bien en</h5><ul>${lessonList(w.strong)}</ul>` : ""}
     ${w.support.length ? `<h5>🤝 Necesita apoyo en</h5><ul>${lessonList(w.support)}</ul>` : ""}
+    ${got.length ? `<p>🎁 Canjeó: ${got.map((x) => `«${escape(x.title)}»`).join(", ")}.</p>` : ""}
     <p class="weekly-tip"><strong>Sugerencia:</strong> ${escape(w.tip)}</p>
   </section>`;
 }
@@ -86,7 +132,8 @@ export function renderFamilyPage({ app, session, lessons }) {
           <form id="link-form" class="inline-form"><label for="link-code">Código</label><div class="inline-row"><input id="link-code" maxlength="12" autocomplete="off" autocapitalize="characters" placeholder="K7M2QX" required><button class="primary" type="submit">Vincular</button></div></form>
         </section>
       </div>
-      <div id="children" aria-busy="true"><p class="muted">Cargando…</p></div>`;
+      <div id="children" aria-busy="true"><p class="muted">Cargando…</p></div>
+      <div id="rewards-box"></div>`;
     app.querySelector("#child-form").onsubmit = guard(async (e) => {
       const data = Object.fromEntries(new FormData(e.target));
       const { child } = await api.createChild(data);
@@ -96,9 +143,9 @@ export function renderFamilyPage({ app, session, lessons }) {
       const { child } = await api.linkChild(app.querySelector("#link-code").value);
       if (current()) parentHome(`Vinculaste a ${child.name}.`);
     });
-    let children;
+    let children, rewards;
     try {
-      ({ children } = await api.family());
+      ({ children, rewards } = await api.family());
     } catch (err) {
       if (current()) app.querySelector("#children").innerHTML = `<p class="feedback">${escape(err.message)}</p>`;
       return;
@@ -114,13 +161,15 @@ export function renderFamilyPage({ app, session, lessons }) {
             const completed = c.completed.map(lessonTitle).filter(Boolean);
             return `<section class="card child-card">
               <div class="child-head"><h3>${escape(c.name)}</h3>${c.username ? `<span class="muted">Usuario: ${escape(c.username)}</span>` : ""}</div>
+              ${claimsBlock(c)}
               <dl class="child-stats">
                 <div><dt>Completadas</dt><dd>${completed.length} / ${lessons.length}</dd></div>
                 <div><dt>Dominadas</dt><dd>${mastered.length}</dd></div>
                 <div><dt>Videos vistos</dt><dd>${c.videosWatched}</dd></div>
+                <div><dt>Fichas disponibles</dt><dd>🪙 ${c.fichas.balance}</dd></div>
                 <div><dt>Última actividad</dt><dd>${dateTime(c.lastActivity)}</dd></div>
               </dl>
-              ${weeklyCard(weeklySummary(c.recent, lessonTitle))}
+              ${weeklyCard(weeklySummary(c.recent, lessonTitle), c.claims)}
               <details><summary>Detalle y ajustes</summary>
                 <p><strong>Dominadas:</strong> ${mastered.length ? mastered.map(escape).join(", ") : "ninguna todavía"}</p>
                 <p><strong>Completadas:</strong> ${completed.length ? completed.map(escape).join(", ") : "ninguna todavía"}</p>
@@ -131,6 +180,31 @@ export function renderFamilyPage({ app, session, lessons }) {
           })
           .join("")
       : '<section class="card empty"><p class="muted">Todavía no hay estudiantes en tu familia.</p></section>';
+    const box = app.querySelector("#rewards-box");
+    box.innerHTML = rewardsCard(rewards);
+    const rewardForm = box.querySelector("#reward-form");
+    rewardForm.onsubmit = guard(async () => {
+      const data = Object.fromEntries(new FormData(rewardForm));
+      await api.addReward({ title: data.title, cost: Number(data.cost) });
+      if (current()) parentHome(`Premio agregado: «${data.title.trim()}».`);
+    });
+    for (const b of box.querySelectorAll("[data-idea]"))
+      b.onclick = () => {
+        rewardForm.title.value = b.dataset.idea;
+        rewardForm.cost.value = b.dataset.cost;
+        rewardForm.title.focus();
+      };
+    for (const b of box.querySelectorAll("[data-remove-reward]"))
+      b.onclick = guard(async () => {
+        await api.removeReward(b.dataset.removeReward);
+        if (current()) parentHome("Premio borrado. Si había un pedido pendiente de ese premio, se devolvieron las fichas.");
+      });
+    for (const b of list.querySelectorAll("[data-claim]"))
+      b.onclick = guard(async () => {
+        const approve = b.dataset.approve === "true";
+        await api.decideClaim(b.dataset.claim, approve);
+        if (current()) parentHome(approve ? "Premio aprobado. ¡A disfrutarlo!" : "Respondiste «ahora no». Las fichas vuelven a su saldo.");
+      });
     for (const form of list.querySelectorAll("[data-reset]"))
       form.onsubmit = guard(async () => {
         await api.resetChildPassword(form.dataset.reset, form.querySelector("input").value);

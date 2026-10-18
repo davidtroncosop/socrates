@@ -42,6 +42,11 @@ export const api = {
   resetChildPassword: (id, password) =>
     request("POST", `/api/family/children/${encodeURIComponent(id)}/password`, { password }),
   removeChild: (id) => request("DELETE", `/api/family/children/${encodeURIComponent(id)}`),
+  rewards: () => request("GET", "/api/rewards"),
+  addReward: (data) => request("POST", "/api/rewards", data),
+  removeReward: (id) => request("DELETE", `/api/rewards/${encodeURIComponent(id)}`),
+  claimReward: (id) => request("POST", `/api/rewards/${encodeURIComponent(id)}/claim`, {}),
+  decideClaim: (id, approve) => request("POST", `/api/claims/${encodeURIComponent(id)}`, { approve }),
   pushKey: () => request("GET", "/api/push/key"),
   savePush: (data) => request("PUT", "/api/push", data),
   deletePush: (endpoint) => request("DELETE", "/api/push", { endpoint }),

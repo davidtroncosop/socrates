@@ -62,8 +62,7 @@ export function getXpAndFichas(state) {
   const notesXP = (state?.notes ? state.notes.length : 0) * 15;
   const totalXP = completedXP + masteredXP + correctXP + notesXP;
 
-  const fichas = Math.floor(totalXP / 100);
-  const xpToNextFicha = 100 - (totalXP % 100);
+  const fichas = earnedFichas(state).total;
 
   return {
     totalXP,
@@ -73,7 +72,6 @@ export function getXpAndFichas(state) {
     notesXP,
     fichas,
     fichasHabitribu: fichas,
-    xpToNextFicha,
   };
 }
 
@@ -88,4 +86,27 @@ export function getBeltInfo(lessonId, state) {
     return { level: "bronce", name: "Cinturón Bronce", icon: "🥉", badgeClass: "belt-bronce", desc: "En entrenamiento activo" };
   }
   return { level: "blanco", name: "Cinturón Blanco", icon: "⚪", badgeClass: "belt-blanco", desc: "Por iniciar" };
+}
+
+// Fichas para premios en casa: premian la constancia, no los aciertos, para
+// que el estudiante al que más le cuesta gane lo mismo por el mismo esfuerzo.
+export const FICHAS_PER_DAY = 1;
+export const FICHAS_PER_LESSON = 2;
+export const MIN_DAY_EXERCISES = 5;
+export const FICHAS_RULE = `Ganas ${FICHAS_PER_DAY} ficha por cada día que haces al menos ${MIN_DAY_EXERCISES} ejercicios y ${FICHAS_PER_LESSON} por cada lección que terminas, aciertes o no.`;
+export const FICHAS_RULE_FAMILY = `Gana ${FICHAS_PER_DAY} ficha por cada día que hace al menos ${MIN_DAY_EXERCISES} ejercicios y ${FICHAS_PER_LESSON} por cada lección que termina, acierte o no.`;
+const utcDay = (ms) => new Date(ms).toISOString().slice(0, 10);
+export function earnedFichas(state) {
+  const perDay = new Map();
+  for (const a of Array.isArray(state?.attempts) ? state.attempts : [])
+    if (a && Number.isFinite(a.at)) perDay.set(utcDay(a.at), (perDay.get(utcDay(a.at)) ?? 0) + 1);
+  const days = new Set([...perDay].filter(([, n]) => n >= MIN_DAY_EXERCISES).map(([d]) => d));
+  // Los días ya resumidos no guardan cuántos ejercicios hubo: cuentan todos.
+  for (const d of Array.isArray(state?.archive?.days) ? state.archive.days : []) days.add(d);
+  const lessons = Array.isArray(state?.completed) ? new Set(state.completed).size : 0;
+  return {
+    days: days.size,
+    lessons,
+    total: days.size * FICHAS_PER_DAY + lessons * FICHAS_PER_LESSON,
+  };
 }

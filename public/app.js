@@ -42,7 +42,7 @@ import {
 } from "./daily.js";
 import { $, escape, button, heading } from "./ui.js";
 import { getUnitsForLessons, routeOrder, PREREQUISITES, UNIT_DEFINITIONS, ALL_GRADES_LESSONS } from "./units.js";
-import { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
+import { getStreakInfo, getXpAndFichas, getBeltInfo, FICHAS_RULE } from "./stats.js";
 import { showUnitGuide, showParentReport, showRewardsModal } from "./dialogs.js";
 export { UNIT_DEFINITIONS } from "./units.js";
 export { getStreakInfo, getXpAndFichas, getBeltInfo } from "./stats.js";
@@ -631,22 +631,17 @@ ${bothSubjects ? `<div class="subject-progress-grid">
           <div class="ht-side-row">
             <span class="ht-side-coin">🪙</span>
             <div>
-              <div class="stat ht-side-stat">${fichas} <span class="muted">fichas</span></div>
-              <p class="muted">${xp} XP acumulados por esfuerzo</p>
+              <div class="stat ht-side-stat">${fichas} <span class="muted">fichas ganadas</span></div>
             </div>
           </div>
-          <div class="bar mini-bar" style="margin-top:8px;" title="Progreso hacia tu siguiente ficha: ${xp % 100}/100 XP">
-            <span style="width:${xp % 100}%"></span>
-          </div>
-          <small class="muted" style="display:block;margin-top:4px;font-size:12px;">
-            Faltan <strong>${xpInfo.xpToNextFicha} XP</strong> para tu próxima ficha
-          </small>
-          <button class="secondary ht-side-btn" data-action="rewards-modal" style="width:100%;margin-top:10px;">Ver catálogo de premios →</button>
+          <small class="muted" style="display:block;margin-top:6px;font-size:12px;">${escape(FICHAS_RULE)}</small>
+          <button class="secondary ht-side-btn" data-action="rewards-modal" style="width:100%;margin-top:10px;">Ver premios en casa →</button>
           <button class="link-button" data-action="toggle-rewards" style="margin-top:8px;">Ocultar puntos y premios</button>
         </section>` : `<section class="card duo-side-rewards duo-side-simple">
           <div class="mini-label">PREMIOS EN CASA</div>
           <p class="muted">Los puntos, fichas y cinturones están ocultos para que te concentres en aprender.</p>
-          <button class="secondary" data-action="toggle-rewards" style="width:100%;">Mostrar puntos y premios</button>
+          <button class="secondary" data-action="rewards-modal" style="width:100%;">Ver premios en casa</button>
+          <button class="link-button" data-action="toggle-rewards" style="margin-top:8px;">Mostrar puntos y premios</button>
         </section>`}
 
         <section class="card duo-side-parents">
@@ -1775,7 +1770,7 @@ app.addEventListener("click", (e) => {
     const dlg = $("#parent-report-dialog");
     if (dlg && typeof dlg.close === "function") dlg.close();
   } else if (action === "rewards-modal" || action === "habitribu-modal") {
-    showRewardsModal(state);
+    showRewardsModal(state, account);
   } else if (action === "close-rewards" || action === "close-habitribu") {
     const dlg = $("#rewards-dialog") || $("#habitribu-dialog");
     if (dlg && typeof dlg.close === "function") dlg.close();

@@ -1,6 +1,7 @@
 import { $, escape } from "./ui.js";
 import { getUnitsForLessons } from "./units.js";
-import { getStreakInfo, getXpAndFichas } from "./stats.js";
+import { getStreakInfo, getXpAndFichas, earnedFichas, FICHAS_RULE } from "./stats.js";
+import { api } from "./api.js";
 import { ACTIVE_SUBJECTS } from "./subjects.js";
 
 export function showUnitGuide(unitId, { lessons, state }) {
@@ -139,14 +140,14 @@ export function showParentReport({ state, completedCount, masteredCount }) {
             <span class="pr-ht-coin">🪙</span>
             <div>
               <strong>${xpInfo.fichas} Fichas ganadas para premios en casa</strong>
-              <p>Cada 100 XP acumulados reflejan constancia y esfuerzo que pueden canjear en familia por privilegios acordados (videojuegos, elegir la cena, salidas).</p>
+              <p>${escape(FICHAS_RULE)} Se canjean por los premios que acuerden en familia.</p>
             </div>
           </div>
         </div>
       </div>
       <div class="parent-report-footer">
         <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMsg)}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-share">
-          <span>📲 Enviar reporte por WhatsApp a Papá / Mamá</span>
+          <span>📲 Enviar reporte por WhatsApp a mi familia</span>
         </a>
         <button id="close-parent-report" class="secondary" data-action="close-parent-report">Cerrar</button>
       </div>
@@ -160,101 +161,91 @@ export function showParentReport({ state, completedCount, masteredCount }) {
   }
 }
 
-export function showRewardsModal(state) {
-  const dialog = $("#rewards-dialog") || $("#habitribu-dialog");
-  const content = $("#rewards-content") || $("#habitribu-content") || dialog;
+const CLAIM_STATUS = { pending: "⏳ Esperando respuesta", approved: "✅ Aprobado", rejected: "Ahora no" };
+
+// Premios en casa: los define el apoderado en «Mi familia»; el estudiante los
+// pide con sus fichas y el apoderado aprueba. Sin cuenta, solo se explica.
+export async function showRewardsModal(state, session) {
+  const dialog = $("#rewards-dialog");
+  const content = $("#rewards-content") || dialog;
   if (!content) return;
+  const local = earnedFichas(state).total;
 
-  const xpInfo = getXpAndFichas(state);
-  const claimMsg = `*¡Canje de Fichas de Premio en Casa! 🪙*\n` +
-    `Hola Papá/Mamá, he ganado ${xpInfo.fichas} fichas en socatres practicando (${xpInfo.totalXP} XP totales) 🚀\n` +
-    `¿Podemos canjear mis fichas por un premio acordado de la semana? 🎮🍕🎬`;
-
-  content.innerHTML = `
-    <div class="habitribu-modal rewards-modal">
-      <div class="habitribu-modal-header rewards-modal-header">
-        <span class="habitribu-badge rewards-badge">🪙 PREMIOS Y RECOMPENSAS FAMILIARES</span>
-        <h2>Tus Premios Familiares</h2>
-        <p>Tu esfuerzo estudiando se convierte en fichas reales para canjear en casa por privilegios acordados con tu familia.</p>
+  const render = (data, notice = "") => {
+    const balance = data ? data.fichas.balance : local;
+    const rewards = data?.rewards ?? [];
+    let body;
+    if (!data)
+      body = `<p class="muted">${
+        session?.role === "parent"
+          ? "Los premios se agregan y se aprueban en «Mi familia»."
+          : session?.mode === "account"
+            ? "Cargando tus premios…"
+            : "Con una cuenta, tu apoderado puede acordar premios contigo y aprobarlos desde su teléfono."
+      }</p>`;
+    else if (!data.linked)
+      body = `<p class="muted">Vincula a tu apoderado en «Mi familia» para acordar premios juntos.</p>`;
+    else if (!rewards.length)
+      body = `<p class="muted">Todavía no hay premios. Conversa con tu apoderado y pídele que los agregue en «Mi familia».</p>`;
+    else
+      body = `<div class="ht-rewards-grid">${rewards
+        .map((r) => {
+          const missing = r.cost - balance;
+          return `<div class="ht-reward-item">
+            <span class="ht-r-icon">🎁</span>
+            <div><strong>${escape(r.title)}</strong>${missing > 0 ? `<small class="muted">Te faltan ${missing} fichas</small>` : ""}</div>
+            <span class="ht-r-cost">${r.cost} fichas</span>
+            <button class="secondary" data-claim="${escape(r.id)}" ${missing > 0 ? "disabled" : ""}>Pedir</button>
+          </div>`;
+        })
+        .join("")}</div>`;
+    const claims = data?.claims ?? [];
+    content.innerHTML = `
+    <div class="rewards-modal">
+      <div class="rewards-modal-header">
+        <span class="habitribu-badge rewards-badge">🪙 PREMIOS EN CASA</span>
+        <h2>Tus premios</h2>
+        <p>Los premios los acuerdas con tu familia. Cuando juntes las fichas, pídelo aquí y tu apoderado lo aprueba.</p>
       </div>
-      <div class="habitribu-modal-body rewards-modal-body">
+      <div class="rewards-modal-body">
         <div class="ht-balance-card">
           <div class="ht-coin-large">🪙</div>
           <div class="ht-balance-details">
-            <span class="ht-balance-number">${xpInfo.fichas} Fichas de premio</span>
-            <span class="ht-balance-sub">Equivalentes a ${xpInfo.totalXP} XP de esfuerzo y práctica acumulada</span>
-            <div class="bar mini-bar" style="margin-top:8px;" title="Progreso a tu próxima ficha: ${xpInfo.totalXP % 100}/100 XP">
-              <span style="width:${xpInfo.totalXP % 100}%"></span>
-            </div>
-            <small style="color:#64748b;font-size:11px;display:block;margin-top:4px;">
-              Te faltan <strong>${xpInfo.xpToNextFicha} XP</strong> para tu siguiente ficha
-            </small>
+            <span class="ht-balance-number">${balance} ${balance === 1 ? "ficha disponible" : "fichas disponibles"}</span>
+            <span class="ht-balance-sub">${escape(FICHAS_RULE)}</span>
           </div>
         </div>
-
-        <div class="ht-rewards-section">
-          <h3>🎁 Catálogo sugerido de premios en casa</h3>
-          <div class="ht-rewards-grid">
-            <div class="ht-reward-item">
-              <span class="ht-r-icon">🎮</span>
-              <div>
-                <strong>30 min extra de videojuegos / pantalla</strong>
-                <small class="muted">Recompensa diaria por constancia</small>
-              </div>
-              <span class="ht-r-cost">2 fichas</span>
-            </div>
-            <div class="ht-reward-item">
-              <span class="ht-r-icon">🍕</span>
-              <div>
-                <strong>Elegir la cena o comida del viernes</strong>
-                <small class="muted">Para celebrar una semana de estudio</small>
-              </div>
-              <span class="ht-r-cost">3 fichas</span>
-            </div>
-            <div class="ht-reward-item">
-              <span class="ht-r-icon">🎬</span>
-              <div>
-                <strong>Elegir la película en la noche de cine</strong>
-                <small class="muted">Momento compartido en familia</small>
-              </div>
-              <span class="ht-r-cost">2 fichas</span>
-            </div>
-            <div class="ht-reward-item">
-              <span class="ht-r-icon">🛹</span>
-              <div>
-                <strong>Tarde de parque o paseo al aire libre</strong>
-                <small class="muted">Actividad de fin de semana</small>
-              </div>
-              <span class="ht-r-cost">4 fichas</span>
-            </div>
-            <div class="ht-reward-item">
-              <span class="ht-r-icon">💵</span>
-              <div>
-                <strong>Mesada o premio semanal acordado</strong>
-                <small class="muted">Premio económico por metas cumplidas</small>
-              </div>
-              <span class="ht-r-cost">5 fichas</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="ht-how-it-works">
-          <h4>💡 ¿Cómo funciona el canje?</h4>
-          <p>Ponte de acuerdo con tus papás sobre el valor de cada ficha en casa. Cada vez que resuelves lecciones, subes fotos de tu cuaderno o confirmas coronas, sumas XP automáticamente.</p>
-        </div>
+        <div role="status" class="feedback good">${escape(notice)}</div>
+        <div class="ht-rewards-section"><h3>🎁 Premios acordados</h3>${body}</div>
+        ${claims.length ? `<div class="ht-rewards-section"><h3>Lo que has pedido</h3><ul class="claims-list">${claims
+          .map((c) => `<li><span>${escape(c.title)} · ${c.cost} fichas</span><span class="claim-${c.status}">${CLAIM_STATUS[c.status]}</span></li>`)
+          .join("")}</ul></div>` : ""}
       </div>
-      <div class="habitribu-modal-footer rewards-modal-footer">
-        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(claimMsg)}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-claim">
-          <span>📲 Pedir canje a mis papás por WhatsApp</span>
-        </a>
+      <div class="rewards-modal-footer">
         <button id="close-rewards" class="secondary" data-action="close-rewards">Cerrar</button>
       </div>
-    </div>
-  `;
-
-  if (dialog && typeof dialog.showModal === "function") {
-    dialog.showModal();
-    const closeBtn = $("#close-rewards") || $("#close-habitribu");
+    </div>`;
+    for (const b of content.querySelectorAll("[data-claim]"))
+      b.onclick = async () => {
+        b.disabled = true;
+        try {
+          await api.claimReward(b.dataset.claim);
+          render(await api.rewards(), "Listo. Tu apoderado verá tu pedido en «Mi familia».");
+        } catch (err) {
+          render(data, err.message);
+        }
+      };
+    const closeBtn = $("#close-rewards");
     if (closeBtn) closeBtn.onclick = () => dialog.close();
+  };
+
+  render(null);
+  if (dialog && typeof dialog.showModal === "function" && !dialog.open) dialog.showModal();
+  if (session?.mode === "account" && session.role !== "parent") {
+    try {
+      render(await api.rewards());
+    } catch (err) {
+      render(null, err.message);
+    }
   }
 }

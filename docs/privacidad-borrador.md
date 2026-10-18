@@ -19,6 +19,7 @@ socatres es una aplicación para practicar matemática, pensada para estudiantes
 - Avance: lecciones completadas, intentos, repasos y notas escritas. **Las fotos del cuaderno no se suben:** quedan solo en tu dispositivo.
 - Sesiones abiertas (duran hasta 30 días).
 - Vínculos entre apoderado y estudiante, y códigos de vinculación (duran 24 horas).
+- Premios en casa que define el apoderado (nombre y costo en fichas) y los canjes que pide el estudiante.
 - Si activas los recordatorios: la dirección de notificación de tu dispositivo, la hora elegida y tu zona horaria.
 
 **Para proteger las cuentas:** registramos durante un máximo de 24 horas cuántos intentos de inicio de sesión, registro, recuperación o vinculación hubo desde una dirección IP o hacia una cuenta, para frenar a quien intente adivinar contraseñas.
@@ -27,7 +28,7 @@ socatres es una aplicación para practicar matemática, pensada para estudiantes
 
 ## Menores de edad
 
-Las cuentas de estudiantes menores de 14 años las crea su apoderado desde su propia cuenta. Los estudiantes de 14 años o más pueden crear la suya. Un apoderado vinculado ve un resumen (lecciones completadas y dominadas, días de práctica, ejercicios y porcentaje de aciertos por lección en las últimas dos semanas, y videos vistos), no las notas ni las fotos.
+Las cuentas de estudiantes menores de 14 años las crea su apoderado desde su propia cuenta. Los estudiantes de 14 años o más pueden crear la suya. Un apoderado vinculado ve un resumen (lecciones completadas y dominadas, días de práctica, ejercicios y porcentaje de aciertos por lección en las últimas dos semanas, videos vistos y fichas de premios), no las notas ni las fotos.
 
 ## Con quién compartimos datos
 

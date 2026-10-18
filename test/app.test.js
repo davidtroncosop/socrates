@@ -348,11 +348,10 @@ test("Engagement mechanics: effort XP, reward tokens, streak shield, belts, triu
 
   // 1. Verify getXpAndFichas calculation:
   // 1 completed (20 XP) + 0 mastered + 3 correct attempts (30 XP) + 2 notes (30 XP) = 80 XP
-  // fichas = Math.floor(80 / 100) = 0, xpToNextFicha = 20
+  // fichas premian constancia: 1 lección terminada = 2; ningún día con 5 ejercicios.
   const xpInfo = h.mod.getXpAndFichas(h.read());
   assert.equal(xpInfo.totalXP, 80);
-  assert.equal(xpInfo.fichas, 0);
-  assert.equal(xpInfo.xpToNextFicha, 20);
+  assert.equal(xpInfo.fichas, 2);
 
   // When state reaches 100+ XP:
   const richState = {
@@ -368,8 +367,7 @@ test("Engagement mechanics: effort XP, reward tokens, streak shield, belts, triu
   };
   const richXp = h.mod.getXpAndFichas(richState);
   assert.equal(richXp.totalXP, 130);
-  assert.equal(richXp.fichas, 1);
-  assert.equal(richXp.xpToNextFicha, 70);
+  assert.equal(richXp.fichas, 6);
 
   // 2. Verify Belt system (getBeltInfo):
   // equations is mastered in richState -> Cinturón Oro
@@ -436,13 +434,12 @@ test("Engagement mechanics: effort XP, reward tokens, streak shield, belts, triu
   // 6. Verify Rewards modal:
   h.click("rewards-modal");
   const rewardsModalHtml = (h.node("#rewards-content") || h.node("#habitribu-content")).innerHTML;
-  assert.match(rewardsModalHtml, /PREMIOS Y RECOMPENSAS FAMILIARES/);
-  assert.match(rewardsModalHtml, /Tus Premios Familiares/);
-  assert.match(rewardsModalHtml, /Fichas de premio/);
-  assert.match(rewardsModalHtml, /videojuegos \/ pantalla/);
-  assert.match(rewardsModalHtml, /Elegir la cena/);
-  assert.match(rewardsModalHtml, /api\.whatsapp\.com/);
-  assert.match(rewardsModalHtml, /Canje%20de%20Fichas/);
+  // Sin cuenta (demo): fichas ganadas, la regla y la invitación a crear cuenta.
+  assert.match(rewardsModalHtml, /PREMIOS EN CASA/);
+  assert.match(rewardsModalHtml, /fichas disponibles/);
+  assert.match(rewardsModalHtml, /aciertes o no/);
+  assert.match(rewardsModalHtml, /Con una cuenta, tu apoderado/);
+  assert.doesNotMatch(rewardsModalHtml, /whatsapp|Papá/i, "no fixed catalog nor gendered claim message");
 
   // 7. Verify Triumphant session closure (finish):
   h.click("lesson:equations");

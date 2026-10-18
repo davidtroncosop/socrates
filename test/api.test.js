@@ -283,7 +283,7 @@ test("migration 0002 keeps existing users, sessions and progress", () => {
 
 test("summaries tolerate missing progress", () => {
   assert.deepEqual(summarize(null), {
-    completed: [], mastered: [], videosWatched: 0, attemptsWeek: 0, accuracyWeek: null, recent: [], lastActivity: null,
+    completed: [], mastered: [], videosWatched: 0, attemptsWeek: 0, accuracyWeek: null, fichasEarned: 0, recent: [], lastActivity: null,
   });
 });
 
@@ -336,4 +336,65 @@ test("anonymous metrics count events per lesson and exercise; only admins read t
     metrics.map((m) => [m.lesson, m.step, m.kind, m.count]).sort(),
     [["equations", 0, "correct", 1], ["equations", 0, "wrong", 2]],
   );
+});
+
+test("premios en casa: el apoderado define, el estudiante pide y el apoderado aprueba", async () => {
+  const e = env();
+  const mom = client(e);
+  const other = client(e);
+  await parent(mom, "Carla", "carla@premios.cl");
+  await parent(other, "Otro", "otro@premios.cl");
+  await mom.call("POST", "/api/family/children", { name: "Tomás", username: "tomas.p", password: "clave-tomas" });
+  const kid = client(e);
+  await kid.call("POST", "/api/auth/login", { login: "tomas.p", password: "clave-tomas" });
+
+  assert.equal((await kid.call("POST", "/api/rewards", { title: "X", cost: 1 })).status, 403);
+  assert.equal((await mom.call("POST", "/api/rewards", { title: "Película", cost: 0 })).status, 400);
+  const movie = (await mom.call("POST", "/api/rewards", { title: "Elegir la película", cost: 5 })).body.reward;
+  const park = (await mom.call("POST", "/api/rewards", { title: "Tarde de parque", cost: 10 })).body.reward;
+  const foreign = (await other.call("POST", "/api/rewards", { title: "Ajeno", cost: 1 })).body.reward;
+
+  // 2 lecciones (4 fichas) + 1 día con 5 ejercicios (1 ficha) = 5 fichas.
+  const now = Date.now();
+  const attempts = Array.from({ length: 5 }, (_, i) => ({ lesson: "equations", correct: i % 2 === 0, hints: 0, at: now - i * 1000 }));
+  await kid.call("PUT", "/api/progress", { state: state({ completed: ["equations", "signs"], attempts }) });
+
+  let mine = (await kid.call("GET", "/api/rewards")).body;
+  assert.deepEqual(mine.rewards.map((r) => r.title), ["Elegir la película", "Tarde de parque"]);
+  assert.equal(mine.linked, true);
+  assert.deepEqual(mine.fichas, { earned: 5, spent: 0, balance: 5 });
+  assert.equal((await kid.call("POST", `/api/rewards/${foreign.id}/claim`)).status, 404, "only linked parents' rewards");
+  assert.match((await kid.call("POST", `/api/rewards/${park.id}/claim`)).body.error, /Te faltan 5 fichas/);
+  const claimed = await kid.call("POST", `/api/rewards/${movie.id}/claim`);
+  assert.equal(claimed.status, 201);
+  assert.equal(claimed.body.fichas.balance, 0, "pending claims reserve fichas");
+  assert.equal((await kid.call("POST", `/api/rewards/${movie.id}/claim`)).status, 400);
+
+  const family = (await mom.call("GET", "/api/family")).body;
+  assert.deepEqual(family.rewards.map((r) => r.cost), [5, 10]);
+  const [child] = family.children;
+  assert.equal(child.fichasEarned, 5);
+  assert.equal(child.claims[0].status, "pending");
+  const claimId = child.claims[0].id;
+
+  assert.equal((await other.call("POST", `/api/claims/${claimId}`, { approve: true })).status, 404);
+  assert.equal((await mom.call("POST", `/api/claims/${claimId}`, { approve: "sí" })).status, 400);
+  assert.equal((await mom.call("POST", `/api/claims/${claimId}`, { approve: false })).status, 200);
+  assert.equal((await kid.call("GET", "/api/rewards")).body.fichas.balance, 5, "«ahora no» returns the fichas");
+  assert.equal((await mom.call("POST", `/api/claims/${claimId}`, { approve: true })).status, 404, "decided once");
+
+  await kid.call("POST", `/api/rewards/${movie.id}/claim`);
+  const second = (await mom.call("GET", "/api/family")).body.children[0].claims.find((c) => c.status === "pending");
+  await mom.call("POST", `/api/claims/${second.id}`, { approve: true });
+  mine = (await kid.call("GET", "/api/rewards")).body;
+  assert.deepEqual(mine.fichas, { earned: 5, spent: 5, balance: 0 });
+
+  // Borrar el premio mantiene el historial y las fichas gastadas.
+  assert.equal((await other.call("DELETE", `/api/rewards/${movie.id}`)).status, 404);
+  assert.equal((await mom.call("DELETE", `/api/rewards/${movie.id}`)).status, 200);
+  mine = (await kid.call("GET", "/api/rewards")).body;
+  assert.deepEqual(mine.rewards.map((r) => r.title), ["Tarde de parque"]);
+  assert.equal(mine.fichas.spent, 5);
+  assert.equal(mine.claims.filter((c) => c.status === "approved").length, 1);
+  assert.equal((await mom.call("GET", "/api/rewards")).status, 403);
 });
