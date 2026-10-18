@@ -1,11 +1,38 @@
 import { api } from "./api.js";
 import { escape, heading } from "./ui.js";
 import { displayTitle } from "./learning.js";
+import { weeklySummary, compareText } from "./weekly.js";
 
 const dateTime = (ms) =>
   ms
     ? new Date(ms).toLocaleString("es-CL", { dateStyle: "medium", timeStyle: "short" })
     : "Sin actividad";
+
+const lessonList = (list) =>
+  list.map((l) => `<li>${escape(l.title)} <span class="muted">· ${l.accuracy} % de aciertos en ${l.attempts} ejercicios</span></li>`).join("");
+
+function weeklyCard(w) {
+  const max = Math.max(1, ...w.days.map((d) => d.count));
+  const days = w.days
+    .map(
+      (d) => `<li class="${d.count ? "practiced" : ""}" title="${d.count} ejercicios">
+        <span class="weekly-bar" style="--h:${d.count ? Math.max(12, Math.round((d.count / max) * 100)) : 0}%"></span>
+        <span class="weekly-day">${escape(d.label)}</span></li>`,
+    )
+    .join("");
+  const summary = w.attempts
+    ? `<p><strong>${w.attempts} ejercicios</strong>${compareText(w.attempts, w.prevAttempts, "")} en ${w.lessonsPracticed === 1 ? "1 lección" : `${w.lessonsPracticed} lecciones`}, con <strong>${w.accuracy} % de aciertos</strong>${compareText(w.accuracy, w.prevAccuracy, " puntos")}.</p>`
+    : "";
+  return `<section class="weekly" aria-label="Resumen de los últimos 7 días">
+    <h4>Resumen de la semana</h4>
+    <p class="muted">Practicó ${w.practiceDays === 1 ? "1 día" : `${w.practiceDays} días`} de 7.</p>
+    <ol class="weekly-days">${days}</ol>
+    ${summary}
+    ${w.strong.length ? `<h5>👍 Le va bien en</h5><ul>${lessonList(w.strong)}</ul>` : ""}
+    ${w.support.length ? `<h5>🤝 Necesita apoyo en</h5><ul>${lessonList(w.support)}</ul>` : ""}
+    <p class="weekly-tip"><strong>Sugerencia:</strong> ${escape(w.tip)}</p>
+  </section>`;
+}
 
 // Cada render invalida los anteriores para que una respuesta lenta no pise la vista actual.
 let renderId = 0;
@@ -90,11 +117,10 @@ export function renderFamilyPage({ app, session, lessons }) {
               <dl class="child-stats">
                 <div><dt>Completadas</dt><dd>${completed.length} / ${lessons.length}</dd></div>
                 <div><dt>Dominadas</dt><dd>${mastered.length}</dd></div>
-                <div><dt>Ejercicios (7 días)</dt><dd>${c.attemptsWeek}</dd></div>
-                <div><dt>Aciertos (7 días)</dt><dd>${c.accuracyWeek === null ? "—" : c.accuracyWeek + " %"}</dd></div>
                 <div><dt>Videos vistos</dt><dd>${c.videosWatched}</dd></div>
                 <div><dt>Última actividad</dt><dd>${dateTime(c.lastActivity)}</dd></div>
               </dl>
+              ${weeklyCard(weeklySummary(c.recent, lessonTitle))}
               <details><summary>Detalle y ajustes</summary>
                 <p><strong>Dominadas:</strong> ${mastered.length ? mastered.map(escape).join(", ") : "ninguna todavía"}</p>
                 <p><strong>Completadas:</strong> ${completed.length ? completed.map(escape).join(", ") : "ninguna todavía"}</p>
@@ -126,7 +152,7 @@ export function renderFamilyPage({ app, session, lessons }) {
   async function studentHome() {
     app.innerHTML =
       heading("APRENDER ACOMPAÑADO", "Mi familia", "Vincula a tu apoderado para que pueda ver tu avance.") +
-      `<section class="card"><p>Tu apoderado verá cuántas lecciones completas y dominas, cuánto practicas y cuántos videos viste. Tus notas y fotos no se comparten.</p><button class="primary" id="make-code">Generar código para mi apoderado</button><div id="family-message" role="status" class="feedback"></div><div id="code-box"></div></section><div id="parents" aria-busy="true"></div>`;
+      `<section class="card"><p>Tu apoderado verá cuántas lecciones completas y dominas, qué días practicas, cómo te va en cada lección y cuántos videos viste. Tus notas y fotos no se comparten.</p><button class="primary" id="make-code">Generar código para mi apoderado</button><div id="family-message" role="status" class="feedback"></div><div id="code-box"></div></section><div id="parents" aria-busy="true"></div>`;
     app.querySelector("#make-code").onclick = guard(async () => {
       const { code, expiresAt } = await api.linkCode();
       if (!current()) return;

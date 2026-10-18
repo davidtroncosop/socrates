@@ -183,6 +183,8 @@ test("parents create child accounts, see summaries and reset passwords", async (
   assert.equal(family[0].createdByMe, true);
   assert.equal(family[0].accuracyWeek, 50);
   assert.equal(family[0].videosWatched, 1);
+  assert.deepEqual(family[0].recent.map((a) => a.correct), [true, false]);
+  assert.deepEqual(Object.keys(family[0].recent[0]).sort(), ["at", "correct", "hints", "lesson"]);
   assert.doesNotMatch(JSON.stringify(family), /mis ideas/, "notes stay private");
   assert.deepEqual((await other.call("GET", "/api/family")).body.children, []);
 
@@ -281,7 +283,7 @@ test("migration 0002 keeps existing users, sessions and progress", () => {
 
 test("summaries tolerate missing progress", () => {
   assert.deepEqual(summarize(null), {
-    completed: [], mastered: [], videosWatched: 0, attemptsWeek: 0, accuracyWeek: null, lastActivity: null,
+    completed: [], mastered: [], videosWatched: 0, attemptsWeek: 0, accuracyWeek: null, recent: [], lastActivity: null,
   });
 });
 

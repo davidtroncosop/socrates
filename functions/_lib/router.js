@@ -158,6 +158,12 @@ export function summarize(state) {
     accuracyWeek: recent.length
       ? Math.round((recent.filter((a) => a.correct).length / recent.length) * 100)
       : null,
+    // Intentos de las últimas dos semanas para el resumen semanal (lo arma el
+    // navegador con la zona horaria de la familia).
+    recent: attempts
+      .filter((a) => a.at >= Date.now() - 14 * DAY && typeof a.lesson === "string")
+      .slice(-1000)
+      .map((a) => ({ lesson: a.lesson, correct: a.correct === true, hints: Number(a.hints) || 0, at: a.at })),
     lastActivity:
       Math.max(
         attempts.reduce((max, a) => Math.max(max, a.at || 0), 0),

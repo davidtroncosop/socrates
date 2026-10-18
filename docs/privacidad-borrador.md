@@ -27,7 +27,7 @@ socatres es una aplicación para practicar matemática, pensada para estudiantes
 
 ## Menores de edad
 
-Las cuentas de estudiantes menores de 14 años las crea su apoderado desde su propia cuenta. Los estudiantes de 14 años o más pueden crear la suya. Un apoderado vinculado ve un resumen (lecciones completadas y dominadas, tiempo de práctica y videos vistos), no las notas ni las fotos.
+Las cuentas de estudiantes menores de 14 años las crea su apoderado desde su propia cuenta. Los estudiantes de 14 años o más pueden crear la suya. Un apoderado vinculado ve un resumen (lecciones completadas y dominadas, días de práctica, ejercicios y porcentaje de aciertos por lección en las últimas dos semanas, y videos vistos), no las notas ni las fotos.
 
 ## Con quién compartimos datos
 
