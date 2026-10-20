@@ -20,7 +20,7 @@ function useEnter(t, delay = 0) {
   return spring({ frame: t - delay, fps, config: { damping: 18, stiffness: 120, mass: 0.8 } });
 }
 
-function Background() {
+export function Background() {
   const f = useCurrentFrame();
   const blob = (color, size, x, y, speed, phase) => (
     <div
@@ -193,7 +193,7 @@ const SCENES = { cards: Cards, hero: Hero, phone: Phone, balance: BalanceScene, 
 
 // Subtítulo por frases cortas (máximo 6 palabras); la palabra que se dice va
 // resaltada. El tiempo de cada palabra es proporcional a su largo.
-function Caption({ beat, t }) {
+export function Caption({ beat, t }) {
   const words = beat.caption.split(/\s+/);
   const weights = words.map((w) => w.length + 2);
   const total = weights.reduce((s, w) => s + w, 0);

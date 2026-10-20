@@ -63,6 +63,15 @@ SCRIPT=promo/socatres-vertical.mjs ENTRY=src/promo-vertical.jsx COMPOSITION=prom
 
 Una variable ya definida en el entorno tiene prioridad sobre `../.env`. En un paso, `caption` reemplaza el subtítulo cuando la voz debe decir algo distinto (por ejemplo, una dirección web).
 
+## Reels de lecciones (9:16)
+
+`reels/` reutiliza el guion de una lección con un id propio (`reel-<lección>`), para narrarlo con otra voz sin tocar el audio de la app. `src/LessonVertical.jsx` dibuja las visualizaciones de 1920×1080 en el ancho del celular (los dibujos a ancho completo; los textos, más grandes) y cierra con la marca y `REEL_URL` (`reels/index.mjs`).
+
+```sh
+FISH_AUDIO_VOICE_ID=<voz> SCRIPT=reels/equations.mjs node --env-file=../.env narrate.mjs
+SCRIPT=reels/equations.mjs ENTRY=src/reels.jsx node render.mjs   # → out/reel-equations.mp4
+```
+
 ## Licencias
 
 - Remotion es gratis para personas y empresas de hasta 3 empleados; sobre eso

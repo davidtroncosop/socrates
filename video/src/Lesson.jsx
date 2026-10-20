@@ -10,7 +10,7 @@ import { Area, Bar, Chart, Circle, Freq, Grid100, NumberLine, Shape, Tokens, Tri
 
 const { fontFamily } = loadFont("normal", { weights: ["500", "600", "700", "800"], subsets: ["latin"] });
 
-const VISUALS = {
+export const VISUALS = {
   balance: Balance,
   cards: Cards,
   steps: Steps,
