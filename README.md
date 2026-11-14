@@ -5,7 +5,7 @@ Espacio de aprendizaje autónomo, al estilo Duolingo, de matemática y comprensi
 ## Ejecutar
 
 ```sh
-npm test                 # 132 pruebas (Node 22+)
+npm test                 # 133 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
@@ -46,7 +46,7 @@ Módulos del cliente (`public/`):
 
 ## Qué incluye
 
-- **Minijuegos para entender la idea:** 31 lecciones tienen un paso «Juega» entre el video y el ejemplo, donde el estudiante toca, arrastra o aprieta un botón para ver la idea funcionando: la balanza (quitar lo mismo de cada lado), el ascensor de los enteros, pintar fracciones y porcentajes, elegir qué operación va primero (PAPOMUDAS), ordenar tarjetas, repartir galletas en platos, armar cantidades con saltos o monedas y ubicar puntos en el plano. No tienen tiempo ni puntaje, explican cada tropiezo, se pueden repetir y se pueden saltar. Los juegos y sus rondas se definen por lección en `GAMES` (`public/minigames.js`); para sumar una lección basta agregar su `id` con rondas de un tipo existente.
+- **Minijuegos para entender la idea:** las 125 lecciones de matemática tienen un paso «Juega» entre el video y el ejemplo, donde el estudiante toca, arrastra o aprieta un botón para ver la idea funcionando. Hay 11 tipos: la balanza (quitar lo mismo de cada lado), el ascensor de los enteros, pintar partes (fracciones, porcentajes), elegir qué operación va primero (PAPOMUDAS), ordenar tarjetas, repartir en platos, armar cantidades con saltos o monedas, ubicar puntos en el plano, la máquina (una perilla que cambia un resultado y un dibujo: baldosas, ángulos, barras), los contadores (juntar términos, armar bolsas y fracciones) y los experimentos al azar (monedas, muestras, tablero de Galton). No tienen tiempo ni puntaje, explican cada tropiezo, se pueden repetir y se pueden saltar. Los juegos y sus rondas se definen por lección en `GAMES` (`public/minigames.js`); una prueba exige que toda lección de matemática tenga juego y que cada ronda se pueda ganar. Las lecciones de Lenguaje (ocultas) no tienen.
 - **Desarrollo a mano con foto, revisado por IA:** en el desafío final de cada lección de matemática el estudiante resuelve en papel (una servilleta sirve), le saca una foto (en el celular se abre la cámara trasera) y recién ahí comprueba su respuesta. En los demás ejercicios la foto es opcional, para no frenar cada respuesta. La respuesta se corrige en el dispositivo al instante; con cuenta, además, Gemini 2.5 Flash (vía OpenRouter) mira toda foto de matemática y dice en una o dos frases el primer paso con error o qué hizo bien, sin dar la respuesta (`functions/_lib/work-review.js`, `POST /api/work/review`, tope de 120 revisiones por hora y cuenta). La foto se guarda solo en el cuaderno del dispositivo; el servidor la envía a OpenRouter (solo a proveedores que no guardan ni entrenan con los datos) y no la guarda. La app pide fotografiar solo la hoja, sin cara ni nombre. Sin cuenta o sin conexión la foto se guarda, pero no se revisa. `required` en `public/work-photo.js` cambia la regla: `"challenge"` (por defecto), `true` (todos los ejercicios) o `false` (nunca).
 - **Explica el error:** si la respuesta coincide con un error frecuente, la app dice qué pasó en vez de solo «incorrecto». En ecuaciones lineales detecta sola el signo contrario, olvidar dividir, multiplicar en vez de dividir y la operación inversa equivocada. Los generadores declaran errores típicos de su tema (exponentes, porcentajes, Pitágoras, productos notables, enteros…), y los autores pueden agregar los suyos por ejercicio.
 - **Práctica del día:** una sesión de 3 a 6 ejercicios que mezcla los repasos vencidos, las lecciones con más errores en los últimos 14 días y recuerdo de lo aprendido hace más tiempo. Solo usa lecciones completadas (lo nuevo se aprende en su lección, con la explicación). Los repasos incluidos confirman dominio con la misma regla de siempre.
@@ -155,7 +155,6 @@ La importación comprueba estructura, identificadores, ejercicios faltantes, res
 ## Límites de esta versión
 
 - La revisión con IA de la foto comenta el desarrollo, pero no cambia la corrección: el acierto se decide solo con el resultado final.
-- Los minijuegos cubren 31 de las 125 lecciones de matemática (bases, jerarquía, ecuaciones, enteros, fracciones, porcentajes, plano); el resto no tiene paso «Juega».
 - La recuperación de contraseña por correo necesita un dominio propio y un servicio de envío; por ahora se recupera con el código o a través del apoderado.
 - Los videos pueden dejar de estar disponibles si su canal los borra o los hace privados; conviene revisarlos periódicamente desde la vista previa del mantenedor.
 - Si se borra el progreso en un dispositivo mientras otro sin conexión conserva el anterior, al reconectar ese otro dispositivo las lecciones completadas vuelven a sumarse.

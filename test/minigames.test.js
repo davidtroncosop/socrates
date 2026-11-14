@@ -19,6 +19,8 @@ test("every game belongs to a lesson and renders each round", () => {
       assert.doesNotMatch(html, /undefined|NaN/, `${id} round ${i}`);
     }
   }
+  const missing = seedCatalog().lessons.filter((l) => l.subject !== "lenguaje" && !hasGame(l.id)).map((l) => l.id);
+  assert.deepEqual(missing, [], "every math lesson has a game");
   assert.equal(hasGame("no-existe"), false);
   assert.equal(createGame("no-existe"), null);
 });
@@ -36,7 +38,7 @@ test("every round can be won", () => {
       gameAction(g, "check");
     },
     paint: (g, r) => {
-      for (let i = 0; i < r.target; i++) gameAction(g, `cell:${i}`);
+      for (const i of r.cells ?? Array.from({ length: r.target }, (_, k) => k)) gameAction(g, `cell:${i}`);
       gameAction(g, "check");
     },
     first: (g) => {
@@ -55,12 +57,44 @@ test("every round can be won", () => {
       for (let i = 0; i < r.total; i++) gameAction(g, `put:${i % r.plates}`);
     },
     build: (g, r) => {
-      let left = r.target - (r.start ?? 0);
-      r.steps.forEach((step, i) => {
-        for (; left >= step; left -= step) gameAction(g, `add:${i}`);
+      // Busca cuántas veces usar cada pieza para llegar justo a la meta.
+      const find = (i, left) => {
+        if (Math.abs(left) < 1e-9) return [];
+        if (i === r.steps.length || left < 0) return null;
+        for (let n = Math.floor(left / r.steps[i] + 1e-9); n >= 0; n--) {
+          const rest = find(i + 1, left - n * r.steps[i]);
+          if (rest) return [n, ...rest];
+        }
+        return null;
+      };
+      find(0, r.target - (r.start ?? 0)).forEach((n, i) => {
+        for (let k = 0; k < n; k++) gameAction(g, `add:${i}`);
       });
     },
     point: (g, r) => gameAction(g, `tap:${r.x}:${r.y}`),
+    machine: (g, r) => {
+      // Recorre la perilla de un extremo al otro, comprobando en cada paso.
+      for (let i = 0; i < 400 && g.round.x > r.min; i++) gameAction(g, "dec");
+      for (let i = 0; i < 400 && !g.round.won; i++) {
+        gameAction(g, "check");
+        if (!g.round.won) {
+          assert.match(g.round.msg, /Todavía no|Buscas/, "a wrong try explains");
+          gameAction(g, "inc");
+        }
+      }
+    },
+    counters: (g, r) => {
+      gameAction(g, "check");
+      assert.match(g.round.msg, /Todavía no/);
+      r.target.forEach((n, i) => {
+        for (let k = 0; k < n; k++) gameAction(g, `add:${i}`);
+      });
+      gameAction(g, "check");
+    },
+    draw: (g) => {
+      gameAction(g, "go:1");
+      for (let i = 0; i < 10 && !g.round.won; i++) gameAction(g, "go:10");
+    },
   };
   for (const [id, rounds] of Object.entries(GAMES)) {
     const game = createGame(id);
@@ -154,4 +188,30 @@ test("numbers are written the Chilean way", () => {
   assert.equal(fmt(0.25), "0,25");
   assert.equal(fmt(-3), "−3");
   assert.equal(fmt(10000), "10.000");
+});
+
+test("machines, counters and experiments show what happens while playing", () => {
+  const roots = createGame("raices"); // lado → baldosas, busca 49
+  assert.match(gameView(roots), /mg-tiles/, "the square is drawn with tiles");
+  gameAction(roots, "check");
+  assert.match(roots.round.msg, /Con lado = 3 sale 9\. Buscas 49/);
+  play(roots, "inc", "inc", "inc", "inc", "check");
+  assert.match(roots.round.msg, /√49 = 7/);
+
+  const half = createGame("potencias-negativas");
+  play(half, "dec", "dec", "dec", "dec");
+  assert.match(gameView(half), /1\/2/, "negative exponents show fractions");
+
+  const growth = createGame("cambio-porcentual");
+  play(growth, "inc", "inc", "check");
+  assert.equal(growth.round.won, true, "1000 · 1,1² counts as 1.210 despite rounding");
+
+  const paint = createGame("reglas-probabilidad");
+  play(paint, "cell:2", "cell:3", "check");
+  assert.equal(paint.round.won, false, "painting any two faces is not enough");
+
+  const coin = createGame("probabilidad-experimental");
+  play(coin, "go:10", "go:10");
+  assert.equal(coin.round.tally[0] + coin.round.tally[1], 20);
+  assert.match(coin.round.msg, /de 20 veces/);
 });

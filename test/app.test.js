@@ -1000,8 +1000,10 @@ test("lessons with a minigame add a play step that never blocks the lesson", asy
   h.click("exit");
   h.click("lesson:signs");
   h.click("exit");
-  const plain = await harness();
-  plain.click("lesson:semejantes");
+  const reading = catalogLessons.find((l) => getSubject(l) === "lenguaje");
+  const plain = await harness({ completed: catalogLessons.map((l) => l.id), attempts: [], reviews: [], notes: [], mastered: [], watched: [] });
+  plain.click(`lesson:${reading.id}`);
+  assert.match(plain.node("#app").innerHTML, /1\. La idea/);
   assert.doesNotMatch(plain.node("#app").innerHTML, /Juega<\/li>/, "lessons without a game keep their steps");
 });
 
