@@ -3638,3 +3638,478 @@ details.handwritten-section[open] .handwritten-toggle {
     margin-left: auto;
   }
 }
+
+/* ── Minijuegos de la lección (public/minigames.js) ───────────────────────── */
+.minigame {
+  border: 2px solid #cfe0ff;
+  border-radius: 20px;
+  background: #f7faff;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+.mg-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.minigame-prompt {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 12px 0 14px;
+}
+.mg-stage {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  overflow-x: auto;
+}
+.mg-btn,
+.mg-op,
+.mg-card,
+.mg-cell,
+.mg-plate,
+.mg-dot {
+  font: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.mg-btn {
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 2px solid var(--blue);
+  border-radius: 14px;
+  background: #ffffff;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 16px;
+}
+.mg-btn.primary {
+  background: var(--blue);
+  color: #ffffff;
+}
+.mg-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.mg-btn:active:not(:disabled),
+.mg-op:active,
+.mg-plate:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.mg-reset {
+  min-height: 36px;
+  padding: 4px 12px;
+  border-color: var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}
+.mg-minus {
+  min-width: 48px;
+  padding: 6px;
+  font-size: 22px;
+  line-height: 1;
+}
+.mg-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.mg-controls-col {
+  flex-direction: column;
+  margin-top: 0;
+}
+.mg-count {
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+.mg-msg {
+  min-height: 26px;
+  margin: 12px 0 0;
+  font-weight: 600;
+  font-size: 17px;
+  color: #8a4b00;
+}
+.mg-msg.good {
+  color: #0b7a3b;
+}
+.mg-done {
+  margin: 8px 0 0;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+/* Balanza */
+.mg-balance {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+.mg-pan {
+  flex: 1;
+  min-height: 96px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-end;
+  align-items: flex-end;
+  gap: 5px;
+  padding: 10px;
+  border-bottom: 6px solid #192a43;
+  border-radius: 6px 6px 14px 14px;
+  background: #f5f7fb;
+}
+.mg-bag {
+  font-size: 34px;
+  line-height: 1;
+}
+.mg-weight {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: #f5a524;
+  border: 2px solid #b97400;
+}
+.mg-equals {
+  align-self: center;
+  font-size: 30px;
+  font-weight: 800;
+}
+.mg-equation {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 800;
+  margin: 14px 0 0;
+}
+
+/* Ascensor */
+.mg-elevator {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.mg-building {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-width: 190px;
+  max-width: 300px;
+  border: 2px solid #192a43;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.mg-floor {
+  display: grid;
+  grid-template-columns: 44px 40px 1fr;
+  align-items: center;
+  height: 32px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 700;
+}
+.mg-floor:last-child {
+  border-bottom: 0;
+}
+.mg-floor.under {
+  background: #eef1f6;
+}
+.mg-floor.ground {
+  border-bottom: 3px solid #192a43;
+}
+.mg-floor.start .mg-floor-num {
+  color: var(--blue);
+}
+.mg-floor.here {
+  background: #dbe8ff;
+}
+.mg-floor-num {
+  text-align: center;
+}
+.mg-floor-cabin {
+  font-size: 22px;
+  text-align: center;
+}
+.mg-floor-note {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* Pintar partes */
+.mg-bar {
+  display: grid;
+  gap: 4px;
+}
+.mg-cell {
+  min-height: 56px;
+  border: 2px solid #192a43;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0;
+}
+.mg-cell.on {
+  background: #f5a524;
+  color: #192a43;
+}
+.mg-ref {
+  margin-bottom: 12px;
+}
+.mg-ref .mg-cell {
+  display: block;
+  min-height: 36px;
+  cursor: default;
+}
+
+/* ¿Qué va primero? */
+.mg-expression {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 32px;
+  font-weight: 800;
+  min-height: 64px;
+}
+.mg-op {
+  min-width: 52px;
+  min-height: 52px;
+  border: 2px solid var(--blue);
+  border-radius: 14px;
+  background: #eaf1ff;
+  color: var(--blue);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0 10px;
+}
+.mg-num.result {
+  color: #0b7a3b;
+  font-size: 44px;
+}
+
+/* Ordenar */
+.mg-sort {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mg-sort-end {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.mg-card {
+  min-width: 72px;
+  min-height: 72px;
+  padding: 8px 12px;
+  border: 2px solid #192a43;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #192a43;
+  font-size: 24px;
+  font-weight: 800;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 3px 0 #192a43;
+}
+.mg-card.picked {
+  background: #dbe8ff;
+  border-color: var(--blue);
+  box-shadow: 0 3px 0 var(--blue);
+}
+.dragging {
+  position: relative;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* Repartir */
+.mg-pile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px;
+  margin-bottom: 14px;
+  border: 2px dashed var(--blue);
+  border-radius: 14px;
+  background: #f7faff;
+}
+.mg-pile.empty {
+  border-color: var(--line);
+}
+.mg-item {
+  display: inline-block;
+  padding: 2px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.mg-pile-items {
+  font-size: 30px;
+  line-height: 1.2;
+  text-align: center;
+}
+.mg-plates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.mg-plate-wrap {
+  flex: 1;
+  min-width: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mg-plate {
+  min-height: 104px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 2px solid #192a43;
+  border-radius: 18px;
+  background: #ffffff;
+  color: #192a43;
+  font-size: 20px;
+}
+.mg-plate strong {
+  font-size: 22px;
+}
+
+/* Armar una cantidad */
+.mg-total {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--muted);
+}
+.mg-total strong {
+  font-size: 40px;
+  line-height: 1;
+  color: #192a43;
+}
+.mg-total.over strong {
+  color: #c62828;
+}
+.mg-meter {
+  height: 14px;
+  margin: 10px 0 14px;
+  border-radius: 999px;
+  background: #e2e8f1;
+  overflow: hidden;
+}
+.mg-meter span {
+  display: block;
+  height: 100%;
+  background: #f5a524;
+  transition: width 0.2s;
+}
+.mg-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mg-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mg-chip {
+  min-width: 120px;
+  font-size: 18px;
+}
+span.mg-chip {
+  font-weight: 700;
+}
+.mg-times {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+/* Punto en el plano */
+.mg-plane {
+  display: grid;
+  gap: 0;
+  max-width: 380px;
+  margin: 0 auto;
+  align-items: center;
+  justify-items: center;
+}
+.mg-axis-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 2px 6px;
+}
+.mg-dot {
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 40px;
+  border: 0;
+  padding: 0;
+  background:
+    linear-gradient(#d5dde9, #d5dde9) center / 100% 1px no-repeat,
+    linear-gradient(#d5dde9, #d5dde9) center / 1px 100% no-repeat;
+  position: relative;
+}
+.mg-dot.axis-x {
+  background:
+    linear-gradient(#192a43, #192a43) center / 100% 3px no-repeat,
+    linear-gradient(#d5dde9, #d5dde9) center / 1px 100% no-repeat;
+}
+.mg-dot.axis-y {
+  background:
+    linear-gradient(#d5dde9, #d5dde9) center / 100% 1px no-repeat,
+    linear-gradient(#192a43, #192a43) center / 3px 100% no-repeat;
+}
+.mg-dot.axis-x.axis-y {
+  background:
+    linear-gradient(#192a43, #192a43) center / 100% 3px no-repeat,
+    linear-gradient(#192a43, #192a43) center / 3px 100% no-repeat;
+}
+.mg-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #9aa8ba;
+}
+.mg-dot:hover::after {
+  background: var(--blue);
+}
+.mg-dot.hit::after {
+  width: 22px;
+  height: 22px;
+  background: #0b7a3b;
+}
+.mg-dot.miss::after {
+  width: 18px;
+  height: 18px;
+  background: #c62828;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mg-meter span {
+    transition: none;
+  }
+}

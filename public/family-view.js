@@ -120,7 +120,7 @@ export function renderFamilyPage({ app, session, lessons }) {
       heading("TU FAMILIA", "Mi familia", "Crea la cuenta de tus hijos menores de 14 años o vincula la de un estudiante mayor, y acompaña su avance.") +
       `<div id="family-message" role="status" class="feedback good">${escape(notice)}</div>
       <div class="family-forms">
-        <section class="card"><h3>Crear la cuenta de un estudiante</h3><p class="muted">Para menores de 14 años. Al crearla das tu consentimiento como apoderado. Entrará con su usuario y contraseña, sin correo.</p>
+        <section class="card"><h3>Crear la cuenta de un estudiante</h3><p class="muted">Para menores de 14 años. Al crearla das tu consentimiento como apoderado, también para que una IA revise las fotos de su desarrollo en papel (solo la hoja; no se guardan). Entrará con su usuario y contraseña, sin correo.</p>
           <form id="child-form" class="auth-grid">
             <label for="child-name">Nombre</label><input id="child-name" name="name" maxlength="60" required>
             <label for="child-username">Usuario</label><input id="child-username" name="username" maxlength="30" autocapitalize="none" autocomplete="off" placeholder="tomas.r" required>

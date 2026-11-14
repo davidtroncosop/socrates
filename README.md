@@ -5,7 +5,7 @@ Espacio de aprendizaje autónomo, al estilo Duolingo, de matemática y comprensi
 ## Ejecutar
 
 ```sh
-npm test                 # 123 pruebas (Node 22+)
+npm test                 # 132 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
@@ -36,6 +36,8 @@ Módulos del cliente (`public/`):
 - `app.js`: navegación, lecciones, repasos, cuaderno, sincronización, catálogo central.
 - `daily.js`: práctica del día y meta diaria.
 - `mistakes.js`: retroalimentación para errores frecuentes.
+- `minigames.js`: minijuegos de las lecciones (tocar, arrastrar, botones).
+- `work-photo.js`: cuándo es obligatoria la foto del desarrollo.
 - `notify.js`, `sw.js`, `manifest.webmanifest`: app instalable, uso sin conexión y recordatorio diario.
 - `subjects.js`: materias visibles para los estudiantes.
 - `ui.js`, `units.js`, `stats.js`, `dialogs.js`: utilidades de interfaz, unidades de la ruta, métricas de motivación y diálogos.
@@ -44,7 +46,8 @@ Módulos del cliente (`public/`):
 
 ## Qué incluye
 
-- **Desarrollo a mano obligatorio, revisado por IA:** en cada ejercicio de matemática el estudiante lo resuelve en papel (una servilleta sirve), le saca una foto (en el celular se abre la cámara trasera) y recién ahí comprueba su respuesta. La respuesta se corrige en el dispositivo al instante; con cuenta, además, Gemini 2.5 Flash (vía OpenRouter) mira la foto y dice en una o dos frases el primer paso con error o qué hizo bien, sin dar la respuesta (`functions/_lib/work-review.js`, `POST /api/work/review`, tope de 120 revisiones por hora y cuenta). La foto se guarda solo en el cuaderno del dispositivo; el servidor la envía a OpenRouter (solo a proveedores que no guardan ni entrenan con los datos) y no la guarda. Sin cuenta o sin conexión se pide igual la foto, pero no se revisa. Para volver a la foto opcional: `required: false` en `public/work-photo.js`.
+- **Minijuegos para entender la idea:** 31 lecciones tienen un paso «Juega» entre el video y el ejemplo, donde el estudiante toca, arrastra o aprieta un botón para ver la idea funcionando: la balanza (quitar lo mismo de cada lado), el ascensor de los enteros, pintar fracciones y porcentajes, elegir qué operación va primero (PAPOMUDAS), ordenar tarjetas, repartir galletas en platos, armar cantidades con saltos o monedas y ubicar puntos en el plano. No tienen tiempo ni puntaje, explican cada tropiezo, se pueden repetir y se pueden saltar. Los juegos y sus rondas se definen por lección en `GAMES` (`public/minigames.js`); para sumar una lección basta agregar su `id` con rondas de un tipo existente.
+- **Desarrollo a mano con foto, revisado por IA:** en el desafío final de cada lección de matemática el estudiante resuelve en papel (una servilleta sirve), le saca una foto (en el celular se abre la cámara trasera) y recién ahí comprueba su respuesta. En los demás ejercicios la foto es opcional, para no frenar cada respuesta. La respuesta se corrige en el dispositivo al instante; con cuenta, además, Gemini 2.5 Flash (vía OpenRouter) mira toda foto de matemática y dice en una o dos frases el primer paso con error o qué hizo bien, sin dar la respuesta (`functions/_lib/work-review.js`, `POST /api/work/review`, tope de 120 revisiones por hora y cuenta). La foto se guarda solo en el cuaderno del dispositivo; el servidor la envía a OpenRouter (solo a proveedores que no guardan ni entrenan con los datos) y no la guarda. La app pide fotografiar solo la hoja, sin cara ni nombre. Sin cuenta o sin conexión la foto se guarda, pero no se revisa. `required` en `public/work-photo.js` cambia la regla: `"challenge"` (por defecto), `true` (todos los ejercicios) o `false` (nunca).
 - **Explica el error:** si la respuesta coincide con un error frecuente, la app dice qué pasó en vez de solo «incorrecto». En ecuaciones lineales detecta sola el signo contrario, olvidar dividir, multiplicar en vez de dividir y la operación inversa equivocada. Los generadores declaran errores típicos de su tema (exponentes, porcentajes, Pitágoras, productos notables, enteros…), y los autores pueden agregar los suyos por ejercicio.
 - **Práctica del día:** una sesión de 3 a 6 ejercicios que mezcla los repasos vencidos, las lecciones con más errores en los últimos 14 días y recuerdo de lo aprendido hace más tiempo. Solo usa lecciones completadas (lo nuevo se aprende en su lección, con la explicación). Los repasos incluidos confirman dominio con la misma regla de siempre.
 - **Meta diaria:** relajada (30 XP, unos 5 min), regular (50 XP) o intensa (80 XP). Cada respuesta correcta suma 10 XP; un anillo en la ruta muestra el avance del día.
@@ -94,7 +97,6 @@ El acceso ofrece **Entrar** (con correo o usuario), **Crear cuenta** y **Probar 
 - Los permisos de administración se deciden en el servidor con `ADMIN_IDS` o `ADMIN_EMAILS`; lo que guarda el navegador solo sirve para mostrar u ocultar el menú.
 - Del código de recuperación solo se guarda su hash.
 - Recordatorios: el servidor solo envía avisos a los servicios de push conocidos (Google, Mozilla, Apple, Microsoft), así que no se puede usar para hacer peticiones a cualquier URL. Los avisos van sin contenido: el texto lo pide el service worker a `/api/reminder` con la sesión del usuario, así que ningún dato del estudiante pasa por esos servicios.
-- **Pendiente:** limitar intentos de login. Se recomienda una regla de *rate limiting* de Cloudflare sobre `/api/auth/*`.
 
 ### API
 
@@ -112,6 +114,10 @@ El acceso ofrece **Entrar** (con correo o usuario), **Crear cuenta** y **Probar 
 | `GET /api/catalog` · `PUT /api/catalog` | Catálogo central (lectura pública · publicar solo administración, máximo 2 MB) |
 | `GET /api/push/key` · `PUT /api/push` · `DELETE /api/push` | Clave VAPID · suscribir `{endpoint, hour, timeZone}` · anular |
 | `GET /api/reminder` | Texto del recordatorio según la racha y los repasos del usuario |
+| `GET /api/rewards` · `POST /api/rewards` · `DELETE /api/rewards/:id` | Premios en casa: listar · crear (apoderado) · borrar |
+| `POST /api/rewards/:id/claim` · `POST /api/claims/:id` | El estudiante pide un canje · el apoderado lo aprueba o rechaza |
+| `POST /api/work/review` | Revisión con IA de la foto del desarrollo (con cuenta; 120 por hora) |
+| `POST /api/metrics` · `GET /api/metrics` | Contadores anónimos por lección y ejercicio (`correct`, `wrong`, `hint`, `revealed`, `photo`: la foto obligatoria frenó la respuesta, `game`: terminó el minijuego) · lectura solo administración |
 
 ## Publicación
 
@@ -148,13 +154,14 @@ La importación comprueba estructura, identificadores, ejercicios faltantes, res
 
 ## Límites de esta versión
 
-- No hay IA conectada ni OCR: el procedimiento en foto no se evalúa, solo el resultado final.
+- La revisión con IA de la foto comenta el desarrollo, pero no cambia la corrección: el acierto se decide solo con el resultado final.
+- Los minijuegos cubren 31 de las 125 lecciones de matemática (bases, jerarquía, ecuaciones, enteros, fracciones, porcentajes, plano); el resto no tiene paso «Juega».
 - La recuperación de contraseña por correo necesita un dominio propio y un servicio de envío; por ahora se recupera con el código o a través del apoderado.
-- Faltan límites de intentos en `/api/auth/*`: configura una regla de *rate limiting* en Cloudflare (Security → WAF).
 - Los videos pueden dejar de estar disponibles si su canal los borra o los hace privados; conviene revisarlos periódicamente desde la vista previa del mantenedor.
 - Si se borra el progreso en un dispositivo mientras otro sin conexión conserva el anterior, al reconectar ese otro dispositivo las lecciones completadas vuelven a sumarse.
 - El recordatorio usa horas en punto; en zonas horarias con media hora se envía en la hora local más cercana siguiente.
-- Antes de abrirla al público, revisa con asesoría legal la política de privacidad y el consentimiento parental según la Ley 21.719.
+- Antes de abrirla al público, revisa con asesoría legal la política de privacidad y el consentimiento parental según la Ley 21.719, en especial el envío de las fotos del desarrollo a un proveedor de IA externo.
+- El repositorio no tiene remoto: `.github/workflows/test.yml` correrá las pruebas en cada push cuando se suba a GitHub.
 
 ## Respaldo
 

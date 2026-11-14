@@ -979,3 +979,49 @@ test("with an account, Gemini reviews the photo and explains the step", async ()
   await new Promise((r) => setTimeout(r, 0));
   assert.equal(reviews.length, 1);
 });
+
+test("lessons with a minigame add a play step that never blocks the lesson", async () => {
+  const h = await harness();
+  h.click("lesson:equations");
+  assert.match(h.node("#app").innerHTML, /Juega<\/li>/, "the steps announce the game");
+  const html = stepTo(h, /id="minigame"/);
+  assert.match(html, /Cada bolsa esconde/);
+  assert.match(html, /data-action="intro-next"/, "the game can be skipped");
+  // x + 3 = 8: quitar 3 de cada lado deja la bolsa sola.
+  for (let i = 0; i < 3; i++) h.click("game:take");
+  assert.match(h.node("#minigame").innerHTML, /x = 5/);
+  h.click("game:next");
+  assert.match(h.node("#minigame").innerHTML, /2 de 3/);
+  h.click("intro-next");
+  assert.match(h.node("#app").innerHTML, /intro-example-card/, "the example follows the game");
+  h.click("intro-prev");
+  assert.match(h.node("#app").innerHTML, /2 de 3/, "coming back keeps the game where it was");
+
+  h.click("exit");
+  h.click("lesson:signs");
+  h.click("exit");
+  const plain = await harness();
+  plain.click("lesson:semejantes");
+  assert.doesNotMatch(plain.node("#app").innerHTML, /Juega<\/li>/, "lessons without a game keep their steps");
+});
+
+test("by default the photo is only required in the final challenge of a lesson", async () => {
+  assert.equal((await import("../public/work-photo.js?default")).WORK_PHOTO.required, "challenge");
+  const h = await harness(undefined, { photoRequired: "challenge" });
+  h.click("lesson:equations");
+  assert.match(stepTo(h, /handwritten-reminder-box/), /En el desafío final te pediremos una foto/);
+  h.click("begin-exercises");
+  for (let i = 0; i < 3; i++) {
+    assert.doesNotMatch(h.node("#app").innerHTML, /work-photo-required/, `exercise ${i + 1} doesn't demand a photo`);
+    h.answer(String(lessonById("equations").questions[i][1]));
+    assert.match(h.node("#feedback").textContent, /Lo resolviste/);
+    h.click("next");
+  }
+  assert.match(h.node("#app").innerHTML, /work-photo-required/, "the challenge asks for it");
+  assert.match(h.node("#app").innerHTML, /sin tu cara ni tu nombre/, "and reminds to photograph only the sheet");
+  h.answer(String(lessonById("equations").questions[3][1]));
+  assert.match(h.node("#feedback").textContent, /sácale una foto/);
+  await takePhoto(h);
+  h.answer(String(lessonById("equations").questions[3][1]));
+  assert.match(h.node("#feedback").textContent, /Lo resolviste/);
+});

@@ -18,7 +18,7 @@ const SHELL = [
   ...[
     "admin", "api", "app", "auth", "content", "csv", "curriculum", "daily",
     "dialogs", "family-view", "generators", "landing", "learning", "lesson-videos", "mistakes", "subjects",
-    "metrics", "notify", "session", "speak", "stats", "ui", "units", "video", "weekly", "work-photo",
+    "metrics", "minigames", "notify", "session", "speak", "stats", "ui", "units", "video", "weekly", "work-photo",
   ].map((name) => `/${name}.js`),
 ];
 

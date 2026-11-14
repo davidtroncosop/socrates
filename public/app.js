@@ -32,6 +32,7 @@ import { ACTIVE_SUBJECTS } from "./subjects.js";
 import { WORK_PHOTO } from "./work-photo.js";
 import { autoRead, autoReadButton, setAutoRead, speak, speakButton, stopSpeaking } from "./speak.js";
 import { track } from "./metrics.js";
+import { hasGame, createGame, gameAction, gameView, enableDrag } from "./minigames.js";
 import { diagnoseMistake } from "./mistakes.js";
 import {
   buildDailyPlan,
@@ -819,7 +820,17 @@ function start(id, mode = "lesson") {
   }
 }
 
-const STEP_NAMES = { idea: "La idea", video: "El video", example: "Un ejemplo", practice: "A practicar" };
+const STEP_NAMES = { idea: "La idea", video: "El video", game: "Juega", example: "Un ejemplo", practice: "A practicar" };
+// El minijuego de la lección: se toca, se arrastra o se aprieta un botón.
+function playGame(action) {
+  const s = session,
+    box = $("#minigame");
+  if (!s?.game || !box) return;
+  const wasDone = s.game.done;
+  gameAction(s.game, action);
+  box.innerHTML = gameView(s.game);
+  if (s.game.done && !wasDone) track(s.lesson.id, 9, "game");
+}
 function renderIntroLesson(fromExercise = false) {
   const s = session,
     l = s.lesson;
@@ -827,7 +838,9 @@ function renderIntroLesson(fromExercise = false) {
   const grade = ALL_GRADES_LESSONS.has(l.id) ? "Base" : GRADES[inferGrade(l)];
   // Una idea por pantalla: la idea, el video, el ejemplo y a practicar. Al
   // volver desde un ejercicio para repasar, se muestra todo junto.
-  const steps = ["idea", ...(l.video ? ["video"] : []), "example", "practice"];
+  const playable = hasGame(l.id);
+  const steps = ["idea", ...(l.video ? ["video"] : []), ...(playable ? ["game"] : []), "example", "practice"];
+  if (playable && !s.game) s.game = createGame(l.id);
   const stepped = !fromExercise;
   const step = stepped ? Math.min(s.introStep ?? 0, steps.length - 1) : 0;
   const show = (name) => !stepped || steps[step] === name;
@@ -899,6 +912,9 @@ function renderIntroLesson(fromExercise = false) {
         }
 
         ` : ""}
+        ${stepped && playable && show("game") ? `<section class="minigame" id="minigame" aria-label="Juego de la lección">${gameView(s.game)}</section>${speakButton("game", "Escuchar qué hay que hacer")}
+
+        ` : ""}
         ${show("example") ? `
         <div class="intro-example-card">
           <div class="intro-example-header">
@@ -926,7 +942,7 @@ function renderIntroLesson(fromExercise = false) {
           <span class="reminder-icon">✍️</span>
           <div>
             <strong>¡Ten listo tu cuaderno y lápiz!</strong>
-            <p>Los siguientes 4 ejercicios se resuelven a mano en papel. Podrás tomar una foto de tu desarrollo para guardarla en tu cuaderno.${s.generated ? " Esta vez son ejercicios nuevos, distintos de los que ya resolviste." : ""}</p>
+            <p>Ten papel y lápiz a mano. ${isMath && WORK_PHOTO.required === "challenge" ? "En el desafío final te pediremos una foto de tu desarrollo; en los demás es opcional." : "Podrás tomar una foto de tu desarrollo para guardarla en tu cuaderno."}${s.generated ? " Esta vez son ejercicios nuevos, distintos de los que ya resolviste." : ""}</p>
           </div>
         </div>
 
@@ -1006,17 +1022,22 @@ function attachPhotoListeners() {
   }
 }
 
-// En matemática la foto del desarrollo es obligatoria (ver work-photo.js).
-const photoRequired = (s) => WORK_PHOTO.required && getSubject(lessonAt(s)) === "matematica";
+// En matemática la foto del desarrollo se exige según work-photo.js: siempre,
+// solo en el desafío final de cada lección o nunca.
+const isMathExercise = (s) => getSubject(lessonAt(s)) === "matematica";
+const photoRequired = (s) =>
+  isMathExercise(s) &&
+  (WORK_PHOTO.required === true ||
+    (WORK_PHOTO.required === "challenge" && s.mode === "lesson" && s.index === s.questions.length - 1));
 function photoBox(s) {
   const required = photoRequired(s);
   if (s.workPhoto)
     return `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${s.workPhoto}" alt="Foto de tu desarrollo a mano" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu desarrollo lista</span><p class="muted" style="margin:4px 0 8px 0; font-size:12px;">${
-      required && synced ? "El búho la revisará al comprobar." : "Se guardará en tu cuaderno al comprobar."
+      synced && isMathExercise(s) ? "El búho la revisará al comprobar." : "Se guardará en tu cuaderno al comprobar."
     }</p><button type="button" data-action="remove-photo" class="btn-remove-photo">✕ Cambiar foto</button></div></div>`;
   return `<label for="work-photo-input" class="photo-upload-box" id="photo-dropzone"><span class="photo-icon">📷</span><div class="photo-upload-text"><strong>${
     required ? "Sacar foto de mi desarrollo" : "Subir foto de tu desarrollo a mano"
-  }</strong><span>${required ? "Se abre la cámara. Que se vean todos tus pasos." : "Toma una foto con tu cámara o elige una imagen"}</span></div><span class="photo-tag-pill">${
+  }</strong><span>${required ? "Se abre la cámara. Que se vean todos tus pasos. Solo la hoja: sin tu cara ni tu nombre." : "Solo la hoja: que no salgan tu cara ni tu nombre."}</span></div><span class="photo-tag-pill">${
     required ? "Sacar foto" : "Sube tu foto"
   }</span></label><input type="file" id="work-photo-input" accept="image/*" capture="environment" class="visually-hidden">`;
 }
@@ -1127,6 +1148,7 @@ const SPEAK_TARGETS = {
   practice: [".handwritten-reminder-box"],
   question: [".exercise-statement", ".equation"],
   hint: ["#hints > .hint:last-child"],
+  game: [".minigame-prompt"],
   review: ["#work-review p"],
 };
 function speakTarget(target) {
@@ -1220,7 +1242,7 @@ function hint() {
 // y nunca bloquea avanzar.
 async function reviewPhoto(s, q, raw, correct) {
   const box = $("#work-review");
-  if (!box || !photoRequired(s) || !s.workPhoto || s.reviewedPhoto === s.workPhoto) return;
+  if (!box || !isMathExercise(s) || !s.workPhoto || s.reviewedPhoto === s.workPhoto) return;
   const show = (className, html) => {
     box.hidden = false;
     box.className = "work-review" + (className ? " " + className : "");
@@ -1269,6 +1291,9 @@ function check(e) {
   if (photoRequired(s) && !s.workPhoto) {
     f.className = "feedback";
     f.textContent = "Antes de comprobar, resuélvelo en papel y sácale una foto 📷.";
+    // Cuántas veces la foto frena al estudiante (una vez por ejercicio).
+    if (!s.photoBlocked) track(lessonAt(s).id, metricStep(s), "photo");
+    s.photoBlocked = true;
     return;
   }
   const correct = isCorrect(raw, q[1]),
@@ -1358,6 +1383,7 @@ function next() {
   s.workPhoto = null;
   s.lastPhoto = null;
   s.reviewedPhoto = null;
+  s.photoBlocked = false;
   renderExercise();
 }
 // Primera vez: dos preguntas fáciles y concretas antes de cualquier
@@ -1721,6 +1747,7 @@ function finishTask() {
   app.innerHTML = `<section class="card summary">${heading("PRÁCTICA PERSONAL", "Tu ejercicio está resuelto.", "Este intento se guardó como práctica. Continúa con la ruta para afianzar el método.")}<div class="callout">${escape(s.questions[0][4])}</div><div class="actions">${button("Volver a mi ruta", "exit", "primary")}${button("Otro ejercicio", "go:tarea")}</div></section>`;
   session = null;
 }
+enableDrag(app, (from, to) => playGame(`drop:${from}:${to}`));
 app.addEventListener("click", (e) => {
   const b = e.target.closest("[data-action]");
   if (!b || b.disabled) return;
@@ -1740,6 +1767,7 @@ app.addEventListener("click", (e) => {
     if (state.reviews.some((r) => r.lesson === id && r.due <= Date.now()))
       start(id, "review");
   } else if (action === "hint") hint();
+  else if (action === "game") playGame(b.dataset.action.slice(5));
   else if (action === "next") next();
   else if (action === "skip" && session && !session.answered) {
     session.results.push({
