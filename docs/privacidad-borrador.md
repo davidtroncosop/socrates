@@ -1,8 +1,8 @@
-# Política de privacidad de socatres (BORRADOR)
+# Política de privacidad de socatres
 
-> Borrador para revisión. Antes de publicarlo hay que completar los campos entre corchetes y revisarlo con un abogado (Ley 19.628 y Ley 21.719). Ver `docs/legal.md`.
+> Publicada en `/privacidad` (`public/privacidad.html`): si cambias este texto, cambia también la página. Falta la revisión de un abogado (Ley 19.628 y Ley 21.719). Ver `docs/legal.md`.
 
-**Responsable:** [nombre o razón social]. **Contacto:** [correo de contacto].
+**Responsable:** David Troncoso. **Contacto:** davidtroncosop@gmail.com.
 
 ## Qué es socatres
 
@@ -38,8 +38,8 @@ No vendemos ni compartimos datos con fines publicitarios. La aplicación funcion
 
 ## Tus derechos
 
-Desde «Mis datos» puedes ver qué se guarda, borrar tu avance o eliminar tu cuenta. Eliminar la cuenta borra tus datos personales, tu avance, tus sesiones y tus vínculos familiares; si eres apoderado, también las cuentas de estudiantes que creaste. Para otras solicitudes (acceso, rectificación, oposición), escribe a [correo de contacto].
+Desde «Mis datos» puedes ver qué se guarda, borrar tu avance o eliminar tu cuenta. Eliminar la cuenta borra tus datos personales, tu avance, tus sesiones y tus vínculos familiares; si eres apoderado, también las cuentas de estudiantes que creaste. Para otras solicitudes (acceso, rectificación, oposición), escribe a davidtroncosop@gmail.com.
 
 ## Cambios
 
-Si cambiamos esta política, lo avisaremos en la aplicación. Última actualización: [fecha].
+Si cambiamos esta política, lo avisaremos en la aplicación. Última actualización: 14 de noviembre de 2026.

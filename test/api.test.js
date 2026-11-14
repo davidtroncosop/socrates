@@ -482,3 +482,17 @@ test("work review is rate limited per account", async () => {
     assert.equal(last.status, 429);
   });
 });
+
+test("work review has a daily cap for the whole app", async () => {
+  const e = env({ OPENROUTER_API_KEY: "k" });
+  const c = client(e);
+  await student(c, "Ana", "ana@x.cl");
+  // Como si hoy ya se hubieran hecho todas las revisiones permitidas.
+  await e.DB.prepare("INSERT INTO rate_limits (key, window_start, count) VALUES ('workReviewAll:app', ?, 3000)").bind(Date.now()).run();
+  await withGemini({}, async (calls) => {
+    const res = await c.call("POST", "/api/work/review", reviewBody());
+    assert.equal(res.status, 429);
+    assert.match(res.body.error, /quedó guardada en tu cuaderno/);
+    assert.equal(calls.length, 0, "nothing is sent to Gemini past the cap");
+  });
+});

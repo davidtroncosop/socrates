@@ -9,6 +9,7 @@ const CACHE = "socatres-v1";
 const SHELL = [
   "/",
   "/aprender",
+  "/privacidad",
   "/styles.css",
   "/landing.css",
   "/manifest.webmanifest",

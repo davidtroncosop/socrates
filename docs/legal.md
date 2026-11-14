@@ -18,6 +18,6 @@ Revisión hecha el 17 de octubre de 2026. No es asesoría legal: confirma cada p
 
 - socatres guarda datos de menores de edad. Las cuentas de menores de 14 años las crea el apoderado; los estudiantes de 14 o más pueden registrarse solos.
 - Hay un borrador de política de privacidad en `docs/privacidad-borrador.md`, escrito a partir de lo que la app guarda de verdad. Antes de publicarlo falta:
-  1. Definir el responsable de los datos (nombre o razón social) y un correo de contacto.
+  1. ~~Definir el responsable de los datos y un correo de contacto.~~ Hecho el 14 de noviembre de 2026 (David Troncoso).
   2. Revisarlo con un abogado, en especial lo relativo a la Ley 21.719 y a su fecha de entrada en vigencia.
-  3. Publicarlo como página (por ejemplo `/privacidad`) y enlazarlo desde la portada y desde «Mis datos».
+  3. ~~Publicarlo como página y enlazarlo.~~ Hecho: `/privacidad`, enlazada desde la portada, el registro y «Mis datos».

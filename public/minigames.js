@@ -132,7 +132,7 @@ const paint = {
     const ref = r.ref
       ? `<div class="mg-ref"><span class="muted">${escape(r.ref.label)}</span><div class="mg-bar" style="grid-template-columns:repeat(${r.ref.parts},1fr)">${times(r.ref.parts, (i) => `<span class="mg-cell${i < r.ref.painted ? " on" : ""}"></span>`)}</div></div>`
       : "";
-    return `${ref}<div class="mg-bar" style="grid-template-columns:repeat(${cols},1fr)">${s.on
+    return `${ref}<div class="mg-bar" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">${s.on
       .map(
         (on, i) =>
           `<button type="button" class="mg-cell${on ? " on" : ""}" data-action="game:cell:${i}" aria-pressed="${on}" aria-label="Parte ${i + 1}"${s.won ? " disabled" : ""}>${r.cellLabels?.[i] ?? r.cellLabel ?? ""}</button>`,
@@ -346,7 +346,7 @@ const point = {
     }
     let labels = "<span></span>";
     for (let x = min; x <= max; x++) labels += `<span class="mg-axis-label">${fmt(x)}</span>`;
-    return `<div class="mg-plane" style="grid-template-columns:auto repeat(${max - min + 1},1fr)">${rows.join("")}${labels}</div>`;
+    return `<div class="mg-plane" style="grid-template-columns:auto repeat(${max - min + 1},minmax(0,1fr))">${rows.join("")}${labels}</div>`;
   },
 };
 
@@ -531,15 +531,15 @@ export const GAMES = {
     { kind: "paint", parts: 8, cols: 4, target: 5, prompt: "Cada fila es un chocolate entero, cortado en cuartos. Pinta 5/4.", hint: "Son 5 partes: no caben en un solo chocolate.", win: "5/4 es 1 chocolate entero y 1/4 más." },
   ],
   "base-decimales": [
-    { kind: "paint", parts: 10, target: 7, cellLabel: "0,1", prompt: "La barra mide 1 metro. Cada parte es 0,1. Pinta 0,7 metros.", hint: "0,7 son 7 décimos.", win: "7 partes de 0,1 son 0,7." },
+    { kind: "paint", parts: 10, cols: 5, target: 7, cellLabel: "0,1", prompt: "La barra mide 1 metro. Cada parte es 0,1. Pinta 0,7 metros.", hint: "0,7 son 7 décimos.", win: "7 partes de 0,1 son 0,7." },
     ascending("Ordena de menor a mayor.", [0.5, 0.25, 0.8], "Piensa en plata: 0,5 son 50 centavos y 0,25 son 25."),
   ],
   porcentajes: [
-    { kind: "paint", parts: 10, target: 3, cellLabel: "10%", prompt: "Cada parte es el 10%. Pinta el 30%.", hint: "30% son 3 partes de 10%.", win: "30% es 30 de cada 100: 3 partes de 10." },
-    { kind: "paint", parts: 10, target: 5, cellLabel: "10%", prompt: "Pinta el 50%.", hint: "50% es la mitad.", win: "50% es la mitad." },
+    { kind: "paint", parts: 10, cols: 5, target: 3, cellLabel: "10%", prompt: "Cada parte es el 10%. Pinta el 30%.", hint: "30% son 3 partes de 10%.", win: "30% es 30 de cada 100: 3 partes de 10." },
+    { kind: "paint", parts: 10, cols: 5, target: 5, cellLabel: "10%", prompt: "Pinta el 50%.", hint: "50% es la mitad.", win: "50% es la mitad." },
   ],
   "variacion-porcentual": [
-    { kind: "paint", parts: 10, target: 8, cellLabel: "10%", prompt: "Una polera tiene 20% de descuento. Pinta la parte que SÍ pagas.", hint: "Si te descuentan 20%, pagas el resto.", win: "Con 20% de descuento pagas el 80% del precio." },
+    { kind: "paint", parts: 10, cols: 5, target: 8, cellLabel: "10%", prompt: "Una polera tiene 20% de descuento. Pinta la parte que SÍ pagas.", hint: "Si te descuentan 20%, pagas el resto.", win: "Con 20% de descuento pagas el 80% del precio." },
   ],
   "multiplos-divisores": [
     jumps(3, 12, "Salta de 3 en 3 hasta llegar a 12. Los números donde caes son múltiplos de 3."),

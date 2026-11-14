@@ -3853,6 +3853,8 @@ details.handwritten-section[open] .handwritten-toggle {
   font-size: 13px;
   font-weight: 700;
   padding: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 .mg-cell.on {
   background: #f5a524;
@@ -3970,7 +3972,7 @@ details.handwritten-section[open] .handwritten-toggle {
 }
 .mg-plate-wrap {
   flex: 1;
-  min-width: 96px;
+  min-width: 56px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -4062,7 +4064,8 @@ span.mg-chip {
 .mg-dot {
   width: 100%;
   aspect-ratio: 1;
-  min-height: 40px;
+  min-width: 0;
+  min-height: 28px;
   border: 0;
   padding: 0;
   background:

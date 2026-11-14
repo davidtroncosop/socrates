@@ -254,9 +254,11 @@ const LIMITS = {
   metrics: [200, 15 * 60_000],
   // Cada revisión de foto tiene costo: un tope generoso por cuenta.
   workReview: [120, 60 * 60_000],
+  // Y un tope diario para toda la app: acota el gasto si algo sale mal.
+  workReviewAll: [3000, 24 * 60 * 60_000],
 };
 const clientIp = (request) => request.headers.get("cf-connecting-ip") || "local";
-async function limit(env, kind, who) {
+async function limit(env, kind, who, message = "Demasiados intentos. Espera unos minutos y vuelve a probar.") {
   const [max, windowMs] = LIMITS[kind];
   const now = Date.now();
   const key = `${kind}:${String(who).toLowerCase().slice(0, 200)}`;
@@ -269,7 +271,7 @@ async function limit(env, kind, who) {
   )
     .bind(key, now, now - windowMs, now - windowMs, now)
     .first();
-  if (row && row.count > max) fail(429, "Demasiados intentos. Espera unos minutos y vuelve a probar.");
+  if (row && row.count > max) fail(429, message);
   // Limpieza ocasional de ventanas viejas.
   if (Math.random() < 0.02) await env.DB.prepare("DELETE FROM rate_limits WHERE window_start < ?").bind(now - 24 * 60 * 60_000).run();
 }
@@ -651,6 +653,7 @@ const routes = {
   // Revisión con IA del desarrollo a mano ----------------------------------------
   async "POST /api/work/review"({ request, env, user }) {
     await limit(env, "workReview", user.id);
+    await limit(env, "workReviewAll", "app", "El búho ya revisó muchas fotos hoy. Tu foto quedó guardada en tu cuaderno.");
     try {
       const review = await reviewWork(env, readReviewRequest(await readJson(request, MAX_IMAGE + 4096)));
       return json({ review });
