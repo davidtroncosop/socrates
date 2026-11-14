@@ -9,6 +9,7 @@ import { validateCatalog } from "../../public/content.js";
 import { earnedFichas } from "../../public/stats.js";
 import { isPushEndpoint } from "./push.js";
 import { reminderText, isTimeZone } from "./reminders.js";
+import { readReviewRequest, reviewWork, ReviewError, MAX_IMAGE } from "./work-review.js";
 
 export const COOKIE = "socatres_session";
 const SESSION_DAYS = 30;
@@ -251,6 +252,8 @@ const LIMITS = {
   recover: [5, 60 * 60_000],
   link: [10, 15 * 60_000],
   metrics: [200, 15 * 60_000],
+  // Cada revisión de foto tiene costo: un tope generoso por cuenta.
+  workReview: [120, 60 * 60_000],
 };
 const clientIp = (request) => request.headers.get("cf-connecting-ip") || "local";
 async function limit(env, kind, who) {
@@ -643,6 +646,18 @@ const routes = {
       .bind(since)
       .all();
     return json({ since, metrics: results });
+  },
+
+  // Revisión con IA del desarrollo a mano ----------------------------------------
+  async "POST /api/work/review"({ request, env, user }) {
+    await limit(env, "workReview", user.id);
+    try {
+      const review = await reviewWork(env, readReviewRequest(await readJson(request, MAX_IMAGE + 4096)));
+      return json({ review });
+    } catch (err) {
+      if (err instanceof ReviewError) fail(err.status, err.message);
+      throw err;
+    }
   },
 
   // Catálogo central ------------------------------------------------------------

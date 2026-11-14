@@ -4,6 +4,7 @@ import { solveLinear, getSubject, inferGrade } from "../public/learning.js";
 import { seedCatalog } from "../public/content.js";
 import { escape } from "../public/ui.js";
 import { ACTIVE_SUBJECTS } from "../public/subjects.js";
+import { WORK_PHOTO } from "../public/work-photo.js";
 const catalogLessons = seedCatalog().lessons;
 // Lo que se publica hoy; las pruebas activan ambas materias salvo que pidan otra cosa.
 const PUBLISHED_SUBJECTS = [...ACTIVE_SUBJECTS];
@@ -12,8 +13,10 @@ const correctText = (q) =>
   q[0].split("\n").find((line) => line.startsWith(q[1] + ". ")).slice(3);
 const lessonById = (id) => catalogLessons.find((l) => l.id === id);
 // Lightweight DOM adapter for exercising real app handlers; visual QA remains separate.
-async function harness(saved, { session, key = "socatres.v1", fetch, catalog, subjects = ["matematica", "lenguaje"] } = {}) {
+async function harness(saved, { session, key = "socatres.v1", fetch, catalog, subjects = ["matematica", "lenguaje"], photoRequired = false } = {}) {
   ACTIVE_SUBJECTS.splice(0, ACTIVE_SUBJECTS.length, ...subjects);
+  // La foto obligatoria tiene sus propias pruebas; el resto responde sin ella.
+  WORK_PHOTO.required = photoRequired;
   const nodes = new Map();
   const node = (key) => {
     if (!nodes.has(key))
@@ -888,4 +891,91 @@ test("the demo warns when its session ends and offers to create an account", asy
   assert.match(html, /data-action="demo-signup"/);
   const account = await harness(null, { session: { mode: "account", userId: "u1", name: "Ana", role: "student", expiresAt: later } });
   assert.doesNotMatch(account.node("#app").innerHTML, /sin cuenta/, "accounts see no demo notice");
+});
+
+// Simula sacar una foto con la cámara: compressImage usa FileReader, Image y canvas.
+async function takePhoto(h, dataUrl = "data:image/jpeg;base64,/9j/servilleta") {
+  globalThis.FileReader = class {
+    readAsDataURL() {
+      this.onload({ target: { result: "data:image/jpeg;base64,original" } });
+    }
+  };
+  globalThis.Image = class {
+    set src(_) {
+      this.width = 1600;
+      this.height = 1200;
+      this.onload();
+    }
+  };
+  Object.assign(h.node("created"), { getContext: () => ({ drawImage() {} }), toDataURL: () => dataUrl });
+  await h.node("#work-photo-input").onchange({ target: { files: [{ type: "image/jpeg" }] } });
+}
+
+test("math exercises ask for a photo of the work on paper before checking", async () => {
+  const h = await harness(undefined, { photoRequired: true });
+  h.click("lesson:equations");
+  h.click("begin-exercises");
+  const screen = h.node("#app").innerHTML;
+  assert.match(screen, /servilleta/);
+  assert.match(screen, /Sacar foto de mi desarrollo/);
+  assert.match(screen, /capture="environment"/, "opens the back camera on phones");
+  assert.ok(screen.indexOf("work-photo-input") < screen.indexOf('id="answer"'), "the photo comes before the answer");
+
+  h.answer("7");
+  assert.match(h.node("#feedback").textContent, /sácale una foto/);
+  const saved = h.storage.get("socatres.v1");
+  assert.equal(saved ? JSON.parse(saved).attempts.length : 0, 0, "no attempt without the photo");
+
+  await takePhoto(h);
+  h.answer("7");
+  assert.match(h.node("#feedback").textContent, /Lo resolviste/);
+  const photos = Object.values(JSON.parse(h.storage.get("socatres.v1.photos")));
+  assert.deepEqual(photos, ["data:image/jpeg;base64,/9j/servilleta"], "photo saved in the notebook, on this device");
+  // Sin cuenta no se llama a la IA (cada revisión tiene costo).
+  assert.match(h.node("#work-review").innerHTML, /Con una cuenta/);
+});
+
+test("with an account, Gemini reviews the photo and explains the step", async () => {
+  const reviews = [];
+  const fetch = async (path, init = {}) => {
+    const body = init.body && JSON.parse(init.body);
+    if (path === "/api/work/review") {
+      reviews.push(body);
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          review: {
+            readable: true, showsWork: true, matchesExercise: true, workIsCorrect: false,
+            errorStep: "x = 12 + 5", message: "En el segundo paso sumaste 5. Para dejar sola la x, resta 5 a ambos lados.",
+          },
+        }),
+      };
+    }
+    return { ok: true, status: 200, json: async () => (init.method === "GET" ? { state: null, updatedAt: 0 } : { updatedAt: 1 }) };
+  };
+  const h = await harness(undefined, {
+    photoRequired: true,
+    key: "socatres.v1.u1",
+    session: { mode: "account", userId: "u1", name: "Ana", role: "student", expiresAt: later },
+    fetch,
+  });
+  await new Promise((r) => setTimeout(r, 20));
+  h.click("lesson:equations");
+  h.click("begin-exercises");
+  await takePhoto(h);
+  assert.match(h.node("#app").innerHTML + h.node("#work-photo-container").innerHTML, /El búho la revisará/);
+  h.answer("17");
+  await new Promise((r) => setTimeout(r, 0));
+  assert.equal(reviews.length, 1);
+  assert.equal(reviews[0].image, "data:image/jpeg;base64,/9j/servilleta");
+  assert.equal(reviews[0].answer, "17");
+  assert.equal(reviews[0].correct, false);
+  assert.ok(reviews[0].problem.includes("x"), "sends the exercise shown");
+  assert.match(h.node("#work-review").innerHTML, /resta 5 a ambos lados/);
+
+  // Volver a comprobar con la misma foto no gasta otra revisión.
+  h.answer("16");
+  await new Promise((r) => setTimeout(r, 0));
+  assert.equal(reviews.length, 1);
 });

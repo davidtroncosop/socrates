@@ -5,13 +5,13 @@ Espacio de aprendizaje autónomo, al estilo Duolingo, de matemática y comprensi
 ## Ejecutar
 
 ```sh
-npm test                 # 101 pruebas (Node 22+)
+npm test                 # 123 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
 ```
 
-Para probar el mantenedor y los recordatorios en local, crea `.dev.vars` (no se versiona) con `ADMIN_EMAILS=tu@correo` y `VAPID_PUBLIC_KEY=…` (de `node scripts/vapid-keys.mjs`). La base local se identifica por el `database_id` de `wrangler.toml`: si lo cambias, vuelve a correr `npm run db:migrate:local`. `npm run dev` y el deploy usan `wrangler` (`npx wrangler …` si no está instalado).
+Para probar el mantenedor y los recordatorios en local, crea `.dev.vars` (no se versiona) con `ADMIN_EMAILS=tu@correo` y `VAPID_PUBLIC_KEY=…` (de `node scripts/vapid-keys.mjs`). Para la revisión de fotos agrega `OPENROUTER_API_KEY=…` (de openrouter.ai); en producción va como secreto: `npx wrangler pages secret put OPENROUTER_API_KEY --project-name=socatres`. `REVIEW_MODEL` cambia el modelo (por defecto `google/gemini-2.5-flash`). La base local se identifica por el `database_id` de `wrangler.toml`: si lo cambias, vuelve a correr `npm run db:migrate:local`. `npm run dev` y el deploy usan `wrangler` (`npx wrangler …` si no está instalado).
 
 ## Estructura
 
@@ -44,6 +44,7 @@ Módulos del cliente (`public/`):
 
 ## Qué incluye
 
+- **Desarrollo a mano obligatorio, revisado por IA:** en cada ejercicio de matemática el estudiante lo resuelve en papel (una servilleta sirve), le saca una foto (en el celular se abre la cámara trasera) y recién ahí comprueba su respuesta. La respuesta se corrige en el dispositivo al instante; con cuenta, además, Gemini 2.5 Flash (vía OpenRouter) mira la foto y dice en una o dos frases el primer paso con error o qué hizo bien, sin dar la respuesta (`functions/_lib/work-review.js`, `POST /api/work/review`, tope de 120 revisiones por hora y cuenta). La foto se guarda solo en el cuaderno del dispositivo; el servidor la envía a OpenRouter (solo a proveedores que no guardan ni entrenan con los datos) y no la guarda. Sin cuenta o sin conexión se pide igual la foto, pero no se revisa. Para volver a la foto opcional: `required: false` en `public/work-photo.js`.
 - **Explica el error:** si la respuesta coincide con un error frecuente, la app dice qué pasó en vez de solo «incorrecto». En ecuaciones lineales detecta sola el signo contrario, olvidar dividir, multiplicar en vez de dividir y la operación inversa equivocada. Los generadores declaran errores típicos de su tema (exponentes, porcentajes, Pitágoras, productos notables, enteros…), y los autores pueden agregar los suyos por ejercicio.
 - **Práctica del día:** una sesión de 3 a 6 ejercicios que mezcla los repasos vencidos, las lecciones con más errores en los últimos 14 días y recuerdo de lo aprendido hace más tiempo. Solo usa lecciones completadas (lo nuevo se aprende en su lección, con la explicación). Los repasos incluidos confirman dominio con la misma regla de siempre.
 - **Meta diaria:** relajada (30 XP, unos 5 min), regular (50 XP) o intensa (80 XP). Cada respuesta correcta suma 10 XP; un anillo en la ruta muestra el avance del día.

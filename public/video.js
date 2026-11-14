@@ -9,12 +9,21 @@ import { lessonVideos } from "./lesson-videos.js";
 const OWN_SRC = /^\/media\/lessons\/[a-z0-9-]+\.mp4$/;
 const isOwn = (video) => typeof video?.src === "string";
 
-// Agrega el video propio de cada lección que lo tenga.
+// Agrega el video propio de cada lección que lo tenga (y su versión vertical
+// para celular, si existe).
 export const withLessonVideos = (lessons, videos = lessonVideos) =>
   lessons.map((l) => {
     const own = videos[l.id];
-    return own && OWN_SRC.test(own.src) ? { ...l, video: own } : l;
+    if (!own || !OWN_SRC.test(own.src)) return l;
+    if (own.vertical === undefined || OWN_SRC.test(own.vertical)) return { ...l, video: own };
+    const { vertical, ...video } = own; // una ruta vertical inválida se descarta
+    return { ...l, video };
   });
+
+// Celular en posición vertical: el video 9:16 llena la pantalla; el 16:9
+// quedaría como una franja con letra chica.
+export const prefersVertical = () =>
+  typeof matchMedia === "function" && matchMedia("(orientation: portrait) and (max-width: 820px)").matches;
 
 const ID = /^[A-Za-z0-9_-]{11}$/;
 const HOSTS = /^(?:www\.|m\.|music\.)?(?:youtube\.com|youtube-nocookie\.com|youtu\.be)$/;
@@ -131,8 +140,9 @@ export function videoFacade(video, lessonId) {
   return `<div class="video-slot" id="video-slot"><button type="button" class="video-facade" data-action="play-video:${escape(lessonId)}" aria-label="Reproducir video: ${escape(video.title)}"><span class="video-play" aria-hidden="true">▶</span><span class="video-meta"><strong>${escape(video.title)}</strong><small>Video de YouTube${range ? " · " + range : ""}</small></span></button><p class="video-note">Al reproducirlo se conecta con YouTube. Si no carga en tu red, sigue con la explicación escrita o <a href="${watchUrl(video)}" target="_blank" rel="noopener noreferrer">ábrelo en YouTube</a>.</p></div>`;
 }
 
-export function videoPlayer(video, autoplay = true) {
+export function videoPlayer(video, autoplay = true, vertical = prefersVertical()) {
+  const tall = isOwn(video) && vertical && Boolean(video.vertical);
   if (isOwn(video))
-    return `<div class="video-frame"><video src="${escape(video.src)}" title="${escape(video.title)}" controls playsinline preload="metadata"${autoplay ? " autoplay" : ""}></video></div><p class="video-note">¿No carga? Sigue con la explicación escrita.</p>`;
+    return `<div class="video-frame${tall ? " vertical" : ""}"><video src="${escape(tall ? video.vertical : video.src)}" title="${escape(video.title)}" controls playsinline preload="metadata"${autoplay ? " autoplay" : ""}></video></div><p class="video-note">¿No carga? Sigue con la explicación escrita.</p>`;
   return `<div class="video-frame"><iframe src="${embedUrl(video, autoplay)}" title="${escape(video.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p class="video-note">¿No carga? <a href="${watchUrl(video)}" target="_blank" rel="noopener noreferrer">Ábrelo en YouTube</a> o sigue con la explicación escrita.</p>`;
 }

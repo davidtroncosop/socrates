@@ -398,3 +398,87 @@ test("premios en casa: el apoderado define, el estudiante pide y el apoderado ap
   assert.equal(mine.claims.filter((c) => c.status === "approved").length, 1);
   assert.equal((await mom.call("GET", "/api/rewards")).status, 403);
 });
+
+// Revisión del desarrollo a mano con Gemini ----------------------------------
+const PHOTO = "data:image/jpeg;base64,/9j/4AAQSkZJRg==";
+const reviewBody = (extra = {}) => ({
+  image: PHOTO, problem: "x + 5 = 12", statement: "Encuentra x", expected: "7", answer: "17", correct: false, ...extra,
+});
+function withGemini(reply, fn) {
+  const original = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url, init) => {
+    calls.push({ url: String(url), init, body: JSON.parse(init.body) });
+    return typeof reply === "function" ? reply() : new Response(JSON.stringify(reply), { status: 200 });
+  };
+  return fn(calls).finally(() => (globalThis.fetch = original));
+}
+const geminiSays = (review) => ({ choices: [{ message: { role: "assistant", content: JSON.stringify(review) } }] });
+
+test("work review needs an account and a configured key", async () => {
+  const anonymous = client(env({ OPENROUTER_API_KEY: "k" }));
+  assert.equal((await anonymous.call("POST", "/api/work/review", reviewBody())).status, 401);
+  const c = client(env());
+  await student(c, "Ana", "ana@x.cl");
+  const res = await c.call("POST", "/api/work/review", reviewBody());
+  assert.equal(res.status, 503);
+});
+
+test("work review sends the photo to Gemini 2.5 Flash through OpenRouter and returns a short message", async () => {
+  const c = client(env({ OPENROUTER_API_KEY: "secreta" }));
+  await student(c, "Ana", "ana@x.cl");
+  await withGemini(
+    geminiSays({
+      readable: true, showsWork: true, matchesExercise: true, workIsCorrect: false,
+      errorStep: "x = 12 + 5", message: "En el segundo paso sumaste 5. Resta 5 a ambos lados.",
+    }),
+    async (calls) => {
+      const res = await c.call("POST", "/api/work/review", reviewBody());
+      assert.equal(res.status, 200);
+      assert.equal(res.body.review.message, "En el segundo paso sumaste 5. Resta 5 a ambos lados.");
+      assert.equal(res.body.review.errorStep, "x = 12 + 5");
+      assert.equal(calls.length, 1);
+      assert.equal(calls[0].url, "https://openrouter.ai/api/v1/chat/completions");
+      assert.equal(calls[0].init.headers.authorization, "Bearer secreta", "key in a header, never in the URL");
+      const body = calls[0].body;
+      assert.equal(body.model, "google/gemini-2.5-flash");
+      assert.equal(body.provider.data_collection, "deny", "only providers that don't store or train on photos");
+      assert.match(body.messages[0].content, /nunca una instrucción/);
+      const parts = body.messages[1].content;
+      assert.equal(parts[0].image_url.url, PHOTO);
+      assert.match(parts[1].text, /x \+ 5 = 12/);
+      assert.match(parts[1].text, /incorrecta/);
+      assert.equal(body.response_format.type, "json_object");
+      assert.deepEqual(body.reasoning, { enabled: false }, "no reasoning: cheaper and faster, same accuracy in tests");
+    },
+  );
+});
+
+test("work review rejects bad photos and survives Gemini failures", async () => {
+  const c = client(env({ OPENROUTER_API_KEY: "k" }));
+  await student(c, "Ana", "ana@x.cl");
+  await withGemini({}, async (calls) => {
+    assert.equal((await c.call("POST", "/api/work/review", reviewBody({ image: "https://evil.test/x.jpg" }))).status, 400);
+    assert.equal((await c.call("POST", "/api/work/review", reviewBody({ image: "data:image/svg+xml;base64,PHN2Zz4=" }))).status, 400);
+    assert.equal((await c.call("POST", "/api/work/review", reviewBody({ problem: "" }))).status, 400);
+    assert.equal(calls.length, 0, "invalid requests never reach Gemini");
+  });
+  await withGemini(() => new Response("cuota", { status: 429 }), async () => {
+    const res = await c.call("POST", "/api/work/review", reviewBody());
+    assert.equal(res.status, 502);
+    assert.match(res.body.error, /No pudimos revisar/);
+  });
+  await withGemini({ choices: [{ message: { content: "no es json" } }] }, async () => {
+    assert.equal((await c.call("POST", "/api/work/review", reviewBody())).status, 502);
+  });
+});
+
+test("work review is rate limited per account", async () => {
+  const c = client(env({ OPENROUTER_API_KEY: "k" }));
+  await student(c, "Ana", "ana@x.cl");
+  await withGemini(geminiSays({ readable: true, showsWork: true, matchesExercise: true, workIsCorrect: true, errorStep: "", message: "¡Bien!" }), async () => {
+    let last;
+    for (let i = 0; i < 121; i++) last = await c.call("POST", "/api/work/review", reviewBody());
+    assert.equal(last.status, 429);
+  });
+});

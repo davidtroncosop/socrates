@@ -20,8 +20,11 @@ function useEnter(t, delay = 0) {
   return spring({ frame: t - delay, fps, config: { damping: 18, stiffness: 120, mass: 0.8 } });
 }
 
-export function Background() {
-  const f = useCurrentFrame();
+// `still`: fondo quieto (videos de lecciones). En movimiento cuesta ~3 veces
+// más bytes y tiempo de render, y distrae a quien le cuesta concentrarse.
+export function Background({ still = false }) {
+  const frame = useCurrentFrame();
+  const f = still ? 0 : frame;
   const blob = (color, size, x, y, speed, phase) => (
     <div
       style={{

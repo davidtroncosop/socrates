@@ -15,20 +15,28 @@ const exists = (url) => access(url).then(() => true, () => false);
 
 const current = await import(manifestFile.href).then((m) => m.lessonVideos);
 const videos = { ...current };
-for (const lesson of lessons.filter((l) => !wanted.length || wanted.includes(l.id))) {
-  const file = new URL(`./out/${lesson.id}.mp4`, import.meta.url);
-  if (!(await exists(file))) continue;
+// Sube out/<name>.mp4 (si existe) y devuelve su ruta pública, o null.
+async function put(name, previous) {
+  const file = new URL(`./out/${name}.mp4`, import.meta.url);
+  if (!(await exists(file))) return null;
   const data = await readFile(file);
   const hash = createHash("sha256").update(data).digest("hex").slice(0, 10);
-  const key = `lessons/${lesson.id}-${hash}.mp4`;
+  const key = `lessons/${name}-${hash}.mp4`;
   const src = `/media/${key}`;
-  if (videos[lesson.id]?.src !== src) {
+  if (previous !== src) {
     execFileSync("npx", ["wrangler", "r2", "object", "put", `${BUCKET}/${key}`, "--file", file.pathname, "--content-type", "video/mp4", "--remote"], { stdio: ["ignore", "ignore", "inherit"] });
     console.log(`Subido ${key} (${(data.length / 1e6).toFixed(1)} MB)`);
   }
+  return src;
+}
+for (const lesson of lessons.filter((l) => !wanted.length || wanted.includes(l.id))) {
+  const src = await put(lesson.id, videos[lesson.id]?.src);
+  if (!src) continue;
+  // Versión vertical para celular (VERTICAL=1 npm run render), si está.
+  const vertical = await put(`${lesson.id}-vertical`, videos[lesson.id]?.vertical);
   const narration = JSON.parse(await readFile(new URL(`./src/generated/${lesson.id}.json`, import.meta.url), "utf8"));
   const duration = Math.round(buildTimeline(lesson, narration).duration / FPS);
-  videos[lesson.id] = { src, title: `${lesson.title}: explicado en video`, duration };
+  videos[lesson.id] = { src, ...(vertical ? { vertical } : {}), title: `${lesson.title}: explicado en video`, duration };
 }
 const body = Object.entries(videos)
   .map(([id, v]) => `  ${JSON.stringify(id)}: ${JSON.stringify(v)},`)

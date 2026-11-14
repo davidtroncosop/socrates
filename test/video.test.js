@@ -102,6 +102,24 @@ test("own lesson videos take precedence and are served from our own domain", asy
   assert.doesNotMatch(player, /youtube/i);
 });
 
+test("phones held upright get the 9:16 version when the lesson has one", async () => {
+  const { withLessonVideos, videoPlayer } = await import("../public/video.js");
+  const own = { src: "/media/lessons/equations-ab12cd34.mp4", vertical: "/media/lessons/equations-vertical-ef56ab78.mp4", title: "La balanza", duration: 115 };
+  const [lesson, bad] = withLessonVideos([{ id: "equations" }, { id: "signs" }], {
+    equations: own,
+    signs: { src: "/media/lessons/signs-1234.mp4", vertical: "https://evil.example/x.mp4", title: "x" },
+  });
+  assert.equal(lesson.video.vertical, own.vertical);
+  assert.equal("vertical" in bad.video, false, "only /media/lessons/ paths are accepted");
+  const tall = videoPlayer(lesson.video, false, true);
+  assert.match(tall, /class="video-frame vertical"/);
+  assert.match(tall, /src="\/media\/lessons\/equations-vertical-ef56ab78\.mp4"/);
+  const wide = videoPlayer(lesson.video, false, false);
+  assert.match(wide, /class="video-frame"><video src="\/media\/lessons\/equations-ab12cd34\.mp4"/);
+  // Sin versión vertical, el celular usa la horizontal.
+  assert.match(videoPlayer(bad.video, false, true), /class="video-frame"><video src="\/media\/lessons\/signs-1234\.mp4"/);
+});
+
 test("media function serves R2 videos with byte ranges and immutable caching", async () => {
   const { serveMedia } = await import("../functions/_lib/media.js");
   const bytes = new TextEncoder().encode("0123456789");

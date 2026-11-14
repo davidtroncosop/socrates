@@ -575,6 +575,60 @@ input {
 .feedback:empty {
   display: none;
 }
+/* Desarrollo a mano obligatorio y revisión del búho (Gemini) */
+.work-photo-required {
+  margin: 4px 0 14px;
+}
+.work-photo-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 8px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.work-photo-step .step-num {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1f6feb;
+  color: #fff;
+  font-size: 14px;
+}
+.work-review {
+  padding: 14px 15px;
+  border-radius: 11px;
+  margin-top: 10px;
+  line-height: 1.55;
+  background: #eef4ff;
+  color: #1d3a6b;
+}
+.work-review[hidden] {
+  display: none;
+}
+.work-review p {
+  margin: 4px 0 0;
+}
+.work-review.good {
+  background: #e9f7f0;
+  color: #216344;
+}
+.work-review.muted {
+  background: #f3f5f8;
+  color: var(--muted);
+}
+.work-review.loading p {
+  animation: review-pulse 1.4s ease-in-out infinite;
+}
+@keyframes review-pulse {
+  50% { opacity: 0.45; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-review.loading p { animation: none; }
+}
 .hint {
   border-top: 1px solid var(--line);
   padding-top: 15px;
@@ -3025,6 +3079,12 @@ select {
   border-radius: 14px;
   overflow: hidden;
   background: #0b1320;
+}
+/* Versión 9:16 en celulares verticales: alto según la pantalla, centrada. */
+.video-frame.vertical {
+  aspect-ratio: 9 / 16;
+  height: min(78vh, calc((100vw - 32px) * 16 / 9));
+  margin-inline: auto;
 }
 .video-frame iframe,
 .video-frame video {

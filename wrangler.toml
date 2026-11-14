@@ -11,6 +11,8 @@ migrations_dir = "migrations"
 
 # ADMIN_EMAILS (quién publica el catálogo) se configura como secreto:
 #   npx wrangler pages secret put ADMIN_EMAILS --project-name=socatres
+# OPENROUTER_API_KEY (revisión con IA de la foto del desarrollo) también es secreto:
+#   npx wrangler pages secret put OPENROUTER_API_KEY --project-name=socatres
 [vars]
 VAPID_PUBLIC_KEY = "BJVGOCH1jLyYA55HxteAGsg5TLhBF_bXoEdOKs7JMtrLgUeq_DL7MYbY0o9NIeTIJVPdLB6IwgemJglO142CkKo"
 

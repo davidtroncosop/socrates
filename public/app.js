@@ -29,6 +29,7 @@ import { createAdmin } from "./admin.js";
 import { generateQuestions } from "./generators.js";
 import { videoFacade, videoPlayer, withLessonVideos } from "./video.js";
 import { ACTIVE_SUBJECTS } from "./subjects.js";
+import { WORK_PHOTO } from "./work-photo.js";
 import { autoRead, autoReadButton, setAutoRead, speak, speakButton, stopSpeaking } from "./speak.js";
 import { track } from "./metrics.js";
 import { diagnoseMistake } from "./mistakes.js";
@@ -1005,22 +1006,33 @@ function attachPhotoListeners() {
   }
 }
 
+// En matemática la foto del desarrollo es obligatoria (ver work-photo.js).
+const photoRequired = (s) => WORK_PHOTO.required && getSubject(lessonAt(s)) === "matematica";
+function photoBox(s) {
+  const required = photoRequired(s);
+  if (s.workPhoto)
+    return `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${s.workPhoto}" alt="Foto de tu desarrollo a mano" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu desarrollo lista</span><p class="muted" style="margin:4px 0 8px 0; font-size:12px;">${
+      required && synced ? "El búho la revisará al comprobar." : "Se guardará en tu cuaderno al comprobar."
+    }</p><button type="button" data-action="remove-photo" class="btn-remove-photo">✕ Cambiar foto</button></div></div>`;
+  return `<label for="work-photo-input" class="photo-upload-box" id="photo-dropzone"><span class="photo-icon">📷</span><div class="photo-upload-text"><strong>${
+    required ? "Sacar foto de mi desarrollo" : "Subir foto de tu desarrollo a mano"
+  }</strong><span>${required ? "Se abre la cámara. Que se vean todos tus pasos." : "Toma una foto con tu cámara o elige una imagen"}</span></div><span class="photo-tag-pill">${
+    required ? "Sacar foto" : "Sube tu foto"
+  }</span></label><input type="file" id="work-photo-input" accept="image/*" capture="environment" class="visually-hidden">`;
+}
 function updatePhotoContainer() {
   const container = $("#work-photo-container");
   if (!container || !session) return;
-  if (session.workPhoto) {
-    container.innerHTML = `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${session.workPhoto}" alt="Foto de tu desarrollo a mano" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu desarrollo adjunta</span><p class="muted" style="margin:4px 0 8px 0; font-size:12px;">Se guardará en tu cuaderno al comprobar.</p><button type="button" data-action="remove-photo" class="btn-remove-photo">✕ Eliminar o cambiar foto</button></div></div>`;
-  } else {
-    container.innerHTML = `<label for="work-photo-input" class="photo-upload-box" id="photo-dropzone"><span class="photo-icon">📷</span><div class="photo-upload-text"><strong>Subir foto de tu desarrollo a mano</strong><span>Toma una foto con tu cámara o elige una imagen</span></div><span class="photo-tag-pill">Sube tu foto</span></label><input type="file" id="work-photo-input" accept="image/*" capture="environment" class="visually-hidden">`;
-    attachPhotoListeners();
-  }
+  container.innerHTML = photoBox(session);
+  if (!session.workPhoto) attachPhotoListeners();
 }
 
 function renderExercise() {
   const s = session,
     q = s.questions[s.index],
     l = lessonAt(s),
-    isMath = getSubject(l) === "matematica";
+    isMath = getSubject(l) === "matematica",
+    needsPhoto = photoRequired(s);
   app.innerHTML = `${button("← Volver a mi ruta", "exit", "back")}${heading(
     s.mode === "warmup"
       ? "TU PRIMER PASO"
@@ -1055,19 +1067,25 @@ function renderExercise() {
     .map((_, i) => `<span class="${i <= s.index ? "on" : ""}"></span>`)
     .join("")}</div><div class="statement-row"><p class="exercise-statement">${escape(q[2])}</p>${speakButton("question")}${autoReadButton()}</div><div class="equation ${
     q[0].includes("\n") ? "reading-passage" : ""
-  }">${escape(q[0])}</div><form id="answer-form"><div class="answer-section"><label for="answer">${
+  }">${escape(q[0])}</div><form id="answer-form">${
+    needsPhoto
+      ? `<div class="work-photo-required"><p class="work-photo-step"><span class="step-num">1</span> Resuélvelo en una servilleta o en tu cuaderno y sácale una foto.</p><div id="work-photo-container" class="work-photo-container">${photoBox(s)}</div><p class="work-photo-step"><span class="step-num">2</span> Escribe tu respuesta.</p></div>`
+      : ""
+  }<div class="answer-section"><label for="answer">${
     q[0] === "5x − 2x" ? "Coeficiente" : "Tu respuesta"
   }</label><input id="answer" autocomplete="off" placeholder="${
     q[0].includes("\n") ? "Alternativa: 1, 2 o 3" : touchKeypad() ? "Toca los números de abajo" : "Ej.: 7, x = 7 o 14/2"
-  }" required${touchKeypad() ? ' inputmode="none"' : ""}>${keypad(q)}</div><div id="feedback" aria-live="polite" class="feedback"></div><div class="actions"><button class="primary" id="check" type="submit">Comprobar respuesta →</button><button type="button" data-action="hint" id="hint-button">Necesito una pista</button>${
+  }" required${touchKeypad() ? ' inputmode="none"' : ""}>${keypad(q)}</div><div id="feedback" aria-live="polite" class="feedback"></div><div id="work-review" aria-live="polite" class="work-review" hidden></div><div class="actions"><button class="primary" id="check" type="submit">Comprobar respuesta →</button><button type="button" data-action="hint" id="hint-button">Necesito una pista</button>${
     s.mode === "diagnostic"
       ? '<button type="button" data-action="skip">Todavía no lo sé</button>'
       : ""
-  }</div><div id="hints" class="hints-inline" aria-live="polite"></div></form><div id="next-area"></div><details class="handwritten-section"${s.workPhoto || s.lastWork ? " open" : ""}><summary class="handwritten-toggle">✍️ Mostrar cómo lo resolví <span class="muted">(opcional)</span></summary><p class="handwritten-instruction">Si lo hiciste en tu cuaderno, sácale una foto o escribe tus pasos. Queda guardado en Mi cuaderno.</p><div id="work-photo-container" class="work-photo-container">${
-    s.workPhoto
-      ? `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${s.workPhoto}" alt="Foto de tu desarrollo a mano" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu desarrollo adjunta</span><p class="muted" style="margin:4px 0 8px 0; font-size:12px;">Se guardará en tu cuaderno al comprobar.</p><button type="button" data-action="remove-photo" class="btn-remove-photo">✕ Eliminar o cambiar foto</button></div></div>`
-      : `<label for="work-photo-input" class="photo-upload-box" id="photo-dropzone"><span class="photo-icon">📷</span><div class="photo-upload-text"><strong>Subir foto de tu desarrollo a mano</strong><span>Toma una foto con tu cámara o elige una imagen</span></div><span class="photo-tag-pill">Sube tu foto</span></label><input type="file" id="work-photo-input" accept="image/*" capture="environment" class="visually-hidden">`
-  }</div><details class="work-text-details"${s.lastWork ? " open" : ""}><summary class="work-text-toggle">O escribe tus pasos en texto (opcional)</summary><div style="margin-top:8px;"><label for="work" class="visually-hidden">Tu procedimiento</label><textarea id="work" placeholder="¿Qué harías primero? Escribe tus pasos aquí…">${escape(s.lastWork || "")}</textarea></div></details><div class="muted note-save-expl">Tu desarrollo y foto se guardan automáticamente en tu cuaderno al comprobar.</div></details></section><aside class="stack"><section class="card pedagogical-aside-card"><div class="mini-label">💡 SI TE PIERDES</div><h3>${
+  }</div><div id="hints" class="hints-inline" aria-live="polite"></div></form><div id="next-area"></div><details class="handwritten-section"${!needsPhoto && (s.workPhoto || s.lastWork) ? " open" : ""}><summary class="handwritten-toggle">✍️ ${
+    needsPhoto ? "Escribir también mis pasos" : "Mostrar cómo lo resolví"
+  } <span class="muted">(opcional)</span></summary>${
+    needsPhoto
+      ? ""
+      : `<p class="handwritten-instruction">Si lo hiciste en tu cuaderno, sácale una foto o escribe tus pasos. Queda guardado en Mi cuaderno.</p><div id="work-photo-container" class="work-photo-container">${photoBox(s)}</div>`
+  }<details class="work-text-details"${s.lastWork ? " open" : ""}><summary class="work-text-toggle">O escribe tus pasos en texto (opcional)</summary><div style="margin-top:8px;"><label for="work" class="visually-hidden">Tu procedimiento</label><textarea id="work" placeholder="¿Qué harías primero? Escribe tus pasos aquí…">${escape(s.lastWork || "")}</textarea></div></details><div class="muted note-save-expl">Tu desarrollo y foto se guardan automáticamente en tu cuaderno al comprobar.</div></details></section><aside class="stack"><section class="card pedagogical-aside-card"><div class="mini-label">💡 SI TE PIERDES</div><h3>${
     BALANCE_LESSONS.has(l.id) ? "⚖️ Mantener el equilibrio" : isMath ? "💡 Idea clave" : "📖 Estrategia clave"
   }</h3><p class="muted" style="line-height:1.55;margin:8px 0 10px 0;">${escape(
     forStudent(l.concept),
@@ -1109,6 +1127,7 @@ const SPEAK_TARGETS = {
   practice: [".handwritten-reminder-box"],
   question: [".exercise-statement", ".equation"],
   hint: ["#hints > .hint:last-child"],
+  review: ["#work-review p"],
 };
 function speakTarget(target) {
   const text = (SPEAK_TARGETS[target] ?? [])
@@ -1196,6 +1215,44 @@ function hint() {
   }
   if (s.hints === 3) $("#hint-button").disabled = true;
 }
+// Gemini revisa la foto del desarrollo (solo con cuenta: cada revisión tiene
+// costo). La respuesta ya se corrigió en el dispositivo; esto se suma después
+// y nunca bloquea avanzar.
+async function reviewPhoto(s, q, raw, correct) {
+  const box = $("#work-review");
+  if (!box || !photoRequired(s) || !s.workPhoto || s.reviewedPhoto === s.workPhoto) return;
+  const show = (className, html) => {
+    box.hidden = false;
+    box.className = "work-review" + (className ? " " + className : "");
+    box.innerHTML = html;
+  };
+  if (!synced) {
+    show("muted", "<p>Tu foto quedó guardada en tu cuaderno. Con una cuenta, el búho también revisa tus pasos.</p>");
+    return;
+  }
+  const photo = s.workPhoto,
+    index = s.index;
+  s.reviewedPhoto = photo;
+  show("loading", "<p>🦉 Mirando tu desarrollo…</p>");
+  try {
+    const { review } = await api.reviewWork({
+      image: photo,
+      problem: q[0],
+      statement: q[2],
+      expected: String(q[1]),
+      answer: raw,
+      correct,
+    });
+    if (session !== s || s.index !== index || s.workPhoto !== photo) return;
+    const good = review.readable && review.showsWork && review.matchesExercise && review.workIsCorrect;
+    show(good ? "good" : "", `<strong>🦉 Sobre tu desarrollo</strong><p>${escape(review.message)}</p>${speakButton("review")}`);
+    if (autoRead()) speakTarget("review");
+  } catch (err) {
+    if (session !== s || s.index !== index) return;
+    s.reviewedPhoto = null; // con la misma foto se puede volver a intentar
+    show("muted", `<p>${escape(err.status === 0 ? "Sin conexión: no pude revisar tu foto, pero quedó guardada en tu cuaderno." : err.message)}</p>`);
+  }
+}
 function check(e) {
   e.preventDefault();
   const s = session;
@@ -1207,6 +1264,11 @@ function check(e) {
     f.className = "feedback";
     f.textContent =
       "Escribe un número, decimal o fracción, por ejemplo −2, 0,5 o 1/2.";
+    return;
+  }
+  if (photoRequired(s) && !s.workPhoto) {
+    f.className = "feedback";
+    f.textContent = "Antes de comprobar, resuélvelo en papel y sácale una foto 📷.";
     return;
   }
   const correct = isCorrect(raw, q[1]),
@@ -1235,6 +1297,7 @@ function check(e) {
     f.textContent = why
       ? `Todavía no. ${why} Inténtalo otra vez.`
       : "Todavía no coincide. Revisa el enunciado y tu respuesta; puedes probar otra vez o pedir una pista.";
+    reviewPhoto(s, q, raw, false);
     // El calentamiento no agenda repasos: esas lecciones aún no se ven.
     if (s.mode !== "warmup" && !state.reviews.some((r) => r.lesson === lesson))
       state.reviews.push({ lesson, due: Date.now() });
@@ -1258,6 +1321,7 @@ function check(e) {
       : "¡Llegaste al resultado! " +
         q[4] +
         " Volveremos a practicarlo para afianzarlo.";
+  reviewPhoto(s, q, raw, true);
   $("#check").disabled = true;
   $("#hint-button").disabled = true;
   $("#answer").disabled = true;
@@ -1293,6 +1357,7 @@ function next() {
   s.lastWork = null;
   s.workPhoto = null;
   s.lastPhoto = null;
+  s.reviewedPhoto = null;
   renderExercise();
 }
 // Primera vez: dos preguntas fáciles y concretas antes de cualquier
