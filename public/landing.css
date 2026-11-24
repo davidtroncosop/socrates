@@ -29,9 +29,17 @@ button {
   font: inherit;
   cursor: pointer;
   border: 0;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 160ms ease,
+    filter 180ms ease;
 }
 button:hover {
-  filter: brightness(0.94);
+  filter: brightness(0.95);
+}
+button:active {
+  transform: scale(0.985);
 }
 button:focus-visible,
 a:focus-visible {
@@ -115,11 +123,12 @@ a:focus-visible {
   border-radius: 50%;
 }
 h1 {
-  font-size: clamp(62px, 6.7vw, 91px);
+  font-size: clamp(56px, 6.2vw, 86px);
   line-height: 0.99;
-  letter-spacing: -5px;
-  margin: 0 0 26px;
+  letter-spacing: -4px;
+  margin: 0 0 24px;
   font-weight: 800;
+  text-wrap: balance;
 }
 em {
   font-family: "DM Serif Display", Georgia, serif;
@@ -132,17 +141,36 @@ h1 em {
 .spark {
   color: var(--blue);
   display: inline-block;
-  font-size: 80px;
+  font-size: 74px;
   vertical-align: middle;
-  margin-left: 40px;
+  margin-left: 28px;
   transform: rotate(12deg);
 }
 .lead {
   font-size: 18px;
   line-height: 1.65;
-  max-width: 395px;
+  max-width: 45ch;
   color: var(--muted);
-  margin-bottom: 27px;
+  margin-bottom: 26px;
+  text-wrap: pretty;
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.secondary-link {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 12px 6px;
+  border-bottom: 2px solid var(--line);
+  transition: border-color 180ms ease, color 180ms ease;
+}
+.secondary-link:hover {
+  color: var(--blue);
+  border-color: var(--blue);
 }
 .primary {
   display: inline-flex;
@@ -972,4 +1000,237 @@ dialog .auth-disclaimer {
 #panel-code .primary[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Resumen semanal en cuaderno (sección Familias) */
+.note-summary {
+  margin: 22px 0 18px;
+  display: grid;
+  gap: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.note-summary > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  padding: 7px 10px;
+  background: #ffffffd9;
+  border-radius: 6px;
+  border: 1px solid #e2e8f2;
+  font-size: 13px;
+}
+.note-summary span {
+  color: var(--muted);
+}
+.note-summary strong {
+  color: var(--ink);
+  font-weight: 700;
+  text-align: right;
+}
+.workspace-copy li {
+  font-size: 14px;
+  line-height: 1.55;
+  align-items: flex-start;
+}
+.workspace-copy li span {
+  line-height: 1.2;
+}
+
+/* Sección de planes en CLP */
+.pricing {
+  border-top: 1px solid var(--line);
+  padding-block: 84px 92px;
+}
+.pricing-head {
+  max-width: 580px;
+  margin-bottom: 44px;
+}
+.pricing-head h2 {
+  text-wrap: balance;
+}
+.pricing-head > p:last-child {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.65;
+  margin: 0;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 10px 30px #192a430a;
+}
+.plan-featured {
+  border: 2px solid var(--blue);
+  box-shadow: 0 16px 40px #145ce61a;
+  background: linear-gradient(180deg, #f6f9ff 0%, #ffffff 34%);
+}
+.plan-top {
+  min-height: 205px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.plan-badge {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--lime);
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.plan-badge-soft {
+  background: #eaf0fd;
+  color: var(--blue);
+}
+.plan-card h3 {
+  font-size: 26px;
+  margin: 0 0 6px;
+}
+.plan-desc {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.plan-price strong {
+  font-size: 46px;
+  line-height: 1;
+  letter-spacing: -2px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.plan-price span {
+  font-size: 15px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.plan-anchor {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.plan-anchor s {
+  color: #8b98aa;
+}
+.plan-features {
+  list-style: none;
+  padding: 24px 0 28px;
+  margin: 0;
+  display: grid;
+  gap: 13px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.plan-features li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.plan-features li span {
+  color: var(--blue);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.plan-foot {
+  margin-top: auto;
+}
+.plan-foot .primary,
+.plan-secondary {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 22px;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  min-height: 54px;
+}
+.plan-secondary {
+  background: #eaf0fd;
+  color: var(--blue);
+}
+.plan-secondary:hover {
+  background: #dce7fc;
+  filter: none;
+}
+.plan-fine {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+.school-strip {
+  margin-top: 26px;
+  padding: 22px 26px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #f2f5fa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.school-strip strong {
+  font-size: 15px;
+  color: var(--ink);
+}
+.school-strip p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 66ch;
+  line-height: 1.5;
+}
+.school-link {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--blue);
+  padding: 10px 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: border-color 180ms ease;
+}
+.school-link:hover {
+  border-color: var(--blue);
+}
+
+@media (max-width: 860px) {
+  .pricing {
+    padding-block: 56px 64px;
+  }
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+  .plan-top {
+    min-height: 0;
+  }
+  .plan-card {
+    padding: 24px;
+  }
 }

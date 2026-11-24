@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   SHEET_SIZE,
   MAX_MICRO_LEVEL,
@@ -203,4 +204,18 @@ test("sheets progress and kumonStart survive loadState and merge cleanly across 
   assert.equal(merged.sheets.enteros.level, 1);
   assert.equal(merged.kumonStart, "base-multiplicar");
   assert.ok(lessons.filter((l) => getSubject(l) === "matematica").length >= 120);
+});
+
+test("landing page reflects current Kumon + tutor value proposition, CLP pricing and strict CSP", () => {
+  const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
+  assert.doesNotMatch(html, /<script(?![^>]*\bsrc=)/i, "no inline scripts (CSP script-src 'self')");
+  assert.doesNotMatch(html, /\son[a-z]+\s*=/i, "no inline event handlers");
+  for (const id of ["login-dialog", "panel-login", "panel-register", "panel-demo", "panel-recover", "panel-code"])
+    assert.match(html, new RegExp(`id="${id}"`), `keeps #${id}`);
+  assert.match(html, /14 días gratis sin tarjeta/i);
+  assert.match(html, /\$9\.990/);
+  assert.match(html, /\$18\.990/);
+  assert.match(html, /Kumon/i);
+  assert.match(html, /Niveles neutros \(A–O\)/);
+  assert.match(html, /125 minijuegos/);
 });

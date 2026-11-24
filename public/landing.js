@@ -59,12 +59,13 @@ function syncRole() {
 for (const radio of register.elements.role) radio.onchange = syncRole;
 syncRole();
 
-document.querySelectorAll("[data-login]").forEach((button) => {
+document.querySelectorAll("[data-login], [data-signup]").forEach((button) => {
+  const isSignup = button.hasAttribute("data-signup");
   if (getSession()) button.textContent = "Volver a mi ruta ↗";
   button.onclick = () => {
     if (getSession()) location.assign(destination());
     else {
-      show("panel-login");
+      show(isSignup ? "panel-register" : "panel-login");
       dialog.showModal();
     }
   };
