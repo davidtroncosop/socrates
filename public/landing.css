@@ -1007,7 +1007,6 @@ dialog .auth-disclaimer {
   margin: 22px 0 18px;
   display: grid;
   gap: 10px;
-  font-variant-numeric: tabular-nums;
 }
 .note-summary > div {
   display: flex;
@@ -1109,7 +1108,6 @@ dialog .auth-disclaimer {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  font-variant-numeric: tabular-nums;
 }
 .plan-price strong {
   font-size: 46px;
@@ -1127,7 +1125,6 @@ dialog .auth-disclaimer {
   margin: 10px 0 0;
   font-size: 13px;
   color: var(--muted);
-  font-variant-numeric: tabular-nums;
 }
 .plan-anchor s {
   color: #8b98aa;
@@ -1167,6 +1164,12 @@ dialog .auth-disclaimer {
   font-size: 15px;
   font-weight: 700;
   min-height: 54px;
+}
+/* Misma flecha en ambos botones para que los planes queden a la misma altura. */
+.plan-foot .primary span,
+.plan-secondary span {
+  font-size: 18px;
+  line-height: 1;
 }
 .plan-secondary {
   background: #eaf0fd;

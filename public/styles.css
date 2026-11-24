@@ -72,6 +72,8 @@ button:disabled {
   padding: 35px 22px;
   display: flex;
   flex-direction: column;
+  /* En pantallas bajas el pie del menú no cabe: que el menú tenga su propio scroll. */
+  overflow-y: auto;
 }
 .brand {
   display: flex;
@@ -115,6 +117,13 @@ nav a {
   color: #64738b;
   border-radius: 10px;
   font-weight: 600;
+}
+/* Ancho fijo para que todos los textos del menú partan en la misma columna. */
+.nav-icon {
+  font-style: normal;
+  width: 20px;
+  flex: none;
+  text-align: center;
 }
 nav a.active {
   background: #edf3ff;
@@ -364,6 +373,15 @@ p {
   display: grid;
   gap: 20px;
   align-content: start;
+}
+/* La ruta es muy larga: la columna lateral avanza con el scroll y queda fija al
+   llegar a su final, en vez de dejar un hueco blanco de miles de píxeles. */
+@media (min-width: 881px) {
+  .dashboard > .stack {
+    align-self: end;
+    position: sticky;
+    bottom: 24px;
+  }
 }
 .section-title {
   display: flex;
@@ -3535,6 +3553,7 @@ details.handwritten-section[open] .handwritten-toggle {
     height: 60px;
     padding: 0 16px;
     background: #ffffff;
+    overflow: visible;
   }
   .topbar {
     position: fixed;
