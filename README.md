@@ -5,7 +5,7 @@ Espacio de aprendizaje autónomo, al estilo Duolingo, de matemática y comprensi
 ## Ejecutar
 
 ```sh
-npm test                 # 147 pruebas (Node 22+)
+npm test                 # 154 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
@@ -35,6 +35,7 @@ Módulos del cliente (`public/`):
 - `content.js`, `csv.js`, `admin.js`: catálogo, importación y exportación CSV, mantenedor.
 - `app.js`: navegación, lecciones, repasos, cuaderno, sincronización, catálogo central.
 - `daily.js`: práctica del día y meta diaria.
+- `sheets.js`: hojas de fluidez estilo Kumon (8 ejercicios por micro-nivel, autocorrección al 100 %, fluidez medida en silencio sin reloj, niveles neutros A–O y punto de partida cómodo).
 - `mistakes.js`: retroalimentación para errores frecuentes.
 - `minigames.js`: minijuegos de las lecciones (tocar, arrastrar, botones).
 - `work-photo.js`: cuándo es obligatoria la foto del desarrollo.
@@ -47,6 +48,7 @@ Módulos del cliente (`public/`):
 
 ## Qué incluye
 
+- **Hojas de fluidez estilo Kumon (`#hoja` y `public/sheets.js`):** después de entender la idea (video, minijuego y ejemplos), cada lección de matemática ofrece hojas cortas de **8 ejercicios** por micro-nivel (`1/4` a `4/4`, 5–10 min). Al corregir, si hubo errores la hoja entra en **autocorrección obligatoria hasta el 100 %** (con diagnóstico de error, pistas y revisión opcional de foto). El tiempo se mide en silencio (sin cronómetro visible ni ansiedad) para decidir si sube de paso o repite una hoja nueva del mismo nivel, y celebrar mejoras personales. La ruta muestra **niveles neutros (Nivel A–O)** para evitar el estigma del curso escolar, el diagnóstico propone un **punto de partida cómodo** (un peldaño antes del primer tropiezo) y cada hoja incluye **vista imprimible en papel** (`@media print`) + subida de foto para el búho.
 - **Pregunta gancho antes de la animación:** en el paso del video, el búho abre con una pregunta sobre la lógica de la idea («¿Sabes la lógica que hay detrás de una ecuación? ¡Enseguida te voy a mostrar!») y se puede escuchar. Las lecciones principales tienen su propia pregunta en `HOOKS` (`public/coach.js`); las demás la arman con su título.
 - **Resumir con sus palabras y preguntar:** al terminar una lección, el estudiante escribe qué aprendió (con frases para empezar, como «Hoy aprendí que…») y, si quiere, la pregunta que le quedó. Queda en «Mi cuaderno». Con cuenta, el búho (Gemini 2.5 Flash vía OpenRouter, `functions/_lib/coach.js`, `POST /api/coach/reflection`) destaca algo concreto que entendió, aclara con suavidad una idea confundida y responde la pregunta en frases cortas; la respuesta también queda en el cuaderno. Si el texto muestra que el estudiante lo está pasando mal, el búho le pide contárselo a un adulto de confianza y menciona la línea *4141. Tope: 30 por hora y cuenta.
 - **El búho te dice:** la portada abre con una frase de ánimo en positivo que reconoce algo real del avance y sugiere un paso pequeño para hoy. Con cuenta la escribe la IA una vez al día (`POST /api/coach/encouragement`, solo con números del avance y títulos de lecciones, nunca notas ni respuestas; tope de 4 al día por cuenta). Sin cuenta, sin conexión o si la IA falla, se usa una frase local. Las dos funciones del búho comparten un tope de 5.000 respuestas al día en toda la app.

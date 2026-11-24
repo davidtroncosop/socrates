@@ -19,7 +19,7 @@ const getSession = () => {
     return null;
   }
 };
-const destinations = ["#ruta", "#repaso", "#cuaderno", "#tarea", "#familia", "#contenido"];
+const destinations = ["#ruta", "#hoja", "#repaso", "#cuaderno", "#tarea", "#familia", "#contenido"];
 const destination = () =>
   "./aprender" +
   (destinations.includes(location.hash) ? location.hash : "#ruta");

@@ -43,6 +43,19 @@ import {
   DEFAULT_GOAL,
   XP_PER_CORRECT,
 } from "./daily.js";
+import {
+  SHEET_SIZE,
+  MAX_MICRO_LEVEL,
+  unitLevel,
+  lessonLevel,
+  formatDuration,
+  buildSheet,
+  createSheetItems,
+  gradeSheetRound,
+  evaluateSheet,
+  comfortableStart,
+  pickDailySheet,
+} from "./sheets.js";
 import { $, escape, button, heading } from "./ui.js";
 import { getUnitsForLessons, routeOrder, PREREQUISITES, UNIT_DEFINITIONS, ALL_GRADES_LESSONS } from "./units.js";
 import { getStreakInfo, getXpAndFichas, getBeltInfo, FICHAS_RULE } from "./stats.js";
@@ -208,6 +221,7 @@ let session = null,
   photosFailed = false,
   // La ruta se abre en el curso del estudiante; puede cambiarlo con el filtro.
   currentLevel = state.grade ?? "all",
+  currentKumonLevel = "all",
   currentSubject = "all";
 function save() {
   Object.assign(state, compactAttempts(state));
@@ -297,6 +311,7 @@ function navigate() {
   (
     ({
       ruta: route,
+      hoja: dailySheetEntry,
       repaso: reviews,
       cuaderno: notebook,
       tarea: task,
@@ -314,6 +329,7 @@ function dailyHero(next) {
   const goal = dailyGoal();
   const today = xpToday(state);
   const pending = buildDailyPlan({ lessons, state }).length;
+  const sheetPick = pickDailySheet({ lessons, state, next });
   const met = today >= goal;
   return `<section class="hero daily-hero">
     <span class="eyebrow">TU META DE HOY</span>
@@ -330,9 +346,21 @@ function dailyHero(next) {
         }</p>
       </div>
     </div>
+    ${
+      sheetPick
+        ? `<div class="kumon-daily-strip">
+      <div>
+        <span class="kumon-pill">${escape(sheetPick.level.label)} · Paso ${sheetPick.microLevel + 1}/${MAX_MICRO_LEVEL}</span>
+        <strong>Hoja del día: ${escape(displayTitle(sheetPick.lesson))}</strong>
+        <p class="muted">${SHEET_SIZE} ejercicios cortos (5–10 min), autocorrección hasta el 100 % y opción imprimible en papel.${sheetPick.comfortable ? " Punto de partida cómodo para entrar en ritmo." : ""}</p>
+      </div>
+      ${button("📄 Hacer hoja del día →", "sheet:" + sheetPick.lesson.id, "primary")}
+    </div>`
+        : ""
+    }
     <div class="actions">
-      ${pending ? button("Empezar práctica del día →", "daily", "primary") : ""}
-      ${button(`Siguiente lección: ${escape(displayTitle(next))}`, "lesson:" + next.id, pending ? "" : "primary")}
+      ${pending ? button("Empezar práctica del día →", "daily", sheetPick ? "" : "primary") : ""}
+      ${button(`Siguiente lección: ${escape(displayTitle(next))}`, "lesson:" + next.id, pending || sheetPick ? "" : "primary")}
     </div>
     <div class="goal-picker" role="group" aria-label="Meta diaria">
       <span class="muted">Meta diaria:</span>
@@ -370,6 +398,8 @@ function route() {
 
   const visibleLessons = lessons.filter((l) => {
     if (currentSubject !== "all" && getSubject(l) !== currentSubject)
+      return false;
+    if (currentKumonLevel !== "all" && lessonLevel(l.id).code !== currentKumonLevel)
       return false;
     return currentLevel === "all" || inferGrade(l) === currentLevel || ALL_GRADES_LESSONS.has(l.id);
   });
@@ -433,9 +463,16 @@ function route() {
               icon = "🔒";
             }
 
-            const badge = `<span class="oa-badge">${ALL_GRADES_LESSONS.has(l.id) ? "Base" : GRADES[inferGrade(l)]}</span>`;
             const sub = getSubject(l);
             const isLang = sub === "lenguaje";
+            const lvl = lessonLevel(l.id);
+            const sheetRec = state.sheets?.[l.id];
+            const badge = `<span class="oa-badge">${escape(lvl.label)}</span>`;
+            const sheetBadge = !isLang && sheetRec
+              ? sheetRec.level >= MAX_MICRO_LEVEL
+                ? `<span class="sheet-badge sheet-badge-done">📄 Fluidez 100 %</span>`
+                : `<span class="sheet-badge">📄 Hoja ${sheetRec.level + 1}/${MAX_MICRO_LEVEL}</span>`
+              : "";
             const subjectBadge = `<span class="subject-tag ${isLang ? "subject-lang" : "subject-math"}">${isLang ? "📖 Lenguaje" : "📐 Matemática"}</span>`;
             const beltBadge = fullRewards() ? `<span class="belt-tag ${belt.badgeClass}" title="${belt.desc}">${belt.icon} ${belt.name}</span>` : "";
             const statusText = mastered
@@ -460,6 +497,7 @@ function route() {
                   <div class="duo-node-card ${isLang ? "duo-card-lang" : "duo-card-math"} ${isNext ? "duo-card-current" : ""}">
                     <div class="duo-node-meta">
                       ${badge}
+                      ${sheetBadge}
                       ${subjectBadge}
                       ${beltBadge}
                       ${l.video ? `<span class="video-tag" title="Incluye un video explicativo">🎬 Video</span>` : ""}
@@ -468,6 +506,7 @@ function route() {
                     <p class="duo-node-desc">${statusText}</p>
                     <div class="duo-node-actions">
                       <button class="duo-card-btn ${isNext ? "primary" : ""}" data-action="lesson:${l.id}" ${locked ? "disabled" : ""}>${locked ? "Bloqueada" : done ? "Practicar" : "Empezar →"}</button>
+                      ${!locked && !isLang ? `<button class="duo-card-btn sheet-card-btn" data-action="sheet:${l.id}" title="Hoja de fluidez estilo Kumon (${SHEET_SIZE} ejercicios)">📄 Hoja (${SHEET_SIZE})</button>` : ""}
                     </div>
                   </div>
                 </div>
@@ -480,11 +519,12 @@ function route() {
           })
           .join("");
 
+        const uLevel = unitLevel(unit);
         return `
           <section class="duo-unit ${unit.theme}">
             <header class="duo-unit-banner">
               <div class="duo-banner-left">
-                <span class="duo-banner-tag">SECCIÓN ${unit.unitNumber} · ${escape(unit.subtitle)}</span>
+                <span class="duo-banner-tag">${escape(uLevel.label.toUpperCase())} · SECCIÓN ${unit.unitNumber}</span>
                 <h3 class="duo-banner-title">${escape(unit.title)}</h3>
                 <p class="duo-banner-desc">${escape(unit.description)}</p>
               </div>
@@ -579,18 +619,34 @@ function route() {
             </div>
           </div>` : ""}
           <div class="route-filter-row">
-            <span class="filter-label">Curso:</span>
+            <span class="filter-label">Nivel:</span>
             <div class="route-filters">
-              <button class="filter-btn ${currentLevel === "all" ? "active" : ""}" data-action="filter:all">Todos</button>
-              ${Object.entries(GRADES)
-                .filter(([grade]) => gradeCount(grade))
-                .map(
-                  ([grade, label]) =>
-                    `<button class="filter-btn ${currentLevel === grade ? "active" : ""}" data-action="filter:${grade}">${label} (${gradeCount(grade)})</button>`,
-                )
+              <button class="filter-btn ${currentKumonLevel === "all" ? "active" : ""}" data-action="kumon-level:all">Todos</button>
+              ${getUnitsForLessons(lessons)
+                .filter((u) => u.lessons.length > 0 && (currentSubject === "all" || u.subject === currentSubject || u.subject === "all"))
+                .map((u) => {
+                  const lvl = unitLevel(u);
+                  return `<button class="filter-btn ${currentKumonLevel === lvl.code ? "active" : ""}" data-action="kumon-level:${escape(lvl.code)}" title="${escape(u.title)}">${escape(lvl.label)}</button>`;
+                })
                 .join("")}
             </div>
           </div>
+          <details class="grade-filter-details"${currentLevel !== "all" ? " open" : ""}>
+            <summary class="grade-filter-summary">Referencia por curso escolar (opcional)</summary>
+            <div class="route-filter-row">
+              <span class="filter-label">Curso:</span>
+              <div class="route-filters">
+                <button class="filter-btn ${currentLevel === "all" ? "active" : ""}" data-action="filter:all">Todos</button>
+                ${Object.entries(GRADES)
+                  .filter(([grade]) => gradeCount(grade))
+                  .map(
+                    ([grade, label]) =>
+                      `<button class="filter-btn ${currentLevel === grade ? "active" : ""}" data-action="filter:${grade}">${label} (${gradeCount(grade)})</button>`,
+                  )
+                  .join("")}
+              </div>
+            </div>
+          </details>
         </div>
 
         <div class="duo-units-container">
@@ -908,7 +964,11 @@ function renderIntroLesson(fromExercise = false) {
 
   app.innerHTML = `
     ${button(
-      fromExercise ? "← Volver al ejercicio" : "← Volver a mi ruta",
+      fromExercise
+        ? s.mode === "sheet"
+          ? "← Volver a mi hoja"
+          : "← Volver al ejercicio"
+        : "← Volver a mi ruta",
       fromExercise ? "return-exercise" : "exit",
       "back",
     )}
@@ -1016,7 +1076,9 @@ function renderIntroLesson(fromExercise = false) {
               ? button("Siguiente →", "intro-next", "primary btn-start-exercises") + button("Saltar a los ejercicios", "begin-exercises")
               : button(
                   fromExercise
-                    ? `Continuar con el ejercicio (${s.index + 1} de ${s.questions.length}) →`
+                    ? s.mode === "sheet"
+                      ? "Volver a mi hoja →"
+                      : `Continuar con el ejercicio (${s.index + 1} de ${s.questions.length}) →`
                     : `Comenzar ejercicios (1 de ${s.questions.length}) →`,
                   fromExercise ? "return-exercise" : "begin-exercises",
                   "primary btn-start-exercises",
@@ -1197,7 +1259,10 @@ function keypad(q) {
     .join("")}</div>`;
 }
 function typeKey(key) {
-  const input = $("#answer");
+  const input =
+    session?.mode === "sheet"
+      ? $(`#sheet-answer-${session.activeInput ?? Math.max(0, session.items.findIndex((it) => !it.resolved))}`)
+      : $("#answer");
   if (!input || input.disabled) return;
   input.value = key === "borrar" ? input.value.slice(0, -1) : input.value + key;
 }
@@ -1537,7 +1602,11 @@ function finish() {
                 !state.completed.includes(l.id),
             )
           : planned[gap];
-      if (subject === "matematica") state.focus = start?.id;
+      if (subject === "matematica") {
+        state.focus = start?.id;
+        const comfy = comfortableStart(planned, solved, routeOrder(lessons));
+        state.kumonStart = comfy?.id;
+      }
       proposals.push(
         start
           ? `En ${label}, empieza por «${displayTitle(start)}».`
@@ -1610,20 +1679,396 @@ function finish() {
         ? `Resolviste ${independent} de ${s.questions.length} sin ayuda. Lo demás lo volveremos a practicar.`
         : "Llegaste al final, y eso es lo que cuenta. Lo volveremos a practicar.";
   const upcoming = (s.mode === "diagnostic" && lessons.find((l) => l.id === state.focus)) || nextLesson();
+  const comfy =
+    s.mode === "diagnostic" && state.kumonStart && state.kumonStart !== upcoming?.id
+      ? lessons.find((l) => l.id === state.kumonStart)
+      : null;
+  const offerSheet = s.mode === "lesson" && getSubject(s.lesson) === "matematica";
   app.innerHTML = `
     <section class="card summary simple-summary">
       <h1>${heading}</h1>
       <p class="intro">${escape(s.mode === "diagnostic" ? desc : alone)}</p>
       ${s.mode === "diagnostic" ? "" : `<p class="muted">${escape(desc)}</p>`}
+      ${
+        comfy
+          ? `<div class="callout kumon-comfy-callout"><strong>📄 Punto de partida cómodo (estilo Kumon):</strong> si quieres arrancar al 100 % y agarrar ritmo, empieza con una hoja corta de «${escape(displayTitle(comfy))}» (${escape(lessonLevel(comfy.id).label)}) antes de pasar a «${escape(displayTitle(upcoming))}».</div>`
+          : ""
+      }
       <p class="summary-stats"><span>⭐ +${gained} XP</span><span>🔥 ${streak} día${streak !== 1 ? "s" : ""} seguido${streak !== 1 ? "s" : ""}</span></p>
       ${s.mode === "lesson" ? reflectionForm() : ""}
       <div class="actions">
         ${upcoming ? button(`${s.mode === "diagnostic" ? "Empezar" : "Seguir"}: ${escape(displayTitle(upcoming))} →`, "lesson:" + upcoming.id, "primary") : ""}
+        ${comfy ? button(`📄 Hoja cómoda: ${escape(displayTitle(comfy))}`, "sheet:" + comfy.id) : ""}
+        ${offerSheet ? button(`📄 Hoja de fluidez (${SHEET_SIZE} ejercicios)`, "sheet:" + s.lesson.id) : ""}
         ${button("Volver a mi ruta", "exit")}
       </div>
     </section>
   `;
   if (s.mode === "lesson") attachReflection(s.lesson);
+  session = null;
+}
+
+// Hojas de fluidez estilo Kumon -----------------------------------------------
+function pauseSheetTimer(s = session) {
+  if (s?.mode === "sheet" && s.resumedAt) {
+    s.activeMs += Math.max(0, Date.now() - s.resumedAt);
+    s.resumedAt = null;
+  }
+}
+function resumeSheetTimer(s = session) {
+  if (s?.mode === "sheet" && !s.resumedAt) s.resumedAt = Date.now();
+}
+function elapsedSheetMs(s) {
+  return (s?.activeMs ?? 0) + (s?.resumedAt ? Math.max(0, Date.now() - s.resumedAt) : 0);
+}
+
+function dailySheetEntry() {
+  const pick = pickDailySheet({ lessons, state, next: nextLesson() });
+  if (!pick) {
+    app.innerHTML =
+      heading("HOJA DEL DÍA", "Todavía no hay hojas disponibles.", "Publica al menos una lección de matemática para practicar.") +
+      button("Volver a mi ruta", "exit", "primary");
+    return;
+  }
+  startSheet(pick.lesson.id);
+}
+
+function startSheet(lessonId, explicitMicroLevel) {
+  const l = lessons.find((x) => x.id === lessonId && getSubject(x) === "matematica");
+  if (!l) return;
+  const rec = state.sheets?.[l.id];
+  const microLevel =
+    explicitMicroLevel !== undefined
+      ? Math.max(0, Math.min(3, explicitMicroLevel))
+      : Math.min(3, rec?.level ?? 0);
+  const sheet = buildSheet(l, microLevel, { sheetNumber: (rec?.count ?? 0) + 1 });
+  session = {
+    mode: "sheet",
+    lesson: l,
+    sheet,
+    items: createSheetItems(sheet.questions),
+    round: 0,
+    activeMs: 0,
+    resumedAt: Date.now(),
+    activeInput: 0,
+    workPhoto: null,
+    reviewedPhoto: null,
+    photoSaved: false,
+    photoFeedback: "",
+    photoFeedbackGood: false,
+    showingIntro: false,
+  };
+  renderSheet();
+}
+
+function sheetPhotoHtml(s) {
+  if (s.workPhoto)
+    return `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${escape(s.workPhoto)}" alt="Foto de tu hoja en papel" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu hoja lista</span><p class="muted" style="margin:4px 0 8px 0;font-size:12px;">Se guarda solo en tu cuaderno de este dispositivo.</p><div class="inline-row">${
+      synced ? '<button type="button" data-action="sheet-review-photo" class="secondary">🦉 Revisar mis pasos con el búho</button>' : ""
+    }<button type="button" data-action="sheet-remove-photo" class="btn-remove-photo">✕ Quitar foto</button></div></div></div>${
+      s.photoFeedback
+        ? `<div id="sheet-work-review" class="work-review${s.photoFeedbackGood ? " good" : ""}" aria-live="polite"><p>${escape(s.photoFeedback)}</p></div>`
+        : '<div id="sheet-work-review" class="work-review" aria-live="polite" hidden></div>'
+    }`;
+  return `<label for="sheet-photo-input" class="photo-upload-box"><span class="photo-icon">📷</span><div class="photo-upload-text"><strong>¿La hiciste en papel? Sube una foto de tu hoja (opcional)</strong><span>Solo la hoja, sin tu cara ni tu nombre. Queda en tu cuaderno${synced ? " y el búho puede revisar tus pasos" : ""}.</span></div><span class="photo-tag-pill">Sacar foto</span></label><input type="file" id="sheet-photo-input" accept="image/*" capture="environment" class="visually-hidden">`;
+}
+
+function attachSheetPhotoListener() {
+  const input = $("#sheet-photo-input");
+  if (!input) return;
+  input.onchange = async (e) => {
+    const file = e.target?.files?.[0];
+    if (!file) return;
+    const compressed = await compressImage(file);
+    if (compressed && session?.mode === "sheet") {
+      session.workPhoto = compressed;
+      session.reviewedPhoto = null;
+      session.photoFeedback = "";
+      session.photoSaved = false;
+      updateSheetPhotoArea();
+    }
+  };
+}
+
+function updateSheetPhotoArea() {
+  const area = $("#sheet-photo-area");
+  if (!area || session?.mode !== "sheet") return;
+  area.innerHTML = sheetPhotoHtml(session);
+  if (!session.workPhoto) attachSheetPhotoListener();
+}
+
+async function reviewSheetPhoto() {
+  const s = session;
+  if (!s || s.mode !== "sheet" || !s.workPhoto) return;
+  const box = $("#sheet-work-review");
+  if (!synced) {
+    s.photoFeedback = "Tu foto quedó guardada en tu cuaderno. Con una cuenta, el búho también revisa tus pasos.";
+    updateSheetPhotoArea();
+    return;
+  }
+  const idx = s.items.findIndex((it) => !it.resolved);
+  const targetIdx = idx >= 0 ? idx : s.sheet.questions.length - 1;
+  const q = s.sheet.questions[targetIdx];
+  const item = s.items[targetIdx];
+  if (box) {
+    box.hidden = false;
+    box.className = "work-review loading";
+    box.innerHTML = "<p>🦉 Mirando tu hoja en papel…</p>";
+  }
+  try {
+    const { review } = await api.reviewWork({
+      image: s.workPhoto,
+      problem: q[0],
+      statement: `Ejercicio ${targetIdx + 1} de la hoja ${s.sheet.code}: ${q[2]}`,
+      expected: String(q[1]),
+      answer: item.raw || "",
+      correct: item.resolved && !item.revealed,
+    });
+    if (session !== s) return;
+    const good = review.readable && review.showsWork && review.matchesExercise && review.workIsCorrect;
+    s.photoFeedback = `🦉 Sobre el ejercicio ${targetIdx + 1}: ${review.message}`;
+    s.photoFeedbackGood = good;
+    updateSheetPhotoArea();
+  } catch (err) {
+    if (session !== s) return;
+    s.photoFeedback = err.status === 0
+      ? "Sin conexión: no pude revisar tu foto, pero quedó guardada en tu cuaderno."
+      : err.message;
+    s.photoFeedbackGood = false;
+    updateSheetPhotoArea();
+  }
+}
+
+function renderSheet() {
+  const s = session;
+  if (!s || s.mode !== "sheet") return;
+  resumeSheetTimer(s);
+  const { sheet, items, round } = s;
+  const total = sheet.questions.length;
+  const resolvedCount = items.filter((it) => it.resolved).length;
+  const pendingCount = total - resolvedCount;
+  const inCorrection = round > 0 && pendingCount > 0;
+  const firstPending = items.findIndex((it) => !it.resolved);
+  if (firstPending >= 0 && items[s.activeInput]?.resolved) s.activeInput = firstPending;
+
+  const rowsHtml = sheet.questions
+    .map((q, i) => {
+      const it = items[i];
+      const statusCls = it.resolved ? "sheet-row-ok" : it.attempts > 0 || it.invalid ? "sheet-row-retry" : "";
+      const showHintText = it.hints > 0 ? `<p class="sheet-hint-text">💡 ${escape(it.hints > 1 ? q[4] : q[3])}</p>` : "";
+      const canReveal = !it.resolved && it.attempts >= 2;
+      return `<div class="sheet-row ${statusCls}" data-sheet-row="${i}">
+        <div class="sheet-row-num">${i + 1}</div>
+        <div class="sheet-row-body">
+          <div class="sheet-row-problem">
+            <div class="sheet-expr">${escape(q[0])}</div>
+            <p class="sheet-stmt">${escape(q[2])}</p>
+          </div>
+          <div class="sheet-work-space" aria-hidden="true"><span>Desarrollo en papel:</span></div>
+          <div class="sheet-row-input">
+            <label for="sheet-answer-${i}" class="visually-hidden">Respuesta ejercicio ${i + 1}</label>
+            <input id="sheet-answer-${i}" class="sheet-answer-input" data-sheet-index="${i}" value="${escape(it.raw)}" autocomplete="off" placeholder="Respuesta"${touchKeypad() ? ' inputmode="none"' : ""}${it.resolved ? " disabled" : ""}>
+            ${it.resolved ? `<span class="sheet-check" aria-label="Correcto">${it.revealed ? "👁️" : "✓"}</span>` : ""}
+          </div>
+          ${it.feedback ? `<p class="sheet-feedback${it.resolved ? " good" : ""}">${escape(it.feedback)}</p>` : ""}
+          ${showHintText}
+          ${
+            !it.resolved && (inCorrection || it.attempts > 0)
+              ? `<div class="sheet-row-helps">
+                  <button type="button" class="link-button" data-action="sheet-hint:${i}">💡 ${it.hints ? "Ver explicación" : "Pista"}</button>
+                  ${canReveal ? `<button type="button" class="link-button" data-action="sheet-reveal:${i}">Ver cómo se resuelve</button>` : ""}
+                </div>`
+              : ""
+          }
+        </div>
+      </div>`;
+    })
+    .join("");
+
+  app.innerHTML = `
+    <div class="sheet-print-header" aria-hidden="true">
+      <div class="sheet-print-brand"><strong>socatres</strong> · Hoja de práctica (${escape(sheet.level.label)} · Código ${escape(sheet.code)})</div>
+      <h1>${escape(displayTitle(s.lesson))} · Paso ${sheet.microLevel + 1} de ${MAX_MICRO_LEVEL}</h1>
+      <div class="sheet-print-meta"><span>Nombre: ____________________________</span><span>Fecha: __________________</span></div>
+      <p>Resuelve cada ejercicio en papel con lápiz. Luego ingresa tus respuestas en socatres para corregir hasta el 100 %.</p>
+    </div>
+    <div class="no-print">
+      ${button("← Volver a mi ruta", "exit", "back")}
+      ${heading(
+        `${sheet.level.label.toUpperCase()} · HOJA ${sheet.code} · PASO ${sheet.microLevel + 1} DE ${MAX_MICRO_LEVEL}`,
+        displayTitle(s.lesson),
+        inCorrection
+          ? `Te ${pendingCount === 1 ? "queda 1 ejercicio" : `quedan ${pendingCount} ejercicios`} por corregir para dejar esta hoja en 100 %. Revisa con calma.`
+          : `Resuelve los ${total} ejercicios a tu ritmo, en papel o aquí. Sin reloj a la vista: al final corregimos hasta llegar al 100 %.`,
+      )}
+      <div class="sheet-toolbar">
+        <div class="sheet-progress-pill">
+          <strong>${resolvedCount} / ${total}</strong> ${inCorrection ? "al 100 %" : "ejercicios"}
+          <div class="bar mini-bar"><span style="width:${Math.round((resolvedCount / total) * 100)}%"></span></div>
+        </div>
+        <div class="sheet-toolbar-actions">
+          <button type="button" class="secondary" data-action="print-sheet">🖨️ Imprimir hoja en papel</button>
+          <button type="button" class="secondary" data-action="sheet-concept">📖 Ver explicación</button>
+        </div>
+      </div>
+      ${
+        inCorrection
+          ? `<div class="callout sheet-correction-banner" role="status"><strong>🔁 Ronda de autocorrección:</strong> corrige solo los ejercicios marcados para cerrar tu hoja en 100 %.</div>`
+          : ""
+      }
+    </div>
+    <section class="card sheet-card">
+      <form id="sheet-form">
+        <div class="sheet-list">${rowsHtml}</div>
+        ${touchKeypad() ? `<div class="no-print">${keypad(["1 + 1"])}</div>` : ""}
+        <div class="actions no-print sheet-submit-row">
+          <button class="primary" type="submit">${
+            inCorrection
+              ? `Comprobar correcciones (${pendingCount}) →`
+              : "Corregir mi hoja →"
+          }</button>
+        </div>
+      </form>
+      <div id="sheet-photo-area" class="sheet-photo-area no-print">${sheetPhotoHtml(s)}</div>
+    </section>`;
+
+  $("#sheet-form").addEventListener("submit", submitSheet);
+  for (let i = 0; i < total; i++) {
+    const inp = $(`#sheet-answer-${i}`);
+    if (inp) {
+      inp.onfocus = () => {
+        if (session?.mode === "sheet") session.activeInput = i;
+      };
+      inp.oninput = () => {
+        if (session?.mode === "sheet") session.items[i].raw = inp.value;
+      };
+    }
+  }
+  attachSheetPhotoListener();
+}
+
+function saveSheetPhotoIfNeeded(s) {
+  if (!s.workPhoto || s.photoSaved) return;
+  state.notes.unshift({
+    title: `Hoja ${s.sheet.code} · ${displayTitle(s.lesson)}`,
+    text: `Desarrollo a mano en papel (${s.sheet.level.label}, paso ${s.sheet.microLevel + 1}/${MAX_MICRO_LEVEL})`,
+    at: Date.now(),
+    image: s.workPhoto,
+  });
+  s.photoSaved = true;
+}
+
+function submitSheet(e) {
+  e.preventDefault();
+  const s = session;
+  if (!s || s.mode !== "sheet") return;
+  const answers = s.sheet.questions.map((_, i) => {
+    const inp = $(`#sheet-answer-${i}`);
+    return inp ? inp.value : s.items[i].raw;
+  });
+  const graded = gradeSheetRound(s.sheet, answers, s.items);
+  s.items = graded.items;
+  s.round++;
+
+  const now = Date.now();
+  for (const checkItem of graded.newlyChecked) {
+    state.attempts.push({
+      lesson: s.lesson.id,
+      correct: checkItem.correct,
+      hints: checkItem.hints,
+      at: now,
+    });
+    track(s.lesson.id, s.sheet.microLevel, checkItem.correct ? "correct" : "wrong");
+  }
+  saveSheetPhotoIfNeeded(s);
+  save();
+
+  if (graded.allResolved) {
+    finishSheet();
+  } else {
+    renderSheet();
+  }
+}
+
+function sheetHint(index) {
+  const s = session;
+  if (!s || s.mode !== "sheet" || !s.items[index] || s.items[index].resolved) return;
+  const inp = $(`#sheet-answer-${index}`);
+  if (inp) s.items[index].raw = inp.value;
+  s.items[index].hints = Math.min(2, s.items[index].hints + 1);
+  track(s.lesson.id, s.sheet.microLevel, "hint");
+  renderSheet();
+}
+
+function sheetReveal(index) {
+  const s = session;
+  if (!s || s.mode !== "sheet" || !s.items[index] || s.items[index].resolved) return;
+  const q = s.sheet.questions[index];
+  s.items[index].resolved = true;
+  s.items[index].revealed = true;
+  if (s.items[index].firstPassCorrect === null) s.items[index].firstPassCorrect = false;
+  s.items[index].raw = String(q[1]).replace(".", ",");
+  s.items[index].feedback = `Así se resuelve: ${q[4]} La respuesta es ${String(q[1]).replace(".", ",")}.`;
+  track(s.lesson.id, s.sheet.microLevel, "revealed");
+  save();
+  if (s.items.every((it) => it.resolved)) finishSheet();
+  else renderSheet();
+}
+
+function finishSheet() {
+  const s = session;
+  if (!s || s.mode !== "sheet") return;
+  pauseSheetTimer(s);
+  const elapsed = elapsedSheetMs(s);
+  const prevRec = state.sheets?.[s.lesson.id] ?? null;
+  const res = evaluateSheet(s.sheet, s.items, elapsed, prevRec);
+
+  state.sheets = { ...(state.sheets ?? {}), [s.lesson.id]: res.record };
+  if (res.masteredLesson) {
+    if (!state.completed.includes(s.lesson.id)) state.completed.push(s.lesson.id);
+    if (!state.mastered.includes(s.lesson.id)) state.mastered.push(s.lesson.id);
+    state.reviews = state.reviews.filter((r) => r.lesson !== s.lesson.id);
+    state.reviews.push({ lesson: s.lesson.id, due: Date.now() + 7 * 86400000 });
+  } else if (res.advance && !state.completed.includes(s.lesson.id)) {
+    state.completed.push(s.lesson.id);
+    if (!state.reviews.some((r) => r.lesson === s.lesson.id))
+      state.reviews.push({ lesson: s.lesson.id, due: Date.now() + 86400000 });
+  }
+  saveSheetPhotoIfNeeded(s);
+  track(s.lesson.id, 9, "sheet");
+  save();
+
+  const upcoming = nextLesson();
+  const streak = getStreakInfo(state).streak;
+  app.innerHTML = `
+    <section class="card summary simple-summary sheet-summary">
+      <div class="eyebrow">${escape(s.sheet.level.label.toUpperCase())} · HOJA ${escape(s.sheet.code)} COMPLETADA</div>
+      <h1>${escape(res.headline)}</h1>
+      <p class="intro">${escape(res.message)}</p>
+      <div class="sheet-summary-metrics">
+        <div class="sheet-metric"><strong>100 %</strong><span>Hoja corregida</span></div>
+        <div class="sheet-metric"><strong>${res.firstPassAccuracy} %</strong><span>A la primera</span></div>
+        <div class="sheet-metric"><strong>${escape(formatDuration(res.elapsedMs))}</strong><span>Tu ritmo hoy</span></div>
+        <div class="sheet-metric"><strong>${Math.min(MAX_MICRO_LEVEL, res.nextLevel)}/${MAX_MICRO_LEVEL}</strong><span>Pasos fluidos</span></div>
+      </div>
+      ${
+        res.improvedMs >= 5000
+          ? `<p class="callout sheet-fluency-win">⚡ ¡Más fluido que tu mejor marca anterior! Bajaste ${escape(formatDuration(res.improvedMs))} sin apurarte.</p>`
+          : ""
+      }
+      <p class="summary-stats"><span>🔥 ${streak} día${streak !== 1 ? "s" : ""} seguido${streak !== 1 ? "s" : ""}</span><span>📄 ${res.record.count} ${res.record.count === 1 ? "hoja hecha" : "hojas hechas"} en este tema</span></p>
+      <div class="actions">
+        ${
+          res.masteredLesson && upcoming && upcoming.id !== s.lesson.id
+            ? button(`Seguir con ${escape(displayTitle(upcoming))} →`, "lesson:" + upcoming.id, "primary")
+            : res.advance
+              ? button(`📄 Seguir con paso ${res.nextLevel + 1}/${MAX_MICRO_LEVEL} →`, "sheet:" + s.lesson.id, "primary")
+              : button("📄 Hacer otra hoja fresca de este paso →", "sheet:" + s.lesson.id, "primary")
+        }
+        ${button("Volver a mi ruta", "exit")}
+      </div>
+    </section>
+  `;
   session = null;
 }
 
@@ -1942,6 +2387,29 @@ app.addEventListener("click", (e) => {
     const lesson = lessons.find((l) => l.id === id);
     if (!lesson || isLocked(lesson)) return;
     start(id);
+  } else if (action === "sheet") {
+    const lesson = lessons.find((l) => l.id === id);
+    if (!lesson || isLocked(lesson)) return;
+    startSheet(id);
+  } else if (action === "sheet-hint") {
+    sheetHint(Number(id));
+  } else if (action === "sheet-reveal") {
+    sheetReveal(Number(id));
+  } else if (action === "sheet-concept") {
+    if (session?.mode === "sheet") {
+      pauseSheetTimer(session);
+      renderIntroLesson(true);
+    }
+  } else if (action === "sheet-remove-photo") {
+    if (session?.mode === "sheet") {
+      session.workPhoto = null;
+      session.photoFeedback = "";
+      updateSheetPhotoArea();
+    }
+  } else if (action === "sheet-review-photo") {
+    reviewSheetPhoto();
+  } else if (action === "print-sheet") {
+    window.print?.();
   } else if (action === "daily") startDaily();
   else if (action === "starter") {
     const box = $("#reflection-summary");
@@ -1979,11 +2447,15 @@ app.addEventListener("click", (e) => {
   } else if (action === "filter") {
     currentLevel = id;
     route();
+  } else if (action === "kumon-level") {
+    currentKumonLevel = id;
+    route();
   } else if (action === "subject") {
     currentSubject = id;
     route();
   } else if (action === "reset-filters") {
     currentLevel = "all";
+    currentKumonLevel = "all";
     currentSubject = "all";
     route();
   } else if (action === "begin-exercises") {
@@ -2018,7 +2490,8 @@ app.addEventListener("click", (e) => {
   } else if (action === "view-intro") {
     if (session) renderIntroLesson(true);
   } else if (action === "return-exercise") {
-    if (session) renderExercise();
+    if (session?.mode === "sheet") renderSheet();
+    else if (session) renderExercise();
   } else if (action === "remove-photo") {
     if (session) {
       session.workPhoto = null;
@@ -2108,6 +2581,7 @@ $("#delete-data").onclick = () => {
   save();
   session = null;
   currentLevel = "all";
+  currentKumonLevel = "all";
   currentSubject = "all";
   $("#privacy-dialog").close();
   location.hash = "ruta";
@@ -2119,7 +2593,11 @@ refreshCatalog();
 // Quien deja la app abierta recibe el contenido nuevo al volver a ella.
 if (typeof document.addEventListener === "function")
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) refreshCatalog();
+    if (document.hidden) pauseSheetTimer();
+    else {
+      resumeSheetTimer();
+      refreshCatalog();
+    }
   });
 if (synced) {
   pullProgress();

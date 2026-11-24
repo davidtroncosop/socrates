@@ -185,7 +185,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
     const titles = new Map(getCatalog().lessons.map((l) => [l.id, l.title]));
     const byLesson = new Map();
     for (const m of data.metrics) {
-      const row = byLesson.get(m.lesson) ?? { correct: 0, wrong: 0, hint: 0, revealed: 0, photo: 0, game: 0, steps: {} };
+      const row = byLesson.get(m.lesson) ?? { correct: 0, wrong: 0, hint: 0, revealed: 0, photo: 0, game: 0, sheet: 0, steps: {} };
       row[m.kind] = (row[m.kind] ?? 0) + m.count;
       if (m.step <= 3) {
         const st = (row.steps[m.step] ??= { correct: 0, wrong: 0 });
@@ -201,11 +201,11 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
           .sort(([, a], [, b]) => b.wrong / (b.correct + b.wrong) - a.wrong / (a.correct + a.wrong))[0];
         return { id, tries, rate: tries ? r.wrong / tries : 0, ...r, hardest: hardest ? Number(hardest[0]) + 1 : null };
       })
-      .filter((r) => r.tries > 0 || r.game > 0 || r.photo > 0)
+      .filter((r) => r.tries > 0 || r.game > 0 || r.photo > 0 || r.sheet > 0)
       .sort((a, b) => b.rate - a.rate || b.tries - a.tries);
     target.outerHTML = rows.length
-      ? `<div class="table-scroll"><table class="metrics-table"><thead><tr><th>Lección</th><th>Respuestas</th><th>Errores</th><th>Pistas</th><th>Soluciones vistas</th><th>Fotos pendientes</th><th>Minijuegos</th><th>Ejercicio más difícil</th></tr></thead><tbody>${rows
-          .map((r) => `<tr><td>${esc(titles.get(r.id) ?? r.id)}</td><td>${r.tries}</td><td>${r.tries ? `${Math.round(r.rate * 100)} %` : "—"}</td><td>${r.hint}</td><td>${r.revealed}</td><td>${r.photo}</td><td>${r.game}</td><td>${r.hardest ?? "—"}</td></tr>`)
+      ? `<div class="table-scroll"><table class="metrics-table"><thead><tr><th>Lección</th><th>Respuestas</th><th>Errores</th><th>Pistas</th><th>Soluciones vistas</th><th>Fotos pendientes</th><th>Minijuegos</th><th>Hojas 100 %</th><th>Ejercicio más difícil</th></tr></thead><tbody>${rows
+          .map((r) => `<tr><td>${esc(titles.get(r.id) ?? r.id)}</td><td>${r.tries}</td><td>${r.tries ? `${Math.round(r.rate * 100)} %` : "—"}</td><td>${r.hint}</td><td>${r.revealed}</td><td>${r.photo}</td><td>${r.game}</td><td>${r.sheet}</td><td>${r.hardest ?? "—"}</td></tr>`)
           .join("")}</tbody></table></div>`
       : `<p class="muted">Todavía no hay respuestas registradas.</p>`;
   }

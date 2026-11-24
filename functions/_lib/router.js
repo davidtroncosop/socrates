@@ -765,8 +765,8 @@ const routes = {
   },
 };
 
-// «photo»: la foto obligatoria frenó la respuesta; «game»: terminó el minijuego.
-const METRIC_KINDS = ["correct", "wrong", "hint", "revealed", "photo", "game"];
+// «photo»: la foto obligatoria frenó la respuesta; «game»: terminó el minijuego; «sheet»: completó una hoja al 100 %.
+const METRIC_KINDS = ["correct", "wrong", "hint", "revealed", "photo", "game", "sheet"];
 
 const PUBLIC = new Set([
   "POST /api/metrics",

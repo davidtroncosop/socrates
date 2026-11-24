@@ -1183,3 +1183,61 @@ test("notebook sanitizes unsafe image URLs, opens full photo in a dialog and kee
   h.node("#delete-data").onclick();
   assert.equal(h.storage.has("socatres.v1.coach"), false);
 });
+
+test("Kumon fluency sheets: 8 exercises, 100% self-correction, silent SCT, print view and neutral levels", async () => {
+  const h = await harness({
+    version: 1,
+    diagnosed: true,
+    completed: ["equations"],
+    mastered: [],
+    attempts: [],
+    notes: [],
+    reviews: [],
+  });
+  // La ruta muestra niveles neutros (Nivel A, Nivel D) y botón de Hoja del día.
+  const routeHtml = h.node("#app").innerHTML;
+  assert.match(routeHtml, /NIVEL A · SECCIÓN 1/);
+  assert.match(routeHtml, /Nivel D/);
+  assert.match(routeHtml, /Hoja del día/);
+  assert.match(routeHtml, /data-action="sheet:equations"/);
+
+  // Abrir hoja de fluidez de ecuaciones (8 ejercicios + impresión en papel).
+  h.click("sheet:equations");
+  const sheetHtml = h.node("#app").innerHTML;
+  assert.match(sheetHtml, /NIVEL D · HOJA D1-01/);
+  assert.match(sheetHtml, /data-action="print-sheet"/);
+  assert.match(sheetHtml, /sheet-print-header/);
+  assert.match(sheetHtml, /id="sheet-answer-7"/);
+  assert.doesNotMatch(sheetHtml, /countdown|cronómetro/i, "no stressful visible timer");
+
+  // Extrae las 8 ecuaciones renderizadas y resuelve con 1 error intencional en #0.
+  const exprs = [...sheetHtml.matchAll(/class="sheet-expr">([^<]+)</g)].map((m) => m[1]);
+  assert.equal(exprs.length, 8);
+  const solutions = exprs.map((e) => solveLinear(e).answer);
+  for (let i = 0; i < 8; i++) {
+    h.node(`#sheet-answer-${i}`).value = String(i === 0 ? solutions[i] + 50 : solutions[i]);
+  }
+  h.node("#sheet-form").submit({ preventDefault() {} });
+
+  // No cierra la hoja: entra en ronda de autocorrección para dejarla en 100 %.
+  const retryHtml = h.node("#app").innerHTML;
+  assert.match(retryHtml, /Ronda de autocorrección/);
+  assert.match(retryHtml, /Comprobar correcciones \(1\)/);
+
+  // Puede consultar la explicación conceptual sin perder el progreso de la hoja.
+  h.click("sheet-concept");
+  assert.match(h.node("#app").innerHTML, /Volver a mi hoja/);
+  h.click("return-exercise");
+  assert.match(h.node("#app").innerHTML, /Ronda de autocorrección/);
+
+  // Corrige el ejercicio #0 -> la hoja cierra en 100 % y avanza de micro-nivel (7/8 = 88 % a la primera).
+  h.node("#sheet-answer-0").value = String(solutions[0]);
+  h.node("#sheet-form").submit({ preventDefault() {} });
+  const doneHtml = h.node("#app").innerHTML;
+  assert.match(doneHtml, /100 %/);
+  assert.match(doneHtml, /Subes al paso 2 de 4/);
+  const saved = h.read();
+  assert.equal(saved.sheets.equations.level, 1);
+  assert.equal(saved.sheets.equations.count, 1);
+  assert.equal(saved.sheets.equations.lastAccuracy, 88);
+});

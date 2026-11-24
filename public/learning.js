@@ -628,6 +628,10 @@ export function loadState(
       dailyGoal: [30, 50, 80].includes(s.dailyGoal) ? s.dailyGoal : undefined,
       // Lección por la que el diagnóstico sugirió empezar.
       focus: typeof s.focus === "string" && ids.has(s.focus) ? s.focus : undefined,
+      // Punto de partida cómodo (estilo Kumon: un peldaño antes del primer tropiezo).
+      kumonStart: typeof s.kumonStart === "string" && ids.has(s.kumonStart) ? s.kumonStart : undefined,
+      // Progreso de hojas de fluidez estilo Kumon por lección.
+      ...(cleanSheets(s.sheets, ids) ? { sheets: cleanSheets(s.sheets, ids) } : {}),
       // Lecciones cuyo video se reprodujo; informativo, no cuenta para el dominio.
       watched: Array.isArray(s.watched)
         ? [...new Set(s.watched.filter((id) => ids.has(id)))]
@@ -743,12 +747,63 @@ function mergeArchives(a, b) {
   };
 }
 
+function cleanSheets(raw, ids) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const out = {};
+  for (const [id, rec] of Object.entries(raw)) {
+    if (!ids.has(id) || !rec || typeof rec !== "object") continue;
+    const level = Number.isInteger(rec.level) && rec.level >= 0 && rec.level <= 4 ? rec.level : 0;
+    const count = Number.isInteger(rec.count) && rec.count >= 0 ? Math.min(rec.count, 10000) : 0;
+    const bestMs = Number.isFinite(rec.bestMs) && rec.bestMs > 0 ? Math.round(rec.bestMs) : undefined;
+    const lastMs = Number.isFinite(rec.lastMs) && rec.lastMs > 0 ? Math.round(rec.lastMs) : undefined;
+    const lastAccuracy = Number.isFinite(rec.lastAccuracy) && rec.lastAccuracy >= 0 && rec.lastAccuracy <= 100
+      ? Math.round(rec.lastAccuracy)
+      : undefined;
+    const lastAt = Number.isFinite(rec.lastAt) && rec.lastAt > 0 ? rec.lastAt : 0;
+    out[id] = {
+      level,
+      count,
+      ...(bestMs !== undefined ? { bestMs } : {}),
+      ...(lastMs !== undefined ? { lastMs } : {}),
+      ...(lastAccuracy !== undefined ? { lastAccuracy } : {}),
+      lastAt,
+    };
+  }
+  return Object.keys(out).length ? out : null;
+}
+
+function mergeSheets(a, b) {
+  if (!a && !b) return undefined;
+  const out = {};
+  const keys = new Set([...Object.keys(a ?? {}), ...Object.keys(b ?? {})]);
+  for (const id of keys) {
+    const x = a?.[id];
+    const y = b?.[id];
+    if (!x || !y) {
+      out[id] = x ?? y;
+      continue;
+    }
+    const newest = (y.lastAt ?? 0) > (x.lastAt ?? 0) ? y : x;
+    const bests = [x.bestMs, y.bestMs].filter((v) => Number.isFinite(v) && v > 0);
+    out[id] = {
+      level: Math.max(x.level ?? 0, y.level ?? 0),
+      count: Math.max(x.count ?? 0, y.count ?? 0),
+      ...(bests.length ? { bestMs: Math.min(...bests) } : {}),
+      ...(newest.lastMs !== undefined ? { lastMs: newest.lastMs } : {}),
+      ...(newest.lastAccuracy !== undefined ? { lastAccuracy: newest.lastAccuracy } : {}),
+      lastAt: Math.max(x.lastAt ?? 0, y.lastAt ?? 0),
+    };
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 const lastActivity = (s) =>
   Math.max(
     0,
     ...s.attempts.map((a) => a.at),
     ...s.notes.map((n) => n.at),
     ...Object.values(s.archive?.last ?? {}),
+    ...Object.values(s.sheets ?? {}).map((r) => r?.lastAt ?? 0),
   );
 const unique = (list, key) => {
   const seen = new Map();
@@ -769,6 +824,8 @@ export function mergeStates(local, remote) {
     grade: newer.grade ?? older.grade,
     dailyGoal: newer.dailyGoal ?? older.dailyGoal,
     focus: newer.focus ?? older.focus,
+    kumonStart: newer.kumonStart ?? older.kumonStart,
+    ...(mergeSheets(local.sheets, remote.sheets) ? { sheets: mergeSheets(local.sheets, remote.sheets) } : {}),
     completed: unique([...local.completed, ...remote.completed], (id) => id),
     mastered: [...newer.mastered],
     attempts: unique(
