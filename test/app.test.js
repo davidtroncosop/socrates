@@ -1027,3 +1027,109 @@ test("by default the photo is only required in the final challenge of a lesson",
   h.answer(String(lessonById("equations").questions[3][1]));
   assert.match(h.node("#feedback").textContent, /Lo resolviste/);
 });
+
+// Termina la lección de ecuaciones respondiendo bien los cuatro ejercicios.
+function finishEquations(h) {
+  h.click("lesson:equations");
+  h.click("begin-exercises");
+  for (const answer of ["7", "6", "6", "7"]) {
+    h.answer(answer);
+    h.click("next");
+  }
+}
+
+test("before the video the owl asks about the logic behind the idea", async () => {
+  const catalog = seedCatalog();
+  catalog.lessons[0].video = { id: "dQw4w9WgXcQ", title: "La balanza en video", start: 0, end: 60 };
+  const h = await harness(null, { catalog });
+  h.click("lesson:equations");
+  const html = stepTo(h, /lesson-hook/);
+  assert.match(html, /¿Sabes la lógica que hay detrás de una ecuación\?<\/strong> ¡Enseguida te voy a mostrar!/);
+  assert.ok(html.indexOf("lesson-hook") < html.indexOf("video-facade"), "the question comes before the animation");
+});
+
+test("after a lesson the student summarizes it and writes a question; without an account it stays in the notebook", async () => {
+  const calls = [];
+  const h = await harness(undefined, { fetch: async (path) => (calls.push(path), { ok: true, status: 200, json: async () => ({}) }) });
+  finishEquations(h);
+  assert.match(h.node("#app").innerHTML, /Cuéntalo con tus palabras/);
+  assert.match(h.node("#app").innerHTML, /No escribas tu nombre/);
+  h.click("starter:0");
+  assert.equal(h.node("#reflection-summary").value, "Hoy aprendí que…");
+  h.node("#reflection-summary").value = "Hoy aprendí que la ecuación es una balanza.";
+  h.node("#reflection-question").value = "¿Sirve con fracciones?";
+  await h.node("#reflection-form").onsubmit({ preventDefault() {} });
+  const note = h.read().notes.find((n) => n.lesson === "equations");
+  assert.equal(note.text, "Hoy aprendí que la ecuación es una balanza.");
+  assert.equal(note.question, "¿Sirve con fracciones?");
+  assert.match(note.title, /Mi resumen · Encuentra el valor de x/);
+  assert.match(h.node("#reflection-reply").innerHTML, /Con una cuenta/);
+  assert.ok(!calls.some((p) => String(p).includes("/api/coach")), "nothing is sent without an account");
+  globalThis.location.hash = "#cuaderno";
+  h.click("go:cuaderno");
+  assert.match(h.node("#app").innerHTML, /Mi pregunta:<\/strong> ¿Sirve con fracciones\?/);
+});
+
+test("with an account the owl answers the summary and question, and both stay in the notebook", async () => {
+  const sent = [];
+  const fetch = async (path, init = {}) => {
+    const body = init.body && JSON.parse(init.body);
+    if (path === "/api/coach/reflection") {
+      sent.push(body);
+      return { ok: true, status: 200, json: async () => ({ reply: { message: "¡Entendiste la balanza!", answer: "Sí: primero multiplica para quitar la fracción." } }) };
+    }
+    if (path === "/api/coach/encouragement") return { ok: true, status: 200, json: async () => ({ message: "Vas muy bien." }) };
+    return { ok: true, status: 200, json: async () => (init.method === "GET" ? { state: null, updatedAt: 0 } : { updatedAt: 1 }) };
+  };
+  const h = await harness(undefined, {
+    key: "socatres.v1.u1",
+    session: { mode: "account", userId: "u1", name: "Ana", role: "student", expiresAt: later },
+    fetch,
+  });
+  await new Promise((r) => setTimeout(r, 20));
+  finishEquations(h);
+  assert.match(h.node("#app").innerHTML, /Guardar y preguntarle al búho/);
+  h.node("#reflection-summary").value = "Lo mismo a los dos lados.";
+  h.node("#reflection-question").value = "¿Sirve con fracciones?";
+  await h.node("#reflection-form").onsubmit({ preventDefault() {} });
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].lesson, "Encuentra el valor de x");
+  assert.equal(sent[0].summary, "Lo mismo a los dos lados.");
+  assert.equal(sent[0].question, "¿Sirve con fracciones?");
+  assert.match(h.node("#reflection-reply").innerHTML, /¡Entendiste la balanza!/);
+  assert.match(h.node("#reflection-reply").innerHTML, /Sobre tu pregunta:.*quitar la fracción/);
+  const note = h.read().notes.find((n) => n.lesson === "equations");
+  assert.equal(note.reply, "¡Entendiste la balanza!");
+  assert.equal(note.answer, "Sí: primero multiplica para quitar la fracción.");
+  globalThis.location.hash = "#cuaderno";
+  h.click("go:cuaderno");
+  assert.match(h.node("#app").innerHTML, /🦉 ¡Entendiste la balanza!/, "the owl's answer stays in the notebook");
+});
+
+test("the home page has the owl's encouragement: local without an account, from the AI once a day with one", async () => {
+  const local = await harness({ version: 1, diagnosed: true, completed: ["equations"], mastered: [], attempts: [], notes: [], reviews: [] });
+  assert.match(local.node("#app").innerHTML, /EL BÚHO TE DICE/);
+
+  let asked = 0;
+  const fetch = async (path, init = {}) => {
+    if (path === "/api/coach/encouragement") {
+      asked++;
+      const body = JSON.parse(init.body);
+      assert.equal(body.completed, 1);
+      assert.ok(!("notes" in body), "only numbers and titles");
+      return { ok: true, status: 200, json: async () => ({ message: "Llevas una lección: ¡sigue así!" }) };
+    }
+    return { ok: true, status: 200, json: async () => (init.method === "GET" ? { state: null, updatedAt: 0 } : { updatedAt: 1 }) };
+  };
+  const h = await harness(
+    { version: 1, diagnosed: true, completed: ["equations"], mastered: [], attempts: [], notes: [{ title: "Mi nota", text: "secreto", at: 1 }], reviews: [] },
+    { key: "socatres.v1.u1", session: { mode: "account", userId: "u1", name: "Ana", role: "student", expiresAt: later }, fetch },
+  );
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(asked, 1);
+  assert.equal(h.node("#coach-message").textContent, "Llevas una lección: ¡sigue así!");
+  h.click("exit");
+  await new Promise((r) => setTimeout(r, 0));
+  assert.equal(asked, 1, "one phrase per day");
+  assert.match(h.node("#app").innerHTML, /Llevas una lección: ¡sigue así!/);
+});

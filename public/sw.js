@@ -17,7 +17,7 @@ const SHELL = [
   "/logo-buho.png",
   "/icon-192.png",
   ...[
-    "admin", "api", "app", "auth", "content", "csv", "curriculum", "daily",
+    "admin", "api", "app", "auth", "coach", "content", "csv", "curriculum", "daily",
     "dialogs", "family-view", "generators", "landing", "learning", "lesson-videos", "mistakes", "subjects",
     "metrics", "minigames", "notify", "session", "speak", "stats", "ui", "units", "video", "weekly", "work-photo",
   ].map((name) => `/${name}.js`),

@@ -26,6 +26,8 @@ socatres es una aplicación para practicar matemática, pensada para estudiantes
 
 **Revisión de tu desarrollo:** si tienes cuenta y sacas una foto de tu desarrollo en un ejercicio de matemática, la foto se envía, junto con el ejercicio y tu respuesta, a un servicio de inteligencia artificial (Gemini de Google, a través de OpenRouter) para que comente tus pasos. Usamos solo proveedores que declaran no guardar las imágenes ni usarlas para entrenar. Nuestro servidor no guarda la foto. Fotografía solo la hoja: que no salgan tu cara, tu nombre ni otras personas. La foto solo es obligatoria en el desafío final de cada lección.
 
+**El búho tutor:** si tienes cuenta y, al terminar una lección, escribes un resumen de lo que aprendiste o una pregunta, ese texto se envía, junto con el nombre y la idea de la lección, al mismo servicio de inteligencia artificial para que el búho te responda. El resumen, tu pregunta y la respuesta quedan como nota en tu cuaderno (que se sincroniza como las demás notas); el servicio de inteligencia artificial no los guarda. No escribas tu nombre ni otros datos personales. Una vez al día, el búho también te da una frase de ánimo: para eso se envían solo números de tu avance (racha, lecciones terminadas, aciertos y errores de la semana, repasos pendientes) y los títulos de tus lecciones, nunca tus notas ni tus respuestas.
+
 **Medición anónima:** contamos cuántos aciertos, errores, pistas, soluciones vistas, fotos pendientes y minijuegos terminados hay en cada ejercicio, sin nombre, cuenta, dirección IP ni respuestas. Solo sirve para mejorar las lecciones.
 
 ## Menores de edad
@@ -34,7 +36,7 @@ Las cuentas de estudiantes menores de 14 años las crea su apoderado desde su pr
 
 ## Con quién compartimos datos
 
-No vendemos ni compartimos datos con fines publicitarios. La aplicación funciona sobre Cloudflare (alojamiento, base de datos y videos), que procesa los datos por cuenta nuestra. Las fotos del desarrollo que se revisan pasan por OpenRouter y Google (Gemini) solo para generar el comentario. Los videos de las lecciones se sirven desde nuestro propio dominio. Si una lección usa un video de YouTube, este se carga solo cuando presionas reproducir, desde youtube-nocookie.com. La lectura en voz alta usa la voz de tu propio navegador: el texto no se envía a internet.
+No vendemos ni compartimos datos con fines publicitarios. La aplicación funciona sobre Cloudflare (alojamiento, base de datos y videos), que procesa los datos por cuenta nuestra. Las fotos del desarrollo que se revisan, los resúmenes y preguntas que le escribes al búho y el resumen de avance para la frase de ánimo pasan por OpenRouter y Google (Gemini) solo para generar la respuesta. Los videos de las lecciones se sirven desde nuestro propio dominio. Si una lección usa un video de YouTube, este se carga solo cuando presionas reproducir, desde youtube-nocookie.com. La lectura en voz alta usa la voz de tu propio navegador: el texto no se envía a internet.
 
 ## Tus derechos
 

@@ -51,6 +51,8 @@ export const api = {
   savePush: (data) => request("PUT", "/api/push", data),
   deletePush: (endpoint) => request("DELETE", "/api/push", { endpoint }),
   reviewWork: (data) => request("POST", "/api/work/review", data),
+  reflect: (data) => request("POST", "/api/coach/reflection", data),
+  encourage: (data) => request("POST", "/api/coach/encouragement", data),
   catalog: () => request("GET", "/api/catalog"),
   publishCatalog: (catalog) => request("PUT", "/api/catalog", { catalog }),
 };

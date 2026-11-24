@@ -5,7 +5,7 @@ Espacio de aprendizaje autónomo, al estilo Duolingo, de matemática y comprensi
 ## Ejecutar
 
 ```sh
-npm test                 # 134 pruebas (Node 22+)
+npm test                 # 144 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
@@ -38,6 +38,7 @@ Módulos del cliente (`public/`):
 - `mistakes.js`: retroalimentación para errores frecuentes.
 - `minigames.js`: minijuegos de las lecciones (tocar, arrastrar, botones).
 - `work-photo.js`: cuándo es obligatoria la foto del desarrollo.
+- `coach.js`: el búho tutor (pregunta gancho antes del video, resumen de avance para la frase de ánimo y frases locales de respaldo).
 - `notify.js`, `sw.js`, `manifest.webmanifest`: app instalable, uso sin conexión y recordatorio diario.
 - `subjects.js`: materias visibles para los estudiantes.
 - `ui.js`, `units.js`, `stats.js`, `dialogs.js`: utilidades de interfaz, unidades de la ruta, métricas de motivación y diálogos.
@@ -46,6 +47,9 @@ Módulos del cliente (`public/`):
 
 ## Qué incluye
 
+- **Pregunta gancho antes de la animación:** en el paso del video, el búho abre con una pregunta sobre la lógica de la idea («¿Sabes la lógica que hay detrás de una ecuación? ¡Enseguida te voy a mostrar!») y se puede escuchar. Las lecciones principales tienen su propia pregunta en `HOOKS` (`public/coach.js`); las demás la arman con su título.
+- **Resumir con sus palabras y preguntar:** al terminar una lección, el estudiante escribe qué aprendió (con frases para empezar, como «Hoy aprendí que…») y, si quiere, la pregunta que le quedó. Queda en «Mi cuaderno». Con cuenta, el búho (Gemini 2.5 Flash vía OpenRouter, `functions/_lib/coach.js`, `POST /api/coach/reflection`) destaca algo concreto que entendió, aclara con suavidad una idea confundida y responde la pregunta en frases cortas; la respuesta también queda en el cuaderno. Si el texto muestra que el estudiante lo está pasando mal, el búho le pide contárselo a un adulto de confianza y menciona la línea *4141. Tope: 30 por hora y cuenta.
+- **El búho te dice:** la portada abre con una frase de ánimo en positivo que reconoce algo real del avance y sugiere un paso pequeño para hoy. Con cuenta la escribe la IA una vez al día (`POST /api/coach/encouragement`, solo con números del avance y títulos de lecciones, nunca notas ni respuestas; tope de 4 al día por cuenta). Sin cuenta, sin conexión o si la IA falla, se usa una frase local. Las dos funciones del búho comparten un tope de 5.000 respuestas al día en toda la app.
 - **Minijuegos para entender la idea:** las 125 lecciones de matemática tienen un paso «Juega» entre el video y el ejemplo, donde el estudiante toca, arrastra o aprieta un botón para ver la idea funcionando. Hay 11 tipos: la balanza (quitar lo mismo de cada lado), el ascensor de los enteros, pintar partes (fracciones, porcentajes), elegir qué operación va primero (PAPOMUDAS), ordenar tarjetas, repartir en platos, armar cantidades con saltos o monedas, ubicar puntos en el plano, la máquina (una perilla que cambia un resultado y un dibujo: baldosas, ángulos, barras), los contadores (juntar términos, armar bolsas y fracciones) y los experimentos al azar (monedas, muestras, tablero de Galton). No tienen tiempo ni puntaje, explican cada tropiezo, se pueden repetir y se pueden saltar. Los juegos y sus rondas se definen por lección en `GAMES` (`public/minigames.js`); una prueba exige que toda lección de matemática tenga juego y que cada ronda se pueda ganar. Las lecciones de Lenguaje (ocultas) no tienen.
 - **Desarrollo a mano con foto, revisado por IA:** en el desafío final de cada lección de matemática el estudiante resuelve en papel (una servilleta sirve), le saca una foto (en el celular se abre la cámara trasera) y recién ahí comprueba su respuesta. En los demás ejercicios la foto es opcional, para no frenar cada respuesta. La respuesta se corrige en el dispositivo al instante; con cuenta, además, Gemini 2.5 Flash (vía OpenRouter) mira toda foto de matemática y dice en una o dos frases el primer paso con error o qué hizo bien, sin dar la respuesta (`functions/_lib/work-review.js`, `POST /api/work/review`, tope de 120 revisiones por hora y cuenta, y de 3.000 al día en toda la app). La foto se guarda solo en el cuaderno del dispositivo; el servidor la envía a OpenRouter (solo a proveedores que no guardan ni entrenan con los datos) y no la guarda. La app pide fotografiar solo la hoja, sin cara ni nombre. Sin cuenta o sin conexión la foto se guarda, pero no se revisa. `required` en `public/work-photo.js` cambia la regla: `"challenge"` (por defecto), `true` (todos los ejercicios) o `false` (nunca).
 - **Explica el error:** si la respuesta coincide con un error frecuente, la app dice qué pasó en vez de solo «incorrecto». En ecuaciones lineales detecta sola el signo contrario, olvidar dividir, multiplicar en vez de dividir y la operación inversa equivocada. Los generadores declaran errores típicos de su tema (exponentes, porcentajes, Pitágoras, productos notables, enteros…), y los autores pueden agregar los suyos por ejercicio.

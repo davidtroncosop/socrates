@@ -10,6 +10,7 @@ import { earnedFichas } from "../../public/stats.js";
 import { isPushEndpoint } from "./push.js";
 import { reminderText, isTimeZone } from "./reminders.js";
 import { readReviewRequest, reviewWork, ReviewError, MAX_IMAGE } from "./work-review.js";
+import { readReflectionRequest, reflect, readEncouragementRequest, encourage } from "./coach.js";
 
 export const COOKIE = "socatres_session";
 const SESSION_DAYS = 30;
@@ -256,6 +257,10 @@ const LIMITS = {
   workReview: [120, 60 * 60_000],
   // Y un tope diario para toda la app: acota el gasto si algo sale mal.
   workReviewAll: [3000, 24 * 60 * 60_000],
+  // El búho tutor: un resumen por lección terminada y una frase de ánimo al día.
+  reflection: [30, 60 * 60_000],
+  encouragement: [4, 24 * 60 * 60_000],
+  coachAll: [5000, 24 * 60 * 60_000],
 };
 const clientIp = (request) => request.headers.get("cf-connecting-ip") || "local";
 async function limit(env, kind, who, message = "Demasiados intentos. Espera unos minutos y vuelve a probar.") {
@@ -657,6 +662,29 @@ const routes = {
     try {
       const review = await reviewWork(env, readReviewRequest(await readJson(request, MAX_IMAGE + 4096)));
       return json({ review });
+    } catch (err) {
+      if (err instanceof ReviewError) fail(err.status, err.message);
+      throw err;
+    }
+  },
+
+  // Búho tutor ------------------------------------------------------------------
+  async "POST /api/coach/reflection"({ request, env, user }) {
+    await limit(env, "reflection", user.id, "Ya le escribiste mucho al búho por esta hora. Lo que escribiste quedó en tu cuaderno.");
+    await limit(env, "coachAll", "app", "El búho ya respondió mucho hoy. Lo que escribiste quedó en tu cuaderno.");
+    try {
+      return json({ reply: await reflect(env, readReflectionRequest(await readJson(request))) });
+    } catch (err) {
+      if (err instanceof ReviewError) fail(err.status, err.message);
+      throw err;
+    }
+  },
+
+  async "POST /api/coach/encouragement"({ request, env, user }) {
+    await limit(env, "encouragement", user.id, "El búho ya te dio tu frase de hoy.");
+    await limit(env, "coachAll", "app", "El búho descansa por hoy.");
+    try {
+      return json(await encourage(env, readEncouragementRequest(await readJson(request))));
     } catch (err) {
       if (err instanceof ReviewError) fail(err.status, err.message);
       throw err;

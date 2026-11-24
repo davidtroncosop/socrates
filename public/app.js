@@ -34,6 +34,7 @@ import { autoRead, autoReadButton, setAutoRead, speak, speakButton, stopSpeaking
 import { track } from "./metrics.js";
 import { hasGame, createGame, gameAction, gameView, enableDrag } from "./minigames.js";
 import { diagnoseMistake } from "./mistakes.js";
+import { hookFor, HOOK_PROMISE, localDay, localEncouragement, progressSummary, MAX_SUMMARY, MAX_QUESTION } from "./coach.js";
 import {
   buildDailyPlan,
   canConfirm,
@@ -536,6 +537,7 @@ function route() {
     ${demoNotice()}
     <div class="dashboard">
       <div>
+        ${coachCard()}
         ${
           state.diagnosed || state.completed.length
             ? dailyHero(next)
@@ -683,6 +685,62 @@ ${bothSubjects ? `<div class="subject-progress-grid">
       </aside>
     </div>`;
   hydrateReminderCard($("#reminder-body"), account);
+  hydrateCoach();
+}
+
+// Frase de ánimo del día: el búho mira el avance (solo números y títulos) y
+// sugiere un paso pequeño. Se pide una vez al día; mientras tanto, o sin
+// cuenta o sin conexión, se muestra una frase local.
+const coachKey = `${stateKey}.coach`;
+function coachSummary() {
+  return progressSummary({
+    state,
+    lessons,
+    streak: getStreakInfo(state).streak,
+    dueReviews: activeReviews().filter((r) => r.due <= Date.now()).length,
+    next: nextLesson(),
+    title: displayTitle,
+  });
+}
+function cachedCoach() {
+  try {
+    const c = JSON.parse(localStorage.getItem(coachKey));
+    return c?.day === localDay() ? c : null;
+  } catch {
+    return null;
+  }
+}
+function coachCard() {
+  const message = cachedCoach()?.message || localEncouragement(coachSummary());
+  return `<section class="coach-card" aria-labelledby="coach-title">
+    <span class="coach-owl" aria-hidden="true">🦉</span>
+    <div>
+      <h2 id="coach-title" class="mini-label">EL BÚHO TE DICE</h2>
+      <p id="coach-message">${escape(message)}</p>
+      ${speakButton("coach", "Escuchar")}
+    </div>
+  </section>`;
+}
+let coachAsking = false;
+async function hydrateCoach() {
+  // Una sola petición al día, aunque falle: la frase local ya está en pantalla.
+  if (!synced || coachAsking || cachedCoach() || globalThis.navigator?.onLine === false) return;
+  coachAsking = true;
+  const remember = (message) => {
+    try {
+      localStorage.setItem(coachKey, JSON.stringify({ day: localDay(), message }));
+    } catch {}
+  };
+  try {
+    const { message } = await api.encourage(coachSummary());
+    remember(message);
+    const el = $("#coach-message");
+    if (el) el.textContent = message;
+  } catch (err) {
+    if (err.status !== 0) remember("");
+  } finally {
+    coachAsking = false;
+  }
 }
 const phases = [
   "Calentamiento",
@@ -844,7 +902,7 @@ function renderIntroLesson(fromExercise = false) {
   const stepped = !fromExercise;
   const step = stepped ? Math.min(s.introStep ?? 0, steps.length - 1) : 0;
   const show = (name) => !stepped || steps[step] === name;
-  const readNow = stepped && autoRead() ? { idea: "concept", example: "example", practice: "practice" }[steps[step]] : null;
+  const readNow = stepped && autoRead() ? { idea: "concept", video: "hook", example: "example", practice: "practice" }[steps[step]] : null;
 
   app.innerHTML = `
     ${button(
@@ -907,7 +965,7 @@ function renderIntroLesson(fromExercise = false) {
         ${show("video") ? `
         ${
           l.video
-            ? `<section class="intro-video" aria-label="Video explicativo"><div class="intro-example-header"><span class="example-pill">Video explicativo · opcional</span><h3>Míralo explicado en video</h3></div>${videoFacade(l.video, l.id)}</section>`
+            ? `<section class="intro-video" aria-label="Video explicativo"><div class="lesson-hook" role="note"><span class="lesson-hook-owl" aria-hidden="true">🦉</span><p class="lesson-hook-text"><strong>${escape(hookFor(l, displayTitle(l)))}</strong> ${HOOK_PROMISE}</p>${speakButton("hook", "Escuchar")}</div>${videoFacade(l.video, l.id)}</section>`
             : ""
         }
 
@@ -1150,6 +1208,9 @@ const SPEAK_TARGETS = {
   hint: ["#hints > .hint:last-child"],
   game: [".minigame-prompt"],
   review: ["#work-review p"],
+  hook: [".lesson-hook-text"],
+  reply: ["#reflection-reply .coach-says"],
+  coach: ["#coach-message"],
 };
 function speakTarget(target) {
   const text = (SPEAK_TARGETS[target] ?? [])
@@ -1552,13 +1613,100 @@ function finish() {
       <p class="intro">${escape(s.mode === "diagnostic" ? desc : alone)}</p>
       ${s.mode === "diagnostic" ? "" : `<p class="muted">${escape(desc)}</p>`}
       <p class="summary-stats"><span>⭐ +${gained} XP</span><span>🔥 ${streak} día${streak > 1 ? "s" : ""} seguido${streak > 1 ? "s" : ""}</span></p>
+      ${s.mode === "lesson" ? reflectionForm() : ""}
       <div class="actions">
         ${upcoming ? button(`${s.mode === "diagnostic" ? "Empezar" : "Seguir"}: ${escape(displayTitle(upcoming))} →`, "lesson:" + upcoming.id, "primary") : ""}
         ${button("Volver a mi ruta", "exit")}
       </div>
     </section>
   `;
+  if (s.mode === "lesson") attachReflection(s.lesson);
   session = null;
+}
+
+// Al terminar una lección, el estudiante la resume con sus palabras y anota la
+// pregunta que le quedó. Queda en su cuaderno; con cuenta, el búho le responde.
+const STARTERS = ["Hoy aprendí que…", "Lo más importante es…", "Me ayudó pensar en…"];
+function reflectionForm() {
+  return `<section class="reflection" id="reflection" aria-labelledby="reflection-title">
+    <h2 id="reflection-title">✍️ Cuéntalo con tus palabras</h2>
+    <p class="muted">Explicar lo que aprendiste ayuda a que se te quede. No hay respuestas malas.</p>
+    <form id="reflection-form">
+      <label for="reflection-summary">¿Qué aprendiste hoy?</label>
+      <div class="starter-row" role="group" aria-label="Ideas para empezar">${STARTERS.map(
+        (t, i) => `<button type="button" class="filter-btn" data-action="starter:${i}">${escape(t)}</button>`,
+      ).join("")}</div>
+      <textarea id="reflection-summary" maxlength="${MAX_SUMMARY}" rows="3" placeholder="Hoy aprendí que…"></textarea>
+      <label for="reflection-question">¿Qué pregunta te quedó? <span class="muted">(opcional)</span></label>
+      <textarea id="reflection-question" maxlength="${MAX_QUESTION}" rows="2" placeholder="Me pregunto…"></textarea>
+      <p class="muted reflection-privacy">No escribas tu nombre ni datos personales.</p>
+      <div class="actions"><button class="primary" type="submit">${synced ? "Guardar y preguntarle al búho" : "Guardar en mi cuaderno"}</button><span id="reflection-status" role="status"></span></div>
+    </form>
+    <div id="reflection-reply" class="coach-reply" aria-live="polite" hidden></div>
+  </section>`;
+}
+function replyView(note) {
+  return [
+    note.reply && `<p class="coach-says">🦉 ${escape(note.reply)}</p>`,
+    note.answer && `<p class="coach-says"><strong>Sobre tu pregunta:</strong> ${escape(note.answer)}</p>`,
+  ]
+    .filter(Boolean)
+    .join("");
+}
+function attachReflection(lesson) {
+  const form = $("#reflection-form");
+  if (!form) return;
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const summary = $("#reflection-summary").value.trim();
+    const question = $("#reflection-question").value.trim();
+    const status = $("#reflection-status");
+    if (!summary && !question) {
+      status.textContent = "Escribe lo que aprendiste o una pregunta.";
+      $("#reflection-summary").focus();
+      return;
+    }
+    for (const el of form.querySelectorAll("textarea, button")) el.disabled = true;
+    const note = {
+      title: `Mi resumen · ${displayTitle(lesson)}`,
+      text: summary,
+      at: Date.now(),
+      lesson: lesson.id,
+      ...(question ? { question } : {}),
+    };
+    state.notes.unshift(note);
+    save();
+    status.textContent = "✓ Guardado en tu cuaderno.";
+    const box = $("#reflection-reply");
+    if (!synced) {
+      box.hidden = false;
+      box.className = "coach-reply muted";
+      box.innerHTML = "<p>Con una cuenta, el búho también lee tu resumen y responde tus preguntas.</p>";
+      return;
+    }
+    box.hidden = false;
+    box.className = "coach-reply loading";
+    box.innerHTML = "<p>🦉 Leyendo lo que escribiste…</p>";
+    try {
+      const { reply } = await api.reflect({
+        lesson: displayTitle(lesson),
+        idea: forStudent(lesson.concept),
+        summary,
+        question,
+      });
+      if (reply.message) note.reply = reply.message;
+      if (reply.answer) note.answer = reply.answer;
+      save();
+      if ($("#reflection-reply") !== box) return; // ya cambió de pantalla
+      box.className = "coach-reply";
+      box.innerHTML = replyView(note) + speakButton("reply", "Escuchar al búho");
+      if (autoRead()) speakTarget("reply");
+    } catch (err) {
+      if ($("#reflection-reply") !== box) return; // ya cambió de pantalla
+      box.className = "coach-reply muted";
+      box.innerHTML = `<p>${escape(err.status === 0 ? "Sin conexión: lo que escribiste quedó en tu cuaderno." : err.message)}</p>`;
+    }
+  };
 }
 function reviews() {
   const due = activeReviews().filter((r) => r.due <= Date.now()),
@@ -1613,6 +1761,8 @@ function notebook() {
                     : ""
                 }</div><h3>${escape(n.title)}</h3>${
                   n.text ? `<p>${escape(n.text)}</p>` : ""
+                }${n.question ? `<p class="note-question"><strong>Mi pregunta:</strong> ${escape(n.question)}</p>` : ""}${
+                  n.reply || n.answer ? `<div class="coach-reply">${replyView(n)}</div>` : ""
                 }${
                   n.image
                     ? `<div class="note-image-wrap"><img src="${n.image}" alt="Desarrollo a mano de ${escape(
@@ -1757,6 +1907,13 @@ app.addEventListener("click", (e) => {
     if (!lesson || isLocked(lesson)) return;
     start(id);
   } else if (action === "daily") startDaily();
+  else if (action === "starter") {
+    const box = $("#reflection-summary");
+    if (box && !box.disabled && STARTERS[id]) {
+      box.value = box.value.trim() ? `${box.value.trim()} ${STARTERS[id]}` : STARTERS[id];
+      box.focus?.();
+    }
+  }
   else if (action === "goal") {
     state.dailyGoal = Number(id);
     save();

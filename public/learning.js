@@ -611,6 +611,12 @@ export function loadState(
               text: n.text,
               at: n.at,
               ...(typeof n.image === "string" ? { image: n.image } : {}),
+              // Resumen al terminar una lección: su pregunta y lo que respondió el búho.
+              ...Object.fromEntries(
+                ["lesson", "question", "reply", "answer"]
+                  .filter((k) => typeof n[k] === "string" && n[k])
+                  .map((k) => [k, n[k].slice(0, 1000)]),
+              ),
             }))
         : [],
       reviews: Array.isArray(s.reviews)

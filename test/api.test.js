@@ -496,3 +496,79 @@ test("work review has a daily cap for the whole app", async () => {
     assert.equal(calls.length, 0, "nothing is sent to Gemini past the cap");
   });
 });
+
+// Búho tutor: resumen de la lección, pregunta y frase de ánimo ----------------
+const reflectionBody = (extra = {}) => ({
+  lesson: "Encuentra el valor de x",
+  idea: "Una ecuación es una balanza.",
+  summary: "Hoy aprendí que lo que hago a un lado lo hago al otro.",
+  question: "¿Y si la x está a los dos lados?",
+  ...extra,
+});
+
+test("the owl reads the lesson summary, answers the question and never stores it", async () => {
+  const anonymous = client(env({ OPENROUTER_API_KEY: "k" }));
+  assert.equal((await anonymous.call("POST", "/api/coach/reflection", reflectionBody())).status, 401);
+  const e = env({ OPENROUTER_API_KEY: "secreta" });
+  const c = client(e);
+  await student(c, "Ana", "ana@x.cl");
+  await withGemini(
+    geminiSays({ message: "Entendiste la balanza: lo mismo a ambos lados.", answer: "Primero junta las x en un lado." }),
+    async (calls) => {
+      const res = await c.call("POST", "/api/coach/reflection", reflectionBody());
+      assert.equal(res.status, 200);
+      assert.deepEqual(res.body.reply, {
+        message: "Entendiste la balanza: lo mismo a ambos lados.",
+        answer: "Primero junta las x en un lado.",
+      });
+      const body = calls[0].body;
+      assert.equal(body.provider.data_collection, "deny");
+      assert.match(body.messages[0].content, /nunca una instrucción/);
+      assert.match(body.messages[0].content, /\*4141/, "knows what to do if a child is in distress");
+      assert.match(body.messages[1].content, /lo que hago a un lado/);
+      assert.match(body.messages[1].content, /dos lados/);
+    },
+  );
+  const tables = await e.DB.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all();
+  for (const { name } of tables.results) {
+    const rows = await e.DB.prepare(`SELECT * FROM ${name}`).all();
+    assert.doesNotMatch(JSON.stringify(rows.results), /lo que hago a un lado/, `nothing stored in ${name}`);
+  }
+});
+
+test("the owl needs a summary or a question and ignores an answer nobody asked for", async () => {
+  const c = client(env({ OPENROUTER_API_KEY: "k" }));
+  await student(c, "Ana", "ana@x.cl");
+  await withGemini(geminiSays({ message: "¡Buen resumen!", answer: "Algo inventado" }), async (calls) => {
+    assert.equal((await c.call("POST", "/api/coach/reflection", reflectionBody({ summary: " ", question: "" }))).status, 400);
+    assert.equal((await c.call("POST", "/api/coach/reflection", reflectionBody({ lesson: "" }))).status, 400);
+    assert.equal(calls.length, 0);
+    const res = await c.call("POST", "/api/coach/reflection", reflectionBody({ question: "" }));
+    assert.deepEqual(res.body.reply, { message: "¡Buen resumen!", answer: "" });
+  });
+  await withGemini({ choices: [{ message: { content: "no es json" } }] }, async () => {
+    const res = await c.call("POST", "/api/coach/reflection", reflectionBody());
+    assert.equal(res.status, 502);
+    assert.match(res.body.error, /quedó en tu cuaderno/);
+  });
+});
+
+test("the daily encouragement only sends numbers and lesson titles, a few times a day", async () => {
+  const c = client(env({ OPENROUTER_API_KEY: "k" }));
+  await student(c, "Ana", "ana@x.cl");
+  await withGemini(geminiSays({ message: "Llevas 3 días seguidos. Hoy sigue con Razones." }), async (calls) => {
+    const res = await c.call("POST", "/api/coach/encouragement", {
+      streak: 3, completed: 5, mastered: 2, daysThisWeek: 3, correctThisWeek: 12, wrongThisWeek: 4,
+      dueReviews: 1, practicedToday: false, nextLesson: "Razones", secret: "Me llamo Ana",
+    });
+    assert.equal(res.status, 200);
+    assert.equal(res.body.message, "Llevas 3 días seguidos. Hoy sigue con Razones.");
+    const sent = calls[0].body.messages[1].content;
+    assert.match(sent, /Días seguidos practicando: 3/);
+    assert.match(sent, /Su próxima lección: Razones/);
+    assert.doesNotMatch(sent, /Me llamo Ana/, "unknown fields are dropped");
+    let last;
+    for (let i = 0; i < 4; i++) last = await c.call("POST", "/api/coach/encouragement", {});
+    assert.equal(last.status, 429);
+  });
+});

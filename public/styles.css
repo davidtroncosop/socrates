@@ -3386,6 +3386,111 @@ details.handwritten-section[open] .handwritten-toggle {
   padding: 8px 16px;
 }
 
+/* El búho tutor: pregunta gancho antes del video, resumen al terminar la
+   lección y frase de ánimo en la portada. */
+.lesson-hook {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #fff7e0;
+  border: 1px solid #fde7a6;
+}
+.lesson-hook-owl,
+.coach-owl {
+  font-size: 34px;
+  line-height: 1;
+}
+.lesson-hook-text {
+  flex: 1 1 220px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+}
+.lesson-hook-text strong {
+  display: block;
+}
+.reflection {
+  text-align: left;
+  max-width: 560px;
+  margin: 28px auto 8px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fbfcfe;
+}
+.reflection h2 {
+  font-size: 21px;
+  margin: 0 0 4px;
+}
+.reflection label {
+  display: block;
+  font-weight: 700;
+  margin: 14px 0 6px;
+}
+.reflection textarea {
+  width: 100%;
+  min-height: 0;
+}
+.reflection .actions {
+  justify-content: flex-start;
+}
+.starter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.reflection-privacy {
+  font-size: 13px;
+  margin: 6px 0 0;
+}
+.coach-reply {
+  padding: 14px 15px;
+  border-radius: 11px;
+  margin-top: 12px;
+  line-height: 1.55;
+  background: #eef4ff;
+  color: #1d3a6b;
+}
+.coach-reply p {
+  margin: 4px 0;
+}
+.coach-reply.muted {
+  background: #f3f5f8;
+  color: var(--muted);
+}
+.coach-reply.loading p {
+  animation: review-pulse 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .coach-reply.loading p { animation: none; }
+}
+.note-question {
+  color: #1d3a6b;
+}
+.coach-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #fff7e0;
+  border: 1px solid #fde7a6;
+}
+.coach-card h2 {
+  margin: 0 0 4px;
+}
+.coach-card p {
+  margin: 0 0 6px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
 /* Celular: una sola barra arriba (logo y salir) y la navegación abajo, al
    alcance del pulgar. La racha y los XP en una fila compacta. */
 @media (max-width: 620px) {

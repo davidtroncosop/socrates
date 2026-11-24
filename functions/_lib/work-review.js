@@ -1,22 +1,14 @@
 // Revisión del desarrollo a mano: el estudiante resuelve en papel, le saca una
 // foto y Gemini (vía OpenRouter) dice en qué paso se equivocó o qué hizo bien.
 // La foto no se guarda en el servidor: se envía a OpenRouter y se descarta.
-// La clave va como secreto: npx wrangler pages secret put OPENROUTER_API_KEY
+import { AiError, DEFAULT_MODEL, chat, chatOptions, modelOf, readJsonContent, text } from "./openrouter.js";
 
-export const DEFAULT_MODEL = "google/gemini-2.5-flash";
-const ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
+export { DEFAULT_MODEL };
 const IMAGE = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/]+={0,2})$/;
 export const MAX_IMAGE = 700 * 1024; // caracteres del data URL (~500 KB de imagen)
-const TIMEOUT_MS = 25_000;
 
-export class ReviewError extends Error {
-  constructor(status, message) {
-    super(message);
-    this.status = status;
-  }
-}
-
-const text = (value, max) => String(value ?? "").trim().slice(0, max);
+// Se mantiene el nombre: el router y las pruebas lo usan.
+export const ReviewError = AiError;
 
 // Valida lo que manda el navegador. Lanza ReviewError(400) si no sirve.
 export function readReviewRequest(body) {
@@ -68,7 +60,7 @@ export function buildRequest(r, model = DEFAULT_MODEL) {
     `La app la marcó como: ${r.correct ? "correcta" : "incorrecta"}`,
   ].filter(Boolean);
   return {
-    model,
+    ...chatOptions(model),
     messages: [
       { role: "system", content: SYSTEM },
       {
@@ -79,31 +71,12 @@ export function buildRequest(r, model = DEFAULT_MODEL) {
         ],
       },
     ],
-    temperature: 0.2,
-    // Sin razonamiento: en las pruebas acertó igual, ~10 veces más barato y en
-    // ~1,5 s. El JSON estricto (json_schema) de Gemini 2.5 Flash a veces se
-    // queda repitiendo "\n" hasta el límite; json_object con el formato en el
-    // prompt no falló, y el tope corto acota el costo si algo sale mal.
-    max_tokens: 400,
-    reasoning: { enabled: false },
-    response_format: { type: "json_object" },
-    // Solo proveedores que no guardan ni entrenan con lo enviado: son fotos de niños.
-    provider: { data_collection: "deny" },
   };
 }
 
 // Convierte la respuesta de OpenRouter en lo que muestra la app.
 export function parseResponse(data) {
-  let raw = data?.choices?.[0]?.message?.content ?? "";
-  if (Array.isArray(raw)) raw = raw.map((p) => p?.text ?? "").join("");
-  // Algunos modelos envuelven el JSON en ```json … ```.
-  raw = String(raw).trim().replace(/^```(?:json)?\s*|\s*```$/g, "");
-  let out;
-  try {
-    out = JSON.parse(raw);
-  } catch {
-    throw new ReviewError(502, "No pudimos revisar tu foto esta vez.");
-  }
+  const out = readJsonContent(data);
   const message = text(out?.message, 400);
   if (!message) throw new ReviewError(502, "No pudimos revisar tu foto esta vez.");
   return {
@@ -117,26 +90,15 @@ export function parseResponse(data) {
 }
 
 export async function reviewWork(env, request, fetchImpl = fetch) {
-  if (!env.OPENROUTER_API_KEY) throw new ReviewError(503, "La revisión de fotos no está disponible.");
-  const model = /^[a-z0-9._-]+\/[a-z0-9._:-]+$/i.test(env.REVIEW_MODEL || "") ? env.REVIEW_MODEL : DEFAULT_MODEL;
-  let res;
-  try {
-    res = await fetchImpl(ENDPOINT, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
-        "x-title": "socatres",
-      },
-      body: JSON.stringify(buildRequest(request, model)),
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    });
-  } catch {
-    throw new ReviewError(504, "La revisión tardó demasiado. Tu foto quedó guardada.");
-  }
-  if (!res.ok) {
-    console.error("OpenRouter", res.status, (await res.text().catch(() => "")).slice(0, 500));
-    throw new ReviewError(502, "No pudimos revisar tu foto esta vez.");
-  }
-  return parseResponse(await res.json());
+  const data = await chat(
+    env,
+    buildRequest(request, modelOf(env)),
+    {
+      unavailable: "La revisión de fotos no está disponible.",
+      timeout: "La revisión tardó demasiado. Tu foto quedó guardada.",
+      failed: "No pudimos revisar tu foto esta vez.",
+    },
+    fetchImpl,
+  );
+  return parseResponse(data);
 }
