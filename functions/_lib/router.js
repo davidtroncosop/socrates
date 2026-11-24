@@ -1,6 +1,7 @@
 import {
   randomToken,
   sha256,
+  constantTimeEqual,
   hashPassword,
   verifyPassword,
   classCode,
@@ -53,12 +54,39 @@ function readCookie(request) {
 }
 
 // Un formulario de otro sitio no puede enviar JSON sin preflight CORS; junto con
-// SameSite=Lax evita peticiones forjadas.
+// SameSite=Lax evita peticiones forjadas. Lee el cuerpo por fragmentos para no
+// desbordar la memoria del Worker si llega una petición gigante.
 async function readJson(request, max = MAX_BODY) {
-  if (!(request.headers.get("content-type") || "").startsWith("application/json"))
-    fail(415, "Se espera JSON.");
-  const text = await request.text();
-  if (text.length > max) fail(413, "La información enviada es demasiado grande.");
+  const ct = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+  if (ct !== "application/json") fail(415, "Se espera JSON.");
+  const declared = Number(request.headers.get("content-length"));
+  if (Number.isFinite(declared) && declared > max)
+    fail(413, "La información enviada es demasiado grande.");
+  if (!request.body) fail(400, "JSON inválido.");
+  const reader = request.body.getReader();
+  const chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > max) {
+        await reader.cancel().catch(() => {});
+        fail(413, "La información enviada es demasiado grande.");
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  const text = new TextDecoder().decode(bytes);
   try {
     const value = JSON.parse(text);
     if (!value || typeof value !== "object") throw Error();
@@ -117,11 +145,21 @@ const publicUser = (env, u) => ({
   role: u.role,
   isAdmin: isAdmin(env, u),
 });
-let dummyHash;
+// Hash PBKDF2 ficticio e inmutable para igualar el tiempo cuando la cuenta no existe.
+const DUMMY_HASH =
+  "pbkdf2$100000$AAAAAAAAAAAAAAAAAAAAAA$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-async function startSession(request, env, user, extra = {}) {
+async function runBackground(waitUntil, promise) {
+  if (typeof waitUntil === "function") waitUntil(promise.catch(() => {}));
+  else await promise;
+}
+
+async function startSession(request, env, user, extra = {}, waitUntil) {
   const token = randomToken();
-  await env.DB.prepare("DELETE FROM sessions WHERE expires_at < ?").bind(Date.now()).run();
+  await runBackground(
+    waitUntil,
+    env.DB.prepare("DELETE FROM sessions WHERE expires_at < ?").bind(Date.now()).run(),
+  );
   await env.DB.prepare(
     "INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)",
   )
@@ -263,7 +301,7 @@ const LIMITS = {
   coachAll: [5000, 24 * 60 * 60_000],
 };
 const clientIp = (request) => request.headers.get("cf-connecting-ip") || "local";
-async function limit(env, kind, who, message = "Demasiados intentos. Espera unos minutos y vuelve a probar.") {
+async function limit(env, kind, who, message = "Demasiados intentos. Espera unos minutos y vuelve a probar.", waitUntil) {
   const [max, windowMs] = LIMITS[kind];
   const now = Date.now();
   const key = `${kind}:${String(who).toLowerCase().slice(0, 200)}`;
@@ -277,14 +315,18 @@ async function limit(env, kind, who, message = "Demasiados intentos. Espera unos
     .bind(key, now, now - windowMs, now - windowMs, now)
     .first();
   if (row && row.count > max) fail(429, message);
-  // Limpieza ocasional de ventanas viejas.
-  if (Math.random() < 0.02) await env.DB.prepare("DELETE FROM rate_limits WHERE window_start < ?").bind(now - 24 * 60 * 60_000).run();
+  // Limpieza ocasional de ventanas viejas sin frenar la respuesta.
+  if (Math.random() < 0.02)
+    await runBackground(
+      waitUntil,
+      env.DB.prepare("DELETE FROM rate_limits WHERE window_start < ?").bind(now - 24 * 60 * 60_000).run(),
+    );
 }
 
 const routes = {
   // Registro propio: apoderados y estudiantes de 14 años o más (Ley 21.719).
-  async "POST /api/auth/register"({ request, env }) {
-    await limit(env, "register", clientIp(request));
+  async "POST /api/auth/register"({ request, env, waitUntil }) {
+    await limit(env, "register", clientIp(request), undefined, waitUntil);
     const body = await readJson(request);
     const role = body.role === "parent" ? "parent" : "student";
     if (role === "student" && body.age14 !== true)
@@ -301,30 +343,30 @@ const routes = {
     )
       .bind(user.id, email, name, role, await hashPassword(password), await sha256(normalizeCode(code)), Date.now())
       .run();
-    return startSession(request, env, user, { recoveryCode: code });
+    return startSession(request, env, user, { recoveryCode: code }, waitUntil);
   },
 
-  async "POST /api/auth/login"({ request, env }) {
+  async "POST /api/auth/login"({ request, env, waitUntil }) {
     const body = await readJson(request);
-    await limit(env, "loginIp", clientIp(request));
-    await limit(env, "loginAccount", String(body.login ?? body.email ?? ""));
+    await limit(env, "loginIp", clientIp(request), undefined, waitUntil);
+    await limit(env, "loginAccount", String(body.login ?? body.email ?? ""), undefined, waitUntil);
     const user = await findByLogin(env, body.login ?? body.email);
     // Mismo mensaje y mismo trabajo exista o no la cuenta.
-    dummyHash ??= await hashPassword(randomToken());
-    const valid = await verifyPassword(String(body.password || ""), user ? user.password_hash : dummyHash);
+    const valid = await verifyPassword(String(body.password || ""), user ? user.password_hash : DUMMY_HASH);
     if (!user || !valid) fail(401, "Usuario o contraseña incorrectos.");
-    return startSession(request, env, user);
+    return startSession(request, env, user, {}, waitUntil);
   },
 
   // Recuperación sin correo: el código entregado al registrarse. Cambia la
   // contraseña, cierra las demás sesiones y entrega un código nuevo.
-  async "POST /api/auth/recover"({ request, env }) {
+  async "POST /api/auth/recover"({ request, env, waitUntil }) {
     const body = await readJson(request);
-    await limit(env, "recover", String(body.login ?? ""));
-    await limit(env, "recover", clientIp(request));
+    await limit(env, "recover", String(body.login ?? ""), undefined, waitUntil);
+    await limit(env, "recover", clientIp(request), undefined, waitUntil);
     const user = await findByLogin(env, body.login);
     const hash = await sha256(normalizeCode(body.code));
-    if (!user || !user.recovery_hash || user.recovery_hash !== hash)
+    const matches = await constantTimeEqual(user?.recovery_hash ?? "", hash);
+    if (!user || !user.recovery_hash || !matches)
       fail(401, "El código de recuperación no coincide.");
     const password = cleanPassword(body.password);
     const code = recoveryCode();
@@ -332,7 +374,7 @@ const routes = {
       .bind(await hashPassword(password), await sha256(normalizeCode(code)), user.id)
       .run();
     await env.DB.prepare("DELETE FROM sessions WHERE user_id = ?").bind(user.id).run();
-    return startSession(request, env, user, { recoveryCode: code });
+    return startSession(request, env, user, { recoveryCode: code }, waitUntil);
   },
 
   async "POST /api/auth/logout"({ request, env }) {
@@ -445,18 +487,18 @@ const routes = {
     return json({ code, expiresAt });
   },
 
-  async "POST /api/family/link"({ request, env, user }) {
+  async "POST /api/family/link"({ request, env, user, waitUntil }) {
     requireRole(user, "parent", "Solo un apoderado puede vincular estudiantes.");
-    await limit(env, "link", user.id);
+    await limit(env, "link", user.id, undefined, waitUntil);
     const code = normalizeCode((await readJson(request)).code);
-    const found = await env.DB.prepare("SELECT child_id FROM link_codes WHERE code = ? AND expires_at > ?")
+    // Consumo atómico: evita que dos peticiones simultáneas reutilicen el mismo código.
+    const found = await env.DB.prepare("DELETE FROM link_codes WHERE code = ? AND expires_at > ? RETURNING child_id")
       .bind(code, Date.now())
       .first();
     if (!found) fail(404, "El código no existe o ya venció. Pide uno nuevo.");
     await env.DB.prepare("INSERT OR IGNORE INTO family_links (parent_id, child_id, created_at) VALUES (?, ?, ?)")
       .bind(user.id, found.child_id, Date.now())
       .run();
-    await env.DB.prepare("DELETE FROM link_codes WHERE code = ?").bind(code).run();
     const child = await env.DB.prepare("SELECT id, name FROM users WHERE id = ?").bind(found.child_id).first();
     return json({ child });
   },
@@ -577,16 +619,14 @@ const routes = {
     requireRole(user, "parent", "Solo un apoderado puede responder un canje.");
     const { approve } = await readJson(request);
     if (typeof approve !== "boolean") fail(400, "Indica si apruebas el canje.");
-    const claim = await env.DB.prepare(
-      "SELECT id FROM reward_claims WHERE id = ? AND parent_id = ? AND status = 'pending'",
+    const status = approve ? "approved" : "rejected";
+    const updated = await env.DB.prepare(
+      "UPDATE reward_claims SET status = ?, decided_at = ? WHERE id = ? AND parent_id = ? AND status = 'pending' RETURNING id",
     )
-      .bind(params.id, user.id)
+      .bind(status, Date.now(), params.id, user.id)
       .first();
-    if (!claim) fail(404, "Ese canje ya fue respondido o no existe.");
-    await env.DB.prepare("UPDATE reward_claims SET status = ?, decided_at = ? WHERE id = ?")
-      .bind(approve ? "approved" : "rejected", Date.now(), claim.id)
-      .run();
-    return json({ ok: true, status: approve ? "approved" : "rejected" });
+    if (!updated) fail(404, "Ese canje ya fue respondido o no existe.");
+    return json({ ok: true, status });
   },
 
   // Recordatorio diario ----------------------------------------------------------
@@ -626,19 +666,27 @@ const routes = {
   // Medición anónima ----------------------------------------------------------------
   // Contadores por lección y ejercicio: dónde se traban los estudiantes. No se
   // guarda quién, ni la IP, ni la respuesta.
-  async "POST /api/metrics"({ request, env }) {
-    await limit(env, "metrics", clientIp(request));
+  async "POST /api/metrics"({ request, env, waitUntil }) {
+    await limit(env, "metrics", clientIp(request), undefined, waitUntil);
     const events = (await readJson(request)).events;
     if (!Array.isArray(events) || events.length > 20) fail(400, "Eventos inválidos.");
-    const day = new Date().toISOString().slice(0, 10);
+    // Valida todo el lote antes de escribir y agrupa eventos repetidos.
+    const counts = new Map();
     for (const e of events) {
       if (!/^[a-z0-9][a-z0-9-]{0,79}$/.test(String(e?.lesson)) || !Number.isInteger(e.step) || e.step < 0 || e.step > 9 || !METRIC_KINDS.includes(e.kind))
         fail(400, "Eventos inválidos.");
+      const key = `${e.lesson}|${e.step}|${e.kind}`;
+      const entry = counts.get(key);
+      if (entry) entry.count++;
+      else counts.set(key, { lesson: e.lesson, step: e.step, kind: e.kind, count: 1 });
+    }
+    const day = new Date().toISOString().slice(0, 10);
+    for (const entry of counts.values()) {
       await env.DB.prepare(
-        `INSERT INTO lesson_metrics (lesson, step, kind, day, count) VALUES (?, ?, ?, ?, 1)
-         ON CONFLICT(lesson, step, kind, day) DO UPDATE SET count = count + 1`,
+        `INSERT INTO lesson_metrics (lesson, step, kind, day, count) VALUES (?, ?, ?, ?, ?)
+         ON CONFLICT(lesson, step, kind, day) DO UPDATE SET count = count + excluded.count`,
       )
-        .bind(e.lesson, e.step, e.kind, day)
+        .bind(entry.lesson, entry.step, entry.kind, day, entry.count)
         .run();
     }
     return json({ ok: true });
@@ -656,9 +704,9 @@ const routes = {
   },
 
   // Revisión con IA del desarrollo a mano ----------------------------------------
-  async "POST /api/work/review"({ request, env, user }) {
-    await limit(env, "workReview", user.id);
-    await limit(env, "workReviewAll", "app", "El búho ya revisó muchas fotos hoy. Tu foto quedó guardada en tu cuaderno.");
+  async "POST /api/work/review"({ request, env, user, waitUntil }) {
+    await limit(env, "workReview", user.id, undefined, waitUntil);
+    await limit(env, "workReviewAll", "app", "El búho ya revisó muchas fotos hoy. Tu foto quedó guardada en tu cuaderno.", waitUntil);
     try {
       const review = await reviewWork(env, readReviewRequest(await readJson(request, MAX_IMAGE + 4096)));
       return json({ review });
@@ -669,9 +717,9 @@ const routes = {
   },
 
   // Búho tutor ------------------------------------------------------------------
-  async "POST /api/coach/reflection"({ request, env, user }) {
-    await limit(env, "reflection", user.id, "Ya le escribiste mucho al búho por esta hora. Lo que escribiste quedó en tu cuaderno.");
-    await limit(env, "coachAll", "app", "El búho ya respondió mucho hoy. Lo que escribiste quedó en tu cuaderno.");
+  async "POST /api/coach/reflection"({ request, env, user, waitUntil }) {
+    await limit(env, "reflection", user.id, "Ya le escribiste mucho al búho por esta hora. Lo que escribiste quedó en tu cuaderno.", waitUntil);
+    await limit(env, "coachAll", "app", "El búho ya respondió mucho hoy. Lo que escribiste quedó en tu cuaderno.", waitUntil);
     try {
       return json({ reply: await reflect(env, readReflectionRequest(await readJson(request))) });
     } catch (err) {
@@ -680,9 +728,9 @@ const routes = {
     }
   },
 
-  async "POST /api/coach/encouragement"({ request, env, user }) {
-    await limit(env, "encouragement", user.id, "El búho ya te dio tu frase de hoy.");
-    await limit(env, "coachAll", "app", "El búho descansa por hoy.");
+  async "POST /api/coach/encouragement"({ request, env, user, waitUntil }) {
+    await limit(env, "encouragement", user.id, "El búho ya te dio tu frase de hoy.", waitUntil);
+    await limit(env, "coachAll", "app", "El búho descansa por hoy.", waitUntil);
     try {
       return json(await encourage(env, readEncouragementRequest(await readJson(request))));
     } catch (err) {
@@ -730,30 +778,49 @@ const PUBLIC = new Set([
   "GET /api/push/key",
 ]);
 
+const COMPILED_ROUTES = Object.keys(routes).map((key) => {
+  const [method, pattern] = key.split(" ");
+  const names = [];
+  const re = new RegExp("^" + pattern.replace(/:(\w+)/g, (_, n) => (names.push(n), "([^/]+)")) + "$");
+  return { key, method, names, re };
+});
+
 function match(method, pathname) {
-  for (const key of Object.keys(routes)) {
-    const [m, pattern] = key.split(" ");
-    if (m !== method) continue;
-    const names = [];
-    const re = new RegExp("^" + pattern.replace(/:(\w+)/g, (_, n) => (names.push(n), "([^/]+)")) + "$");
-    const found = pathname.match(re);
-    if (found)
-      return { key, params: Object.fromEntries(names.map((n, i) => [n, decodeURIComponent(found[i + 1])])) };
+  for (const r of COMPILED_ROUTES) {
+    if (r.method !== method) continue;
+    const found = pathname.match(r.re);
+    if (found) {
+      const params = {};
+      try {
+        for (let i = 0; i < r.names.length; i++) params[r.names[i]] = decodeURIComponent(found[i + 1]);
+      } catch {
+        fail(400, "Ruta inválida.");
+      }
+      return { key: r.key, params };
+    }
   }
   return null;
 }
 
-export async function handle(request, env) {
+export async function handle(request, env, waitUntil) {
+  let pathname = "";
   try {
-    const { pathname } = new URL(request.url);
+    ({ pathname } = new URL(request.url));
     const route = match(request.method, pathname);
     if (!route) fail(404, "Ruta no encontrada.");
     const user = PUBLIC.has(route.key) ? null : await currentUser(request, env);
     if (!PUBLIC.has(route.key) && !user) fail(401, "Tu sesión terminó. Vuelve a entrar.");
-    return await routes[route.key]({ request, env, user, params: route.params });
+    return await routes[route.key]({ request, env, user, params: route.params, waitUntil });
   } catch (err) {
     if (err instanceof HttpError) return json({ error: err.message }, err.status);
-    console.error(err);
+    console.error(
+      JSON.stringify({
+        event: "api_error",
+        method: request.method,
+        path: pathname,
+        error: err instanceof Error ? err.message : String(err),
+      }),
+    );
     return json({ error: "Ocurrió un error en el servidor." }, 500);
   }
 }

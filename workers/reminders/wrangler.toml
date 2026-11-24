@@ -2,7 +2,11 @@
 # Secreto necesario: npx wrangler secret put VAPID_PRIVATE_KEY -c workers/reminders/wrangler.toml
 name = "socatres-reminders"
 main = "index.js"
-compatibility_date = "2025-11-01"
+compatibility_date = "2026-11-01"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
 
 [triggers]
 crons = ["0 * * * *"]

@@ -32,7 +32,7 @@ const practicedOn = (state, date, timeZone) =>
 // Texto del recordatorio, calculado con el progreso del propio usuario.
 export function reminderText(state, now = Date.now()) {
   const due = (state?.reviews ?? []).filter((r) => r.due <= now).length;
-  const { streak, practicedToday } = getStreakInfo(state ?? {});
+  const { streak, practicedToday } = getStreakInfo(state ?? {}, now);
   const hasHistory = (state?.attempts ?? []).length > 0 || (state?.archive?.days ?? []).length > 0;
   if (practicedToday)
     return { title: "¡Bien hecho hoy!", body: "Ya practicaste. Si quieres, sigue con la siguiente lección." };
@@ -58,11 +58,25 @@ export async function sendDueReminders(env, now = Date.now(), fetchImpl = fetch)
   ).all();
   const summary = { sent: 0, skipped: 0, removed: 0, failed: 0 };
   for (const sub of results) {
-    const { date, hour } = localParts(now, sub.time_zone);
+    let date, hour;
+    try {
+      ({ date, hour } = localParts(now, sub.time_zone));
+    } catch {
+      summary.failed++;
+      continue;
+    }
     if (hour !== sub.remind_hour || sub.last_sent === date) continue;
     const mark = () =>
       env.DB.prepare("UPDATE push_subscriptions SET last_sent = ? WHERE endpoint = ?").bind(date, sub.endpoint).run();
-    if (practicedOn(sub.state ? JSON.parse(sub.state) : null, date, sub.time_zone)) {
+    let progress = null;
+    if (sub.state) {
+      try {
+        progress = JSON.parse(sub.state);
+      } catch {
+        progress = null;
+      }
+    }
+    if (practicedOn(progress, date, sub.time_zone)) {
       await mark();
       summary.skipped++;
       continue;

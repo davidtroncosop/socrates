@@ -13,7 +13,10 @@ function d1() {
     db.exec(readFileSync(new URL(`../migrations/${f}`, import.meta.url), "utf8"));
   const statement = (sql, params = []) => ({
     bind: (...next) => statement(sql, next),
-    first: async () => (db.prepare(sql).get(...params) ? { ...db.prepare(sql).get(...params) } : null),
+    first: async () => {
+      const row = db.prepare(sql).get(...params);
+      return row ? { ...row } : null;
+    },
     all: async () => ({ results: db.prepare(sql).all(...params).map((r) => ({ ...r })) }),
     run: async () => db.prepare(sql).run(...params),
   });
@@ -125,4 +128,26 @@ test("devices subscribe with an hour and time zone and can unsubscribe", async (
   assert.match((await call("GET", "/api/reminder")).body.title, /práctica del día/);
   await call("DELETE", "/api/push", { endpoint });
   assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM push_subscriptions").get().n, 0);
+});
+
+test("corrupt subscription rows never abort the reminder cron and reminderText honors explicit timestamps", async () => {
+  const DB = d1();
+  const env = { DB, ...vapidEnv };
+  DB.raw.exec(`INSERT INTO users (id, email, name, role, password_hash, created_at) VALUES
+    ('bad','bad@x.cl','Bad','student','h',1), ('ok','ok@x.cl','Ok','student','h',1)`);
+  const now = Date.UTC(2026, 8, 23, 21, 5); // 18:00 en Santiago
+  DB.raw.prepare("INSERT INTO push_subscriptions (endpoint, user_id, remind_hour, time_zone, created_at) VALUES (?, ?, ?, ?, 1)")
+    .run("https://fcm.googleapis.com/fcm/send/bad", "bad", 18, "Zona/Invalida");
+  DB.raw.prepare("INSERT INTO push_subscriptions (endpoint, user_id, remind_hour, time_zone, created_at) VALUES (?, ?, ?, ?, 1)")
+    .run("https://fcm.googleapis.com/fcm/send/ok", "ok", 18, "America/Santiago");
+  DB.raw.prepare("INSERT INTO progress VALUES ('ok', '{json-roto', 1)").run();
+
+  const summary = await sendDueReminders(env, now, async () => ({ ok: true, status: 201 }));
+  assert.deepEqual(summary, { sent: 1, skipped: 0, removed: 0, failed: 1 });
+
+  // reminderText calcula racha usando el parámetro `now`, no el reloj actual.
+  const past = Date.UTC(2026, 5, 10, 15, 0);
+  const day = 86400000;
+  const oldState = { attempts: [1, 2, 3].map((d) => ({ at: past - d * day, correct: true })), reviews: [] };
+  assert.match(reminderText(oldState, past).title, /racha de 3 días/);
 });

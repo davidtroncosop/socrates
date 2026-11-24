@@ -72,30 +72,37 @@ export function showParentReport({ state, completedCount, masteredCount }) {
 
   const streakInfo = getStreakInfo(state);
   const xpInfo = getXpAndFichas(state);
-  const notesCount = state?.notes ? state.notes.length : 0;
+  const notes = Array.isArray(state?.notes) ? state.notes : [];
+  const photoCount = notes.filter((n) => n?.image).length;
+  const notebookLabel =
+    photoCount > 0
+      ? `${photoCount} ${photoCount === 1 ? "foto" : "fotos"}`
+      : `${notes.length} ${notes.length === 1 ? "nota" : "notas"}`;
 
-  // Calculate unique days in last 7 days
+  // Días distintos con actividad en los últimos 7 días (hora local).
   const sevenDaysAgo = Date.now() - 7 * 86400000;
+  const localDayKey = (ms) => {
+    const d = new Date(ms);
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  };
   const recentDates = new Set();
   if (Array.isArray(state?.attempts)) {
     state.attempts
       .filter((a) => a.at >= sevenDaysAgo)
-      .forEach((a) => recentDates.add(new Date(a.at).toISOString().slice(0, 10)));
+      .forEach((a) => recentDates.add(localDayKey(a.at)));
   }
-  if (Array.isArray(state?.notes)) {
-    state.notes
-      .filter((n) => n.at >= sevenDaysAgo)
-      .forEach((n) => recentDates.add(new Date(n.at).toISOString().slice(0, 10)));
-  }
-  const weeklyDays = Math.max(1, recentDates.size);
+  notes
+    .filter((n) => n.at >= sevenDaysAgo)
+    .forEach((n) => recentDates.add(localDayKey(n.at)));
+  const weeklyDays = recentDates.size;
   const estimatedMins = weeklyDays * 11;
 
   const whatsappMsg = `*Reporte de Progreso en socatres 🚀*\n` +
     `• Días de práctica esta semana: ${weeklyDays} de 7 días (~${estimatedMins} min totales)\n` +
-    `• Racha activa: ${streakInfo.streak} días seguidos 🔥\n` +
+    `• Racha activa: ${streakInfo.streak} ${streakInfo.streak === 1 ? "día seguido" : "días seguidos"} 🔥\n` +
     `• Lecciones completadas: ${completedCount} lecciones\n` +
     `• Habilidades dominadas: ${masteredCount} con Cinturón de Oro 👑\n` +
-    `• Ejercicios a mano en cuaderno: ${notesCount} fotos de desarrollo ✍️\n` +
+    `• Trabajo en cuaderno: ${notebookLabel} ✍️\n` +
     `• Fichas de premio ganadas: ${xpInfo.fichas} fichas 🪙 (${xpInfo.totalXP} XP)\n\n` +
     `_¡Completado de forma autónoma sin peleas por las tareas!_`;
 
@@ -110,7 +117,7 @@ export function showParentReport({ state, completedCount, masteredCount }) {
         <div class="parent-metrics-grid">
           <div class="parent-metric-card">
             <span class="pm-icon">🔥</span>
-            <div class="pm-val">${streakInfo.streak} día${streakInfo.streak > 1 ? "s" : ""}</div>
+            <div class="pm-val">${streakInfo.streak} día${streakInfo.streak !== 1 ? "s" : ""}</div>
             <div class="pm-lbl">Racha activa ${streakInfo.hasFreeze ? "🛡️ (Protector activo)" : ""}</div>
           </div>
           <div class="parent-metric-card">
@@ -120,7 +127,7 @@ export function showParentReport({ state, completedCount, masteredCount }) {
           </div>
           <div class="parent-metric-card">
             <span class="pm-icon">✍️</span>
-            <div class="pm-val">${notesCount} fotos</div>
+            <div class="pm-val">${notebookLabel}</div>
             <div class="pm-lbl">Desarrollos a mano en cuaderno</div>
           </div>
           <div class="parent-metric-card">

@@ -610,7 +610,7 @@ export function loadState(
               title: n.title,
               text: n.text,
               at: n.at,
-              ...(typeof n.image === "string" ? { image: n.image } : {}),
+              ...(isSafeImageDataUrl(n.image) ? { image: n.image } : {}),
               // Resumen al terminar una lección: su pregunta y lo que respondió el búho.
               ...Object.fromEntries(
                 ["lesson", "question", "reply", "answer"]
@@ -640,6 +640,11 @@ export function loadState(
   }
 }
 
+// Solo imágenes rasterizadas en base64: bloquea SVG y esquemas peligrosos.
+const SAFE_IMAGE_URL = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=_-]+$/;
+export const isSafeImageDataUrl = (value) =>
+  typeof value === "string" && SAFE_IMAGE_URL.test(value);
+
 // Las fotos se guardan en una clave aparte: si el navegador se queda sin
 // espacio, se pierde la foto nueva, nunca el progreso.
 export const photosKey = (key) => `${key}.photos`;
@@ -656,7 +661,7 @@ function withStoredPhotos(state, storage, key) {
     ...state,
     notes: state.notes.map((n) => {
       const image = photos[noteKey(n)];
-      return n.image || typeof image !== "string" || !image.startsWith("data:image/")
+      return n.image || !isSafeImageDataUrl(image)
         ? n
         : { ...n, image };
     }),

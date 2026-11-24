@@ -108,10 +108,17 @@ export function renderFamilyPage({ app, session, lessons }) {
   };
   const guard = (fn) => async (e) => {
     e?.preventDefault?.();
+    const trigger = e?.target?.matches?.("form")
+      ? e.target.querySelector('button[type="submit"]')
+      : e?.currentTarget;
+    if (trigger?.disabled) return;
+    if (trigger && "disabled" in trigger) trigger.disabled = true;
     try {
       await fn(e);
     } catch (err) {
       if (current()) message(err.message);
+    } finally {
+      if (trigger && "disabled" in trigger) trigger.disabled = false;
     }
   };
 

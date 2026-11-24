@@ -5,7 +5,7 @@ Espacio de aprendizaje autónomo, al estilo Duolingo, de matemática y comprensi
 ## Ejecutar
 
 ```sh
-npm test                 # 144 pruebas (Node 22+)
+npm test                 # 147 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
@@ -121,6 +121,7 @@ El acceso ofrece **Entrar** (con correo o usuario), **Crear cuenta** y **Probar 
 | `GET /api/rewards` · `POST /api/rewards` · `DELETE /api/rewards/:id` | Premios en casa: listar · crear (apoderado) · borrar |
 | `POST /api/rewards/:id/claim` · `POST /api/claims/:id` | El estudiante pide un canje · el apoderado lo aprueba o rechaza |
 | `POST /api/work/review` | Revisión con IA de la foto del desarrollo (con cuenta; 120 por hora) |
+| `POST /api/coach/reflection` · `POST /api/coach/encouragement` | El búho tutor: comenta el resumen y responde la pregunta (30/h) · frase diaria de ánimo (4/día) |
 | `POST /api/metrics` · `GET /api/metrics` | Contadores anónimos por lección y ejercicio (`correct`, `wrong`, `hint`, `revealed`, `photo`: la foto obligatoria frenó la respuesta, `game`: terminó el minijuego) · lectura solo administración |
 
 ## Publicación
@@ -164,7 +165,7 @@ La importación comprueba estructura, identificadores, ejercicios faltantes, res
 - Si se borra el progreso en un dispositivo mientras otro sin conexión conserva el anterior, al reconectar ese otro dispositivo las lecciones completadas vuelven a sumarse.
 - El recordatorio usa horas en punto; en zonas horarias con media hora se envía en la hora local más cercana siguiente.
 - Antes de abrirla al público, revisa con asesoría legal la política de privacidad y el consentimiento parental según la Ley 21.719, en especial el envío de las fotos del desarrollo a un proveedor de IA externo.
-- El repositorio no tiene remoto: `.github/workflows/test.yml` correrá las pruebas en cada push cuando se suba a GitHub.
+- `.github/workflows/test.yml` corre las pruebas en GitHub Actions (Node 22 y 24) en cada push y pull request.
 
 ## Respaldo
 

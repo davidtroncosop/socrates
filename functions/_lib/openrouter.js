@@ -65,7 +65,8 @@ export async function chat(env, body, messages, fetchImpl = fetch) {
     throw new AiError(504, messages.timeout);
   }
   if (!res.ok) {
-    console.error("OpenRouter", res.status, (await res.text().catch(() => "")).slice(0, 500));
+    const snippet = (await res.text().catch(() => "")).slice(0, 500);
+    console.error(JSON.stringify({ event: "openrouter_error", status: res.status, detail: snippet }));
     throw new AiError(502, messages.failed);
   }
   return res.json();

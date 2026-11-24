@@ -1252,19 +1252,51 @@ select {
 .note-image-zoom {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 4px;
   font-size: 12px;
   font-weight: 600;
   color: var(--blue);
   padding: 8px 12px;
   background: #ffffffeb;
+  border: 0;
   border-top: 1px solid var(--line);
+  border-radius: 0;
   width: 100%;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .note-image-zoom:hover {
   text-decoration: underline;
+  background: #f8fafc;
+}
+
+.photo-dialog {
+  max-width: min(92vw, 760px);
+  padding: 16px;
+}
+
+.photo-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.photo-dialog-head h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.photo-dialog-img {
+  display: block;
+  max-width: 100%;
+  max-height: 75vh;
+  margin: 0 auto;
+  border-radius: 8px;
+  object-fit: contain;
 }
 
 .photo-btn-secondary {

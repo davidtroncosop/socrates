@@ -22,6 +22,22 @@ export async function sha256(text) {
   return toBase64Url(new Uint8Array(digest));
 }
 
+// Comparación en tiempo constante para secretos o hashes: compara siempre
+// dos resúmenes SHA-256 del mismo largo para no filtrar ni contenido ni longitud.
+export async function constantTimeEqual(a, b) {
+  const [da, db] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(String(a ?? ""))),
+    crypto.subtle.digest("SHA-256", encoder.encode(String(b ?? ""))),
+  ]);
+  if (typeof crypto.subtle.timingSafeEqual === "function")
+    return crypto.subtle.timingSafeEqual(da, db);
+  const ua = new Uint8Array(da);
+  const ub = new Uint8Array(db);
+  let diff = 0;
+  for (let i = 0; i < ua.length; i++) diff |= ua[i] ^ ub[i];
+  return diff === 0;
+}
+
 async function derive(password, salt, iterations) {
   const key = await crypto.subtle.importKey(
     "raw",

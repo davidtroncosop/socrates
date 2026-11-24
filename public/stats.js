@@ -1,5 +1,5 @@
 // Métricas de motivación derivadas del progreso; no afectan el dominio.
-export function getStreakInfo(state) {
+export function getStreakInfo(state, now = Date.now()) {
   const datesSet = new Set();
   if (Array.isArray(state?.attempts)) {
     for (const a of state.attempts) {
@@ -18,8 +18,7 @@ export function getStreakInfo(state) {
   // Días de práctica de los intentos ya resumidos.
   for (const day of state?.archive?.days ?? []) datesSet.add(day);
 
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const yesterdayStr = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const todayStr = new Date(now).toISOString().slice(0, 10);
 
   if (datesSet.size === 0) {
     return { streak: 1, practicedToday: false, hasFreeze: true, freezeUsed: false };
@@ -29,7 +28,7 @@ export function getStreakInfo(state) {
   let streak = 0;
   let freezeUsed = false;
 
-  let checkTime = practicedToday ? Date.now() : Date.now() - 86400000;
+  let checkTime = practicedToday ? now : now - 86400000;
   while (true) {
     const dStr = new Date(checkTime).toISOString().slice(0, 10);
     if (datesSet.has(dStr)) {

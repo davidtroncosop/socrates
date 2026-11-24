@@ -518,7 +518,7 @@ function route() {
         <div class="duo-stat-chip" title="Racha de práctica diaria">
           <span class="duo-chip-icon">🔥</span>
           <span class="duo-chip-value">${streakDays}</span>
-          <span class="duo-chip-label">día${streakDays > 1 ? "s" : ""}</span>
+          <span class="duo-chip-label">día${streakDays !== 1 ? "s" : ""}</span>
           ${streakInfo.hasFreeze ? `<span class="duo-freeze-badge" title="Protector de racha activo">🛡️</span>` : ""}
         </div>
         ${fullRewards() ? `<div class="duo-stat-chip duo-chip-xp" title="Puntos de Experiencia ganados practicando">
@@ -902,6 +902,8 @@ function renderIntroLesson(fromExercise = false) {
   const stepped = !fromExercise;
   const step = stepped ? Math.min(s.introStep ?? 0, steps.length - 1) : 0;
   const show = (name) => !stepped || steps[step] === name;
+  const stepTargets = { idea: "concept", video: "hook", game: "game", example: "example", practice: "practice" };
+  s.introSpeakTarget = stepped ? stepTargets[steps[step]] : "concept";
   const readNow = stepped && autoRead() ? { idea: "concept", video: "hook", example: "example", practice: "practice" }[steps[step]] : null;
 
   app.innerHTML = `
@@ -1090,7 +1092,7 @@ const photoRequired = (s) =>
 function photoBox(s) {
   const required = photoRequired(s);
   if (s.workPhoto)
-    return `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${s.workPhoto}" alt="Foto de tu desarrollo a mano" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu desarrollo lista</span><p class="muted" style="margin:4px 0 8px 0; font-size:12px;">${
+    return `<div class="work-photo-preview"><div class="work-photo-thumb-wrap"><img src="${escape(s.workPhoto)}" alt="Foto de tu desarrollo a mano" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto de tu desarrollo lista</span><p class="muted" style="margin:4px 0 8px 0; font-size:12px;">${
       synced && isMathExercise(s) ? "El búho la revisará al comprobar." : "Se guardará en tu cuaderno al comprobar."
     }</p><button type="button" data-action="remove-photo" class="btn-remove-photo">✕ Cambiar foto</button></div></div>`;
   return `<label for="work-photo-input" class="photo-upload-box" id="photo-dropzone"><span class="photo-icon">📷</span><div class="photo-upload-text"><strong>${
@@ -1244,7 +1246,7 @@ function reveal() {
   const f = $("#feedback");
   f.className = "feedback";
   f.textContent = `Así se resuelve: ${q[4]} La respuesta es ${String(q[1]).replace(".", ",")}.`;
-  for (const sel of ["#check", "#hint-button", "#answer", "#work", ".btn-remove-photo", '[data-action="skip"]'])
+  for (const sel of ["#check", "#hint-button", "#answer", "#work", "#work-photo-input", ".btn-remove-photo", '[data-action="skip"]'])
     if ($(sel)) $(sel).disabled = true;
   $("#next-area").innerHTML =
     `<div class="actions">${button(s.index === s.questions.length - 1 ? "Ver mi resumen →" : "Siguiente ejercicio →", "next", "primary")}</div>`;
@@ -1412,6 +1414,7 @@ function check(e) {
   $("#hint-button").disabled = true;
   $("#answer").disabled = true;
   if ($("#work")) $("#work").disabled = true;
+  if ($("#work-photo-input")) $("#work-photo-input").disabled = true;
   const removePhotoBtn = $(".btn-remove-photo");
   if (removePhotoBtn) removePhotoBtn.disabled = true;
   const skip = $('[data-action="skip"]');
@@ -1612,7 +1615,7 @@ function finish() {
       <h1>${heading}</h1>
       <p class="intro">${escape(s.mode === "diagnostic" ? desc : alone)}</p>
       ${s.mode === "diagnostic" ? "" : `<p class="muted">${escape(desc)}</p>`}
-      <p class="summary-stats"><span>⭐ +${gained} XP</span><span>🔥 ${streak} día${streak > 1 ? "s" : ""} seguido${streak > 1 ? "s" : ""}</span></p>
+      <p class="summary-stats"><span>⭐ +${gained} XP</span><span>🔥 ${streak} día${streak !== 1 ? "s" : ""} seguido${streak !== 1 ? "s" : ""}</span></p>
       ${s.mode === "lesson" ? reflectionForm() : ""}
       <div class="actions">
         ${upcoming ? button(`${s.mode === "diagnostic" ? "Empezar" : "Seguir"}: ${escape(displayTitle(upcoming))} →`, "lesson:" + upcoming.id, "primary") : ""}
@@ -1733,6 +1736,44 @@ function reviews() {
       .join("");
 }
 let pendingNotePhoto = null;
+function newNotePhotoHtml() {
+  return pendingNotePhoto
+    ? `<div class="work-photo-preview" style="margin-top:10px;"><div class="work-photo-thumb-wrap"><img src="${escape(pendingNotePhoto)}" alt="Foto de cuaderno" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto adjunta</span><button type="button" data-action="remove-new-note-photo" class="btn-remove-photo">✕ Eliminar foto</button></div></div>`
+    : `<label for="new-note-photo-input" class="photo-btn-secondary"><span>📷</span> Adjuntar foto de mi cuaderno (opcional)</label><input type="file" id="new-note-photo-input" accept="image/*" capture="environment" class="visually-hidden">`;
+}
+function attachNewNotePhotoListener() {
+  const newPhotoInput = $("#new-note-photo-input");
+  if (newPhotoInput) {
+    newPhotoInput.onchange = async (e) => {
+      const file = e.target?.files?.[0];
+      if (!file) return;
+      const compressed = await compressImage(file);
+      if (compressed) {
+        pendingNotePhoto = compressed;
+        updateNewNotePhotoArea();
+      }
+    };
+  }
+}
+function updateNewNotePhotoArea() {
+  const area = $("#new-note-photo-area");
+  if (!area) return;
+  area.innerHTML = newNotePhotoHtml();
+  if (!pendingNotePhoto) attachNewNotePhotoListener();
+}
+function showPhotoModal(noteIndex) {
+  const note = state.notes[noteIndex];
+  if (!note?.image) return;
+  const dialog = $("#photo-dialog");
+  const content = $("#photo-dialog-content") || dialog;
+  if (!content) return;
+  content.innerHTML = `<div class="photo-dialog-head"><h3>${escape(note.title)}</h3><button type="button" id="close-photo-dialog" class="secondary">Cerrar</button></div><img src="${escape(note.image)}" alt="Desarrollo a mano de ${escape(note.title)}" class="photo-dialog-img" />`;
+  if (dialog && typeof dialog.showModal === "function") {
+    dialog.showModal();
+    const closeBtn = $("#close-photo-dialog");
+    if (closeBtn) closeBtn.onclick = () => dialog.close();
+  }
+}
 function notebook() {
   app.innerHTML =
     heading(
@@ -1740,15 +1781,11 @@ function notebook() {
       "Mi cuaderno",
       "Aquí quedan tus procedimientos, desarrollos a mano y las ideas que quieras recordar.",
     ) +
-    `<section class="card"><form id="note-form"><label for="note">Una idea o desarrollo para tu próximo intento</label><textarea id="note" maxlength="4000" placeholder="Hoy entendí que…"></textarea><div class="note-photo-uploader"><div id="new-note-photo-area">${
-      pendingNotePhoto
-        ? `<div class="work-photo-preview" style="margin-top:10px;"><div class="work-photo-thumb-wrap"><img src="${pendingNotePhoto}" alt="Foto de cuaderno" class="work-photo-thumb" /></div><div class="work-photo-details"><span class="photo-badge-success">✓ Foto adjunta</span><button type="button" data-action="remove-new-note-photo" class="btn-remove-photo">✕ Eliminar foto</button></div></div>`
-        : `<label for="new-note-photo-input" class="photo-btn-secondary"><span>📷</span> Adjuntar foto de mi cuaderno (opcional)</label><input type="file" id="new-note-photo-input" accept="image/*" capture="environment" class="visually-hidden">`
-    }</div></div><div class="actions"><button class="primary" type="submit">Guardar nota</button><span id="note-status" role="status"></span></div></form></section><div id="notes">${
+    `<section class="card"><form id="note-form"><label for="note">Una idea o desarrollo para tu próximo intento</label><textarea id="note" maxlength="4000" placeholder="Hoy entendí que…"></textarea><div class="note-photo-uploader"><div id="new-note-photo-area">${newNotePhotoHtml()}</div></div><div class="actions"><button class="primary" type="submit">Guardar nota</button><span id="note-status" role="status"></span></div></form></section><div id="notes">${
       state.notes.length
         ? state.notes
             .map(
-              (n) =>
+              (n, i) =>
                 `<article class="note"><div class="note-header-row"><span class="muted">${new Date(
                   n.at,
                 ).toLocaleDateString("es-CL", {
@@ -1765,11 +1802,9 @@ function notebook() {
                   n.reply || n.answer ? `<div class="coach-reply">${replyView(n)}</div>` : ""
                 }${
                   n.image
-                    ? `<div class="note-image-wrap"><img src="${n.image}" alt="Desarrollo a mano de ${escape(
+                    ? `<div class="note-image-wrap"><img src="${escape(n.image)}" alt="Desarrollo a mano de ${escape(
                         n.title,
-                      )}" class="note-image" loading="lazy" /><a href="${
-                        n.image
-                      }" target="_blank" rel="noopener" class="note-image-zoom">🔍 Ver foto completa</a></div>`
+                      )}" class="note-image" loading="lazy" /><button type="button" data-action="zoom-photo:${i}" class="note-image-zoom">🔍 Ver foto completa</button></div>`
                     : ""
                 }</article>`,
             )
@@ -1777,18 +1812,7 @@ function notebook() {
         : '<div class="empty muted">Tu cuaderno está listo para tu primera idea o desarrollo a mano.</div>'
     }</div>`;
 
-  const newPhotoInput = $("#new-note-photo-input");
-  if (newPhotoInput) {
-    newPhotoInput.onchange = async (e) => {
-      const file = e.target?.files?.[0];
-      if (!file) return;
-      const compressed = await compressImage(file);
-      if (compressed) {
-        pendingNotePhoto = compressed;
-        notebook();
-      }
-    };
-  }
+  attachNewNotePhotoListener();
 
   $("#note-form").onsubmit = (e) => {
     e.preventDefault();
@@ -1813,23 +1837,18 @@ function notebook() {
 }
 
 let pendingTaskPhoto = null;
-function task() {
-  app.innerHTML =
-    heading(
-      "DEL CUADERNO A LA PRÁCTICA",
-      "Trae tu ejercicio.",
-      "Practica una ecuación lineal y conecta lo aprendido con tu ruta.",
-    ) +
-    `<section class="card"><div class="callout">Esta versión admite ecuaciones lineales de la forma ax + b = cx + d. Puedes resolver a mano en tu cuaderno y subir una foto de tu desarrollo.</div><form id="task-form"><label for="equation">Tu ecuación</label><input id="equation" placeholder="2x + 3 = 15" required maxlength="150"><p class="task-examples">También puedes probar: 4x + 2 = 2x + 18, o −3x + 6 = 12.</p><div class="task-photo-option"><label for="task-photo-input" class="photo-btn-secondary"><span>📷</span> ${
-      pendingTaskPhoto
-        ? "✓ Foto de tu cuaderno seleccionada"
-        : "Subir foto de tu ejercicio en el cuaderno (opcional)"
-    }</label><input type="file" id="task-photo-input" accept="image/*" capture="environment" class="visually-hidden">${
-      pendingTaskPhoto
-        ? '<button type="button" data-action="remove-task-photo" class="btn-remove-photo" style="display:inline-block;margin-left:10px;">✕ Quitar</button>'
-        : ""
-    }</div><div class="actions" style="margin-top:16px;"><button class="primary" type="submit">Preparar mi práctica →</button></div></form><div id="task-result" class="task-result" aria-live="polite"></div></section>`;
-
+function taskPhotoHtml() {
+  return `<label for="task-photo-input" class="photo-btn-secondary"><span>📷</span> ${
+    pendingTaskPhoto
+      ? "✓ Foto de tu cuaderno seleccionada"
+      : "Subir foto de tu ejercicio en el cuaderno (opcional)"
+  }</label><input type="file" id="task-photo-input" accept="image/*" capture="environment" class="visually-hidden">${
+    pendingTaskPhoto
+      ? '<button type="button" data-action="remove-task-photo" class="btn-remove-photo" style="display:inline-block;margin-left:10px;">✕ Quitar</button>'
+      : ""
+  }`;
+}
+function attachTaskPhotoListener() {
   const taskPhotoInput = $("#task-photo-input");
   if (taskPhotoInput) {
     taskPhotoInput.onchange = async (e) => {
@@ -1838,10 +1857,27 @@ function task() {
       const compressed = await compressImage(file);
       if (compressed) {
         pendingTaskPhoto = compressed;
-        task();
+        updateTaskPhotoArea();
       }
     };
   }
+}
+function updateTaskPhotoArea() {
+  const area = $("#task-photo-area");
+  if (!area) return;
+  area.innerHTML = taskPhotoHtml();
+  attachTaskPhotoListener();
+}
+function task() {
+  app.innerHTML =
+    heading(
+      "DEL CUADERNO A LA PRÁCTICA",
+      "Trae tu ejercicio.",
+      "Practica una ecuación lineal y conecta lo aprendido con tu ruta.",
+    ) +
+    `<section class="card"><div class="callout">Esta versión admite ecuaciones lineales de la forma ax + b = cx + d. Puedes resolver a mano en tu cuaderno y subir una foto de tu desarrollo.</div><form id="task-form"><label for="equation">Tu ecuación</label><input id="equation" placeholder="2x + 3 = 15" required maxlength="150"><p class="task-examples">También puedes probar: 4x + 2 = 2x + 18, o −3x + 6 = 12.</p><div id="task-photo-area" class="task-photo-option">${taskPhotoHtml()}</div><div class="actions" style="margin-top:16px;"><button class="primary" type="submit">Preparar mi práctica →</button></div></form><div id="task-result" class="task-result" aria-live="polite"></div></section>`;
+
+  attachTaskPhotoListener();
 
   $("#task-form").onsubmit = (e) => {
     e.preventDefault();
@@ -1971,7 +2007,7 @@ app.addEventListener("click", (e) => {
       b.textContent = autoRead() ? "🔁 Leer siempre: sí" : "🔁 Leer siempre: no";
       b.setAttribute("aria-pressed", String(autoRead()));
     }
-    if (autoRead()) speakTarget(session?.showingIntro === false ? "question" : "concept");
+    if (autoRead()) speakTarget(session?.showingIntro ? (session.introSpeakTarget ?? "concept") : "question");
     else stopSpeaking();
   } else if (action === "intro-next" || action === "intro-prev") {
     if (session) {
@@ -1991,10 +2027,12 @@ app.addEventListener("click", (e) => {
     updatePhotoContainer();
   } else if (action === "remove-new-note-photo") {
     pendingNotePhoto = null;
-    notebook();
+    updateNewNotePhotoArea();
   } else if (action === "remove-task-photo") {
     pendingTaskPhoto = null;
-    task();
+    updateTaskPhotoArea();
+  } else if (action === "zoom-photo") {
+    showPhotoModal(Number(id));
   } else if (action === "warmup") {
     startWarmup();
   } else if (action === "reveal") {
@@ -2052,6 +2090,7 @@ $("#delete-account").onclick = async () => {
     try {
       localStorage.removeItem(stateKey);
       localStorage.removeItem(photosKey(stateKey));
+      localStorage.removeItem(coachKey);
       endSession(localStorage);
     } catch {}
     location.replace("./");
@@ -2063,6 +2102,9 @@ $("#privacy").onclick = () => $("#privacy-dialog").showModal();
 $("#close-privacy").onclick = () => $("#privacy-dialog").close();
 $("#delete-data").onclick = () => {
   state = freshState();
+  try {
+    localStorage.removeItem(coachKey);
+  } catch {}
   save();
   session = null;
   currentLevel = "all";

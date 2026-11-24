@@ -52,7 +52,9 @@ self.addEventListener("fetch", (event) => {
         .then((response) => {
           if (response.ok && !response.redirected) {
             const copy = response.clone();
-            caches.open(CACHE).then((cache) => cache.put(pageKey(url), copy));
+            event.waitUntil(
+              caches.open(CACHE).then((cache) => cache.put(pageKey(url), copy)).catch(() => {}),
+            );
           }
           return response;
         })
@@ -65,7 +67,10 @@ self.addEventListener("fetch", (event) => {
     caches.open(CACHE).then((cache) =>
       fetch(request)
         .then((response) => {
-          if (response.ok && response.status === 200) cache.put(request, response.clone());
+          if (response.ok && response.status === 200) {
+            const copy = response.clone();
+            event.waitUntil(cache.put(request, copy).catch(() => {}));
+          }
           return response;
         })
         .catch(() => cache.match(request, { ignoreSearch: true }).then((hit) => hit || Response.error())),

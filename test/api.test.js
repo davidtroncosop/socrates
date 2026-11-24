@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import { handle, summarize } from "../functions/_lib/router.js";
-import { hashPassword, verifyPassword } from "../functions/_lib/crypto.js";
+import { hashPassword, verifyPassword, constantTimeEqual } from "../functions/_lib/crypto.js";
 import { seedCatalog } from "../public/content.js";
 
 const migrations = readdirSync(new URL("../migrations/", import.meta.url)).filter((f) => f.endsWith(".sql")).sort();
@@ -571,4 +571,63 @@ test("the daily encouragement only sends numbers and lesson titles, a few times 
     for (let i = 0; i < 4; i++) last = await c.call("POST", "/api/coach/encouragement", {});
     assert.equal(last.status, 429);
   });
+});
+
+test("router hardening: constant-time equality, content-type parsing, malformed URL params, atomic metrics and waitUntil", async () => {
+  assert.equal(await constantTimeEqual("abc", "abc"), true);
+  assert.equal(await constantTimeEqual("abc", "abd"), false);
+  assert.equal(await constantTimeEqual("abc", "abcd"), false);
+
+  const e = env();
+  const c = client(e);
+  await student(c, "Ana", "ana@hardening.cl");
+
+  // Content-Type sin distinción de mayúsculas, pero sin aceptar tipos distintos.
+  const upper = await c.call("PUT", "/api/progress", { state: state() }, { "content-type": "Application/JSON; charset=utf-8" });
+  assert.equal(upper.status, 200);
+  const bogus = await c.call("PUT", "/api/progress", { state: state() }, { "content-type": "application/json-evil" });
+  assert.equal(bogus.status, 415);
+
+  // Parámetro con codificación URL rota devuelve 400, no 500.
+  const badUrl = await c.call("DELETE", "/api/rewards/%E0%A4%A");
+  assert.equal(badUrl.status, 400);
+
+  // Lote de métricas con un evento inválido no escribe ninguno (validación atómica).
+  const badBatch = await c.call("POST", "/api/metrics", {
+    events: [
+      { lesson: "equations", step: 0, kind: "correct" },
+      { lesson: "equations", step: 99, kind: "correct" },
+    ],
+  });
+  assert.equal(badBatch.status, 400);
+  assert.equal(e.DB.raw.prepare("SELECT COUNT(*) AS n FROM lesson_metrics").get().n, 0);
+
+  // Lote válido con eventos duplicados agrupa correctamente los contadores.
+  const okBatch = await c.call("POST", "/api/metrics", {
+    events: [
+      { lesson: "equations", step: 1, kind: "wrong" },
+      { lesson: "equations", step: 1, kind: "wrong" },
+      { lesson: "equations", step: 9, kind: "game" },
+    ],
+  });
+  assert.equal(okBatch.status, 200);
+  assert.equal(
+    e.DB.raw.prepare("SELECT count FROM lesson_metrics WHERE lesson = 'equations' AND step = 1 AND kind = 'wrong'").get().count,
+    2,
+  );
+
+  // waitUntil recibe tareas de limpieza en segundo plano sin bloquear la respuesta.
+  const pending = [];
+  const res = await handle(
+    new Request("https://socatres.test/api/auth/login", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ login: "ana@hardening.cl", password: "clave-segura" }),
+    }),
+    e,
+    (p) => pending.push(p),
+  );
+  assert.equal(res.status, 200);
+  assert.ok(pending.length >= 1, "expired session cleanup is scheduled via waitUntil");
+  await Promise.all(pending);
 });

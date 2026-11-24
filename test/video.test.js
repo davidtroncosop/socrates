@@ -124,10 +124,22 @@ test("media function serves R2 videos with byte ranges and immutable caching", a
   const { serveMedia } = await import("../functions/_lib/media.js");
   const bytes = new TextEncoder().encode("0123456789");
   const MEDIA = {
+    headCalls: 0,
+    async head(key) {
+      this.headCalls++;
+      if (key !== "lessons/equations-ab12.mp4") return null;
+      return { size: 10, httpEtag: '"v1"' };
+    },
     async get(key, { range, onlyIf }) {
       if (key !== "lessons/equations-ab12.mp4") return null;
       if (onlyIf.get("if-none-match") === '"v1"') return { size: 10, httpEtag: '"v1"' };
-      const m = (range.get("range") ?? "").match(/bytes=(\d+)-(\d*)/);
+      const rawRange = range.get("range") ?? "";
+      const suffix = rawRange.match(/bytes=-(\d+)/);
+      if (suffix) {
+        const s = Number(suffix[1]);
+        return { size: 10, httpEtag: '"v1"', range: { suffix: s }, body: bytes.slice(Math.max(0, 10 - s)) };
+      }
+      const m = rawRange.match(/bytes=(\d+)-(\d*)/);
       const offset = m ? Number(m[1]) : 0;
       const end = m && m[2] ? Number(m[2]) + 1 : 10;
       return {
@@ -138,8 +150,8 @@ test("media function serves R2 videos with byte ranges and immutable caching", a
       };
     },
   };
-  const get = (path, headers = {}) =>
-    serveMedia(new Request("https://socatres.pages.dev/media/" + path, { headers }), { MEDIA }, path.split("/"));
+  const get = (path, headers = {}, method = "GET") =>
+    serveMedia(new Request("https://socatres.pages.dev/media/" + path, { method, headers }), { MEDIA }, path.split("/"));
 
   const full = await get("lessons/equations-ab12.mp4");
   assert.equal(full.status, 200);
@@ -147,10 +159,21 @@ test("media function serves R2 videos with byte ranges and immutable caching", a
   assert.match(full.headers.get("cache-control"), /immutable/);
   assert.equal(await full.text(), "0123456789");
 
+  const headRes = await get("lessons/equations-ab12.mp4", {}, "HEAD");
+  assert.equal(headRes.status, 200);
+  assert.equal(headRes.headers.get("content-length"), "10");
+  assert.equal(await headRes.text(), "");
+  assert.equal(MEDIA.headCalls, 1, "HEAD uses R2 head() without opening a body stream");
+
   const part = await get("lessons/equations-ab12.mp4", { range: "bytes=2-5" });
   assert.equal(part.status, 206);
   assert.equal(part.headers.get("content-range"), "bytes 2-5/10");
   assert.equal(await part.text(), "2345");
+
+  const bigSuffix = await get("lessons/equations-ab12.mp4", { range: "bytes=-500" });
+  assert.equal(bigSuffix.status, 206);
+  assert.equal(bigSuffix.headers.get("content-range"), "bytes 0-9/10");
+  assert.equal(bigSuffix.headers.get("content-length"), "10");
 
   assert.equal((await get("lessons/equations-ab12.mp4", { "if-none-match": '"v1"' })).status, 304);
   assert.equal((await get("lessons/otro.mp4")).status, 404);

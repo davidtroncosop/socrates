@@ -93,7 +93,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
             const sub = getSubject(l);
             const isLang = sub === "lenguaje";
             const subjectTag = `<span class="subject-tag ${isLang ? "subject-lang" : "subject-math"}">${isLang ? "📖 Lenguaje" : "📐 Matemática"}</span>`;
-            return `<article class="lesson admin-lesson ${isLang ? "lesson-lang" : "lesson-math"}"><span class="node">${String(i + 1).padStart(2, "0")}</span><div class="lesson-info"><div class="lesson-tags"><span class="status-tag ${l.status}">${l.status === "published" ? "Publicada" : "Borrador"}</span><span class="oa-badge">${esc(GRADES[l.grade])}</span>${subjectTag}</div><h3>${esc(l.title)}</h3><p>${esc(l.description)}</p><small>4 ejercicios + repaso</small></div><div class="actions"><button data-admin="edit" data-id="${l.id}">Editar</button><button data-admin="toggle" data-id="${l.id}">${l.status === "published" ? "Retirar de ruta" : "Publicar"}</button><button data-admin="up" data-id="${l.id}" ${i === 0 ? "disabled" : ""} aria-label="Subir ${esc(l.title)}">↑</button><button data-admin="down" data-id="${l.id}" ${i === all.length - 1 ? "disabled" : ""} aria-label="Bajar ${esc(l.title)}">↓</button></div></article>`;
+            return `<article class="lesson admin-lesson ${isLang ? "lesson-lang" : "lesson-math"}"><span class="node">${String(i + 1).padStart(2, "0")}</span><div class="lesson-info"><div class="lesson-tags"><span class="status-tag ${l.status}">${l.status === "published" ? "Publicada" : "Borrador"}</span><span class="oa-badge">${esc(GRADES[l.grade])}</span>${subjectTag}</div><h3>${esc(l.title)}</h3><p>${esc(l.description)}</p><small>4 ejercicios + repaso</small></div><div class="actions"><button data-admin="edit" data-id="${esc(l.id)}">Editar</button><button data-admin="toggle" data-id="${esc(l.id)}">${l.status === "published" ? "Retirar de ruta" : "Publicar"}</button><button data-admin="up" data-id="${esc(l.id)}" ${i === 0 ? "disabled" : ""} aria-label="Subir ${esc(l.title)}">↑</button><button data-admin="down" data-id="${esc(l.id)}" ${i === all.length - 1 ? "disabled" : ""} aria-label="Bajar ${esc(l.title)}">↓</button></div></article>`;
           })
           .join("")
       : '<section class="card empty">No hay lecciones para mostrar. Crea una o importa un archivo.</section>';
@@ -176,14 +176,17 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
       data = await res.json();
       if (!res.ok) throw new Error(data.error || "No se pudieron cargar las métricas.");
     } catch (err) {
-      app.querySelector("#metrics-body").textContent = err.message;
+      const target = app.querySelector("#metrics-body");
+      if (target) target.textContent = err.message;
       return;
     }
+    const target = app.querySelector("#metrics-body");
+    if (!target) return;
     const titles = new Map(getCatalog().lessons.map((l) => [l.id, l.title]));
     const byLesson = new Map();
     for (const m of data.metrics) {
-      const row = byLesson.get(m.lesson) ?? { correct: 0, wrong: 0, hint: 0, revealed: 0, steps: {} };
-      row[m.kind] += m.count;
+      const row = byLesson.get(m.lesson) ?? { correct: 0, wrong: 0, hint: 0, revealed: 0, photo: 0, game: 0, steps: {} };
+      row[m.kind] = (row[m.kind] ?? 0) + m.count;
       if (m.step <= 3) {
         const st = (row.steps[m.step] ??= { correct: 0, wrong: 0 });
         if (m.kind in st) st[m.kind] += m.count;
@@ -198,11 +201,11 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
           .sort(([, a], [, b]) => b.wrong / (b.correct + b.wrong) - a.wrong / (a.correct + a.wrong))[0];
         return { id, tries, rate: tries ? r.wrong / tries : 0, ...r, hardest: hardest ? Number(hardest[0]) + 1 : null };
       })
-      .filter((r) => r.tries > 0)
-      .sort((a, b) => b.rate - a.rate);
-    app.querySelector("#metrics-body").outerHTML = rows.length
-      ? `<div class="table-scroll"><table class="metrics-table"><thead><tr><th>Lección</th><th>Respuestas</th><th>Errores</th><th>Pistas</th><th>Soluciones vistas</th><th>Ejercicio más difícil</th></tr></thead><tbody>${rows
-          .map((r) => `<tr><td>${esc(titles.get(r.id) ?? r.id)}</td><td>${r.tries}</td><td>${Math.round(r.rate * 100)} %</td><td>${r.hint}</td><td>${r.revealed}</td><td>${r.hardest ?? "—"}</td></tr>`)
+      .filter((r) => r.tries > 0 || r.game > 0 || r.photo > 0)
+      .sort((a, b) => b.rate - a.rate || b.tries - a.tries);
+    target.outerHTML = rows.length
+      ? `<div class="table-scroll"><table class="metrics-table"><thead><tr><th>Lección</th><th>Respuestas</th><th>Errores</th><th>Pistas</th><th>Soluciones vistas</th><th>Fotos pendientes</th><th>Minijuegos</th><th>Ejercicio más difícil</th></tr></thead><tbody>${rows
+          .map((r) => `<tr><td>${esc(titles.get(r.id) ?? r.id)}</td><td>${r.tries}</td><td>${r.tries ? `${Math.round(r.rate * 100)} %` : "—"}</td><td>${r.hint}</td><td>${r.revealed}</td><td>${r.photo}</td><td>${r.game}</td><td>${r.hardest ?? "—"}</td></tr>`)
           .join("")}</tbody></table></div>`
       : `<p class="muted">Todavía no hay respuestas registradas.</p>`;
   }

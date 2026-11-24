@@ -113,8 +113,10 @@ export async function hydrateReminderCard(container, session) {
     container.innerHTML = install + body + `<p class="feedback${notice.startsWith("✓") ? " good" : ""}" role="status">${escape(notice)}</p>`;
   };
   container.onclick = async (e) => {
-    const action = e.target.closest?.("[data-notify]")?.dataset.notify;
-    if (!action) return;
+    const btn = e.target.closest?.("[data-notify]");
+    const action = btn?.dataset.notify;
+    if (!action || btn.disabled) return;
+    btn.disabled = true;
     try {
       if (action === "install") {
         installEvent?.prompt();
@@ -130,6 +132,7 @@ export async function hydrateReminderCard(container, session) {
       await enable(hour);
       render(`✓ Te recordaremos a las ${String(hour).padStart(2, "0")}:00.`);
     } catch (err) {
+      btn.disabled = false;
       render(err.message);
     }
   };

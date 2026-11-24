@@ -1133,3 +1133,53 @@ test("the home page has the owl's encouragement: local without an account, from 
   assert.equal(asked, 1, "one phrase per day");
   assert.match(h.node("#app").innerHTML, /Llevas una lección: ¡sigue así!/);
 });
+
+test("notebook sanitizes unsafe image URLs, opens full photo in a dialog and keeps draft text when attaching a photo", async () => {
+  const safePhoto = "data:image/jpeg;base64,/9j/valid-photo";
+  const h = await harness({
+    version: 1,
+    diagnosed: true,
+    completed: [],
+    mastered: [],
+    attempts: [],
+    reviews: [],
+    notes: [
+      { title: "Con foto", text: "ok", at: 200, image: safePhoto },
+      { title: "SVG malicioso", text: "x", at: 100, image: "data:image/svg+xml;base64,PHN2Zz4=" },
+      { title: "Inyección", text: "y", at: 50, image: 'data:image/jpeg;base64,AA" onerror="alert(1)' },
+    ],
+  });
+  globalThis.location.hash = "#cuaderno";
+  h.click("go:cuaderno");
+  const html = h.node("#app").innerHTML;
+  assert.match(html, /data-action="zoom-photo:0"/);
+  assert.doesNotMatch(html, /svg\+xml|onerror/, "unsafe image URLs are stripped on load");
+
+  // Abrir foto completa usa el diálogo modal en vez de navegar a un data: URL.
+  h.click("zoom-photo:0");
+  assert.match(h.node("#photo-dialog-content").innerHTML, /\/9j\/valid-photo/);
+
+  // Adjuntar una foto en el cuaderno conserva el texto escrito en #note.
+  h.node("#note").value = "Borrador que no debe perderse";
+  globalThis.FileReader = class {
+    readAsDataURL() {
+      this.onload({ target: { result: "data:image/jpeg;base64,orig" } });
+    }
+  };
+  globalThis.Image = class {
+    set src(_) {
+      this.width = 400;
+      this.height = 300;
+      this.onload();
+    }
+  };
+  Object.assign(h.node("created"), { getContext: () => ({ drawImage() {} }), toDataURL: () => safePhoto });
+  await h.node("#new-note-photo-input").onchange({ target: { files: [{ type: "image/jpeg" }] } });
+  assert.equal(h.node("#note").value, "Borrador que no debe perderse");
+  assert.match(h.node("#new-note-photo-area").innerHTML, /Foto adjunta/);
+
+  // Borrar progreso limpia también la frase en caché del búho.
+  h.storage.set("socatres.v1.coach", JSON.stringify({ day: "2026-11-24", message: "vieja" }));
+  h.node("#delete-data").onclick();
+  assert.equal(h.storage.has("socatres.v1.coach"), false);
+});
