@@ -70,6 +70,27 @@ document.querySelectorAll("[data-login], [data-signup]").forEach((button) => {
     }
   };
 });
+// Cierre de la portada: el correo pasa directo al formulario de registro.
+const closingForm = $("#closing-form");
+if (getSession()) {
+  closingForm.querySelector('button[type="submit"]').textContent = "Volver a mi ruta ↗";
+  for (const el of closingForm.querySelectorAll("label, input")) el.hidden = true;
+}
+closingForm.onsubmit = (e) => {
+  e.preventDefault();
+  if (getSession()) return location.assign(destination());
+  const email = $("#closing-email");
+  if (!email.checkValidity()) {
+    $("#closing-error").textContent = "Escribe un correo válido, por ejemplo nombre@correo.cl.";
+    email.focus();
+    return;
+  }
+  $("#closing-error").textContent = "";
+  show("panel-register");
+  $("#register-email").value = email.value.trim();
+  dialog.showModal();
+  $("#register-name").focus();
+};
 $("#close-login").onclick = () => dialog.close();
 $("#cancel-login").onclick = () => dialog.close();
 
