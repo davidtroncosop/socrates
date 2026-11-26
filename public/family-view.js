@@ -92,7 +92,7 @@ export function renderFamilyPage({ app, session, lessons }) {
   if (session?.mode !== "account") {
     app.innerHTML =
       heading("APRENDER ACOMPAÑADO", "Mi familia", "Con una cuenta, tu apoderado puede ver tu avance y ayudarte si olvidas tu contraseña.") +
-      `<section class="card"><h3>Necesitas una cuenta</h3><p class="muted">Sal de la demo con el botón «Salir» y elige «Crear cuenta». Si tienes menos de 14 años, tu apoderado crea primero su cuenta y desde aquí crea la tuya.</p></section>`;
+      `<section class="card family-empty-card"><img class="empty-owl-img" src="buho-rama.webp" alt="" width="116" height="123" /><div><h3>Necesitas una cuenta</h3><p class="muted">Sal de la demo con el botón «Salir» y elige «Crear cuenta». Si tienes menos de 14 años, tu apoderado crea primero su cuenta y desde aquí crea la tuya.</p></div></section>`;
     return;
   }
 

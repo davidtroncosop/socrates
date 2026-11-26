@@ -769,7 +769,7 @@ function cachedCoach() {
 function coachCard() {
   const message = cachedCoach()?.message || localEncouragement(coachSummary());
   return `<section class="coach-card" aria-labelledby="coach-title">
-    <span class="coach-owl" aria-hidden="true">🦉</span>
+    <img class="coach-owl-img" src="buho-saluda.webp" alt="" width="78" height="96" />
     <div>
       <h2 id="coach-title" class="mini-label">EL BÚHO TE DICE</h2>
       <p id="coach-message">${escape(message)}</p>
@@ -1027,7 +1027,7 @@ function renderIntroLesson(fromExercise = false) {
         ${show("video") ? `
         ${
           l.video
-            ? `<section class="intro-video" aria-label="Video explicativo"><div class="lesson-hook" role="note"><span class="lesson-hook-owl" aria-hidden="true">🦉</span><p class="lesson-hook-text"><strong>${escape(hookFor(l, displayTitle(l)))}</strong> ${HOOK_PROMISE}</p>${speakButton("hook", "Escuchar")}</div>${videoFacade(l.video, l.id)}</section>`
+            ? `<section class="intro-video" aria-label="Video explicativo"><div class="lesson-hook" role="note"><img class="lesson-hook-owl" src="buho-duda.webp" alt="" width="76" height="69" /><p class="lesson-hook-text"><strong>${escape(hookFor(l, displayTitle(l)))}</strong> ${HOOK_PROMISE}</p>${speakButton("hook", "Escuchar")}</div>${videoFacade(l.video, l.id)}</section>`
             : ""
         }
 
@@ -1059,7 +1059,7 @@ function renderIntroLesson(fromExercise = false) {
         ` : ""}
         ${show("practice") ? `
         <div class="handwritten-reminder-box">
-          <span class="reminder-icon">✍️</span>
+          <img class="owl-inline-sm" src="buho-lee.webp" alt="" width="62" height="64" />
           <div>
             <strong>¡Ten listo tu cuaderno y lápiz!</strong>
             <p>Ten papel y lápiz a mano. ${isMath && WORK_PHOTO.required === "challenge" ? "En el desafío final te pediremos una foto de tu desarrollo; en los demás es opcional." : "Podrás tomar una foto de tu desarrollo para guardarla en tu cuaderno."}${s.generated ? " Esta vez son ejercicios nuevos, distintos de los que ya resolviste." : ""}</p>
@@ -1458,7 +1458,7 @@ function check(e) {
     // ver la solución y seguir (queda registrado como «con ayuda»).
     if (s.wrong >= 2 && s.mode !== "diagnostic")
       $("#next-area").innerHTML =
-        `<div class="stuck-help"><p>¿Te trabaste? No pasa nada: mira cómo se resuelve y seguimos. Lo volveremos a practicar.</p>${button("Ver cómo se resuelve y seguir", "reveal")}</div>`;
+        `<div class="stuck-help"><img class="owl-inline-sm" src="buho-duda.webp" alt="" width="64" height="58" /><div><p>¿Te trabaste? No pasa nada: mira cómo se resuelve y seguimos. Lo volveremos a practicar.</p>${button("Ver cómo se resuelve y seguir", "reveal")}</div></div>`;
     save();
     return;
   }
@@ -1686,6 +1686,7 @@ function finish() {
   const offerSheet = s.mode === "lesson" && getSubject(s.lesson) === "matematica";
   app.innerHTML = `
     <section class="card summary simple-summary">
+      <img class="summary-owl-img" src="buho-saluda.webp" alt="" width="102" height="126" />
       <h1>${heading}</h1>
       <p class="intro">${escape(s.mode === "diagnostic" ? desc : alone)}</p>
       ${s.mode === "diagnostic" ? "" : `<p class="muted">${escape(desc)}</p>`}
@@ -2042,6 +2043,7 @@ function finishSheet() {
   const streak = getStreakInfo(state).streak;
   app.innerHTML = `
     <section class="card summary simple-summary sheet-summary">
+      <img class="summary-owl-img" src="buho-saluda.webp" alt="" width="102" height="126" />
       <div class="eyebrow">${escape(s.sheet.level.label.toUpperCase())} · HOJA ${escape(s.sheet.code)} COMPLETADA</div>
       <h1>${escape(res.headline)}</h1>
       <p class="intro">${escape(res.message)}</p>
@@ -2172,7 +2174,7 @@ function reviews() {
             return `<section class="lesson"><span class="node">↺</span><div class="lesson-info"><h3>${escape(l.title)}</h3><p>Un ejercicio diferente · intenta resolverlo sin pistas</p></div>${button("Repasar →", "review:" + l.id, "primary")}</section>`;
           })
           .join("")
-      : `<section class="card empty"><div class="mini-icon">✓</div><h2>Por ahora, estás al día.</h2><p class="intro" style="margin:12px auto">Tus próximos repasos aparecerán aquí. Mientras tanto, puedes continuar tu ruta.</p>${button("Ir a mi ruta", "exit", "primary")}</section>`) +
+      : `<section class="card empty"><img class="empty-owl-img" src="buho-rama.webp" alt="" width="128" height="136" /><h2>Por ahora, estás al día.</h2><p class="intro" style="margin:12px auto">Tus próximos repasos aparecerán aquí. Mientras tanto, puedes continuar tu ruta.</p>${button("Ir a mi ruta", "exit", "primary")}</section>`) +
     future
       .map(
         (r) =>
@@ -2254,7 +2256,7 @@ function notebook() {
                 }</article>`,
             )
             .join("")
-        : '<div class="empty muted">Tu cuaderno está listo para tu primera idea o desarrollo a mano.</div>'
+        : '<div class="empty muted"><img class="empty-owl-img" src="buho-lee.webp" alt="" width="120" height="123" /><p>Tu cuaderno está listo para tu primera idea o desarrollo a mano.</p></div>'
     }</div>`;
 
   attachNewNotePhotoListener();
@@ -2320,7 +2322,7 @@ function task() {
       "Trae tu ejercicio.",
       "Practica una ecuación lineal y conecta lo aprendido con tu ruta.",
     ) +
-    `<section class="card"><div class="callout">Esta versión admite ecuaciones lineales de la forma ax + b = cx + d. Puedes resolver a mano en tu cuaderno y subir una foto de tu desarrollo.</div><form id="task-form"><label for="equation">Tu ecuación</label><input id="equation" placeholder="2x + 3 = 15" required maxlength="150"><p class="task-examples">También puedes probar: 4x + 2 = 2x + 18, o −3x + 6 = 12.</p><div id="task-photo-area" class="task-photo-option">${taskPhotoHtml()}</div><div class="actions" style="margin-top:16px;"><button class="primary" type="submit">Preparar mi práctica →</button></div></form><div id="task-result" class="task-result" aria-live="polite"></div></section>`;
+    `<section class="card"><div class="callout callout-owl"><img class="owl-inline-sm" src="buho-duda.webp" alt="" width="66" height="60" /><div>Esta versión admite ecuaciones lineales de la forma ax + b = cx + d. Puedes resolver a mano en tu cuaderno y subir una foto de tu desarrollo.</div></div><form id="task-form"><label for="equation">Tu ecuación</label><input id="equation" placeholder="2x + 3 = 15" required maxlength="150"><p class="task-examples">También puedes probar: 4x + 2 = 2x + 18, o −3x + 6 = 12.</p><div id="task-photo-area" class="task-photo-option">${taskPhotoHtml()}</div><div class="actions" style="margin-top:16px;"><button class="primary" type="submit">Preparar mi práctica →</button></div></form><div id="task-result" class="task-result" aria-live="polite"></div></section>`;
 
   attachTaskPhotoListener();
 

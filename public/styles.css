@@ -5552,6 +5552,78 @@ select:focus {
   color: var(--ink);
 }
 
+/* Ilustraciones del búho socatres (poses expresivas con transparencia) */
+.coach-owl-img,
+.lesson-hook-owl,
+.owl-inline-sm,
+.summary-owl-img,
+.empty-owl-img,
+.sidebar-owl {
+  display: block;
+  height: auto;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.coach-owl-img {
+  width: 78px;
+}
+
+.lesson-hook-owl {
+  width: 76px;
+}
+
+.owl-inline-sm {
+  width: 62px;
+}
+
+.summary-owl-img {
+  width: 102px;
+  margin: 0 auto 12px;
+}
+
+.empty-owl-img {
+  width: 120px;
+  margin: 0 auto 14px;
+}
+
+.sidebar-bottom {
+  position: relative;
+}
+
+.sidebar-owl {
+  width: 72px;
+  margin: 0 0 10px -2px;
+}
+
+.callout-owl {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stuck-help {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.stuck-help > div {
+  flex: 1 1 220px;
+}
+
+.family-empty-card {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.family-empty-card .empty-owl-img {
+  width: 112px;
+  margin: 0;
+}
+
 /* Diálogos coherentes con el modal de acceso de la landing */
 dialog {
   border: 0;
@@ -5574,6 +5646,14 @@ dialog::backdrop {
     border-bottom: 0;
     background: transparent;
     backdrop-filter: none;
+  }
+  .family-empty-card,
+  .callout-owl {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .coach-owl-img {
+    width: 64px;
   }
   nav {
     border-top-color: #e7edf6;

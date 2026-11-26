@@ -947,6 +947,13 @@ h3 {
   border-bottom: 1.5px solid currentColor;
 }
 
+.faq-owl {
+  display: block;
+  width: 176px;
+  height: auto;
+  margin-top: 28px;
+}
+
 /* 4. Planes en CLP — banda suave #f5f7fb + tarjetas limpias + banner Colegios/PIE índigo */
 .pricing-band {
   background: var(--surface-tint);
@@ -1919,6 +1926,10 @@ dialog .primary {
   }
   .faq {
     gap: 28px;
+  }
+  .faq-owl {
+    width: 136px;
+    margin-top: 20px;
   }
   .faq-list details p {
     padding-right: 0;
