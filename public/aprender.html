@@ -3,12 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#145ce6" />
+    <meta name="theme-color" content="#3572db" />
     <title>socatres · Tu espacio para aprender</title>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2" />
     <link rel="icon" href="favicon.ico?v=2" sizes="any" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fustat:wght@400;500;600;700;800&family=STIX+Two+Text:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+    />
     <link rel="stylesheet" href="styles.css" />
     <script type="module" src="session.js"></script>
   </head>
@@ -19,22 +25,40 @@
           ><span class="brand-icon"><img src="logo-buho.png" alt="" width="40" height="40" /></span
           ><span class="brand-name">socatres</span></a
         >
-        <div class="workspace-label">TU ESPACIO DE APRENDIZAJE</div>
+        <div class="workspace-label">Tu espacio de aprendizaje</div>
         <nav aria-label="Principal">
-          <a href="#ruta" data-nav="ruta"><i class="nav-icon" aria-hidden="true">◈</i> <span>Mi ruta</span></a
-          ><a href="#hoja" data-nav="hoja"><i class="nav-icon" aria-hidden="true">📄</i> <span>Hoja del día</span></a
+          <a href="#ruta" data-nav="ruta"
+            ><i class="nav-icon" aria-hidden="true"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></i
+            ><span>Mi ruta</span></a
+          ><a href="#hoja" data-nav="hoja"
+            ><i class="nav-icon" aria-hidden="true"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg></i
+            ><span>Hoja del día</span></a
           ><a href="#repaso" data-nav="repaso"
-            ><i class="nav-icon" aria-hidden="true">↺</i> <span>Mis repasos</span
-            ><span id="review-count" class="count">0</span></a
-          ><a href="#cuaderno" data-nav="cuaderno"><i class="nav-icon" aria-hidden="true">▤</i> <span>Mi cuaderno</span></a
+            ><i class="nav-icon" aria-hidden="true"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></i
+            ><span>Mis repasos</span><span id="review-count" class="count">0</span></a
+          ><a href="#cuaderno" data-nav="cuaderno"
+            ><i class="nav-icon" aria-hidden="true"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></i
+            ><span>Mi cuaderno</span></a
           ><a href="#tarea" data-nav="tarea"
-            ><i class="nav-icon" aria-hidden="true">＋</i> <span>Trae tu ejercicio</span></a
+            ><i class="nav-icon" aria-hidden="true"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg></i
+            ><span>Trae tu ejercicio</span></a
+          ><a href="#familia" data-nav="familia"
+            ><i class="nav-icon" aria-hidden="true"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></i
+            ><span>Mi familia</span></a
+          ><a href="#contenido" data-nav="contenido" hidden
+            ><i class="nav-icon" aria-hidden="true"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></i
+            ><span>Contenido</span></a
           >
-          <a href="#familia" data-nav="familia"><i class="nav-icon" aria-hidden="true">◎</i> <span>Mi familia</span></a>
-          <a href="#contenido" data-nav="contenido" hidden><i class="nav-icon" aria-hidden="true">▦</i> <span>Contenido</span></a>
         </nav>
         <div class="sidebar-bottom">
-          <div class="edition">PRIMERA EDICIÓN</div>
+          <div class="edition">socatres · Chile</div>
           <p>Pequeños pasos.<br />Grandes descubrimientos.</p>
           <span class="muted">Currículum Nacional · 3° Básico a 4° Medio</span>
         </div>
