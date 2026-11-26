@@ -137,7 +137,8 @@ test("media function serves R2 videos with byte ranges and immutable caching", a
       const suffix = rawRange.match(/bytes=-(\d+)/);
       if (suffix) {
         const s = Number(suffix[1]);
-        return { size: 10, httpEtag: '"v1"', range: { suffix: s }, body: bytes.slice(Math.max(0, 10 - s)) };
+        // Como R2 real: las claves que no aplican vienen en undefined.
+        return { size: 10, httpEtag: '"v1"', range: { offset: undefined, length: undefined, suffix: s }, body: bytes.slice(Math.max(0, 10 - s)) };
       }
       const m = rawRange.match(/bytes=(\d+)-(\d*)/);
       const offset = m ? Number(m[1]) : 0;
@@ -145,7 +146,7 @@ test("media function serves R2 videos with byte ranges and immutable caching", a
       return {
         size: 10,
         httpEtag: '"v1"',
-        range: m ? { offset, length: end - offset } : undefined,
+        range: m ? { offset, length: end - offset, suffix: undefined } : undefined,
         body: bytes.slice(offset, end),
       };
     },

@@ -33,7 +33,11 @@ export async function serveMedia(request, env, path) {
 
   const range = object.range;
   if (range && hasRange && object.size > 0) {
-    const suffix = "suffix" in range ? Math.min(range.suffix, object.size) : null;
+    // R2 deja en undefined las claves que no aplican ({ offset, length, suffix }):
+    // se mira el valor y no si la clave existe; con «"suffix" in range» salía
+    // «bytes NaN-NaN/…» y el navegador rechazaba el video.
+    const suffix =
+      !Number.isFinite(range.offset) && Number.isFinite(range.suffix) ? Math.min(range.suffix, object.size) : null;
     const offset = suffix !== null ? object.size - suffix : (range.offset ?? 0);
     const length = suffix !== null ? suffix : Math.min(range.length ?? object.size - offset, object.size - offset);
     headers.set("content-range", `bytes ${offset}-${offset + length - 1}/${object.size}`);
