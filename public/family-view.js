@@ -3,6 +3,7 @@ import { escape, heading } from "./ui.js";
 import { displayTitle } from "./learning.js";
 import { weeklySummary, compareText } from "./weekly.js";
 import { FICHAS_RULE_FAMILY } from "./stats.js";
+import { hydrateTelegramCard } from "./notify.js";
 
 const dateTime = (ms) =>
   ms
@@ -140,7 +141,9 @@ export function renderFamilyPage({ app, session, lessons }) {
         </section>
       </div>
       <div id="children" aria-busy="true"><p class="muted">Cargando…</p></div>
+      <div id="telegram-box"></div>
       <div id="rewards-box"></div>`;
+    hydrateTelegramCard(app.querySelector("#telegram-box"), session);
     app.querySelector("#child-form").onsubmit = guard(async (e) => {
       const data = Object.fromEntries(new FormData(e.target));
       const { child } = await api.createChild(data);

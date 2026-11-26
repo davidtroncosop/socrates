@@ -13,8 +13,13 @@ migrations_dir = "migrations"
 #   npx wrangler pages secret put ADMIN_EMAILS --project-name=socatres
 # OPENROUTER_API_KEY (revisión con IA de la foto del desarrollo) también es secreto:
 #   npx wrangler pages secret put OPENROUTER_API_KEY --project-name=socatres
+# Telegram (avisos diarios, resumen semanal y premios):
+#   npx wrangler pages secret put TELEGRAM_BOT_TOKEN --project-name=socatres
+#   npx wrangler pages secret put TELEGRAM_WEBHOOK_SECRET --project-name=socatres
+#   (y define TELEGRAM_BOT_USERNAME en [vars] o como variable en Cloudflare Pages)
 [vars]
 VAPID_PUBLIC_KEY = "BJVGOCH1jLyYA55HxteAGsg5TLhBF_bXoEdOKs7JMtrLgUeq_DL7MYbY0o9NIeTIJVPdLB6IwgemJglO142CkKo"
+APP_URL = "https://socatres.pages.dev"
 
 # Videos de las lecciones (los genera y sube video/, ver video/README.md).
 [[r2_buckets]]

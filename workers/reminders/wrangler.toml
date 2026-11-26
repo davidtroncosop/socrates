@@ -1,5 +1,7 @@
-# Worker que envía el recordatorio diario (Pages no ejecuta tareas programadas).
-# Secreto necesario: npx wrangler secret put VAPID_PRIVATE_KEY -c workers/reminders/wrangler.toml
+# Worker que envía recordatorios diarios y resúmenes semanales (Pages no ejecuta cron).
+# Secretos necesarios:
+#   npx wrangler secret put VAPID_PRIVATE_KEY -c workers/reminders/wrangler.toml
+#   npx wrangler secret put TELEGRAM_BOT_TOKEN -c workers/reminders/wrangler.toml
 name = "socatres-reminders"
 main = "index.js"
 compatibility_date = "2026-11-01"

@@ -10,6 +10,14 @@ import { validateCatalog } from "../../public/content.js";
 import { earnedFichas } from "../../public/stats.js";
 import { isPushEndpoint } from "./push.js";
 import { reminderText, isTimeZone } from "./reminders.js";
+import {
+  getTelegramStatus,
+  createTelegramLinkCode,
+  updateTelegramSettings,
+  unlinkTelegram,
+  handleTelegramWebhook,
+  notifyParentRewardClaim,
+} from "./telegram.js";
 import { readReviewRequest, reviewWork, ReviewError, MAX_IMAGE } from "./work-review.js";
 import { readReflectionRequest, reflect, readEncouragementRequest, encourage } from "./coach.js";
 
@@ -299,6 +307,7 @@ const LIMITS = {
   reflection: [30, 60 * 60_000],
   encouragement: [4, 24 * 60 * 60_000],
   coachAll: [5000, 24 * 60 * 60_000],
+  telegramLink: [15, 15 * 60_000],
 };
 const clientIp = (request) => request.headers.get("cf-connecting-ip") || "local";
 async function limit(env, kind, who, message = "Demasiados intentos. Espera unos minutos y vuelve a probar.", waitUntil) {
@@ -586,7 +595,7 @@ const routes = {
     return json({ ok: true });
   },
 
-  async "POST /api/rewards/:id/claim"({ env, user, params }) {
+  async "POST /api/rewards/:id/claim"({ env, user, params, waitUntil }) {
     requireRole(user, "student", "Solo el estudiante puede pedir un premio.");
     const reward = await env.DB.prepare(
       `SELECT r.* FROM family_rewards r JOIN family_links f ON f.parent_id = r.parent_id
@@ -611,6 +620,10 @@ const routes = {
     )
       .bind(claim.id, user.id, reward.parent_id, reward.id, reward.title, reward.cost, claim.createdAt)
       .run();
+    await runBackground(
+      waitUntil,
+      notifyParentRewardClaim(env, reward.parent_id, user.name, reward.title, reward.cost),
+    );
     return json({ claim, fichas: await fichasOf(env, user.id) }, 201);
   },
 
@@ -661,6 +674,37 @@ const routes = {
   async "GET /api/reminder"({ env, user }) {
     const row = await env.DB.prepare("SELECT state FROM progress WHERE user_id = ?").bind(user.id).first();
     return json(reminderText(row ? JSON.parse(row.state) : null));
+  },
+
+  // Telegram (recordatorios diarios, resumen semanal y premios) ------------------
+  async "GET /api/telegram"({ env, user }) {
+    return json(await getTelegramStatus(env, user));
+  },
+
+  async "POST /api/telegram/link"({ request, env, user, waitUntil }) {
+    await limit(env, "telegramLink", user.id, undefined, waitUntil);
+    const body = await readJson(request);
+    const res = await createTelegramLinkCode(env, user, body);
+    if (res.error) fail(res.status, res.error);
+    return json(res, 201);
+  },
+
+  async "PUT /api/telegram"({ request, env, user }) {
+    const body = await readJson(request);
+    const res = await updateTelegramSettings(env, user, body);
+    if (res.error) fail(res.status, res.error);
+    return json(res);
+  },
+
+  async "DELETE /api/telegram"({ env, user }) {
+    await unlinkTelegram(env, user.id);
+    return json({ ok: true });
+  },
+
+  async "POST /api/telegram/webhook"({ request, env }) {
+    const body = await readJson(request);
+    const res = await handleTelegramWebhook(request, env, body);
+    return json(res.body, res.status);
   },
 
   // Medición anónima ----------------------------------------------------------------
@@ -776,6 +820,7 @@ const PUBLIC = new Set([
   "POST /api/auth/logout",
   "GET /api/catalog",
   "GET /api/push/key",
+  "POST /api/telegram/webhook",
 ]);
 
 const COMPILED_ROUTES = Object.keys(routes).map((key) => {
