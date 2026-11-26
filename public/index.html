@@ -3,25 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#145ce6" />
+    <meta name="theme-color" content="#3572db" />
     <meta
       name="description"
       content="socatres combina comprensión visual (125 videos y minijuegos) con hojas diarias estilo Kumon al 100 %, en papel y con búho tutor IA. 14 días gratis sin tarjeta."
     />
     <title>socatres · Entiende la matemática y domínala en 10 min al día</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
-    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2" />
+    <link rel="icon" href="favicon.ico?v=2" sizes="any" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fustat:wght@400;500;600;700;800&family=STIX+Two+Text:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+    />
     <link rel="stylesheet" href="landing.css" />
     <script type="module" src="landing.js"></script>
   </head>
   <body>
     <a class="skip" href="#principal">Saltar al contenido</a>
+
     <header class="nav wrap">
       <a class="logo" href="./" aria-label="socatres, inicio"
-        ><span class="logo-mark"><img src="logo-buho.png" alt="" width="40" height="40" /></span>socatres
-        <span class="beta">CHILE</span></a
+        ><span class="logo-mark"
+          ><img src="logo-buho.png" alt="" width="40" height="40" /></span
+        >socatres <span class="beta">Chile</span></a
       >
       <nav aria-label="Principal">
         <a href="#por-que">Por qué socatres</a
@@ -31,15 +39,17 @@
       </nav>
       <button class="nav-login" data-login>Entrar ↗</button>
     </header>
+
     <main id="principal">
+      <!-- HERO: aireado, blanco limpio, titular en índigo + azul editorial, hoja Kumon con rayitas coral -->
       <section class="hero wrap">
         <div class="hero-copy">
-          <p class="eyebrow">
-            <span class="status-dot"></span> 3° BÁSICO A 4° MEDIO · 10 MINUTOS AL DÍA
+          <p class="hero-scope">
+            <span class="status-dot" aria-hidden="true"></span>
+            3° Básico a 4° Medio · 10 minutos al día
           </p>
           <h1>
-            Entiende primero.<br />Domina<br /><em>de verdad.</em
-            ><span class="spark" aria-hidden="true">✳</span>
+            Entiende primero.<br /><span>Domina de verdad.</span>
           </h1>
           <p class="lead">
             socatres es una app tutora de matemáticas basada en el método Kumon,
@@ -49,12 +59,12 @@
           <div class="cost-box">
             <div class="cost-now">
               <span>Empezar cuesta</span>
-              <strong>$0</strong>
+              <strong class="tabular">$0</strong>
               <small>14 días gratis sin tarjeta</small>
             </div>
             <div class="cost-later">
               <span>Si decides seguir</span>
-              <strong>Desde $9.990/mes</strong>
+              <strong class="tabular">Desde $9.990/mes</strong>
               <small>Precio fundador · Sin matrícula · Cancelas cuando quieras</small>
             </div>
           </div>
@@ -62,283 +72,601 @@
             <button class="primary" data-signup>
               Empezar 14 días gratis <span aria-hidden="true">↗</span>
             </button>
-            <a class="secondary-link" href="#planes">Ver planes</a>
+            <a class="pill-outline" href="#planes">Ver planes</a>
           </div>
         </div>
+
         <div
-          class="hero-board"
+          class="hero-visual"
           aria-label="Ejemplo de hoja estilo Kumon y revisión del búho tutor"
         >
-          <div class="board-top">
-            <span>NIVEL D · HOJA D1-01 · 8 EJERCICIOS</span><span>100 % CORREGIDA</span>
-          </div>
-          <div class="exercise-paper">
-            <div class="paper-label">
-              <span class="mini-icon">🦉</span> Búho tutor · Desarrollo en papel
-              <span class="lesson-tag">Paso 1 / 4</span>
+          <svg
+            class="doodle doodle-hero-top"
+            width="54"
+            height="42"
+            viewBox="0 0 54 42"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path d="M9 34C7.5 25 5 18 3 13" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+            <path d="M25 32C26.5 21 28 11 29 3" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+            <path d="M40 36C44 30 48 25 51 22" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+          </svg>
+          <div class="hero-board">
+            <div class="board-top">
+              <span class="tabular">Nivel D · Hoja D1-01 · 8 ejercicios</span>
+              <span class="tabular board-pill">100 % corregida</span>
             </div>
-            <p class="exercise-question">
-              Resuelve en tu hoja y sube una foto.<br />Si hay un desvío, el búho te guía.
-            </p>
-            <div class="equation">2x + 5 = 19</div>
-            <div class="hint">
-              <span aria-hidden="true">🦉</span>
-              <div>
-                <strong>Sobre tu foto del cuaderno:</strong>
-                <p>En el segundo paso sumaste 5. Resta 5 a ambos lados para mantener la balanza.</p>
+            <div class="exercise-paper">
+              <div class="paper-label">
+                <img
+                  class="mini-owl"
+                  src="logo-buho.png"
+                  alt=""
+                  width="26"
+                  height="26"
+                />
+                <span>Búho tutor · Desarrollo en papel</span>
+                <span class="lesson-tag tabular">Paso 1 / 4</span>
+              </div>
+              <p class="exercise-question">
+                Resuelve en tu hoja y sube una foto.<br />Si hay un desvío, el
+                búho te guía.
+              </p>
+              <div class="equation">2<var>x</var> + 5 = 19</div>
+              <div class="hint">
+                <img
+                  class="hint-owl"
+                  src="logo-buho.png"
+                  alt=""
+                  width="34"
+                  height="34"
+                />
+                <div>
+                  <strong>Sobre tu foto del cuaderno:</strong>
+                  <p>
+                    En el segundo paso sumaste 5. Resta 5 a ambos lados para
+                    mantener la balanza.
+                  </p>
+                </div>
+              </div>
+              <div class="working">
+                <span>2<var>x</var> = 14</span>
+                <span class="working-arrow" aria-hidden="true">→</span>
+                <strong><var>x</var> = 7 <span class="check">✓</span></strong>
+              </div>
+              <div class="paper-bottom">
+                <span>Sin cronómetro estresante · Imprimible</span
+                ><span class="progress-dots" aria-hidden="true">● ● ● ●</span>
               </div>
             </div>
-            <div class="working">
-              2x = 14 <span>→</span>
-              <strong>x = 7 <span class="check">✓</span></strong>
+            <div class="board-note">
+              ↳ &nbsp; Primero el porqué (video + minijuego). Después la fluidez
+              al 100 %.
             </div>
-            <div class="paper-bottom">
-              <span>Sin cronómetro estresante · Imprimible</span
-              ><span class="progress-dots">● ● ● ●</span>
+            <div class="sticker">
+              10 min al día.<br /><strong>Al 100 %.</strong>
             </div>
-          </div>
-          <div class="board-note">
-            ↳ &nbsp; Primero el porqué (video + minijuego). Después la fluidez al 100 %.
-          </div>
-          <div class="sticker">
-            10 min al día.<br /><strong>Al 100 %.</strong>
           </div>
         </div>
       </section>
+
+      <!-- FRANJA CURRÍCULUM -->
       <div class="subject-strip">
         <div class="wrap">
-          <span>TODO EL CURRÍCULUM MINEDUC</span>
-          <span>125 lecciones <b>A–O</b></span>
-          <span>125 minijuegos <b>✦</b></span>
-          <span>Hojas de 8 <b>100 %</b></span>
-          <span>Imprimible en papel <b>✎</b></span>
+          <span class="strip-label">Todo el currículum MINEDUC</span>
+          <span class="tabular">125 lecciones <b class="accent-blue">A–O</b></span>
+          <span class="tabular">125 minijuegos <b class="accent-coral">✦</b></span>
+          <span class="tabular">Hojas de 8 <b class="accent-indigo">100 %</b></span>
+          <span>Imprimible en papel <b class="accent-gold">✎</b></span>
         </div>
       </div>
+
+      <!-- 1. CÓMO FUNCIONA: split editorial 50/50 con foto cálida + rayitas coral + 3 medallones ilustrados -->
+      <section class="method-band" id="por-que">
+        <div class="method-shell">
+          <div class="method-media">
+            <div class="media-stage">
+              <svg
+                class="doodle doodle-top"
+                width="62"
+                height="46"
+                viewBox="0 0 62 46"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M12 40C10 30 7 22 4 15" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M31 38C33 25 35 13 36 4" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M46 41C51 35 55 29 59 25" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+              </svg>
+              <figure class="editorial-photo">
+                <img
+                  src="foto-estudio.webp"
+                  alt="Dos estudiantes resolviendo ejercicios de matemática con lápiz en un cuaderno cuadriculado junto a una tablet sobre una mesa de madera"
+                  width="1040"
+                  height="777"
+                  loading="lazy"
+                />
+              </figure>
+              <svg
+                class="doodle doodle-bottom"
+                width="64"
+                height="50"
+                viewBox="0 0 64 50"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M18 6C13 10 8 14 4 19" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M34 10C30 22 26 34 22 45" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M48 11C52 17 56 23 60 28" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="method-content">
+            <p class="section-context">¿Por qué socatres?</p>
+            <h2 class="display-blue">
+              Entender primero,<br />practicar después.
+            </h2>
+            <p class="method-intro">
+              Diseñado especialmente para estudiantes con rezago o dificultades
+              de aprendizaje. Así funciona cada tema.
+            </p>
+
+            <div class="pillar-list">
+              <article class="pillar-item">
+                <span class="medallion" aria-hidden="true">
+                  <svg width="58" height="58" viewBox="0 0 58 58" fill="none">
+                    <circle cx="29" cy="29" r="29" fill="#f26c3d" />
+                    <path d="M11 29C15.5 21.5 21.8 18 29 18C36.2 18 42.5 21.5 47 29C42.5 36.5 36.2 40 29 40C21.8 40 15.5 36.5 11 29Z" fill="#fff7ec" />
+                    <circle cx="29" cy="29" r="7.5" fill="#252354" />
+                    <polygon points="27,25.5 33,29 27,32.5" fill="#f6c445" />
+                    <path d="M29 10V13.5M19 13L21 15.8M39 13L37 15.8" stroke="#fff7ec" stroke-width="2.2" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <div>
+                  <h3>Un video y un minijuego para captar la idea.</h3>
+                  <p>
+                    Cada tema abre con un video animado y un minijuego sin
+                    puntaje. Con la idea clara, vienen hojas cortas de 8
+                    ejercicios estilo Kumon hasta dejarlas al 100 %.
+                  </p>
+                </div>
+              </article>
+
+              <article class="pillar-item">
+                <span class="medallion" aria-hidden="true">
+                  <svg width="58" height="58" viewBox="0 0 58 58" fill="none">
+                    <circle cx="29" cy="29" r="29" fill="#f6c445" />
+                    <path d="M29 45V20" stroke="#252354" stroke-width="3.2" stroke-linecap="round" />
+                    <path d="M29 37C21 37 16 32.5 16 25C23.5 25 29 29.5 29 37Z" fill="#4a86e8" />
+                    <path d="M29 37C37 37 42 32.5 42 25C34.5 25 29 29.5 29 37Z" fill="#252354" />
+                    <path d="M29 24C24.5 20.5 24.5 14.5 29 11C33.5 14.5 33.5 20.5 29 24Z" fill="#f26c3d" />
+                  </svg>
+                </span>
+                <div>
+                  <h3>Lápiz, papel y un tutor que revisa el desarrollo.</h3>
+                  <p>
+                    El estudiante resuelve en su cuaderno y sube una foto. El
+                    búho tutor revisa cada paso, señala dónde se desvió y lo
+                    guía con una pista para que llegue solo al resultado.
+                  </p>
+                </div>
+              </article>
+
+              <article class="pillar-item">
+                <span class="medallion" aria-hidden="true">
+                  <svg width="58" height="58" viewBox="0 0 58 58" fill="none">
+                    <circle cx="29" cy="29" r="29" fill="#252354" />
+                    <path d="M38.5 19.5L32.8 32.8L19.5 38.5L25.2 25.2L38.5 19.5Z" fill="#f6c445" />
+                    <circle cx="29" cy="29" r="3.4" fill="#252354" />
+                    <circle cx="17.5" cy="18.5" r="2" fill="#4a86e8" />
+                    <circle cx="41.5" cy="39" r="2" fill="#f26c3d" />
+                  </svg>
+                </span>
+                <div>
+                  <h3>Hecho para quien va atrasado.</h3>
+                  <p>
+                    Un diagnóstico breve lo ubica en Niveles neutros (A–O),
+                    según lo que ya domina y sin etiquetas de curso. Sesiones de
+                    10 minutos, sin cronómetro visible y por menos de lo que
+                    cuesta una clase particular al mes.
+                  </p>
+                </div>
+              </article>
+            </div>
+
+            <div class="method-cta">
+              <button class="pill-outline" data-signup>
+                Empezar 14 días gratis ↗
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. SOPORTE Y ECOSISTEMA: flujo invertido con foto familiar luminosa -->
+      <section class="support wrap" id="soporte">
+        <div class="support-split">
+          <div class="support-copy">
+            <p class="section-context">¿Y si se queda atascado?</p>
+            <h2 class="display-blue">
+              Nunca queda solo<br />frente al ejercicio.
+            </h2>
+
+            <h3 class="sub-eyebrow">Cuando se traba</h3>
+            <ul class="support-list">
+              <li>
+                <span class="mini-medallion med-coral" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+                </span>
+                <div>
+                  <strong>Pistas escalonadas.</strong> Explican el porqué paso a
+                  paso, y pedir una no se cuenta como error.
+                </div>
+              </li>
+              <li>
+                <span class="mini-medallion med-gold" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </span>
+                <div>
+                  <strong>Mis repasos.</strong> Lo que falló vuelve en los días
+                  siguientes hasta que salga solo.
+                </div>
+              </li>
+              <li>
+                <span class="mini-medallion med-blue" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                </span>
+                <div>
+                  <strong>El video siempre a mano.</strong> Puede volver a ver
+                  la explicación del tema y su minijuego cuando lo necesite.
+                </div>
+              </li>
+              <li>
+                <span class="mini-medallion med-indigo" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                </span>
+                <div>
+                  <strong>Lectura en voz alta.</strong> Enunciados y símbolos
+                  matemáticos leídos con palabras.
+                </div>
+              </li>
+              <li>
+                <span class="mini-medallion med-coral" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                </span>
+                <div>
+                  <strong>Una persona al otro lado.</strong> Si algo no
+                  funciona, nos escribes y te responde quien hace socatres.
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="support-visual">
+            <div class="family-stage">
+              <svg
+                class="doodle doodle-family"
+                width="54"
+                height="42"
+                viewBox="0 0 54 42"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M9 34C7.5 25 5 18 3 13" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M25 32C26.5 21 28 11 29 3" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M40 36C44 30 48 25 51 22" stroke="#e67247" stroke-width="2.4" stroke-linecap="round" />
+              </svg>
+              <figure class="editorial-photo">
+                <img
+                  src="foto-familia.webp"
+                  alt="Madre acompañando con calma a su hijo mientras resuelve geometría en un cuaderno de papel junto a una tablet en casa"
+                  width="1040"
+                  height="777"
+                  loading="lazy"
+                />
+              </figure>
+            </div>
+          </div>
+        </div>
+
+        <div class="eco-band">
+          <h3 class="sub-eyebrow eco-eyebrow">Para cada necesidad</h3>
+          <div class="eco-grid">
+            <article>
+              <div class="eco-head">
+                <span class="eco-dot dot-coral" aria-hidden="true"></span>
+                <strong>Familias</strong>
+              </div>
+              <p>
+                Resumen semanal claro, premios en casa por constancia y hasta
+                3 hijos con rutas propias.
+              </p>
+            </article>
+            <article>
+              <div class="eco-head">
+                <span class="eco-dot dot-blue" aria-hidden="true"></span>
+                <strong>Celular y sin conexión</strong>
+              </div>
+              <p>
+                Se instala como app, funciona sin internet y avisa a la hora
+                que elijan.
+              </p>
+            </article>
+            <article>
+              <div class="eco-head">
+                <span class="eco-dot dot-gold" aria-hidden="true"></span>
+                <strong>Imprimible</strong>
+              </div>
+              <p>
+                Cada hoja se imprime para resolver en papel, lejos de la
+                pantalla.
+              </p>
+            </article>
+            <article>
+              <div class="eco-head">
+                <span class="eco-dot dot-indigo" aria-hidden="true"></span>
+                <strong>Trae tu ejercicio</strong>
+              </div>
+              <p>
+                Practica una ecuación lineal del colegio con la misma revisión
+                del búho.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. CONFIANZA: abierto y aireado con 4 medallones circulares (incluye búho real) -->
       <section class="trust wrap" id="confianza">
         <div class="section-heading">
-          <p class="eyebrow">¿ES CONFIABLE?</p>
-          <h2>Reglas claras,<br /><em>sin letra chica.</em></h2>
+          <p class="section-context">¿Es confiable?</p>
+          <h2 class="display-blue">Reglas claras,<br />sin letra chica.</h2>
           <p>
             Antes de entregarle la matemática de tu hijo a una app, conviene
             saber qué enseña, qué datos guarda y cuánto te va a cobrar.
           </p>
+          <p class="trust-note">
+            Lee cómo tratamos los datos en nuestra
+            <a href="/privacidad">política de privacidad</a>.
+          </p>
         </div>
+
         <div class="trust-grid">
           <article>
-            <span class="trust-icon" aria-hidden="true">📚</span>
-            <h3>Alineado al currículum MINEDUC.</h3>
-            <p>
-              125 lecciones basadas en los objetivos de aprendizaje del
-              currículum nacional, de 3° Básico a 4° Medio.
-            </p>
-          </article>
-          <article>
-            <span class="trust-icon" aria-hidden="true">🔒</span>
-            <h3>Privacidad pensada para menores.</h3>
-            <p>
-              Cuentas bajo 14 años creadas por el apoderado y sin correo. Las
-              fotos del cuaderno no se guardan en el servidor. Cero publicidad.
-              Conforme a la Ley 21.719.
-            </p>
-          </article>
-          <article>
-            <span class="trust-icon" aria-hidden="true">💳</span>
-            <h3>Sin tarjeta, sin cobros sorpresa.</h3>
-            <p>
-              No pedimos tarjeta para la prueba, así que nunca hay un cobro
-              automático. Puedes borrar tu cuenta y todos tus datos cuando quieras.
-            </p>
-          </article>
-          <article>
-            <span class="trust-icon" aria-hidden="true">🦉</span>
-            <h3>Un tutor que no hace la tarea.</h3>
-            <p>
-              El búho comenta el primer paso con error y da pistas, pero nunca
-              entrega la respuesta. Lo que se aprende, lo resuelve el estudiante.
-            </p>
-          </article>
-        </div>
-        <p class="trust-note">
-          Lee cómo tratamos los datos en nuestra
-          <a href="/privacidad">política de privacidad</a>.
-        </p>
-      </section>
-      <section class="method wrap" id="por-que">
-        <div class="section-heading">
-          <p class="eyebrow">¿POR QUÉ SOCATRES?</p>
-          <h2>Entender primero,<br /><em>practicar después.</em></h2>
-          <p>
-            Diseñado especialmente para estudiantes con rezago o dificultades de
-            aprendizaje. Así funciona cada tema.
-          </p>
-        </div>
-        <div class="steps">
-          <article>
-            <span class="step-number">01</span>
-            <h3>Un video y un minijuego para captar la idea.</h3>
-            <p>
-              Cada tema abre con un video animado y un minijuego sin puntaje.
-              Con la idea clara, vienen hojas cortas de 8 ejercicios estilo
-              Kumon hasta dejarlas al 100 %.
-            </p>
-          </article>
-          <article>
-            <span class="step-number">02</span>
-            <h3>Lápiz, papel y un tutor que revisa el desarrollo.</h3>
-            <p>
-              El estudiante resuelve en su cuaderno y sube una foto. El búho tutor
-              revisa cada paso, señala dónde se desvió y lo guía con una pista
-              para que llegue solo al resultado.
-            </p>
-          </article>
-          <article>
-            <span class="step-number">03</span>
-            <h3>Hecho para quien va atrasado.</h3>
-            <p>
-              Un diagnóstico breve lo ubica en Niveles neutros (A–O), según lo que
-              ya domina y sin etiquetas de curso. Sesiones de 10 minutos, sin
-              cronómetro visible y por menos de lo que cuesta una clase
-              particular al mes.
-            </p>
-          </article>
-        </div>
-      </section>
-      <section class="support wrap" id="soporte">
-        <div class="support-head">
-          <p class="eyebrow">¿Y SI SE QUEDA ATASCADO?</p>
-          <h2>Nunca queda solo<br /><em>frente al ejercicio.</em></h2>
-        </div>
-        <div class="support-grid">
-          <div class="support-col">
-            <h3>Cuando se traba</h3>
-            <ul class="support-list">
-              <li>
-                <span aria-hidden="true">💡</span>
-                <div><strong>Pistas escalonadas.</strong> Explican el porqué paso a paso, y pedir una no se cuenta como error.</div>
-              </li>
-              <li>
-                <span aria-hidden="true">↺</span>
-                <div><strong>Mis repasos.</strong> Lo que falló vuelve en los días siguientes hasta que salga solo.</div>
-              </li>
-              <li>
-                <span aria-hidden="true">🎬</span>
-                <div><strong>El video siempre a mano.</strong> Puede volver a ver la explicación del tema y su minijuego cuando lo necesite.</div>
-              </li>
-              <li>
-                <span aria-hidden="true">🔊</span>
-                <div><strong>Lectura en voz alta.</strong> Enunciados y símbolos matemáticos leídos con palabras.</div>
-              </li>
-              <li>
-                <span aria-hidden="true">✉️</span>
-                <div><strong>Una persona al otro lado.</strong> Si algo no funciona, nos escribes y te responde quien hace socatres.</div>
-              </li>
-            </ul>
-          </div>
-          <div class="support-col">
-            <h3>Para cada necesidad</h3>
-            <div class="eco-grid">
-              <article>
-                <strong>👨‍👩‍👧 Familias</strong>
-                <p>Resumen semanal claro, premios en casa por constancia y hasta 3 hijos con rutas propias.</p>
-              </article>
-              <article>
-                <strong>📱 Celular y sin conexión</strong>
-                <p>Se instala como app, funciona sin internet y avisa a la hora que elijan.</p>
-              </article>
-              <article>
-                <strong>🖨️ Imprimible</strong>
-                <p>Cada hoja se imprime para resolver en papel, lejos de la pantalla.</p>
-              </article>
-              <article>
-                <strong>📒 Trae tu ejercicio</strong>
-                <p>Practica una ecuación lineal del colegio con la misma revisión del búho.</p>
-              </article>
-            </div>
-          </div>
-        </div>
-        <div class="school-strip">
-          <div>
-            <strong>🏫 ¿Colegio, sostenedor o equipo PIE?</strong>
-            <p>
-              Licencias anuales desde <strong>$1.500/alumno al mes</strong> (financiable vía SEP/PIE), con panel anónimo de dónde se traban los estudiantes.
-            </p>
-          </div>
-          <a class="school-link" href="mailto:davidtroncosop@gmail.com?subject=socatres%20para%20colegios%20o%20PIE">
-            Conversemos por correo →
-          </a>
-        </div>
-      </section>
-      <section class="pricing wrap" id="planes">
-        <div class="pricing-head">
-          <p class="eyebrow">PLANES CLAROS EN CHILE · IVA INCLUIDO</p>
-          <h2>Lo que cuesta una clase particular.<br /><em>Todo el mes.</em></h2>
-          <p>
-            Empieza con <strong>14 días gratis sin tarjeta</strong>. Comprueba en
-            casa que el hábito funciona y recién ahí eliges tu plan.
-          </p>
-        </div>
-        <div class="pricing-grid">
-          <article class="plan-card plan-featured">
-            <div class="plan-top">
-              <span class="plan-badge">PRECIO FUNDADOR · PRIMERAS 50 FAMILIAS</span>
-              <h3>Plan Estudiante</h3>
-              <p class="plan-desc">1 estudiante + acceso completo para su apoderado.</p>
-              <div class="plan-price">
-                <strong>$9.990</strong><span>/ mes</span>
-              </div>
-              <p class="plan-anchor">
-                <s>$12.990/mes</s> · Precio congelado · o <strong>$99.900/año</strong>
+            <span class="trust-medallion" aria-hidden="true">
+              <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+                <circle cx="23" cy="23" r="23" fill="#4a86e8" />
+                <path d="M13 16.5C16.5 15.2 20 15.5 23 17.5C26 15.5 29.5 15.2 33 16.5V30.5C29.5 29.2 26 29.5 23 31.5C20 29.5 16.5 29.2 13 30.5V16.5Z" fill="#ffffff" />
+                <path d="M23 17.5V31.5" stroke="#252354" stroke-width="2" />
+              </svg>
+            </span>
+            <div>
+              <h3>Alineado al currículum MINEDUC.</h3>
+              <p>
+                125 lecciones basadas en los objetivos de aprendizaje del
+                currículum nacional, de 3° Básico a 4° Medio.
               </p>
             </div>
-            <ul class="plan-features">
-              <li><span>✓</span> <div><strong>14 días gratis sin tarjeta</strong> para probar todo</div></li>
-              <li><span>✓</span> 125 lecciones (Niveles A–O), videos animados y 125 minijuegos</li>
-              <li><span>✓</span> Hojas diarias estilo Kumon (8 ejercicios, 100 % autocorrección e imprimibles)</li>
-              <li><span>✓</span> Búho tutor IA: revisión de fotos a mano, resúmenes y preguntas</li>
-              <li><span>✓</span> Resumen semanal para apoderados, premios en casa y modo offline</li>
-            </ul>
-            <div class="plan-foot">
-              <button class="primary" data-signup>
-                Empezar 14 días gratis <span aria-hidden="true">↗</span>
-              </button>
-              <p class="plan-fine">Sin matrícula · Cancela cuando quieras</p>
-            </div>
           </article>
-          <article class="plan-card">
-            <div class="plan-top">
-              <span class="plan-badge plan-badge-soft">HASTA 3 HIJOS</span>
-              <h3>Plan Familia</h3>
-              <p class="plan-desc">Hasta 3 estudiantes con rutas independientes y un solo pago.</p>
-              <div class="plan-price">
-                <strong>$18.990</strong><span>/ mes</span>
-              </div>
-              <p class="plan-anchor">
-                Desde $6.330 por hijo · o <strong>$149.900/año</strong>
+
+          <article>
+            <span class="trust-medallion" aria-hidden="true">
+              <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+                <circle cx="23" cy="23" r="23" fill="#f26c3d" />
+                <rect x="15" y="21" width="16" height="12" rx="3" fill="#fff7ec" />
+                <path d="M18.5 21V17.5C18.5 15 20.5 13 23 13C25.5 13 27.5 15 27.5 17.5V21" stroke="#252354" stroke-width="2.6" stroke-linecap="round" />
+                <circle cx="23" cy="27" r="2" fill="#252354" />
+              </svg>
+            </span>
+            <div>
+              <h3>Privacidad pensada para menores.</h3>
+              <p>
+                Cuentas bajo 14 años creadas por el apoderado y sin correo. Las
+                fotos del cuaderno no se guardan en el servidor. Cero
+                publicidad. Conforme a la Ley 21.719.
               </p>
             </div>
-            <ul class="plan-features">
-              <li><span>✓</span> <div><strong>14 días gratis sin tarjeta</strong> para toda la familia</div></li>
-              <li><span>✓</span> Todo lo del Plan Estudiante para hasta 3 hijos</li>
-              <li><span>✓</span> Cuentas de menores de 14 años sin correo (consentimiento parental)</li>
-              <li><span>✓</span> Resumen semanal individual y premios en casa compartidos</li>
-              <li><span>✓</span> Progreso sincronizado en celulares, tablets y computadores</li>
-            </ul>
-            <div class="plan-foot">
-              <button class="plan-secondary" data-signup>
-                Probar Plan Familia gratis <span aria-hidden="true">↗</span>
-              </button>
-              <p class="plan-fine">Sin matrícula · Pago en pesos chilenos (IVA incluido)</p>
+          </article>
+
+          <article>
+            <span class="trust-medallion" aria-hidden="true">
+              <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+                <circle cx="23" cy="23" r="23" fill="#f6c445" />
+                <rect x="13" y="16" width="20" height="14" rx="3" fill="#252354" />
+                <rect x="13" y="20" width="20" height="3" fill="#4a86e8" />
+                <circle cx="30" cy="29" r="5" fill="#ffffff" />
+                <path d="M27.8 29L29.3 30.5L32.5 27.3" stroke="#252354" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <div>
+              <h3>Sin tarjeta, sin cobros sorpresa.</h3>
+              <p>
+                No pedimos tarjeta para la prueba, así que nunca hay un cobro
+                automático. Puedes borrar tu cuenta y todos tus datos cuando
+                quieras.
+              </p>
+            </div>
+          </article>
+
+          <article>
+            <span class="trust-medallion trust-medallion-owl">
+              <img
+                class="trust-owl"
+                src="logo-buho.png"
+                alt=""
+                width="46"
+                height="46"
+              />
+            </span>
+            <div>
+              <h3>Un tutor que no hace la tarea.</h3>
+              <p>
+                El búho comenta el primer paso con error y da pistas, pero nunca
+                entrega la respuesta. Lo que se aprende, lo resuelve el
+                estudiante.
+              </p>
             </div>
           </article>
         </div>
       </section>
+
+      <!-- 4. PLANES EN CLP + BLOQUE COLEGIOS/PIE -->
+      <section class="pricing-band" id="planes">
+        <div class="wrap">
+          <div class="pricing-head">
+            <p class="section-context">Planes claros en Chile · IVA incluido</p>
+            <h2 class="display-blue">
+              Lo que cuesta una clase particular.<br />Todo el mes.
+            </h2>
+            <p>
+              Empieza con <strong>14 días gratis sin tarjeta</strong>. Comprueba
+              en casa que el hábito funciona y recién ahí eliges tu plan.
+            </p>
+          </div>
+
+          <div class="pricing-grid">
+            <article class="plan-card plan-featured">
+              <div class="plan-top">
+                <span class="plan-badge">Precio fundador · Primeras 50 familias</span>
+                <h3>Plan Estudiante</h3>
+                <p class="plan-desc">
+                  1 estudiante + acceso completo para su apoderado.
+                </p>
+                <div class="plan-price">
+                  <strong class="tabular">$9.990</strong><span>/ mes</span>
+                </div>
+                <p class="plan-anchor tabular">
+                  <s>$12.990/mes</s> · Precio congelado · o
+                  <strong>$99.900/año</strong>
+                </p>
+              </div>
+              <ul class="plan-features">
+                <li>
+                  <span aria-hidden="true">✓</span>
+                  <div>
+                    <strong>14 días gratis sin tarjeta</strong> para probar todo
+                  </div>
+                </li>
+                <li>
+                  <span aria-hidden="true">✓</span> 125 lecciones (Niveles A–O),
+                  videos animados y 125 minijuegos
+                </li>
+                <li>
+                  <span aria-hidden="true">✓</span> Hojas diarias estilo Kumon (8
+                  ejercicios, 100 % autocorrección e imprimibles)
+                </li>
+                <li>
+                  <span aria-hidden="true">✓</span> Búho tutor IA: revisión de
+                  fotos a mano, resúmenes y preguntas
+                </li>
+                <li>
+                  <span aria-hidden="true">✓</span> Resumen semanal para
+                  apoderados, premios en casa y modo offline
+                </li>
+              </ul>
+              <div class="plan-foot">
+                <button class="primary" data-signup>
+                  Empezar 14 días gratis <span aria-hidden="true">↗</span>
+                </button>
+                <p class="plan-fine">Sin matrícula · Cancela cuando quieras</p>
+              </div>
+            </article>
+
+            <article class="plan-card">
+              <div class="plan-top">
+                <span class="plan-badge plan-badge-soft">Hasta 3 hijos</span>
+                <h3>Plan Familia</h3>
+                <p class="plan-desc">
+                  Hasta 3 estudiantes con rutas independientes y un solo pago.
+                </p>
+                <div class="plan-price">
+                  <strong class="tabular">$18.990</strong><span>/ mes</span>
+                </div>
+                <p class="plan-anchor tabular">
+                  Desde $6.330 por hijo · o <strong>$149.900/año</strong>
+                </p>
+              </div>
+              <ul class="plan-features">
+                <li>
+                  <span aria-hidden="true">✓</span>
+                  <div>
+                    <strong>14 días gratis sin tarjeta</strong> para toda la
+                    familia
+                  </div>
+                </li>
+                <li>
+                  <span aria-hidden="true">✓</span> Todo lo del Plan Estudiante
+                  para hasta 3 hijos
+                </li>
+                <li>
+                  <span aria-hidden="true">✓</span> Cuentas de menores de 14 años
+                  sin correo (consentimiento parental)
+                </li>
+                <li>
+                  <span aria-hidden="true">✓</span> Resumen semanal individual y
+                  premios en casa compartidos
+                </li>
+                <li>
+                  <span aria-hidden="true">✓</span> Progreso sincronizado en
+                  celulares, tablets y computadores
+                </li>
+              </ul>
+              <div class="plan-foot">
+                <button class="plan-secondary" data-signup>
+                  Probar Plan Familia gratis <span aria-hidden="true">↗</span>
+                </button>
+                <p class="plan-fine">
+                  Sin matrícula · Pago en pesos chilenos (IVA incluido)
+                </p>
+              </div>
+            </article>
+          </div>
+
+          <div class="school-strip">
+            <div class="school-left">
+              <span class="school-medallion" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <circle cx="24" cy="24" r="24" fill="#f6c445" />
+                  <path d="M14 33V21L24 15L34 21V33" fill="#252354" />
+                  <rect x="21" y="26" width="6" height="7" fill="#f26c3d" />
+                  <circle cx="24" cy="21" r="2" fill="#ffffff" />
+                </svg>
+              </span>
+              <div>
+                <div class="school-head">
+                  <strong>¿Colegio, sostenedor o equipo PIE?</strong>
+                </div>
+                <p>
+                  Licencias anuales desde
+                  <strong class="school-price tabular">$1.500/alumno al mes</strong>
+                  (financiable vía SEP/PIE), con panel anónimo de dónde se traban
+                  los estudiantes.
+                </p>
+              </div>
+            </div>
+            <a
+              class="school-link"
+              href="mailto:davidtroncosop@gmail.com?subject=socatres%20para%20colegios%20o%20PIE"
+            >
+              Conversemos por correo →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. PREGUNTAS FRECUENTES -->
       <section class="faq wrap" id="preguntas">
         <div class="section-heading">
-          <p class="eyebrow">PREGUNTAS FRECUENTES</p>
-          <h2>Lo que más nos<br /><em>preguntan.</em></h2>
+          <p class="section-context">Preguntas frecuentes</p>
+          <h2 class="display-blue">Lo que más nos<br />preguntan.</h2>
           <p>
             ¿No está tu duda? Escríbenos a
-            <a href="mailto:davidtroncosop@gmail.com?subject=Pregunta%20sobre%20socatres">davidtroncosop@gmail.com</a>.
+            <a
+              href="mailto:davidtroncosop@gmail.com?subject=Pregunta%20sobre%20socatres"
+              >davidtroncosop@gmail.com</a
+            >.
           </p>
         </div>
         <div class="faq-list">
@@ -346,8 +674,8 @@
             <summary>¿Para qué cursos sirve?</summary>
             <p>
               De 3° Básico a 4° Medio. El diagnóstico inicial ubica a cada
-              estudiante en Niveles neutros (A–O) según lo que ya domina, no según
-              su curso, para que parta desde un punto cómodo.
+              estudiante en Niveles neutros (A–O) según lo que ya domina, no
+              según su curso, para que parta desde un punto cómodo.
             </p>
           </details>
           <details>
@@ -381,36 +709,47 @@
             </p>
           </details>
           <details>
-            <summary>¿Sirve si mi hijo va muy atrasado o tiene dificultades de aprendizaje?</summary>
+            <summary>
+              ¿Sirve si mi hijo va muy atrasado o tiene dificultades de
+              aprendizaje?
+            </summary>
             <p>
-              Está pensado justamente para eso: parte un peldaño antes del primer
-              tropiezo, sin reloj visible, con sesiones de 10 minutos, lectura en
-              voz alta y pistas que no penalizan.
+              Está pensado justamente para eso: parte un peldaño antes del
+              primer tropiezo, sin reloj visible, con sesiones de 10 minutos,
+              lectura en voz alta y pistas que no penalizan.
             </p>
           </details>
           <details>
             <summary>¿Funciona en celular y sin internet?</summary>
             <p>
               Sí. Funciona en celular, tablet y computador, se puede instalar
-              como app y sigue funcionando sin conexión. El progreso se sincroniza
-              cuando vuelve internet.
+              como app y sigue funcionando sin conexión. El progreso se
+              sincroniza cuando vuelve internet.
             </p>
           </details>
           <details>
             <summary>¿Sirve para colegios o equipos PIE?</summary>
             <p>
               Sí. Hay licencias anuales desde $1.500 por alumno al mes,
-              financiables vía SEP/PIE, con un panel anónimo de dónde se traban los
-              estudiantes. Escríbenos y lo conversamos.
+              financiables vía SEP/PIE, con un panel anónimo de dónde se traban
+              los estudiantes. Escríbenos y lo conversamos.
             </p>
           </details>
         </div>
       </section>
+
+      <!-- 6. CIERRE CON CAPTURA DE CORREO -->
       <section class="closing wrap">
-        <span class="closing-star" aria-hidden="true">✳</span>
+        <span class="closing-mark" aria-hidden="true">
+          <svg width="62" height="62" viewBox="0 0 62 62" fill="none">
+            <circle cx="31" cy="31" r="31" fill="#f26c3d" />
+            <path d="M31 15V47M15 31H47M19.7 19.7L42.3 42.3M42.3 19.7L19.7 42.3" stroke="#fff7ec" stroke-width="3.6" stroke-linecap="round" />
+            <circle cx="31" cy="31" r="6" fill="#f6c445" />
+          </svg>
+        </span>
         <div class="closing-copy">
-          <p class="eyebrow">14 DÍAS GRATIS · SIN TARJETA · SIN COMPROMISO</p>
           <h2>Tu ritmo.<br />Nuestro método.</h2>
+          <p class="closing-meta">14 días gratis · Sin tarjeta · Sin compromiso</p>
         </div>
         <form class="closing-form" id="closing-form" novalidate>
           <label for="closing-email">Correo electrónico</label>
@@ -431,66 +770,161 @@
         </form>
       </section>
     </main>
+
     <footer class="wrap">
-      <a class="logo" href="./"><span class="logo-mark"><img src="logo-buho.png" alt="" width="40" height="40" /></span>socatres</a
+      <a class="logo" href="./"
+        ><span class="logo-mark"
+          ><img src="logo-buho.png" alt="" width="40" height="40" /></span
+        >socatres</a
       ><span>Comprensión y fluidez matemática, paso a paso.</span
       ><span>Hecho en Chile · <a href="/privacidad">Privacidad</a></span>
     </footer>
+
     <dialog
       id="login-dialog"
       aria-labelledby="login-title"
       aria-describedby="login-description"
     >
       <button id="close-login" class="close" aria-label="Cerrar">×</button
-      ><span class="logo-mark"><img src="logo-buho.png" alt="" width="40" height="40" /></span>
-      <p class="eyebrow">14 DÍAS GRATIS SIN TARJETA</p>
+      ><span class="logo-mark"
+        ><img src="logo-buho.png" alt="" width="40" height="40"
+      /></span>
       <h2 id="login-title">Empieza con<br />un pequeño paso.</h2>
+      <p class="dialog-sub">14 días gratis sin tarjeta</p>
       <p id="login-description">
         Crea tu cuenta para guardar tu avance en cualquier dispositivo y activar
         el búho tutor, o prueba la demo sin registrarte.
       </p>
       <div class="auth-tabs" role="tablist" aria-label="Forma de acceso">
-        <button role="tab" id="tab-login" aria-controls="panel-login" aria-selected="true" data-tab="login">Entrar</button
-        ><button role="tab" id="tab-register" aria-controls="panel-register" aria-selected="false" data-tab="register" tabindex="-1">Crear cuenta</button
-        ><button role="tab" id="tab-demo" aria-controls="panel-demo" aria-selected="false" data-tab="demo" tabindex="-1">Probar demo</button>
+        <button
+          role="tab"
+          id="tab-login"
+          aria-controls="panel-login"
+          aria-selected="true"
+          data-tab="login"
+        >
+          Entrar</button
+        ><button
+          role="tab"
+          id="tab-register"
+          aria-controls="panel-register"
+          aria-selected="false"
+          data-tab="register"
+          tabindex="-1"
+        >
+          Crear cuenta</button
+        ><button
+          role="tab"
+          id="tab-demo"
+          aria-controls="panel-demo"
+          aria-selected="false"
+          data-tab="demo"
+          tabindex="-1"
+        >
+          Probar demo
+        </button>
       </div>
-      <form id="panel-login" role="tabpanel" aria-labelledby="tab-login" class="auth-form">
+      <form
+        id="panel-login"
+        role="tabpanel"
+        aria-labelledby="tab-login"
+        class="auth-form"
+      >
         <label for="login-user">Correo o usuario</label>
-        <input id="login-user" name="login" autocomplete="username" autocapitalize="none" required />
+        <input
+          id="login-user"
+          name="login"
+          autocomplete="username"
+          autocapitalize="none"
+          required
+        />
         <label for="login-password">Contraseña</label>
-        <input id="login-password" name="password" type="password" autocomplete="current-password" required />
-        <button class="primary" type="submit">Entrar <span aria-hidden="true">↗</span></button>
-        <button type="button" class="link-button" data-show="panel-recover">¿Olvidaste tu contraseña?</button>
+        <input
+          id="login-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+        <button class="primary" type="submit">
+          Entrar <span aria-hidden="true">↗</span>
+        </button>
+        <button type="button" class="link-button" data-show="panel-recover">
+          ¿Olvidaste tu contraseña?
+        </button>
       </form>
-      <form id="panel-register" role="tabpanel" aria-labelledby="tab-register" class="auth-form" hidden>
+      <form
+        id="panel-register"
+        role="tabpanel"
+        aria-labelledby="tab-register"
+        class="auth-form"
+        hidden
+      >
         <fieldset class="role-choice">
           <legend>Soy</legend>
-          <label><input type="radio" name="role" value="student" checked /> Estudiante</label>
-          <label><input type="radio" name="role" value="parent" /> Apoderado/a</label>
+          <label
+            ><input type="radio" name="role" value="student" checked />
+            Estudiante</label
+          >
+          <label
+            ><input type="radio" name="role" value="parent" />
+            Apoderado/a</label
+          >
         </fieldset>
-        <label class="check-row" id="age-row"><input type="checkbox" name="age14" id="register-age14" /> Tengo 14 años o más</label>
+        <label class="check-row" id="age-row"
+          ><input type="checkbox" name="age14" id="register-age14" /> Tengo 14
+          años o más</label
+        >
         <p class="auth-note" id="under14-note">
-          ¿Tienes menos de 14 años? Pide a tu apoderado que cree su cuenta
-          aquí: desde «Mi familia» creará la tuya.
+          ¿Tienes menos de 14 años? Pide a tu apoderado que cree su cuenta aquí:
+          desde «Mi familia» creará la tuya.
         </p>
         <label for="register-name">Nombre</label>
-        <input id="register-name" name="name" autocomplete="name" maxlength="60" required />
+        <input
+          id="register-name"
+          name="name"
+          autocomplete="name"
+          maxlength="60"
+          required
+        />
         <label for="register-email">Correo</label>
-        <input id="register-email" name="email" type="email" autocomplete="email" required />
+        <input
+          id="register-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+        />
         <label for="register-password">Contraseña (mínimo 8 caracteres)</label>
-        <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" required />
+        <input
+          id="register-password"
+          name="password"
+          type="password"
+          autocomplete="new-password"
+          minlength="8"
+          required
+        />
         <p class="auth-disclaimer">
           Guardamos tu nombre, correo y progreso; tus fotos quedan en tu
-          dispositivo. Si sacas una foto de tu desarrollo, una IA la mira
-          para comentar tus pasos y no se guarda. Puedes borrar tu cuenta cuando quieras desde «Mis datos». <a href="/privacidad" target="_blank" rel="noopener">Política de privacidad</a>.
+          dispositivo. Si sacas una foto de tu desarrollo, una IA la mira para
+          comentar tus pasos y no se guarda. Puedes borrar tu cuenta cuando
+          quieras desde «Mis datos».
+          <a href="/privacidad" target="_blank" rel="noopener"
+            >Política de privacidad</a
+          >.
         </p>
-        <button class="primary" type="submit">Crear mi cuenta gratis <span aria-hidden="true">↗</span></button>
+        <button class="primary" type="submit">
+          Crear mi cuenta gratis <span aria-hidden="true">↗</span>
+        </button>
       </form>
       <div id="panel-demo" role="tabpanel" aria-labelledby="tab-demo" hidden>
-        <div class="demo-badge">DEMO · Sin registro</div>
+        <div class="demo-badge">Demo · Sin registro</div>
         <button class="demo-account" id="demo-login" data-role="student">
           <span class="account-avatar">E</span>
-          <span><strong>Estudiante demo</strong><small>Practica la ruta y hojas de fluidez</small></span>
+          <span
+            ><strong>Estudiante demo</strong
+            ><small>Practica la ruta y hojas de fluidez</small></span
+          >
           <span aria-hidden="true">↗</span>
         </button>
         <p class="auth-disclaimer">
@@ -498,21 +932,52 @@
           navegador.
         </p>
       </div>
-      <form id="panel-recover" class="auth-form" hidden aria-labelledby="recover-title">
+      <form
+        id="panel-recover"
+        class="auth-form"
+        hidden
+        aria-labelledby="recover-title"
+      >
         <h3 id="recover-title">Recuperar tu contraseña</h3>
         <p class="auth-note">
-          Usa el código de recuperación que guardaste al crear tu cuenta. Si
-          tu apoderado creó tu cuenta, pídele que cambie tu contraseña desde
-          «Mi familia».
+          Usa el código de recuperación que guardaste al crear tu cuenta. Si tu
+          apoderado creó tu cuenta, pídele que cambie tu contraseña desde «Mi
+          familia».
         </p>
         <label for="recover-user">Correo o usuario</label>
-        <input id="recover-user" name="login" autocomplete="username" autocapitalize="none" required />
+        <input
+          id="recover-user"
+          name="login"
+          autocomplete="username"
+          autocapitalize="none"
+          required
+        />
         <label for="recover-code">Código de recuperación</label>
-        <input id="recover-code" name="code" autocomplete="off" autocapitalize="characters" placeholder="XXXX-XXXX-XXXX" required />
-        <label for="recover-password">Nueva contraseña (mínimo 8 caracteres)</label>
-        <input id="recover-password" name="password" type="password" autocomplete="new-password" minlength="8" required />
-        <button class="primary" type="submit">Cambiar contraseña <span aria-hidden="true">↗</span></button>
-        <button type="button" class="link-button" data-show="panel-login">Volver a entrar</button>
+        <input
+          id="recover-code"
+          name="code"
+          autocomplete="off"
+          autocapitalize="characters"
+          placeholder="XXXX-XXXX-XXXX"
+          required
+        />
+        <label for="recover-password"
+          >Nueva contraseña (mínimo 8 caracteres)</label
+        >
+        <input
+          id="recover-password"
+          name="password"
+          type="password"
+          autocomplete="new-password"
+          minlength="8"
+          required
+        />
+        <button class="primary" type="submit">
+          Cambiar contraseña <span aria-hidden="true">↗</span>
+        </button>
+        <button type="button" class="link-button" data-show="panel-login">
+          Volver a entrar
+        </button>
       </form>
       <div id="panel-code" hidden>
         <h3>Guarda tu código de recuperación</h3>
@@ -525,8 +990,12 @@
           <button type="button" id="copy-code">Copiar</button>
           <button type="button" id="download-code">Descargar</button>
         </div>
-        <label class="check-row"><input type="checkbox" id="code-saved" /> Ya lo guardé</label>
-        <button class="primary" id="code-continue" disabled>Continuar <span aria-hidden="true">↗</span></button>
+        <label class="check-row"
+          ><input type="checkbox" id="code-saved" /> Ya lo guardé</label
+        >
+        <button class="primary" id="code-continue" disabled>
+          Continuar <span aria-hidden="true">↗</span>
+        </button>
       </div>
       <p id="login-error" role="alert"></p>
       <button class="cancel" id="cancel-login">Volver a explorar</button>

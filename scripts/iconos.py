@@ -62,13 +62,9 @@ compose(192, 0.86).save(f"{out}/icon-192.png", optimize=True)
 compose(512, 0.66).save(f"{out}/icon-maskable-512.png", optimize=True)
 # iOS redondea las esquinas por su cuenta.
 compose(180, 0.84).save(f"{out}/apple-touch-icon.png", optimize=True)
-# En la pestaña del navegador solo se lee bien la cara.
-compose(32, 0.94, FACE).save(f"{out}/favicon-32x32.png", optimize=True)
-compose(64, 0.94, FACE).save(f"{out}/favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
-# Logo junto al nombre (barra de la app y portada): la cara, sin fondo,
-# a 4× para pantallas de alta densidad (se muestra a ~40 px).
-# Va dentro de un círculo crema: tapa los bordes del recorte y combina con
-# los cafés del búho.
+# Logo junto al nombre (barra de la app y portada) y favicons circulares:
+# la cara del búho dentro de un círculo crema con fondo transparente alrededor,
+# a 4× para pantallas de alta densidad.
 S = 640
 face = owl.crop((int(owl.width * 0.22), 0, owl.width, int(owl.height * 0.62)))
 scale = S * 0.98 / face.width
@@ -77,9 +73,20 @@ badge = Image.new("RGBA", (S, S), (255, 241, 222, 255))
 badge.alpha_composite(face, ((S - face.width) // 2, round(S * 0.07)))
 from PIL import ImageDraw
 circle = Image.new("L", (S, S), 0)
-ImageDraw.Draw(circle).ellipse((0, 0, S - 1, S - 1), fill=255)
+ImageDraw.Draw(circle).ellipse((4, 4, S - 5, S - 5), fill=255)
 badge.putalpha(circle)
 badge.resize((160, 160), Image.LANCZOS).save(f"{out}/logo-buho.png", optimize=True)
+# En la pestaña del navegador: círculo limpio con fondo transparente y borde suave
+# para que se distinga claramente como circulito tanto en pestañas claras como oscuras.
+fav = badge.copy()
+ImageDraw.Draw(fav).ellipse((4, 4, S - 5, S - 5), outline=(210, 165, 114, 255), width=22)
+fav.putalpha(circle)
+fav.resize((32, 32), Image.LANCZOS).save(f"{out}/favicon-32x32.png", optimize=True)
+fav.resize((64, 64), Image.LANCZOS).save(
+    f"{out}/favicon.ico",
+    format="ICO",
+    sizes=[(16, 16), (32, 32), (48, 48)],
+)
 # Insignia de las notificaciones: Android solo usa la silueta (canal alfa).
 # Los ojos se recortan como huecos: sin ellos la silueta es una mancha.
 alpha = owl.getchannel("A")
