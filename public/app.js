@@ -2,7 +2,7 @@ import { curriculumLessons } from "./curriculum.js";
 const independentLessons = new Set(curriculumLessons.map((l) => l.id));
 import {
   lessons as defaultLessons,
-  isCorrect,
+  answersQuestion,
   parseNumber,
   solveLinear,
   freshState,
@@ -26,7 +26,7 @@ import { renderFamilyPage } from "./family-view.js";
 import { hydrateReminderCard } from "./notify.js";
 import { readCatalog, seedCatalog, writeCatalog, withNewCurriculum } from "./content.js";
 import { createAdmin } from "./admin.js";
-import { generateQuestions } from "./generators.js";
+import { freshQuestions, generateQuestions } from "./generators.js";
 import { videoFacade, videoPlayer, withLessonVideos } from "./video.js";
 import { ACTIVE_SUBJECTS } from "./subjects.js";
 import { WORK_PHOTO } from "./work-photo.js";
@@ -905,7 +905,9 @@ function start(id, mode = "lesson") {
   else if (mode === "review")
     questions =
       getSubject(l) === "lenguaje" ? [l.review, l.questions[3]] : [l.review];
-  questions = prepare(questions);
+  // Nada de ejercicios que la idea clave o el ejemplo ya resolvieron, ni
+  // repetidos en la misma sesión.
+  questions = prepare(freshQuestions(l, questions, mode === "review" ? [3, 3] : [0, 1, 2, 3]));
   session = {
     canConfirm:
       mode === "review" &&
@@ -1424,7 +1426,7 @@ function check(e) {
     s.photoBlocked = true;
     return;
   }
-  const correct = isCorrect(raw, q[1]),
+  const correct = answersQuestion(raw, q),
     lesson = lessonAt(s).id;
   state.attempts.push({ lesson, correct, hints: s.hints, at: Date.now() });
   track(lesson, metricStep(s), correct ? "correct" : "wrong");

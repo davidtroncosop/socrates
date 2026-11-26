@@ -275,3 +275,12 @@ test("answers may end with degrees or units", () => {
   assert.ok(isCorrect("4,5 litros", 4.5));
   assert.ok(!isCorrect("40°", 4));
 });
+
+test("si se pide redondear a 2 decimales, también vale el valor exacto", async () => {
+  const { answersQuestion } = await import("../public/learning.js");
+  const q = ["(1 + 1/4)⁴", 2.44, "¿En cuánto se convierte $1? Redondea a 2 decimales.", "", ""];
+  assert.ok(answersQuestion("2,44", q));
+  assert.ok(answersQuestion("2,4414", q));
+  assert.ok(!answersQuestion("2,45", q));
+  assert.ok(!answersQuestion("2,4414", [q[0], 2.44, "Calcula.", "", ""]), "sin la instrucción se exige el valor pedido");
+});

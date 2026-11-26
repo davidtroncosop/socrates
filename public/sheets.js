@@ -6,7 +6,7 @@
 // 4) Niveles neutros (Nivel A, B, C…) sin estigma de curso escolar y punto de
 //    partida cómodo (un peldaño antes del primer tropiezo).
 // 5) Compatible con impresión en papel (@media print) y revisión de foto.
-import { isCorrect, parseNumber, getSubject } from "./learning.js";
+import { answersQuestion, parseNumber, getSubject } from "./learning.js";
 import { generateQuestions, hasGenerator } from "./generators.js";
 import { diagnoseMistake } from "./mistakes.js";
 import { UNIT_DEFINITIONS, routeOrder } from "./units.js";
@@ -126,7 +126,7 @@ export function gradeSheetRound(sheet, answers, items) {
       continue;
     }
     const q = sheet.questions[i];
-    const ok = isCorrect(raw, q[1]);
+    const ok = answersQuestion(raw, q);
     const isFirstTry = item.attempts === 0;
     item.attempts++;
     newlyChecked.push({ index: i, correct: ok, hints: item.hints });

@@ -188,13 +188,13 @@ function combinadas(rng, level) {
     x = nonZero(rng, -5, 10);
   const d = a * (x + b) - c * x;
   const left = `${a}(x ${plus(b)})`;
-  const right = c ? `${coef(c)} ${plus(d)}` : num(d);
+  const right = c ? linear(c, d) : num(d);
   return [
     `${left} = ${right}`,
     x,
     "Distribuye el paréntesis, reduce y despeja x.",
     `Distribuye: ${linear(a, a * b)} = ${right}.`,
-    `${coef(a - c)} = ${num(d - a * b)}; x = ${num(x)}.`,
+    a - c === 1 ? `x = ${num(x)}.` : `${coef(a - c)} = ${num(d - a * b)}; x = ${num(x)}.`,
   ];
 }
 
@@ -1067,7 +1067,7 @@ function fraccionesMixtos(rng, level) {
   if (level === 2)
     return [`${whole} ${frac(r, d)} = ?/${d}`, top, `Escribe ${whole} ${frac(r, d)} como fracción impropia. ¿Cuántas partes de 1/${d} son?`, `Cada entero tiene ${d} partes.`,
       `${whole} · ${d} = ${whole * d}; ${whole * d} + ${r} = ${top}: ${frac(top, d)}.`,
-      [[whole + r, `Sumaste ${whole} + ${r}. Cada entero tiene ${d} partes: ${whole} · ${d} + ${r}.`], [whole * d, `Te faltó sumar las ${r} partes que sobran.`]]];
+      [[whole + r, `Sumaste ${whole} + ${r}. Cada entero tiene ${d} partes: ${whole} · ${d} + ${r}.`], [whole * d, r === 1 ? "Te faltó sumar la parte que sobra." : `Te faltó sumar las ${r} partes que sobran.`]]];
   const n = 2 * int(rng, 2, 7) + 1;
   return [`${n} mitades de naranja`, n / 2, `Tienes ${n} mitades de naranja. ¿Cuántas naranjas son? Puedes responder con decimal o fracción.`, "Con 2 mitades se arma 1 naranja.",
     `${n} ÷ 2 = ${(n - 1) / 2} y sobra 1 mitad: ${dec(n / 2)} naranjas.`, [[(n - 1) / 2, "Te faltó la mitad que sobra."], [n, "Esas son las mitades. Con 2 se arma una naranja."]]];
@@ -1254,7 +1254,7 @@ function inecuaciones(rng, level) {
 const POLY = { 5: "pentágono", 6: "hexágono", 8: "octágono", 10: "decágono", 12: "dodecágono" };
 
 function angulosPoligonos(rng, level) {
-  const n = pick(rng, level === 0 ? [5, 6] : [5, 6, 8, 10, 12]);
+  const n = pick(rng, level === 0 ? [5, 6, 8, 10] : [5, 6, 8, 10, 12]);
   const sum = (n - 2) * 180;
   if (level <= 1)
     return [`Suma de ángulos de un ${POLY[n]}`, sum, `¿Cuánto suman los ángulos interiores de un ${POLY[n]} (${n} lados)?`, `🔺 Desde una esquina se forman ${n} − 2 = ${n - 2} triángulos.`,
@@ -1362,12 +1362,14 @@ function proporcionInversa(rng, level) {
     (a, t, b) => [`${a} amigos, ${t} trozos; ${b} amigos`, `${a} amigos se reparten una pizza y cada uno recibe ${t} trozos. Si fueran ${b} amigos, ¿cuántos trozos recibiría cada uno?`, "trozos"],
     (a, t, b) => [`${a} llaves, ${t} horas; ${b} llaves`, `${a} llaves llenan un estanque en ${t} horas. ¿Cuántas horas tardan ${b} llaves?`, "horas"],
   ];
-  // La pizza tiene 12 trozos; lo demás, un total múltiplo de las dos cantidades.
-  const [a, b] = level === 1 ? shuffle(rng, [2, 3, 4, 6]).slice(0, 2) : (() => {
+  // La pizza tiene 18, 20 o 24 trozos (la de 12 es la del ejemplo); lo demás,
+  // un total múltiplo de las dos cantidades.
+  const pizza = pick(rng, [[18, [2, 3, 6, 9]], [20, [2, 4, 5, 10]], [24, [2, 3, 4, 6, 8]]]);
+  const [a, b] = level === 1 ? shuffle(rng, pizza[1]).slice(0, 2) : (() => {
     const first = int(rng, 2, 6);
     return [first, level === 0 ? 2 * first : pick(rng, [2, 3, 4, 6, 8, 12].filter((v) => v !== first))];
   })();
-  const total = level === 1 ? 12 : a * b * int(rng, 1, 3);
+  const total = level === 1 ? pizza[0] : a * b * int(rng, 1, 3);
   const t = total / a;
   const [expr, prompt, unit] = contexts[level % 3](a, t, b);
   return [expr, total / b, prompt, `🔄 El total se mantiene: ${a} · ${t} = ${total}.`, `${a} · ${t} = ${total}; ${total} ÷ ${b} = ${total / b} ${unit}.`,
@@ -1516,9 +1518,10 @@ function racionalesOperatoria(rng, level) {
       `${txt} = ${d * 4}/4; ${txt} + ${frac(a, k)} = ${dec(d + a / k)}.`, []];
   }
   if (level === 1) {
-    const [a, b] = [int(rng, 2, 5), int(rng, 2, 5)];
+    const a = int(rng, 2, 5), b = pick(rng, [2, 3, 4, 5, 6].filter((v) => v !== a));
+    const g = gcd(b + 2, 2 * b);
     return [`1/2 + 1/${a} · ${a}/${b}`, 0.5 + 1 / b, "Calcula respetando el orden de las operaciones.", `Primero la multiplicación: 1/${a} · ${a}/${b}.`,
-      `1/${a} · ${a}/${b} = 1/${b}; 1/2 + 1/${b}.`, [[(0.5 + 1 / a) * (a / b), "Sumaste antes de multiplicar."]]];
+      `1/${a} · ${a}/${b} = ${a}/${a * b} = 1/${b}; 1/2 + 1/${b} = ${b}/${2 * b} + 2/${2 * b} = ${frac((b + 2) / g, (2 * b) / g)}.`, [[(0.5 + 1 / a) * (a / b), "Sumaste antes de multiplicar."]]];
   }
   if (level === 2) {
     const [b, k] = [int(rng, 2, 4), int(rng, 1, 4)];
@@ -1529,7 +1532,7 @@ function racionalesOperatoria(rng, level) {
   const [num_, den] = pick(rng, [[3, 4], [1, 4], [1, 2], [2, 5], [3, 5]]);
   const tenths = den * int(rng, 1, 6);
   return [`${num_}/${den} de ${dec(tenths / 10)}`, cents((num_ * tenths) / den / 10), `Una botella tiene ${dec(tenths / 10)} litros y tomas ${num_}/${den}. ¿Cuántos litros tomaste?`,
-    `«de» es multiplicar: ${num_}/${den} · ${dec(tenths / 10)}.`, `${dec(tenths / 10)} ÷ ${den} = ${dec(tenths / den / 10)}; · ${num_} = ${dec(cents((num_ * tenths) / den / 10))} litros.`,
+    `«de» es multiplicar: ${num_}/${den} · ${dec(tenths / 10)}.`, num_ === 1 ? `${dec(tenths / 10)} ÷ ${den} = ${dec(cents((num_ * tenths) / den / 10))} litros.` : `${dec(tenths / 10)} ÷ ${den} = ${dec(tenths / den / 10)}; · ${num_} = ${dec(cents((num_ * tenths) / den / 10))} litros.`,
     [[cents(tenths / den / 10), `Ese es 1/${den}.`]]];
 }
 
@@ -1577,7 +1580,7 @@ function funcionDosVariables(rng, level) {
 const SECTOR = { 60: ["un sexto", 6], 90: ["un cuarto", 4], 120: ["un tercio", 3], 180: ["la mitad", 2] };
 
 function sectoresCirculares(rng, level) {
-  const angle = pick(rng, level === 0 ? [90] : [60, 90, 120, 180]);
+  const angle = pick(rng, level === 0 ? [90, 180] : [60, 90, 120, 180]);
   const [name, parts] = SECTOR[angle];
   if (level === 1)
     return [`¿Qué parte del círculo es ${angle}°?`, angle / 360, `¿Qué fracción del círculo es un sector de ${angle}°? Responde como fracción.`, "Un círculo completo tiene 360°.",
@@ -1707,8 +1710,11 @@ function galton(rng, level) {
     return [`Galton: ${n} filas, extremo ${side}`, 1 / 2 ** n, `Con ${n} filas, ¿cuál es la probabilidad de llegar al extremo ${side}? Responde como fracción.`,
       `Hay que ir siempre a la ${side === "izquierdo" ? "izquierda" : "derecha"}: 1 camino.`, `1 camino de ${2 ** n}: 1/${2 ** n}.`, [[1 / n, `Hay ${2 ** n} caminos, no ${n}.`]]];
   }
-  return ["Galton: 2 filas, centro", 0.5, "Con 2 filas, ¿cuál es la probabilidad de caer en el centro?", "Caminos: II, ID, DI, DD. ¿Cuántos llegan al centro?",
-    "ID y DI: 2 de 4 = 1/2.", [[0.25, "Al centro llegan 2 caminos (ID y DI)."]]];
+  const rows = pick(rng, [2, 4]);
+  const center = fact(rows) / (fact(rows / 2) * fact(rows / 2));
+  return [`Galton: ${rows} filas, centro`, center / 2 ** rows, `Con ${rows} filas, ¿cuál es la probabilidad de caer en el centro? Responde como fracción.`,
+    rows === 2 ? "Caminos: II, ID, DI, DD. ¿Cuántos llegan al centro?" : "Al centro llegan los caminos con 2 izquierdas y 2 derechas. ¿Cuántos son?",
+    rows === 2 ? "ID y DI: 2 de 4 = 1/2." : "IIDD, IDID, IDDI, DIID, DIDI, DDII: 6 de 16 = 3/8.", [[1 / 2 ** rows, `Al centro llegan ${center} caminos, no 1.`]]];
 }
 
 // Lote 7: 2° Medio.
@@ -1733,7 +1739,7 @@ const ROOT = { 3: "∛", 4: "∜" };
 
 function raicesEnesimas(rng, level) {
   if (level <= 1) {
-    const b = level === 0 ? int(rng, 2, 4) : int(rng, 3, 6);
+    const b = level === 0 ? int(rng, 2, 5) : int(rng, 3, 6);
     const n = level === 0 ? 3 : pick(rng, b <= 4 ? [3, 4] : [3]);
     return [`${ROOT[n]}${b ** n}`, b, `Calcula la raíz ${n === 3 ? "cúbica" : "cuarta"}.`, `🧊 ¿Qué número multiplicado ${n} veces da ${b ** n}?`,
       `${Array(n).fill(b).join(" · ")} = ${b ** n}.`, [[b ** n / n, `No es dividir por ${n}.`]]];
@@ -1743,7 +1749,7 @@ function raicesEnesimas(rng, level) {
     return [`${b ** n}^(1/${n})`, b, `Calcula. El exponente 1/${n} es la raíz ${n === 2 ? "cuadrada" : "cúbica"}.`, `${b ** n}^(1/${n}) = ${n === 2 ? "√" : "∛"}${b ** n}.`,
       `${n === 2 ? "√" : "∛"}${b ** n} = ${b}.`, [[b ** n / n, `No es dividir por ${n}.`]]];
   }
-  const [b, m] = [int(rng, 2, 4), 2];
+  const [b, m] = [int(rng, 2, 5), 2];
   return [`${b ** 3}^(${m}/3)`, b ** m, "Calcula.", `Primero la raíz cúbica de ${b ** 3}; después al cuadrado.`, `∛${b ** 3} = ${b}; ${b}² = ${b * b}.`,
     [[(b ** 3 * m) / 3, `No es ${b ** 3} · 2/3.`], [b, "Falta elevar al cuadrado."]]];
 }
@@ -1769,12 +1775,12 @@ function logaritmos(rng, level) {
 
 function funcionCuadratica(rng, level) {
   if (level === 0) {
-    const [x, c] = [int(rng, 2, 6), int(rng, -9, 9)];
+    const [x, c] = [int(rng, 2, 6), nonZero(rng, -9, 9)];
     return [`f(${x}) con f(x) = x² ${plus(c)}`, x * x + c, `Calcula f(${x}).`, `📈 Reemplaza x por ${x}: ${x}² ${plus(c)}.`, `${x}² = ${x * x}; ${x * x} ${plus(c)} = ${num(x * x + c)}.`,
       [[2 * x + c, `${x}² no es ${x} · 2.`]]];
   }
   if (level === 1) {
-    const [h, c] = [int(rng, 1, 6), int(rng, -9, 9)];
+    const [h, c] = [int(rng, 1, 6), nonZero(rng, -9, 9)];
     return [`Vértice de x² − ${2 * h}x ${plus(c)}: ¿x?`, h, `¿En qué x está el vértice de f(x) = x² − ${2 * h}x ${plus(c)}?`, `x = −b ÷ (2a), con a = 1 y b = −${2 * h}.`,
       `x = ${2 * h} ÷ 2 = ${h}.`, [[-h, "Cuidado con el signo: −b es positivo."], [2 * h, "Falta dividir por 2a = 2."]]];
   }
@@ -1787,7 +1793,7 @@ function funcionCuadratica(rng, level) {
   const v = pick(rng, [10, 20, 30]);
   const t = int(rng, 1, v / 5);
   return [`Altura: h(t) = −5t² + ${v}t; h(${t})`, -5 * t * t + v * t, `Una pelota se lanza hacia arriba y su altura es h(t) = −5t² + ${v}t metros. ¿A qué altura está a los ${t} segundos?`,
-    `Reemplaza t por ${t}.`, `−5 · ${t * t} + ${v} · ${t} = ${-5 * t * t} + ${v * t} = ${-5 * t * t + v * t} m.`, [[5 * t * t + v * t, "−5 · t² es negativo."]]];
+    `Reemplaza t por ${t}.`, `−5 · ${t * t} + ${v} · ${t} = ${num(-5 * t * t)} + ${v * t} = ${-5 * t * t + v * t} m.`, [[5 * t * t + v * t, "−5 · t² es negativo."]]];
 }
 
 function ecuacionCuadratica(rng, level) {
@@ -1860,12 +1866,12 @@ function cambioPorcentual(rng, level) {
 
 function esfera(rng, level) {
   if (level === 0 || level === 2) {
-    const r = level === 0 ? 3 : pick(rng, [3, 6]);
+    const r = pick(rng, level === 0 ? [3, 6] : [6, 9, 12]);
     const v = cents((4 / 3) * PI * r ** 3);
     return [`Esfera: radio ${r} cm, volumen`, v, "Calcula el volumen en cm³. Usa π = 3,14.", `⚽ 4/3 · 3,14 · ${r} · ${r} · ${r}.`,
       `${r}³ = ${r ** 3}; 4/3 · ${r ** 3} = ${(4 * r ** 3) / 3}; · 3,14 = ${dec(v)} cm³.`, [[cents(PI * r * r * 4), "Esa es el área (r²). El volumen usa r³."]]];
   }
-  const r = level === 1 ? int(rng, 1, 5) : pick(rng, [5, 10, 20]);
+  const r = level === 1 ? int(rng, 1, 5) : pick(rng, [2, 3, 4, 5, 10, 15, 20]);
   const a = cents(4 * PI * r * r);
   return [`${level === 3 ? "Pelota" : "Esfera"}: radio ${r} cm, área`, a, level === 3 ? `¿Cuánto cuero se necesita para cubrir una pelota de radio ${r} cm? Usa π = 3,14.` : "Calcula el área de la superficie en cm². Usa π = 3,14.",
     `4 · 3,14 · ${r} · ${r}.`, `4 · 3,14 · ${r * r} = ${dec(a)} cm².`, [[cents(4 * PI * r * 2), "r² es r · r, no r · 2."]]];
@@ -1962,9 +1968,10 @@ function complejos(rng, level) {
       `${cx(a, b)}. La parte imaginaria es ${b}.`, [[a, "Esa es la parte real."], [q + d, `Es resta, no suma: ${q} − ${d}.`]]];
   }
   if (level === 2) {
-    const k = pick(rng, [2, 4]);
-    return [`i${sup(k)}`, k === 2 ? -1 : 1, `¿Cuánto vale i${sup(k)}? (Recuerda: i² = −1)`, "Usa i² = −1.", k === 2 ? "i² = −1." : "i⁴ = i² · i² = (−1) · (−1) = 1.",
-      [[k === 2 ? 1 : -1, "Revisa los signos: i² = −1."]]];
+    const k = pick(rng, [4, 6, 8, 10, 12]);
+    const v = (k / 2) % 2 === 0 ? 1 : -1;
+    return [`i${sup(k)}`, v, `¿Cuánto vale i${sup(k)}? (Recuerda: i² = −1)`, `Agrupa de a dos: i${sup(k)} = (i²)${sup(k / 2)}.`, `i${sup(k)} = (i²)${sup(k / 2)} = (−1)${sup(k / 2)} = ${num(v)}.`,
+      [[-v, "Revisa los signos: (−1) elevado a un número par da 1 y a uno impar da −1."]]];
   }
   const [p, q, r] = pick(rng, TRIPLES);
   return [`Módulo de ${p} + ${q}i`, r, `¿Cuál es el módulo de ${p} + ${q}i (su distancia al 0)?`, `√(${p}² + ${q}²).`, `√(${p * p} + ${q * q}) = ${r}.`,
@@ -2159,8 +2166,15 @@ function numeroE(rng, level) {
     return [`ln(e${sup(k)})`, k, "Calcula. ln es el logaritmo en base e.", `🔁 ¿A qué exponente elevo e para obtener e${sup(k)}?`, `ln(e${sup(k)}) = ${k}.`,
       [[1, `ln(e) = 1, pero ln(e${sup(k)}) = ${k}.`]]];
   }
-  if (level === 1)
-    return ["ln 1", 0, "Calcula.", "¿A qué exponente elevo e para obtener 1?", "e⁰ = 1, así que ln 1 = 0.", [[1, "e¹ = e, no 1: ln 1 = 0."]]];
+  if (level === 1) {
+    const k = int(rng, 2, 9);
+    return pick(rng, [
+      ["ln 1", 0, "Calcula.", "¿A qué exponente elevo e para obtener 1?", "e⁰ = 1, así que ln 1 = 0.", [[1, "e¹ = e, no 1: ln 1 = 0."]]],
+      ["ln e", 1, "Calcula.", "¿A qué exponente elevo e para obtener e?", "e¹ = e, así que ln e = 1.", [[0, "ln 1 = 0, pero ln e = 1."]]],
+      ["ln(1/e)", -1, "Calcula.", "1/e es e elevado a un exponente negativo.", "1/e = e⁻¹, así que ln(1/e) = −1.", [[1, "Revisa el signo: 1/e = e⁻¹."]]],
+      [`e^(ln ${k})`, k, "Calcula.", "e^x y ln x se deshacen entre sí.", `e^(ln ${k}) = ${k}.`, [[1, `Se deshacen: queda ${k}.`]]],
+    ]);
+  }
   if (level === 2) {
     const n = pick(rng, [2, 4]);
     const v = cents((1 + 1 / n) ** n);
@@ -2211,11 +2225,11 @@ function sueldoImpuestos(rng, level) {
 
 function binomial(rng, level) {
   if (level === 0 || level === 2) {
-    const n = level === 0 ? 3 : int(rng, 2, 4);
-    const k = level === 0 ? 2 : n;
+    const n = level === 0 ? int(rng, 3, 4) : int(rng, 2, 5);
+    const k = level === 0 ? int(rng, 1, n - 1) : n;
     const ways = fact(n) / (fact(k) * fact(n - k));
-    return [`${n} monedas: ${level === 0 ? "exactamente 2 caras" : `${n} caras`}`, ways / 2 ** n, `Lanzas ${n} monedas. ¿Cuál es la probabilidad de ${level === 0 ? "exactamente 2 caras" : `${n} caras`}? Responde como fracción.`,
-      `🪙 Cuenta los órdenes con ${k} caras. Total: ${2 ** n}.`, `${ways} de ${2 ** n} = ${ways}/${2 ** n}.`, level === 0 ? [[1 / 8, "Hay 3 órdenes con 2 caras (CCS, CSC, SCC), no 1."]] : [[0.5, `Cada moneda es 1/2, pero son ${n}: (1/2)${sup(n)}.`]]];
+    return [`${n} monedas: ${level === 0 ? `exactamente ${k} ${k === 1 ? "cara" : "caras"}` : `${n} caras`}`, ways / 2 ** n, `Lanzas ${n} monedas. ¿Cuál es la probabilidad de ${level === 0 ? `exactamente ${k} ${k === 1 ? "cara" : "caras"}` : `${n} caras`}? Responde como fracción.`,
+      `🪙 Cuenta los órdenes con ${k} caras. Total: ${2 ** n}.`, `${ways} de ${2 ** n} = ${ways}/${2 ** n}.`, level === 0 ? [[1 / 2 ** n, `Hay ${ways} órdenes con ${k} ${k === 1 ? "cara" : "caras"}, no 1.`]] : [[0.5, `Cada moneda es 1/2, pero son ${n}: (1/2)${sup(n)}.`]]];
   }
   const [n, p] = level === 1 ? [10 * int(rng, 1, 5), pick(rng, [0.1, 0.2, 0.3, 0.4])] : [4 * int(rng, 3, 10), 0.25];
   return [`Esperanza: ${n} ${level === 1 ? "tiros" : "preguntas"}, p = ${dec(p)}`, cents(n * p), level === 1 ? `Un jugador acierta el ${Math.round(p * 100)} % de sus tiros. ¿Cuántos aciertos espera en ${n} tiros?` : `En una prueba de ${n} preguntas con 4 alternativas, alguien responde al azar. ¿Cuántas espera acertar?`,
@@ -2250,7 +2264,7 @@ function funcionPotencia(rng, level) {
       [[-x * x, "Menos por menos da más."], [-2 * x, `(−${x})² no es −${x} · 2.`]]];
   }
   if (level === 2) {
-    const x = int(rng, 2, 4);
+    const x = int(rng, 2, 5);
     return [`f(−${x}) con f(x) = x³`, -(x ** 3), `Calcula f(−${x}).`, `(−${x}) · (−${x}) · (−${x}).`, `${x * x} · (−${x}) = −${x ** 3}.`,
       [[x ** 3, "Son tres signos menos: queda negativo."]]];
   }
@@ -2384,9 +2398,9 @@ function euclides(rng, level) {
     return [`p = ${p}, q = ${q}: altura`, h, `La altura parte la hipotenusa en trozos de ${p} y ${q}. ¿Cuánto mide la altura?`, "📐 altura² = p · q.", `altura² = ${p * q}, altura = ${h}.`,
       [[p * q, "Ese es altura². Saca la raíz."], [p + q, "No se suman: se multiplican."]]];
   if (level === 2) {
+    const [p, q] = pick(rng, [[1, 3], [2, 6], [4, 5], [1, 8], [3, 9], [9, 7], [9, 16], [16, 9], [4, 12], [2, 16]]);
     const c = p + q;
     const cat = Math.sqrt(p * c);
-    if (!Number.isInteger(cat)) return euclides(rng, level);
     return [`p = ${p}, c = ${c}: cateto`, cat, `Un trozo de la hipotenusa mide ${p} y la hipotenusa completa, ${c}. ¿Cuánto mide el cateto que está sobre ese trozo?`, "cateto² = p · c.",
       `cateto² = ${p * c}, cateto = ${cat}.`, [[p * c, "Ese es el cateto². Saca la raíz."]]];
   }
@@ -2421,7 +2435,7 @@ function probabilidadSociedad(rng, level) {
   if (level === 1) {
     const [p, n] = [pick(rng, [1, 2, 3, 5]), pick(rng, [100, 200, 500, 1000])];
     return [`${p} % de ${n}`, (p * n) / 100, `Un riesgo es de ${p} %. ¿Cuántas personas de ${pesos(n)} se verían afectadas aproximadamente?`, `${p} de cada 100.`, `${pesos(n)} · ${dec(p / 100)} = ${(p * n) / 100}.`,
-      [[p, `${p} % no son ${p} personas.`]]];
+      [[p, `${p} % no son ${p} ${p === 1 ? "persona" : "personas"}: es una parte de cada 100.`]]];
   }
   if (level === 2) {
     const [a, k] = [int(rng, 1, 5), int(rng, 2, 4)];
@@ -2620,8 +2634,8 @@ function baseMasa(rng, level) {
     return [`${k} kg = ? g`, 1000 * k, "Convierte a gramos.", "⚖️ 1 kg = 1.000 g.", `${k} · 1.000 = ${pesos(1000 * k)} g.`, [[100 * k, "1 kg son 1.000 g."]]];
   }
   if (level === 1) {
-    const [name, frac_] = pick(rng, [["Medio kilo", 0.5], ["Un cuarto de kilo", 0.25], ["Tres cuartos de kilo", 0.75]]);
-    return [`${name} en gramos`, 1000 * frac_, `¿Cuántos gramos son ${name.toLowerCase()}?`, `Parte de 1.000 g.`, `${dec(frac_)} · 1.000 = ${1000 * frac_} g.`, [[100 * frac_, "1 kg son 1.000 g."]]];
+    const [name, frac_] = pick(rng, [["Medio kilo", 0.5], ["Un cuarto de kilo", 0.25], ["Tres cuartos de kilo", 0.75], ["Un kilo y medio", 1.5], ["Dos kilos y medio", 2.5], ["Un kilo y cuarto", 1.25]]);
+    return [`${name} en gramos`, 1000 * frac_, `¿Cuántos gramos son ${name.toLowerCase()}?`, `Parte de 1.000 g.`, `${dec(frac_)} · 1.000 = ${pesos(1000 * frac_)} g.`, [[100 * frac_, "1 kg son 1.000 g."]]];
   }
   if (level === 2) {
     const [a, b] = [50 * int(rng, 4, 18), 50 * int(rng, 4, 18)];
@@ -2719,8 +2733,8 @@ function problemasRecetas(rng, level) {
       `${small * k} personas es ${k} veces ${small}: divide por ${k}.`, `${per * small * k} ÷ ${k} = ${per * small} g.`, [[per * small * k * k, "Se divide, no se multiplica."]]];
   }
   if (level === 2) {
-    const k = int(rng, 2, 4);
-    return [`Para 4 con 1/2 taza de azúcar; para ${4 * k}`, k / 2, `Una receta para 4 usa 1/2 taza de azúcar. ¿Cuántas tazas para ${4 * k} personas?`, `${4 * k} es ${k} veces 4.`, `1/2 · ${k} = ${dec(k / 2)} tazas.`,
+    const [base, k] = [int(rng, 2, 6), int(rng, 2, 4)];
+    return [`Para ${base} con 1/2 taza de azúcar; para ${base * k}`, k / 2, `Una receta para ${base} personas usa 1/2 taza de azúcar. ¿Cuántas tazas para ${base * k} personas?`, `${base * k} es ${k} veces ${base}.`, `1/2 · ${k} = ${dec(k / 2)} tazas.`,
       [[0.5, `Hay que multiplicar por ${k}.`]]];
   }
   const [n, per] = [int(rng, 3, 6), 50 * int(rng, 2, 6)];
@@ -2763,8 +2777,8 @@ function problemasViajes(rng, level) {
   const total = m + dm;
   const arrive = total % 60;
   return [`Sale ${h}:${String(m).padStart(2, "0")}, dura ${dh} h ${dm} min: ¿minutos de llegada?`, arrive,
-    `Un bus sale a las ${h}:${String(m).padStart(2, "0")} y el viaje dura ${dh} horas y ${dm} minutos. ¿Cuántos minutos marca el reloj al llegar?`,
-    `${m} + ${dm} = ${total} minutos${total >= 60 ? `: es 1 hora y ${arrive} minutos` : ""}.`, `Llega a las ${h + dh + Math.floor(total / 60)}:${String(arrive).padStart(2, "0")}.`,
+    `Un bus sale a las ${h}:${String(m).padStart(2, "0")} y el viaje dura ${dh} ${dh === 1 ? "hora" : "horas"} y ${dm} minutos. ¿Cuántos minutos marca el reloj al llegar?`,
+    `Suma los minutos: ${m} + ${dm}. Si pasa de 60, se completa una hora más.`, `${m} + ${dm} = ${total} minutos${total >= 60 ? `: es 1 hora y ${arrive} minutos` : ""}. Llega a las ${h + dh + Math.floor(total / 60)}:${String(arrive).padStart(2, "0")}.`,
     total >= 60 ? [[total, `${total} minutos es 1 hora y ${arrive} minutos.`]] : []];
 }
 
@@ -2922,11 +2936,68 @@ export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);
 // Quita errores que coinciden con la respuesta o se repiten.
 function tidy(q) {
   const seen = new Set([q[1]]);
-  const mistakes = (q[5] ?? []).filter(([v]) => !seen.has(v) && seen.add(v));
-  return mistakes.length ? [...q.slice(0, 5), mistakes] : q.slice(0, 5);
+  const mistakes = (q[5] ?? []).filter(([v]) => !seen.has(v) && seen.add(v)).map(([v, msg]) => [v, polish(msg)]);
+  const base = [polish(q[0]), q[1], ...q.slice(2, 5).map(polish)];
+  return mistakes.length ? [...base, mistakes] : base;
 }
+
+// Los números salen al azar, así que el texto se pule al final: «1 monedas»
+// → «1 moneda», «-2» → «−2», «1x» → «x» y «x = 8; x = 8.» → «x = 8.».
+const SINGULAR = {
+  horas: "hora", minutos: "minuto", segundos: "segundo", años: "año", días: "día", semanas: "semana",
+  meses: "mes", veces: "vez", metros: "metro", litros: "litro", kilos: "kilo", personas: "persona",
+  monedas: "moneda", cuotas: "cuota", filas: "fila", cajas: "caja", unidades: "unidad", partes: "parte",
+  caras: "cara", rojas: "roja", azules: "azul", verdes: "verde", blancas: "blanca", negras: "negra",
+  amigos: "amigo", estudiantes: "estudiante", bolitas: "bolita", fichas: "ficha", huevos: "huevo",
+  tazas: "taza", vasos: "vaso", cuadernos: "cuaderno", libros: "libro", pintores: "pintor", llaves: "llave",
+};
+const PLURAL_AFTER_ONE = new RegExp(`(^|[^\\d,./])1 (${Object.keys(SINGULAR).join("|")})(?![\\wáéíóúñ])`, "g");
+export const polish = (text) =>
+  typeof text !== "string"
+    ? text
+    : text
+        .replace(PLURAL_AFTER_ONE, (_, before, word) => `${before}1 ${SINGULAR[word]}`)
+        .replace(/(^|[\s(=≥≤<>·])-(\d)/g, "$1−$2")
+        .replace(/(^|[^\d,./^])1x(?![²³\d])/g, "$1x")
+        .replace(/\b(x = (−?\d+(?:,\d+)?))[.;] x = \2\./g, "$1.");
 
 export function generateQuestions(lessonId, levels, rng = Math.random) {
   const gen = generators[lessonId];
   return gen ? levels.map((level) => tidy(gen(rng, level))) : null;
+}
+
+// Números de un texto: miles con punto o espacio («17.000»), decimales con
+// coma y fracciones («3/4» también cuenta como 0,75).
+function numbersIn(text) {
+  let s = String(text ?? "").replace(/−/g, "-");
+  for (let i = 0; i < 3; i++) s = s.replace(/(\d)[ .](\d{3})(?!\d)/g, "$1$2");
+  const out = [...s.matchAll(/-?\d+(?:,\d+)?/g)].map((m) => Number(m[0].replace(",", ".")));
+  for (const m of s.matchAll(/(-?\d+)\s*\/\s*(\d+)/g)) out.push(Number(m[1]) / Number(m[2]));
+  return out;
+}
+const among = (list, n) => list.some((x) => Math.abs(x - n) < 1e-9 || Math.abs(x + n) < 1e-9);
+
+// ¿El texto (idea clave o ejemplo) ya resuelve este ejercicio? Pasa cuando
+// trae todos sus datos y también la respuesta: «En 482, el 4 vale 400».
+export function solvedIn(text, q) {
+  if (!text || !Number.isFinite(q?.[1])) return false;
+  const given = [...new Set(numbersIn(String(q[0]).split("\n")[0]))];
+  if (!given.length || (given.length === 1 && Math.abs(given[0]) < 10)) return false;
+  const found = numbersIn(text);
+  return among(found, q[1]) && given.every((n) => among(found, n));
+}
+
+// Ejercicios de una sesión: cambia por una variante del mismo nivel los que
+// la lección ya resolvió en la idea clave o el ejemplo, y los repetidos.
+export function freshQuestions(lesson, questions, levels, rng = Math.random) {
+  const gen = generators[lesson.id];
+  const solved = (q) => solvedIn(lesson.concept, q) || solvedIn(lesson.examples, q);
+  const used = new Set();
+  return questions.map((q, i) => {
+    let out = q;
+    for (let tries = 0; gen && (solved(out) || used.has(out[0])) && tries < 40; tries++)
+      out = tidy(gen(rng, levels[i]));
+    used.add(out[0]);
+    return out;
+  });
 }

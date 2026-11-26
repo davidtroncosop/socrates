@@ -208,7 +208,7 @@ export const lessons = [
     description: "MA08 OA 08 · De un problema en palabras a una ecuación",
     concept:
       "Un problema es un mensaje en palabras. Primero decide qué es x: lo que no sabes. Después traduce cada frase a números. Resuelve la ecuación. Al final, revisa si tu respuesta tiene sentido.",
-    examples: "El doble de un número más 5 es 21: 2x + 5 = 21 → 2x = 16 → x = 8.",
+    examples: "El doble de un número más 3 es 17: 2x + 3 = 17 → 2x = 14 → x = 7.",
     questions: [
       [
         "2x + 5 = 21",
@@ -308,7 +308,7 @@ export const lessons = [
         "5x + 7x − 4x",
         8,
         "Reduce de izquierda a derecha y halla el coeficiente resultante.",
-        "5 + 7 = 12; luego 12 − 4 = 8.",
+        "Opera solo con los números que acompañan a x: 5 + 7 − 4.",
         "(5 + 7 − 4)x = 8x. El coeficiente es 8.",
       ],
       [
@@ -374,21 +374,21 @@ export const lessons = [
         "2^2 × 2^3",
         32,
         "Calcula el valor numérico final: 2² × 2³.",
-        "Suma exponentes: 2 + 3 = 5. Luego calcula 2⁵ = 32.",
+        "Misma base: suma los exponentes, 2 + 3. Luego calcula esa potencia de 2.",
         "2² × 2³ = 2⁵ = 32.",
       ],
       [
         "3^4 ÷ 3^2",
         9,
         "Calcula el cociente de potencias de igual base.",
-        "Resta los exponentes: 4 − 2 = 2. Luego 3² = 9.",
+        "Misma base: resta los exponentes, 4 − 2. Luego calcula esa potencia de 3.",
         "3⁴ ÷ 3² = 3² = 9.",
       ],
       [
         "5^3 ÷ 5",
         25,
         "Recuerda que 5 equivale a 5¹. ¿Cuál es el valor numérico?",
-        "Resta exponentes: 3 − 1 = 2. Luego 5² = 25.",
+        "5 es 5¹: resta los exponentes, 3 − 1. Luego calcula esa potencia de 5.",
         "5³ ÷ 5¹ = 5² = 25.",
       ],
       [
@@ -429,14 +429,14 @@ export const lessons = [
         "f(0) con f(x) = 4x + 9",
         9,
         "¿Cuál es el valor inicial (intercepto con eje Y) en x = 0?",
-        "4(0) + 9 = 9.",
+        "Reemplaza x por 0: 4 · 0 vale 0, así que solo queda el número que se suma.",
         "f(0) = 9.",
       ],
       [
         "f(3) con f(x) = −2x + 15",
         9,
         "Evalúa la función con pendiente negativa para x = 3.",
-        "−2(3) + 15 = −6 + 15 = 9.",
+        "Reemplaza x por 3: primero −2 · 3, y después súmale 15.",
         "f(3) = 9.",
       ],
     ],
@@ -462,22 +462,22 @@ export const lessons = [
         "En (x + 3)^2, ¿cuál es el término independiente?",
         9,
         "Eleva al cuadrado el segundo término: 3².",
-        "3² = 9.",
-        "El término independiente es 9.",
+        "(a + b)² = a² + 2ab + b²: el término sin x es b², con b = 3.",
+        "El término independiente es 3² = 9.",
       ],
       [
         "En (x + 7)(x − 7) = x^2 − k, ¿cuál es k?",
         49,
         "Suma por su diferencia: a² − b². ¿Cuánto vale 7²?",
-        "7² = 49.",
+        "(a + b)(a − b) = a² − b²: aquí k es b², con b = 7.",
         "(x + 7)(x − 7) = x² − 49, por lo tanto k = 49.",
       ],
       [
         "En (2x + 1)^2, ¿cuál es el coeficiente central?",
         4,
         "Calcula el doble producto: 2 · (2x) · 1.",
+        "El término central es 2 · (primer término) · (segundo término). ¿Qué número queda delante de x?",
         "2 · 2x · 1 = 4x. El coeficiente es 4.",
-        "El coeficiente es 4.",
       ],
     ],
   },
@@ -514,6 +514,15 @@ export function readings(raw) {
 }
 export function isCorrect(raw, answer) {
   return readings(raw).some((n) => Math.abs(n - answer) < 1e-8);
+}
+// Si la instrucción pide redondear a 2 decimales, también vale el valor con
+// más decimales («2,4414» para 2,44): el cálculo está bien.
+export function answersQuestion(raw, q) {
+  if (isCorrect(raw, q[1])) return true;
+  return (
+    /redondea a 2 decimales/i.test(String(q[2] ?? "")) &&
+    readings(raw).some((n) => Math.abs(Math.round(n * 100) / 100 - q[1]) < 1e-8)
+  );
 }
 // Restricted, explicit grammar: ax + b = cx + d. No eval or arbitrary expression execution.
 export function solveLinear(raw) {

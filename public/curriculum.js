@@ -2276,7 +2276,7 @@ export const curriculumLessons = [
       "4⁻¹",
       0.25,
       "Calcula la potencia. Puedes responder como fracción.",
-      "4⁻¹ = 1/4.",
+      "Exponente −1: es 1 dividido por la base.",
       "4⁻¹ = 1/4 = 0,25.",
       [
         [

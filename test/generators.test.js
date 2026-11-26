@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { generators, generateQuestions } from "../public/generators.js";
+import { generators, generateQuestions, freshQuestions, polish, solvedIn } from "../public/generators.js";
 import { validateCatalog } from "../public/content.js";
 
 // Solo para pruebas: convierte la notación escolar a JavaScript y evalúa.
@@ -197,7 +197,8 @@ function lote4Answer(expr, id) {
     const [left, op, right] = expr.split(/ ([<>]=?|≥|≤) /);
     const ok = (x) => {
       const v = evaluate(left, x);
-      return { ">": v > right, "≥": v >= right, "<": v < right, "≤": v <= right }[op];
+      const r = Number(right.replace("−", "-"));
+      return { ">": v > r, "≥": v >= r, "<": v < r, "≤": v <= r }[op];
     };
     const range = Array.from({ length: 4001 }, (_, i) => i - 2000);
     return op === ">" || op === "≥" ? range.find(ok) : range.findLast(ok);
@@ -345,7 +346,11 @@ function lote6Answer(expr, id) {
   if (id === "galton") {
     if ((m = expr.match(/^Galton: (\d) filas, ¿caminos\?$/))) return 2 ** m[1];
     if ((m = expr.match(/^Galton: (\d) filas, extremo \w+$/))) return 1 / 2 ** m[1];
-    if ((m = expr.match(/^Galton: 2 filas, centro$/))) return 0.5;
+    // Centro: caminos con la mitad a cada lado, C(n, n/2), de 2ⁿ.
+    if ((m = expr.match(/^Galton: (\d) filas, centro$/))) {
+      const n = Number(m[1]), c = (k) => (k <= 1 ? 1 : k * c(k - 1));
+      return c(n) / (c(n / 2) ** 2) / 2 ** n;
+    }
   }
   return null;
 }
@@ -460,7 +465,9 @@ function lote8Answer(expr, id) {
       if (!m[3]) assert.equal(z[1], 0, `${expr}: el producto por el conjugado es real`);
       return m[3] ? part(z, m[3]) : z[0];
     }
-    if ((m = expr.match(/^i([²⁴])$/))) return m[1] === "²" ? -1 : 1;
+    // iⁿ con n par: (i²)^(n/2) = (−1)^(n/2).
+    if ((m = expr.match(/^i([⁰¹²³⁴⁵⁶⁷⁸⁹]+)$/)))
+      return (-1) ** (Number([...m[1]].map((c) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)).join("")) / 2);
     if ((m = expr.match(/^Módulo de (\d+) \+ (\d+)i$/))) return Math.hypot(m[1], m[2]);
     if ((m = expr.match(/^Conjugado de (.+): parte imaginaria$/))) return -cplx(m[1])[1];
   }
@@ -486,7 +493,7 @@ function lote8Answer(expr, id) {
       return 1 / cases.length;
     }
     if ((m = expr.match(/^Tabla: (\d+) vacunados, (\d+) enfermos$/))) return m[2] / m[1];
-    if ((m = expr.match(/^(?:Fichas: (\d) rojas y (\d) azules, sin devolver|Dos fichas rojas sin devolver)$/))) {
+    if ((m = expr.match(/^(?:Fichas: (\d) rojas? y (\d) azul(?:es)?, sin devolver|Dos fichas rojas sin devolver)$/))) {
       const [r, a] = m[1] ? [+m[1], +m[2]] : [2, 2];
       return (r - 1) / (r + a - 1);
     }
@@ -525,7 +532,7 @@ function lote9Answer(expr, id) {
   }
   if (id === "binomial") {
     const choose = (a, b) => { let r = 1; for (let i = 0; i < b; i++) r = (r * (a - i)) / (i + 1); return r; };
-    if ((m = expr.match(/^(\d) monedas: (?:exactamente )?(\d) caras$/))) return choose(+m[1], +m[2]) / 2 ** m[1];
+    if ((m = expr.match(/^(\d) monedas: (?:exactamente )?(\d) caras?$/))) return choose(+m[1], +m[2]) / 2 ** m[1];
     if ((m = expr.match(/^Esperanza: (\d+) \D+, p = ([\d,]+)$/))) return Math.round(m[1] * n(m[2]) * 100) / 100;
   }
   if (id === "normal") {
@@ -606,7 +613,7 @@ function lote10Answer(expr, id, prompt) {
   if (id === "valor-absoluto") {
     if ((m = expr.match(/^\|(.+)\|$/))) return Math.abs(evaluate(m[1], 0));
     if ((m = expr.match(/^f\((\d+)\) con f\(x\) = \|x − (\d+)\|$/))) return Math.abs(m[1] - m[2]);
-    if ((m = expr.match(/^Estacionamiento: (\d+) horas$/))) {
+    if ((m = expr.match(/^Estacionamiento: (\d+) horas?$/))) {
       const [, first, next] = prompt.match(/\$([\d.]+) la primera hora y \$([\d.]+)/);
       return n(first) + (m[1] - 1) * n(next);
     }
@@ -675,6 +682,9 @@ function lote11Answer(expr, id, prompt) {
   if (id === "numero-e") {
     if ((m = expr.match(/^ln\(e([⁰¹²³⁴⁵⁶⁷⁸⁹]+)\)$/))) return supd(m[1]);
     if (expr === "ln 1") return 0;
+    if (expr === "ln e") return 1;
+    if (expr === "ln(1/e)") return -1;
+    if ((m = expr.match(/^e\^\(ln (\d+)\)$/))) return Number(m[1]);
     if ((m = expr.match(/^\(1 \+ 1\/(\d)\)([²³⁴])$/))) return r2((1 + 1 / m[1]) ** supd(m[2]));
     if ((m = expr.match(/^e([²³]) con e ≈ 2,7$/))) return r2(2.7 ** supd(m[1]));
   }
@@ -708,14 +718,15 @@ function lote12Answer(expr, id, prompt) {
       break;
     }
     case "base-tiempo":
-      if ((m = expr.match(/^(\d+) horas = \? minutos$/))) return m[1] * 60;
+      if ((m = expr.match(/^(\d+) horas? = \? minutos$/))) return m[1] * 60;
       if ((m = expr.match(/^De (\d+):(\d+) a (\d+):(\d+)$/))) return m[3] * 60 + Number(m[4]) - (m[1] * 60 + Number(m[2]));
       if ((m = expr.match(/^(\d+) de la tarde en formato 24 h$/))) return Number(m[1]) + 12;
       if ((m = expr.match(/^(\d+) minutos en horas$/))) return m[1] / 60;
       break;
     case "base-masa":
       if ((m = expr.match(/^(\d+) kg = \? g$/))) return m[1] * 1000;
-      if ((m = expr.match(/^(Medio kilo|Un cuarto de kilo|Tres cuartos de kilo) en gramos$/))) return { "Medio kilo": 500, "Un cuarto de kilo": 250, "Tres cuartos de kilo": 750 }[m[1]];
+      const KILOS = { "Medio kilo": 500, "Un cuarto de kilo": 250, "Tres cuartos de kilo": 750, "Un kilo y medio": 1500, "Dos kilos y medio": 2500, "Un kilo y cuarto": 1250 };
+      if ((m = expr.match(/^(.+) en gramos$/)) && KILOS[m[1]]) return KILOS[m[1]];
       if ((m = expr.match(/^(\d+) g \+ (\d+) g en kg$/))) return (+m[1] + +m[2]) / 1000;
       if ((m = expr.match(/^(\d+) kg − (\d+) g en g$/))) return m[1] * 1000 - m[2];
       break;
@@ -861,4 +872,33 @@ test("curated curriculum questions match the generator checks", async () => {
       } catch (error) {
         throw new Error(`${lesson.id}: «${q[0]}» → ${error.message}`);
       }
+});
+
+test("la sesión no repite el ejercicio que la idea clave o el ejemplo ya resolvieron", async () => {
+  const { lessons } = await import("../public/learning.js");
+  const { curriculumLessons } = await import("../public/curriculum.js");
+  const lesson = curriculumLessons.find((l) => l.id === "base-valor-posicional");
+  assert.ok(solvedIn(lesson.examples, lesson.questions[0]), "«En 482, el 4 vale 400» resuelve «¿Cuánto vale el 4 en 482?»");
+  assert.ok(!solvedIn(lesson.examples, lesson.questions[1]));
+  for (const l of [...lessons, ...curriculumLessons].filter((l) => generators[l.id])) {
+    let s = 11;
+    const rng = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+    for (let k = 0; k < 20; k++) {
+      const base = k === 0 ? l.questions : generateQuestions(l.id, [0, 1, 2, 3], rng);
+      const qs = freshQuestions(l, base, [0, 1, 2, 3], rng);
+      for (const q of qs) {
+        assert.ok(!solvedIn(l.examples, q) && !solvedIn(l.concept, q), `${l.id}: «${q[0]}» ya está resuelto en la lección`);
+      }
+      assert.equal(new Set(qs.map((q) => q[0])).size, qs.length, `${l.id}: ejercicios repetidos en la sesión`);
+    }
+  }
+});
+
+test("el texto generado no trae plurales con 1, guiones como signo ni pasos repetidos", () => {
+  assert.equal(polish("Bolsa: 1 rojas y 1 azules"), "Bolsa: 1 roja y 1 azul");
+  assert.equal(polish("¿A qué altura está a los 1 segundos?"), "¿A qué altura está a los 1 segundo?");
+  assert.equal(polish("x − 7 ≥ -2"), "x − 7 ≥ −2");
+  assert.equal(polish("Las partes del medio son 1x y 6x."), "Las partes del medio son x y 6x.");
+  assert.equal(polish("x = 8; x = 8."), "x = 8.");
+  assert.equal(polish("10 cajas de 1,5 litros; 21x"), "10 cajas de 1,5 litros; 21x");
 });
