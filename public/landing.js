@@ -130,7 +130,7 @@ if (schoolForm) {
       status.className = "school-status err";
       status.textContent =
         err.status === 0
-          ? "No pudimos enviar el formulario ahora. Escríbenos directo a davidtroncosop@gmail.com."
+          ? "No pudimos enviar el formulario ahora. Revisa tu conexión e inténtalo en unos minutos."
           : err.message;
     } finally {
       button.disabled = false;

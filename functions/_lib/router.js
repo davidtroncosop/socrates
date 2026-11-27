@@ -843,7 +843,7 @@ const routes = {
       env,
       "inquiry",
       clientIp(request),
-      "Ya recibimos varias solicitudes desde tu conexión. Escríbenos a davidtroncosop@gmail.com o inténtalo más tarde.",
+      "Ya recibimos varias solicitudes desde tu conexión. Vuelve a intentarlo en una hora.",
       waitUntil,
     );
     const body = await readJson(request);

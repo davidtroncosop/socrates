@@ -942,8 +942,7 @@ h3 {
 
 .trust-note a,
 .faq .section-heading a,
-.maker-meta a,
-.school-alt a {
+.maker-meta a {
   color: var(--blue-ui);
   font-weight: 700;
   border-bottom: 1.5px solid currentColor;
@@ -1371,15 +1370,6 @@ h3 {
 
 .school-status.err {
   color: #a02727;
-}
-
-.school-alt {
-  margin: 12px 0 0;
-  padding-top: 12px;
-  border-top: 1px solid #ebeff7;
-  font-size: 13px;
-  color: var(--muted);
-  text-align: center;
 }
 
 /* 5. Preguntas frecuentes */
