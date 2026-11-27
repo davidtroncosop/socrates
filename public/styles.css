@@ -3600,6 +3600,42 @@ details.handwritten-section[open] .handwritten-toggle {
   line-height: 1.5;
 }
 
+/* Prueba gratis y planes. */
+.trial-notice {
+  margin-bottom: 16px;
+}
+.trial-notice .secondary {
+  margin-left: 6px;
+}
+.paywall p {
+  max-width: 460px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.plans-page h1 {
+  margin-top: 0;
+}
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.plan-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  background: #fbfcfe;
+}
+.plan-card h2 {
+  font-size: 19px;
+  margin: 0 0 6px;
+}
+.plan-price {
+  font-size: 22px;
+  margin: 0;
+}
+
 /* Celular: una sola barra arriba (logo y salir) y la navegación abajo, al
    alcance del pulgar. La racha y los XP en una fila compacta. */
 @media (max-width: 620px) {

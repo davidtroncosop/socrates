@@ -58,6 +58,7 @@ import {
   pickDailySheet,
 } from "./sheets.js";
 import { $, escape, button, heading } from "./ui.js";
+import { practiceBlocked, trialBanner, paywallView, plansView } from "./access.js";
 import { getUnitsForLessons, routeOrder, PREREQUISITES, UNIT_DEFINITIONS, ALL_GRADES_LESSONS } from "./units.js";
 import { getStreakInfo, getXpAndFichas, getBeltInfo, FICHAS_RULE } from "./stats.js";
 import { showUnitGuide, showParentReport, showRewardsModal } from "./dialogs.js";
@@ -71,6 +72,20 @@ try {
 const isAdmin = account?.mode === "account" && account.isAdmin === true;
 const isTeacher = account?.role === "teacher";
 const synced = account?.mode === "account";
+// El acceso se actualiza en segundo plano (session.js): se lee al dibujar.
+const liveAccount = () => {
+  try {
+    return readSession(localStorage) ?? account;
+  } catch {
+    return account;
+  }
+};
+const blocked = () => practiceBlocked(liveAccount());
+function paywall() {
+  stopSpeaking();
+  session = null;
+  app.innerHTML = paywallView(liveAccount());
+}
 const stateKey = progressKey(account);
 const CATALOG_VERSION_KEY = "socatres.catalog.updatedAt";
 let catalog,
@@ -317,12 +332,14 @@ function updateBadge() {
 function openLessonDirect(id) {
   const lesson = lessons.find((l) => l.id === id);
   if (!lesson || isLocked(lesson)) return;
+  if (blocked()) return paywall();
   if (app.dataset) app.dataset.view = "ruta";
   start(id);
 }
 function openSheetDirect(id) {
   const lesson = lessons.find((l) => l.id === id);
   if (!lesson || isLocked(lesson)) return;
+  if (blocked()) return paywall();
   if (app.dataset) app.dataset.view = "hoja";
   startSheet(id);
 }
@@ -332,12 +349,17 @@ function demoRegisterTeacher() {
   } catch {}
   location.assign("./?registro=docente");
 }
+const PRACTICE_PAGES = new Set(["hoja", "repaso", "tarea"]);
+// Lo que empieza práctica nueva; con la prueba vencida muestra la pausa.
+const PRACTICE_ACTIONS = new Set(["lesson", "sheet", "daily", "diagnostic", "diagnostic-grade", "review", "warmup"]);
 function navigate() {
   stopSpeaking();
   session = null;
   const defaultPage = isTeacher ? "sala" : "ruta";
   let page = location.hash.slice(1) || defaultPage;
   if (page === "contenido" && !isAdmin) page = defaultPage;
+  // Al vencer la prueba se puede mirar todo, pero no empezar práctica nueva.
+  if (PRACTICE_PAGES.has(page) && blocked()) page = "pausa";
   if (app.dataset) app.dataset.view = page;
   document.querySelectorAll("[data-nav]").forEach((a) => {
     const active = a.dataset.nav === page;
@@ -370,8 +392,11 @@ function navigate() {
           onOpenSheet: openSheetDirect,
         }),
       contenido: contentManager,
+      planes: () => (app.innerHTML = plansView(liveAccount())),
+      pausa: paywall,
     })[page] || (isTeacher ? () => navigate() : route)
   )();
+  if (page === "sala" || page === "familia") app.insertAdjacentHTML?.("afterbegin", trialBanner(liveAccount()));
   updateBadge();
 }
 
@@ -717,6 +742,7 @@ function route() {
     </div>
 
     ${demoNotice()}
+    ${trialBanner(liveAccount())}
     <div class="dashboard">
       <div>
         ${classFocusCard()}
@@ -2562,6 +2588,10 @@ app.addEventListener("click", (e) => {
   const b = e.target.closest("[data-action]");
   if (!b || b.disabled) return;
   const [action, id] = b.dataset.action.split(":");
+  if (PRACTICE_ACTIONS.has(action) && blocked()) {
+    paywall();
+    return;
+  }
   if (action === "lesson") {
     const lesson = lessons.find((l) => l.id === id);
     if (!lesson || isLocked(lesson)) return;

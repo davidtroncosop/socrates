@@ -38,10 +38,14 @@ else {
   // También refresca nombre, rol y permisos guardados en el dispositivo.
   if (session.mode === "account")
     api.me().then(
-      ({ user }) => {
+      ({ user, access }) => {
         const changed =
-          user.isAdmin !== session.isAdmin || user.role !== session.role;
-        startAccountSession(localStorage, user);
+          user.isAdmin !== session.isAdmin ||
+          user.role !== session.role ||
+          // Recargar solo si cambia si puede practicar o no; los días que
+          // quedan la app los lee al dibujar cada pantalla.
+          (access?.status === "expired") !== (session.access?.status === "expired");
+        startAccountSession(localStorage, user, Date.now(), access);
         if (changed) location.reload();
       },
       (err) => {

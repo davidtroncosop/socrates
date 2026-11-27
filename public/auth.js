@@ -37,7 +37,14 @@ export function startSession(storage, now = Date.now(), role = "student") {
   storage.setItem(SESSION_KEY, JSON.stringify(session));
   return session;
 }
-export function startAccountSession(storage, user, now = Date.now()) {
+// Acceso que informa el servidor (prueba, plan o vencido). Solo decide qué se
+// muestra; el servidor protege por su cuenta lo que tiene costo.
+const ACCESS = ["free", "trial", "paid", "expired"];
+const cleanAccess = (a) =>
+  a && ACCESS.includes(a.status)
+    ? { status: a.status, endsAt: Number.isFinite(a.endsAt) ? a.endsAt : null, via: typeof a.via === "string" ? a.via : null }
+    : undefined;
+export function startAccountSession(storage, user, now = Date.now(), access) {
   const session = {
     mode: "account",
     userId: user.id,
@@ -46,6 +53,7 @@ export function startAccountSession(storage, user, now = Date.now()) {
     // Solo para mostrar u ocultar el mantenedor; el servidor valida cada cambio.
     isAdmin: user.isAdmin === true,
     managedByParent: user.managedByParent === true,
+    ...(cleanAccess(access) ? { access: cleanAccess(access) } : {}),
     expiresAt: now + 30 * DAY,
   };
   storage.setItem(SESSION_KEY, JSON.stringify(session));

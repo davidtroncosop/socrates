@@ -21,6 +21,7 @@ import {
 } from "./telegram.js";
 import { readReviewRequest, reviewWork, ReviewError, MAX_IMAGE } from "./work-review.js";
 import { readReflectionRequest, reflect, readEncouragementRequest, encourage } from "./coach.js";
+import { accessFor, hasAccess } from "./access.js";
 import {
   ClassError,
   listClasses,
@@ -355,6 +356,12 @@ async function limit(env, kind, who, message = "Demasiados intentos. Espera unos
     );
 }
 
+// Lo que usa IA tiene costo: se pausa cuando vence la prueba sin plan.
+async function requireAccess(env, user) {
+  if (!hasAccess(await accessFor(env, user, { admin: isAdmin(env, user) })))
+    fail(402, "Tu prueba gratis terminó. Lo que hiciste quedó guardado y el búho vuelve cuando se active el plan.");
+}
+
 const routes = {
   // Registro propio: apoderados, docentes y estudiantes de 14 años o más (Ley 21.719).
   async "POST /api/auth/register"({ request, env, waitUntil }) {
@@ -439,7 +446,7 @@ const routes = {
   },
 
   async "GET /api/me"({ env, user }) {
-    return json({ user: publicUser(env, user) });
+    return json({ user: publicUser(env, user), access: await accessFor(env, user, { admin: isAdmin(env, user) }) });
   },
 
   async "DELETE /api/me"({ request, env, user }) {
@@ -851,6 +858,7 @@ const routes = {
 
   // Revisión con IA del desarrollo a mano ----------------------------------------
   async "POST /api/work/review"({ request, env, user, waitUntil }) {
+    await requireAccess(env, user);
     await limit(env, "workReview", user.id, undefined, waitUntil);
     await limit(env, "workReviewAll", "app", "El búho ya revisó muchas fotos hoy. Tu foto quedó guardada en tu cuaderno.", waitUntil);
     try {
@@ -864,6 +872,7 @@ const routes = {
 
   // Búho tutor ------------------------------------------------------------------
   async "POST /api/coach/reflection"({ request, env, user, waitUntil }) {
+    await requireAccess(env, user);
     await limit(env, "reflection", user.id, "Ya le escribiste mucho al búho por esta hora. Lo que escribiste quedó en tu cuaderno.", waitUntil);
     await limit(env, "coachAll", "app", "El búho ya respondió mucho hoy. Lo que escribiste quedó en tu cuaderno.", waitUntil);
     try {
@@ -875,6 +884,7 @@ const routes = {
   },
 
   async "POST /api/coach/encouragement"({ request, env, user, waitUntil }) {
+    await requireAccess(env, user);
     await limit(env, "encouragement", user.id, "El búho ya te dio tu frase de hoy.", waitUntil);
     await limit(env, "coachAll", "app", "El búho descansa por hoy.", waitUntil);
     try {

@@ -1,0 +1,37 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { daysLeft, practiceBlocked, trialBanner, paywallView, plansView, WARN_DAYS } from "../public/access.js";
+
+const DAY = 86400000;
+const now = Date.UTC(2026, 11, 1, 15);
+const acct = (access, extra = {}) => ({ mode: "account", role: "student", managedByParent: false, access, ...extra });
+
+test("only students with an expired trial are blocked; demo and free never are", () => {
+  assert.equal(practiceBlocked(acct({ status: "expired" })), true);
+  assert.equal(practiceBlocked(acct({ status: "trial", endsAt: now + DAY })), false);
+  assert.equal(practiceBlocked(acct({ status: "free" })), false);
+  assert.equal(practiceBlocked(acct({ status: "expired" }, { role: "parent" })), false, "parents keep their panel");
+  assert.equal(practiceBlocked({ mode: "demo", role: "student" }), false);
+  assert.equal(practiceBlocked(acct(undefined)), false, "no info yet: never block");
+});
+
+test("the countdown shows only in the last days and only to whoever pays", () => {
+  assert.equal(daysLeft({ endsAt: now + 2.5 * DAY }, now), 3);
+  assert.equal(trialBanner(acct({ status: "trial", endsAt: now + (WARN_DAYS + 2) * DAY, via: "self" }), now), "");
+  assert.match(trialBanner(acct({ status: "trial", endsAt: now + 3 * DAY, via: "self" }), now), /Te quedan 3 días de prueba gratis/);
+  assert.match(trialBanner(acct({ status: "trial", endsAt: now + 3 * 3600_000, via: "self" }), now), /Hoy es tu último día/);
+  assert.equal(trialBanner(acct({ status: "trial", endsAt: now + DAY, via: "parent" }, { managedByParent: true }), now), "", "a child never sees prices or countdowns");
+  assert.match(trialBanner(acct({ status: "trial", endsAt: now + DAY, via: "self" }, { role: "parent" }), now), /Ver planes/);
+  assert.match(trialBanner(acct({ status: "trial", endsAt: now + DAY, via: "self" }, { role: "teacher" }), now), /piloto/);
+});
+
+test("the pause screen keeps progress safe and talks to the child, not about money", () => {
+  const child = paywallView(acct({ status: "expired" }, { managedByParent: true }));
+  assert.match(child, /Tu avance está guardado/);
+  assert.match(child, /pídele a tu apoderado/);
+  assert.doesNotMatch(child, /\$|Ver planes/);
+  assert.match(paywallView(acct({ status: "expired", via: "self" })), /Ver planes/);
+  assert.match(plansView(acct({ status: "trial", endsAt: now + 2 * DAY }), now), /quedan 2 días/);
+  assert.match(plansView(acct({ status: "expired" }), now), /\$9\.990.*\$18\.990/s);
+  assert.match(plansView(acct({ status: "expired" }), now), /Muy pronto/, "no fake pay button before Flow is ready");
+});

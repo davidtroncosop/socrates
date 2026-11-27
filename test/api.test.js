@@ -831,3 +831,90 @@ test("security hardening: HSTS headers, same-origin enforcement, unbiased classC
   });
   assert.equal(blocked.status, 403);
 });
+
+// Prueba gratis de 14 días y acceso -------------------------------------------
+const DAYS = 86400000;
+const age = (e, email, days) =>
+  e.DB.prepare("UPDATE users SET created_at = ? WHERE email = ?").bind(Date.now() - days * DAYS, email).run();
+
+test("without BILLING_START everything stays free, so this can ship before payments", async () => {
+  const e = env();
+  const c = client(e);
+  await student(c, "Ana", "ana@x.cl");
+  await age(e, "ana@x.cl", 400);
+  assert.deepEqual((await c.call("GET", "/api/me")).body.access, { status: "free", endsAt: null, via: null });
+});
+
+test("a new account gets 14 free days; after that progress still syncs but the AI pauses", async () => {
+  const e = env({ BILLING_START: "2026-01-01", OPENROUTER_API_KEY: "k" });
+  const c = client(e);
+  await student(c, "Ana", "ana@x.cl");
+  let { access } = (await c.call("GET", "/api/me")).body;
+  assert.equal(access.status, "trial");
+  assert.equal(access.via, "self");
+  assert.ok(Math.abs(access.endsAt - (Date.now() + 14 * DAYS)) < 60_000);
+
+  await age(e, "ana@x.cl", 15);
+  access = (await c.call("GET", "/api/me")).body.access;
+  assert.equal(access.status, "expired");
+  assert.equal((await c.call("PUT", "/api/progress", { state: state({ completed: ["equations"] }) })).status, 200, "progress is never lost");
+  await withGemini(geminiSays({ message: "hola" }), async (calls) => {
+    const res = await c.call("POST", "/api/coach/reflection", reflectionBody());
+    assert.equal(res.status, 402);
+    assert.match(res.body.error, /quedó guardado/);
+    assert.equal((await c.call("POST", "/api/work/review", reviewBody())).status, 402);
+    assert.equal((await c.call("POST", "/api/coach/encouragement", {})).status, 402);
+    assert.equal(calls.length, 0, "nothing reaches the AI after the trial");
+  });
+});
+
+test("accounts created before billing starts get their 14 days from the start date", async () => {
+  const start = new Date(Date.now() - 3 * DAYS).toISOString().slice(0, 10);
+  const e = env({ BILLING_START: start });
+  const c = client(e);
+  await student(c, "Ana", "ana@x.cl");
+  await age(e, "ana@x.cl", 300);
+  const { access } = (await c.call("GET", "/api/me")).body;
+  assert.equal(access.status, "trial");
+  assert.ok(access.endsAt > Date.now() + 10 * DAYS);
+});
+
+test("children ride on their parent's trial or plan, and have no trial of their own", async () => {
+  const e = env({ BILLING_START: "2026-01-01" });
+  const mom = client(e), kid = client(e);
+  await parent(mom, "Carla", "carla@correo.cl");
+  await mom.call("POST", "/api/family/children", { name: "Tomás", username: "tomas.r", password: "clave-tomas" });
+  await kid.call("POST", "/api/auth/login", { login: "tomas.r", password: "clave-tomas" });
+  assert.deepEqual(
+    [(await kid.call("GET", "/api/me")).body.access.status, (await kid.call("GET", "/api/me")).body.access.via],
+    ["trial", "parent"],
+  );
+  await age(e, "carla@correo.cl", 20);
+  assert.equal((await kid.call("GET", "/api/me")).body.access.status, "expired", "the child's own new account does not restart the trial");
+  const paidUntil = Date.now() + 30 * DAYS;
+  await e.DB.prepare("UPDATE users SET paid_until = ? WHERE email = 'carla@correo.cl'").bind(paidUntil).run();
+  assert.deepEqual((await kid.call("GET", "/api/me")).body.access, { status: "paid", endsAt: paidUntil, via: "parent" });
+});
+
+test("students in a class ride on their teacher's access; admins are always free", async () => {
+  const e = env({ BILLING_START: "2026-01-01" });
+  const teacher = client(e), teen = client(e), admin = client(e);
+  await teacher.call("POST", "/api/auth/register", { name: "Profe", email: "profe@colegio.cl", role: "teacher", password: "clave-segura" });
+  const course = (await teacher.call("POST", "/api/classes", { name: "7B" })).body.course;
+  await student(teen, "Sofía", "sofia@liceo.cl");
+  await teen.call("POST", "/api/classes/join", { code: course.code });
+  await age(e, "sofia@liceo.cl", 20);
+  assert.deepEqual(
+    [(await teen.call("GET", "/api/me")).body.access.status, (await teen.call("GET", "/api/me")).body.access.via],
+    ["trial", "school"],
+  );
+  await age(e, "profe@colegio.cl", 20);
+  assert.equal((await teen.call("GET", "/api/me")).body.access.status, "expired");
+  // Piloto con un colegio: se marca pagada la cuenta del docente.
+  await e.DB.prepare("UPDATE users SET paid_until = ? WHERE email = 'profe@colegio.cl'").bind(Date.now() + 60 * DAYS).run();
+  assert.equal((await teen.call("GET", "/api/me")).body.access.status, "paid");
+
+  await student(admin, "Admin", "admin@socatres.cl");
+  await age(e, "admin@socatres.cl", 400);
+  assert.equal((await admin.call("GET", "/api/me")).body.access.status, "free");
+});

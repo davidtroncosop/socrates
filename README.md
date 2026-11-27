@@ -5,7 +5,7 @@ Espacio de aprendizaje autónomo, al estilo Duolingo, de matemática y comprensi
 ## Ejecutar
 
 ```sh
-npm test                 # 170 pruebas (Node 22+)
+npm test                 # 180 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
@@ -77,6 +77,16 @@ Módulos del cliente (`public/`):
 - «Trae tu ejercicio» para ecuaciones `ax + b = cx + d`.
 - **Video animado de cada lección:** las 135 lecciones tienen un video propio, animado y narrado, con subtítulos y metáforas visuales (la balanza y la bolsa misteriosa, el ascensor de los enteros, la cabra del círculo, las baldosas de Pitágoras…). Se guarda en R2 y se sirve desde el mismo sitio (`/media/…`), así que no depende de YouTube ni carga nada de terceros. Tiene prioridad sobre el video de YouTube que defina el catálogo y sigue las mismas reglas de dónde aparece.
 - **Videos de YouTube opcionales** por lección, con tramo de inicio y fin. Aparecen en la lección inicial y en la segunda pista de las tres primeras fases; nunca en el desafío de autonomía ni en los repasos, donde se confirma el dominio. Hasta que el estudiante pulsa ▶ la página no hace ninguna petición a Google (ni siquiera la miniatura); luego se usa `youtube-nocookie.com`. Si YouTube está bloqueado, la lección funciona igual y se ofrece un enlace directo. Ver el video queda registrado (`watched`), no cuenta para el dominio, y el apoderado ve cuántos videos vio. Las lecciones con video llevan la etiqueta 🎬 en la ruta.
+
+## Prueba gratis y planes
+
+Cada cuenta que paga (apoderado, estudiante de 14 años o más, docente) tiene **14 días gratis sin tarjeta** desde que se crea. Un estudiante puede practicar si tiene acceso él, alguno de sus apoderados vinculados o el docente de alguno de sus cursos; las cuentas que crea un apoderado o un docente no tienen prueba propia. La regla está en `functions/_lib/access.js` y `GET /api/me` devuelve `access` (`free`, `trial`, `paid` o `expired`).
+
+- **Se activa con `BILLING_START`** (fecha `AAAA-MM-DD`, medianoche de Chile): `npx wrangler pages secret put BILLING_START --project-name=socatres`. Sin esa variable todo es gratis. Las cuentas creadas antes de esa fecha cuentan sus 14 días desde ella, así nadie queda bloqueado el día que se activa.
+- **Al vencer no se pierde nada:** el progreso se sigue guardando y sincronizando, y el estudiante puede mirar su ruta, su cuaderno y «Mi familia». Solo se pausa empezar práctica nueva (lección, hoja del día, repaso, diagnóstico, «Trae tu ejercicio»), con una pantalla que le pide hablar con su apoderado, y el servidor responde 402 a todo lo que usa IA. Apoderados y docentes siguen viendo sus paneles.
+- **Avisos:** solo quien paga ve la cuenta regresiva, y solo los últimos 5 días; un menor nunca ve precios. `#planes` muestra los planes de la portada (`PLANS` en `public/access.js`: si cambias los precios, cambia los dos).
+- **Pago:** todavía no hay cobro con tarjeta; la página de planes lo avisa. Cuando exista, el cobro llenará `users.paid_until` (migración `0010_acceso.sql`).
+- **Piloto con un colegio:** se marca pagada la cuenta del docente y quedan cubiertos los estudiantes de sus cursos: `npx wrangler d1 execute socatres --remote --command "UPDATE users SET paid_until = <ms> WHERE email = 'docente@colegio.cl'"`.
 
 ## Cuentas, familia y catálogo
 

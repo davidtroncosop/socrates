@@ -1289,3 +1289,45 @@ test("tras el calentamiento la tarjeta propone el diagnóstico; con avance, lo d
   assert.match(html, /Continuar lección →/);
   assert.match(html, /next-step-foot[\s\S]*Hacer diagnóstico →/);
 });
+
+test("when the trial ends a student can look at everything but starting practice shows the pause", async () => {
+  const session = {
+    mode: "account", userId: "u1", name: "Ana", role: "student", expiresAt: later, managedByParent: true,
+    access: { status: "expired", endsAt: Date.now() - 86400000, via: null },
+  };
+  const fetch = async (path, init = {}) => ({
+    ok: true, status: 200,
+    json: async () => (init.method === "GET" ? { state: null, updatedAt: 0 } : { updatedAt: 1 }),
+  });
+  const h = await harness({ version: 1, diagnosed: true, completed: ["equations"], mastered: [], attempts: [], notes: [], reviews: [] }, { key: "socatres.v1.u1", session, fetch });
+  assert.match(h.node("#app").innerHTML, /data-action="lesson:/, "the route is still visible");
+  h.click("lesson:signs");
+  assert.match(h.node("#app").innerHTML, /Tu avance está guardado/);
+  assert.match(h.node("#app").innerHTML, /pídele a tu apoderado/);
+  h.click("daily");
+  assert.match(h.node("#app").innerHTML, /Tu avance está guardado/);
+  globalThis.location.hash = "#hoja";
+  h.click("go:hoja");
+  assert.match(h.node("#app").innerHTML, /Tu avance está guardado/, "the daily sheet page is paused too");
+  globalThis.location.hash = "#cuaderno";
+  h.click("go:cuaderno");
+  assert.match(h.node("#app").innerHTML, /Mi cuaderno/, "the notebook stays open");
+});
+
+test("an older student in the last trial days sees a gentle notice and the plans page", async () => {
+  const session = {
+    mode: "account", userId: "u2", name: "Sofía", role: "student", expiresAt: later,
+    access: { status: "trial", endsAt: Date.now() + 2 * 86400000 + 1000, via: "self" },
+  };
+  const fetch = async (path, init = {}) => ({
+    ok: true, status: 200,
+    json: async () => (init.method === "GET" ? { state: null, updatedAt: 0 } : { updatedAt: 1 }),
+  });
+  const h = await harness({ version: 1, diagnosed: true, completed: [], mastered: [], attempts: [], notes: [], reviews: [] }, { key: "socatres.v1.u2", session, fetch });
+  assert.match(h.node("#app").innerHTML, /Te quedan 3 días de prueba gratis/);
+  h.click("lesson:equations");
+  assert.doesNotMatch(h.node("#app").innerHTML, /Tu avance está guardado/, "still practicing during the trial");
+  globalThis.location.hash = "#planes";
+  h.click("go:planes");
+  assert.match(h.node("#app").innerHTML, /Plan Familia/);
+});
