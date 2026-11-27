@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import { handle, summarize } from "../functions/_lib/router.js";
-import { hashPassword, verifyPassword, constantTimeEqual } from "../functions/_lib/crypto.js";
+import { hashPassword, verifyPassword, constantTimeEqual, classCode } from "../functions/_lib/crypto.js";
 import { seedCatalog } from "../public/content.js";
 
 const migrations = readdirSync(new URL("../migrations/", import.meta.url)).filter((f) => f.endsWith(".sql")).sort();
@@ -726,4 +726,108 @@ test("school pilot inquiries validate, block spam honeypot, notify linked admin 
     { "cf-connecting-ip": "10.0.0.2" },
   );
   assert.equal(throttled.status, 429);
+});
+
+test("security hardening: HSTS headers, same-origin enforcement, unbiased classCode and authenticated password change", async () => {
+  // 1) _headers incluye HSTS y directivas CSP estrictas.
+  const headersFile = readFileSync(new URL("../public/_headers", import.meta.url), "utf8");
+  assert.match(headersFile, /Strict-Transport-Security:\s*max-age=31536000;\s*includeSubDomains/);
+
+  // 2) classCode sin sesgo módulo genera solo caracteres permitidos del alfabeto.
+  for (let i = 0; i < 40; i++) {
+    const code = classCode(12);
+    assert.match(code, /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{12}$/);
+  }
+
+  const e = env();
+  const phone = client(e);
+  const laptop = client(e);
+  await parent(phone, "Mamá", "mama@seguridad.cl");
+  await laptop.call("POST", "/api/auth/login", { login: "mama@seguridad.cl", password: "clave-segura" });
+
+  // 3) Respuestas API incluyen cabeceras defensivas (HSTS, X-Frame-Options, Referrer-Policy).
+  const rawRes = await handle(new Request("https://socatres.test/api/catalog"), e);
+  assert.equal(rawRes.headers.get("x-frame-options"), "DENY");
+  assert.equal(rawRes.headers.get("referrer-policy"), "no-referrer");
+  assert.match(rawRes.headers.get("strict-transport-security") || "", /max-age=31536000/);
+
+  // 4) Mutaciones rechazan Origin distinto, Origin: null o Sec-Fetch-Site: cross-site.
+  assert.equal(
+    (await phone.call("PUT", "/api/progress", { state: state() }, { origin: "https://atacante.test" })).status,
+    403,
+  );
+  assert.equal(
+    (await phone.call("PUT", "/api/progress", { state: state() }, { origin: "null" })).status,
+    403,
+  );
+  assert.equal(
+    (await phone.call("PUT", "/api/progress", { state: state() }, { "sec-fetch-site": "cross-site" })).status,
+    403,
+  );
+  assert.equal(
+    (
+      await phone.call(
+        "PUT",
+        "/api/progress",
+        { state: state() },
+        { origin: "https://socatres.test", "sec-fetch-site": "same-origin" },
+      )
+    ).status,
+    200,
+  );
+
+  // 5) Cambio de contraseña autenticado exige clave actual, rota cookie y cierra otras sesiones.
+  assert.equal(
+    (await client(e).call("POST", "/api/auth/password", { currentPassword: "clave-segura", newPassword: "nueva-clave-123" })).status,
+    401,
+  );
+  assert.equal(
+    (await phone.call("POST", "/api/auth/password", { currentPassword: "incorrecta", newPassword: "nueva-clave-123" })).status,
+    401,
+  );
+  assert.equal(
+    (await phone.call("POST", "/api/auth/password", { currentPassword: "clave-segura", newPassword: "clave-segura" })).status,
+    400,
+  );
+  assert.equal(
+    (await phone.call("POST", "/api/auth/password", { currentPassword: "clave-segura", newPassword: "corta" })).status,
+    400,
+  );
+  const oldCookie = phone.cookie;
+  const changed = await phone.call("POST", "/api/auth/password", {
+    currentPassword: "clave-segura",
+    newPassword: "nueva-clave-segura",
+  });
+  assert.equal(changed.status, 200);
+  assert.equal(changed.body.ok, true);
+  assert.notEqual(phone.cookie, oldCookie, "session cookie rotates on password change");
+  assert.equal((await phone.call("GET", "/api/me")).status, 200, "current session stays active");
+  assert.equal((await laptop.call("GET", "/api/me")).status, 401, "other sessions are revoked");
+  assert.equal(
+    (await laptop.call("POST", "/api/auth/login", { login: "mama@seguridad.cl", password: "clave-segura" })).status,
+    401,
+  );
+  assert.equal(
+    (await laptop.call("POST", "/api/auth/login", { login: "mama@seguridad.cl", password: "nueva-clave-segura" })).status,
+    200,
+  );
+
+  // 6) Menores creados por apoderado no cambian su propia contraseña (la gestiona el apoderado).
+  await phone.call("POST", "/api/family/children", {
+    name: "Leo",
+    username: "leo.seguro",
+    password: "clave-inicial",
+  });
+  const child = client(e);
+  const childLogin = await child.call("POST", "/api/auth/login", {
+    login: "leo.seguro",
+    password: "clave-inicial",
+  });
+  assert.equal(childLogin.status, 200);
+  assert.equal(childLogin.body.user.managedByParent, true);
+  const blocked = await child.call("POST", "/api/auth/password", {
+    currentPassword: "clave-inicial",
+    newPassword: "otra-clave-123",
+  });
+  assert.equal(blocked.status, 403);
 });

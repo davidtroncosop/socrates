@@ -2549,11 +2549,46 @@ if (synced) {
   $("#privacy-delete-note").textContent =
     "Borrar el progreso lo elimina aquí y en tu cuenta. Eliminar la cuenta borra además tus datos personales y tus vínculos familiares. Si eres apoderado, también se eliminan las cuentas de estudiantes que creaste.";
   $("#delete-account").hidden = false;
+  const pwSection = $("#password-section");
+  if (pwSection) pwSection.hidden = Boolean(account.managedByParent);
   // Identificador de la cuenta, para configurar administradores (ADMIN_IDS).
   const id = document.createElement("p");
   id.className = "muted";
   id.textContent = `Identificador de tu cuenta: ${account.userId}`;
   $("#privacy-delete-note").after(id);
+}
+const pwForm = $("#change-password-form");
+if (pwForm) {
+  pwForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const status = $("#password-status");
+    const button = pwForm.querySelector('button[type="submit"]');
+    const data = Object.fromEntries(new FormData(pwForm));
+    status.className = "feedback";
+    if (String(data.newPassword || "").length < 8) {
+      status.textContent = "La nueva contraseña debe tener al menos 8 caracteres.";
+      return;
+    }
+    if (data.newPassword !== data.confirmPassword) {
+      status.textContent = "Las contraseñas nuevas no coinciden.";
+      return;
+    }
+    status.textContent = "";
+    button.disabled = true;
+    try {
+      await api.changePassword({
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      });
+      pwForm.reset();
+      status.className = "feedback good";
+      status.textContent = "Contraseña actualizada. Se cerraron tus otras sesiones.";
+    } catch (err) {
+      status.textContent = err.message;
+    } finally {
+      button.disabled = false;
+    }
+  };
 }
 $("#delete-account").onclick = async () => {
   if (

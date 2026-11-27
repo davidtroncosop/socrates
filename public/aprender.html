@@ -91,6 +91,39 @@
         Borrar los datos elimina tus intentos, repasos y notas de este
         dispositivo.
       </p>
+      <details id="password-section" class="privacy-password" hidden>
+        <summary>Cambiar mi contraseña</summary>
+        <form id="change-password-form" class="privacy-password-form">
+          <label for="pw-current">Contraseña actual</label>
+          <input
+            id="pw-current"
+            name="currentPassword"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+          <label for="pw-new">Nueva contraseña (mínimo 8 caracteres)</label>
+          <input
+            id="pw-new"
+            name="newPassword"
+            type="password"
+            autocomplete="new-password"
+            minlength="8"
+            required
+          />
+          <label for="pw-confirm">Repite la nueva contraseña</label>
+          <input
+            id="pw-confirm"
+            name="confirmPassword"
+            type="password"
+            autocomplete="new-password"
+            minlength="8"
+            required
+          />
+          <button type="submit" class="primary">Guardar nueva contraseña</button>
+          <p id="password-status" role="status" class="feedback"></p>
+        </form>
+      </details>
       <div class="actions">
         <button id="close-privacy">Volver</button
         ><button id="delete-data" class="danger">Borrar mi progreso</button

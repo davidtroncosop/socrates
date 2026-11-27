@@ -73,8 +73,17 @@ export async function verifyPassword(password, stored) {
 }
 
 // Sin 0/O ni 1/I/L para que el código se pueda dictar en clase.
+// Rechaza bytes >= 248 (mayor múltiplo de 31 <= 256) para eliminar sesgo módulo.
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const CODE_LIMIT = Math.floor(256 / CODE_ALPHABET.length) * CODE_ALPHABET.length;
 export function classCode(length = 6) {
-  const bytes = crypto.getRandomValues(new Uint8Array(length));
-  return Array.from(bytes, (b) => CODE_ALPHABET[b % CODE_ALPHABET.length]).join("");
+  let out = "";
+  const buf = new Uint8Array(Math.max(16, length * 2));
+  while (out.length < length) {
+    crypto.getRandomValues(buf);
+    for (let i = 0; i < buf.length && out.length < length; i++) {
+      if (buf[i] < CODE_LIMIT) out += CODE_ALPHABET[buf[i] % CODE_ALPHABET.length];
+    }
+  }
+  return out;
 }

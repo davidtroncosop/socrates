@@ -35,6 +35,7 @@ export const api = {
   getProgress: () => request("GET", "/api/progress"),
   putProgress: (state) => request("PUT", "/api/progress", { state }),
   recover: (data) => request("POST", "/api/auth/recover", data),
+  changePassword: (data) => request("POST", "/api/auth/password", data),
   family: () => request("GET", "/api/family"),
   createChild: (data) => request("POST", "/api/family/children", data),
   linkCode: () => request("POST", "/api/family/link-code", {}),

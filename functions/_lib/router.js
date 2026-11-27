@@ -48,6 +48,9 @@ const json = (data, status = 200, headers = {}) =>
       "content-type": "application/json; charset=utf-8",
       "cache-control": "no-store",
       "x-content-type-options": "nosniff",
+      "x-frame-options": "DENY",
+      "referrer-policy": "no-referrer",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
       ...headers,
     },
   });
@@ -153,6 +156,7 @@ const publicUser = (env, u) => ({
   username: u.username ?? null,
   role: u.role,
   isAdmin: isAdmin(env, u),
+  managedByParent: Boolean(u.consent_by),
 });
 // Hash PBKDF2 ficticio e inmutable para igualar el tiempo cuando la cuenta no existe.
 const DUMMY_HASH =
@@ -298,6 +302,7 @@ const LIMITS = {
   loginAccount: [10, 15 * 60_000],
   register: [10, 60 * 60_000],
   recover: [5, 60 * 60_000],
+  passwordChange: [10, 60 * 60_000],
   link: [10, 15 * 60_000],
   metrics: [200, 15 * 60_000],
   // Cada revisión de foto tiene costo: un tope generoso por cuenta.
@@ -393,6 +398,28 @@ const routes = {
     if (token)
       await env.DB.prepare("DELETE FROM sessions WHERE token_hash = ?").bind(await sha256(token)).run();
     return json({ ok: true }, 200, { "set-cookie": sessionCookie(request, "", 0) });
+  },
+
+  // Cambio de contraseña desde sesión iniciada: exige la clave actual, cierra
+  // todas las demás sesiones y rota la cookie actual. Menores creados por su
+  // apoderado cambian su clave desde «Mi familia».
+  async "POST /api/auth/password"({ request, env, user, waitUntil }) {
+    if (user.consent_by)
+      fail(403, "Tu apoderado gestiona tu contraseña desde «Mi familia».");
+    await limit(env, "passwordChange", user.id, undefined, waitUntil);
+    await limit(env, "passwordChange", clientIp(request), undefined, waitUntil);
+    const body = await readJson(request);
+    const current = String(body.currentPassword || "");
+    const valid = await verifyPassword(current, user.password_hash);
+    if (!valid) fail(401, "La contraseña actual no coincide.");
+    const nextPassword = cleanPassword(body.newPassword);
+    if (nextPassword === current)
+      fail(400, "Elige una contraseña distinta a la actual.");
+    await env.DB.prepare("UPDATE users SET password_hash = ? WHERE id = ?")
+      .bind(await hashPassword(nextPassword), user.id)
+      .run();
+    await env.DB.prepare("DELETE FROM sessions WHERE user_id = ?").bind(user.id).run();
+    return startSession(request, env, user, { ok: true }, waitUntil);
   },
 
   async "GET /api/me"({ env, user }) {
@@ -903,12 +930,27 @@ function match(method, pathname) {
   return null;
 }
 
+const MUTATING = new Set(["POST", "PUT", "DELETE", "PATCH"]);
+const ORIGIN_EXEMPT = new Set(["POST /api/telegram/webhook"]);
+
+function assertSameOrigin(request, routeKey) {
+  if (!MUTATING.has(request.method) || ORIGIN_EXEMPT.has(routeKey)) return;
+  const expected = new URL(request.url).origin;
+  const origin = request.headers.get("origin");
+  if (origin !== null && origin !== expected)
+    fail(403, "Origen de la petición no permitido.");
+  const fetchSite = (request.headers.get("sec-fetch-site") || "").toLowerCase();
+  if (fetchSite === "cross-site")
+    fail(403, "Origen de la petición no permitido.");
+}
+
 export async function handle(request, env, waitUntil) {
   let pathname = "";
   try {
     ({ pathname } = new URL(request.url));
     const route = match(request.method, pathname);
     if (!route) fail(404, "Ruta no encontrada.");
+    assertSameOrigin(request, route.key);
     const user = PUBLIC.has(route.key) ? null : await currentUser(request, env);
     if (!PUBLIC.has(route.key) && !user) fail(401, "Tu sesión terminó. Vuelve a entrar.");
     return await routes[route.key]({ request, env, user, params: route.params, waitUntil });

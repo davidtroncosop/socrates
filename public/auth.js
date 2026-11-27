@@ -42,6 +42,7 @@ export function startAccountSession(storage, user, now = Date.now()) {
     role: user.role,
     // Solo para mostrar u ocultar el mantenedor; el servidor valida cada cambio.
     isAdmin: user.isAdmin === true,
+    managedByParent: user.managedByParent === true,
     expiresAt: now + 30 * DAY,
   };
   storage.setItem(SESSION_KEY, JSON.stringify(session));
