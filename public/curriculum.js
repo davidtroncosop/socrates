@@ -6079,9 +6079,9 @@ export const curriculumLessons = [
     "since": "2026-10-16",
     "title": "Vectores",
     "subject": "matematica",
-    "grade": "2m",
-    "description": "MA2M OA 09 · Flechas que se suman",
-    "concept": "Un vector es una flecha: dice cuánto avanzar en x y cuánto en y. Para sumar vectores, suma las x con las x y las y con las y. El largo (módulo) de (a, b) se calcula con Pitágoras: √(a² + b²).\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/2-medio/ma2m-oa-09\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "grade": "1m",
+    "description": "MA1M OA 11 · Flechas que se suman",
+    "concept": "Un vector es una flecha: dice cuánto avanzar en x y cuánto en y. Para sumar vectores, suma las x con las x y las y con las y. El largo (módulo) de (a, b) se calcula con Pitágoras: √(a² + b²).\nReferencia curricular (MINEDUC): https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/1-medio/ma1m-oa-11\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "(2, 3) + (4, −1) = (6, 2). El módulo de (3, 4) es √(9 + 16) = 5.",
     "status": "published",
     "questions": [
@@ -11077,9 +11077,9 @@ export const curriculumLessons = [
     "since": "2026-11-27",
     "title": "Rectas y circunferencias en el plano",
     "subject": "matematica",
-    "grade": "3m",
-    "description": "3° Medio · Distancias, punto medio y circunferencia",
-    "concept": "En el plano cartesiano, la distancia entre dos puntos se calcula con Pitágoras, el punto medio promedia las coordenadas y la circunferencia de centro (a, b) y radio r es (x − a)² + (y − b)² = r².\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° Medio.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "grade": "4m",
+    "description": "FG-4M OA 4 · Distancias, punto medio y circunferencia",
+    "concept": "En el plano cartesiano, la distancia entre dos puntos se calcula con Pitágoras, el punto medio promedia las coordenadas y la circunferencia de centro (a, b) y radio r es (x − a)² + (y − b)² = r².\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 4° Medio, OA 4.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
     "examples": "Entre (0, 0) y (7, 24) la distancia es √(49 + 576) = √625 = 25. El punto medio de (2, 4) y (10, 8) es (6, 6).",
     "status": "published",
     "questions": [
@@ -11150,6 +11150,1324 @@ export const curriculumLessons = [
         [
           169,
           "Falta sacar la raíz."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-calendario",
+    "since": "2026-11-28",
+    "title": "Calendarios y líneas de tiempo",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA03 OA 19 · Días, semanas y años",
+    "concept": "Un calendario ordena los días en semanas y meses; una línea de tiempo ordena hechos por año. Para saber cuánto tiempo pasó, resta la fecha menor a la mayor. Una semana tiene 7 días.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° Básico, OA 19.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Del 4 al 11 de mayo pasan 11 − 4 = 7 días: una semana. Y de 1998 a 2010 pasan 12 años.",
+    "status": "published",
+    "questions": [
+      [
+        "Del 9 al 21 de marzo: ¿cuántos días después?",
+        12,
+        "Hoy es 9 de marzo. ¿Cuántos días faltan para el 21 de marzo?",
+        "📅 Cuenta los días que avanzas desde hoy, sin contar el día de hoy.",
+        "21 − 9 = 12 días.",
+        [
+          [
+            13,
+            "Contaste también el día de partida."
+          ]
+        ]
+      ],
+      [
+        "5 semanas = ? días",
+        35,
+        "¿Cuántos días son 5 semanas?",
+        "Una semana tiene 7 días.",
+        "5 · 7 = 35 días.",
+        [
+          [
+            12,
+            "Se multiplica: son 7 días por cada semana."
+          ]
+        ]
+      ],
+      [
+        "Línea de tiempo: de 2006 a 2026",
+        20,
+        "En una línea de tiempo, un hecho ocurrió en 2006. ¿Cuántos años pasaron hasta 2026?",
+        "Resta el año menor al año mayor.",
+        "2026 − 2006 = 20 años.",
+        [
+          [
+            21,
+            "Revisa la resta: no se cuenta un año extra."
+          ]
+        ]
+      ],
+      [
+        "4 semanas y 6 días: ¿cuántos días?",
+        34,
+        "Unas vacaciones duran 4 semanas y 6 días. ¿Cuántos días son en total?",
+        "Pasa las semanas a días y suma los días sueltos.",
+        "4 · 7 = 28; 28 + 6 = 34 días.",
+        [
+          [
+            10,
+            "Las semanas tienen 7 días cada una."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "6 semanas y 2 días: ¿cuántos días?",
+      44,
+      "Unas vacaciones duran 6 semanas y 2 días. ¿Cuántos días son en total?",
+      "Pasa las semanas a días y suma los días sueltos.",
+      "6 · 7 = 42; 42 + 2 = 44 días.",
+      [
+        [
+          8,
+          "Las semanas tienen 7 días cada una."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-redes-vistas",
+    "since": "2026-11-28",
+    "title": "Redes y vistas de cuerpos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 16 · Desarmar cajas y mirarlas desde distintos lados",
+    "concept": "La red de un cuerpo es la figura plana que queda al desarmarlo: un prisma tiene dos bases y un rectángulo por cada lado de la base; una pirámide tiene una base y un triángulo por cada lado. Un mismo cuerpo se ve distinto de frente, de lado y desde arriba.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° y 4° Básico, OA 15 y OA 16.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "La red de un cubo tiene 6 cuadrados. Una torre de 3 cubos apilados se ve de frente como 3 cuadrados en columna y desde arriba como un solo cuadrado.",
+    "status": "published",
+    "questions": [
+      [
+        "Red de un prisma de base hexagonal: figuras",
+        8,
+        "Si recortas y despliegas un prisma de base hexagonal (6 lados), ¿cuántas figuras tiene su red?",
+        "📦 La red tiene las dos bases y un rectángulo por cada lado de la base.",
+        "2 bases + 6 rectángulos = 8 figuras.",
+        [
+          [
+            6,
+            "Faltan las dos bases."
+          ],
+          [
+            7,
+            "Un prisma tiene dos bases, no una."
+          ]
+        ]
+      ],
+      [
+        "Red de una pirámide de base pentagonal: figuras",
+        6,
+        "Si despliegas una pirámide de base pentagonal (5 lados), ¿cuántas figuras tiene su red?",
+        "🔺 La red tiene la base y un triángulo por cada lado de la base.",
+        "1 base + 5 triángulos = 6 figuras.",
+        [
+          [
+            7,
+            "La pirámide tiene una sola base."
+          ]
+        ]
+      ],
+      [
+        "Muro de 3 por 3 cubos: vista de frente",
+        9,
+        "Un muro tiene 3 cubos de largo, 3 de alto y 1 de fondo. Mirándolo de frente, ¿cuántos cuadrados ves?",
+        "De frente ves cada fila y cada columna de cubos.",
+        "3 filas de 3 cuadrados: 9.",
+        [
+          [
+            3,
+            "Esa es la vista desde arriba."
+          ]
+        ]
+      ],
+      [
+        "Muro de 8 por 5 cubos: vista desde arriba",
+        8,
+        "Un muro tiene 8 cubos de largo, 5 de alto y 1 de fondo. Mirándolo desde arriba, ¿cuántos cuadrados ves?",
+        "Desde arriba solo ves la última fila de cubos.",
+        "Desde arriba se ve una fila de 8 cuadrados.",
+        [
+          [
+            40,
+            "Esa es la vista de frente."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Muro de 8 por 2 cubos: vista desde arriba",
+      8,
+      "Un muro tiene 8 cubos de largo, 2 de alto y 1 de fondo. Mirándolo desde arriba, ¿cuántos cuadrados ves?",
+      "Desde arriba solo ves la última fila de cubos.",
+      "Desde arriba se ve una fila de 8 cuadrados.",
+      [
+        [
+          16,
+          "Esa es la vista de frente."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-diagrama-puntos",
+    "since": "2026-11-28",
+    "title": "Diagrama de puntos y juegos al azar",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA03 OA 26 · Un punto por cada resultado",
+    "concept": "En un diagrama de puntos se dibuja un punto sobre cada resultado cada vez que aparece. Así se ve de un vistazo qué salió más veces (la columna más alta) y qué salió menos.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° Básico, OA 24 y OA 26.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Si un dado da 3, 6, 3, 1, 3, el 3 tiene tres puntos y es el que más salió; el 1 y el 6 tienen un punto cada uno.",
+    "status": "published",
+    "questions": [
+      [
+        "Dado: 3, 3, 4, 5, 5, 5, 6, 6, 6, 6. ¿Puntos sobre el 3?",
+        2,
+        "Lanzaste un dado varias veces y anotaste: 3, 3, 4, 5, 5, 5, 6, 6, 6, 6. En un diagrama de puntos, ¿cuántos puntos van sobre el 3?",
+        "Cada vez que sale un número, se dibuja un punto sobre él.",
+        "El 3 salió 2 veces: 2 puntos.",
+        [
+          [
+            3,
+            "Ese es el número. Se pide cuántas veces salió."
+          ]
+        ]
+      ],
+      [
+        "Dado: 1, 1, 1, 1, 2, 3, 3, 6, 6, 6. ¿Qué número salió más?",
+        1,
+        "Anotaste los resultados de un dado: 1, 1, 1, 1, 2, 3, 3, 6, 6, 6. ¿Qué número salió más veces?",
+        "Busca la columna de puntos más alta.",
+        "El 1 salió 4 veces: es el que más salió.",
+        [
+          [
+            4,
+            "Eso es cuántas veces salió. Se pide qué número fue."
+          ]
+        ]
+      ],
+      [
+        "Dado: 1, 1, 2, 2, 2, 4, 4, 4, 4, 6. ¿Qué número salió menos?",
+        6,
+        "Anotaste los resultados de un dado: 1, 1, 2, 2, 2, 4, 4, 4, 4, 6. De los que salieron, ¿cuál salió menos veces?",
+        "Busca la columna de puntos más baja.",
+        "El 6 salió una sola vez.",
+        [
+          [
+            4,
+            "Ese es el que más salió."
+          ]
+        ]
+      ],
+      [
+        "Dado: 1, 1, 1, 2, 2, 3, 6, 6, 6, 6. ¿Cuántos resultados mayores que 2?",
+        5,
+        "Anotaste los resultados de un dado: 1, 1, 1, 2, 2, 3, 6, 6, 6, 6. ¿Cuántos resultados son mayores que 2?",
+        "Cuenta los puntos de las columnas que están a la derecha del 2.",
+        "Mayores que 2: 3, 6, 6, 6, 6. Son 5.",
+        [
+          [
+            7,
+            "«Mayor que 2» no incluye al 2."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Dado: 1, 1, 1, 1, 2, 2, 4, 4, 4, 5. ¿Cuántos resultados mayores que 2?",
+      4,
+      "Anotaste los resultados de un dado: 1, 1, 1, 1, 2, 2, 4, 4, 4, 5. ¿Cuántos resultados son mayores que 2?",
+      "Cuenta los puntos de las columnas que están a la derecha del 2.",
+      "Mayores que 2: 4, 4, 4, 5. Son 4.",
+      [
+        [
+          6,
+          "«Mayor que 2» no incluye al 2."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-numeros-grandes",
+    "since": "2026-11-28",
+    "title": "Números grandes",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 01 · Millones, miles y unidades",
+    "concept": "Los números grandes se leen en grupos de tres cifras, de derecha a izquierda: unidades, miles y millones. Cada cifra vale según su lugar, igual que en los números chicos.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 5° Básico, OA 1.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "En 7.050.300 hay 7 millones, 50 mil y 300: se lee «siete millones cincuenta mil trescientos». El 5 vale 50.000.",
+    "status": "published",
+    "questions": [
+      [
+        "¿Cuánto vale el 5 en 5.389.761?",
+        5000000,
+        "Escribe cuánto vale el 5 según su lugar.",
+        "Cuenta los lugares desde la derecha: unidades, decenas, centenas, unidades de mil…",
+        "El 5 está en las millones: 5 · 1.000.000 = 5.000.000.",
+        [
+          [
+            5,
+            "Esa es la cifra; vale según su lugar."
+          ]
+        ]
+      ],
+      [
+        "4 millones 4 mil 847",
+        4004847,
+        "Escribe el número con cifras.",
+        "Arma el número por grupos de tres cifras: millones, miles y lo que queda.",
+        "4 millones = 4.000.000; 4 mil = 4.000; total: 4.004.847.",
+        [
+          [
+            44847,
+            "Cada grupo lleva tres cifras: completa con ceros."
+          ]
+        ]
+      ],
+      [
+        "5.322.000 redondeado al millón",
+        5000000,
+        "Redondea 5.322.000 al millón más cercano.",
+        "Mira la cifra de las centenas de mil: si es 5 o más, sube al millón siguiente.",
+        "Las centenas de mil son 3: queda 5.000.000.",
+        [
+          [
+            6000000,
+            "Revisa la cifra de las centenas de mil."
+          ]
+        ]
+      ],
+      [
+        "¿Cuántos miles completos hay en 8.458.348?",
+        8458,
+        "¿Cuántos miles completos caben en 8.458.348?",
+        "Tapa las tres últimas cifras: lo que queda son los miles.",
+        "8.458.348 tiene 8.458 miles y sobran 348.",
+        [
+          [
+            348,
+            "Eso es lo que sobra, no los miles."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "¿Cuántos miles completos hay en 9.411.178?",
+      9411,
+      "¿Cuántos miles completos caben en 9.411.178?",
+      "Tapa las tres últimas cifras: lo que queda son los miles.",
+      "9.411.178 tiene 9.411 miles y sobran 178.",
+      [
+        [
+          178,
+          "Eso es lo que sobra, no los miles."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-decimales-comparar",
+    "since": "2026-11-28",
+    "title": "Comparar decimales",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 11 · Décimos primero, después centésimos",
+    "concept": "Para comparar decimales, compara primero la parte entera y después cifra por cifra desde la coma: décimos, centésimos, milésimos. Tener más cifras no hace mayor a un número. Una fracción se pasa a decimal dividiendo.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 5° Básico, OA 10 y OA 11.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "0,6 es mayor que 0,58 porque 6 décimos son más que 5. Y 1/4 = 1 ÷ 4 = 0,25.",
+    "status": "published",
+    "questions": [
+      [
+        "2/5 como decimal",
+        0.4,
+        "Escribe 2/5 como número decimal.",
+        "Divide 2 entre 5, o busca una fracción igual con denominador 10, 100 o 1000.",
+        "2/5 = 2 ÷ 5 = 0,4.",
+        [
+          [
+            2.5,
+            "2/5 no se escribe «2,5»: hay que dividir."
+          ]
+        ]
+      ],
+      [
+        "Mayor: 2,05 o 2,5",
+        2.5,
+        "¿Cuál de los dos números es mayor? Escríbelo.",
+        "Compara cifra por cifra desde la coma: primero los décimos, después los centésimos.",
+        "2,5 > 2,05: 2,5 tiene más décimos.",
+        [
+          [
+            2.05,
+            "Tener más cifras no lo hace mayor: compara los décimos."
+          ]
+        ]
+      ],
+      [
+        "Menor: 0,65, 0,66, 0,7",
+        0.65,
+        "¿Cuál es el menor de los tres? Escríbelo.",
+        "Compara primero los enteros, después los décimos y al final los centésimos.",
+        "Ordenados: 0,65 < 0,66 < 0,7.",
+        [
+          [
+            0.7,
+            "Ese es el mayor."
+          ]
+        ]
+      ],
+      [
+        "0,35 = ?/100",
+        35,
+        "Escribe 0,35 como fracción con denominador 100.",
+        "Lee el decimal en centésimos.",
+        "0,35 son 35 centésimos: 35/100.",
+        [
+          [
+            3.5,
+            "Cuenta bien las cifras después de la coma."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "0,125 = ?/1000",
+      125,
+      "Escribe 0,125 como fracción con denominador 1000.",
+      "Lee el decimal en milésimos.",
+      "0,125 son 125 milésimos: 125/1000.",
+      [
+        [
+          12.5,
+          "Cuenta bien las cifras después de la coma."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-paralelas",
+    "since": "2026-11-28",
+    "title": "Paralelas y perpendiculares",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 17 · Rieles y esquinas",
+    "concept": "Dos rectas paralelas van en la misma dirección y nunca se juntan, como los rieles del tren. Dos rectas perpendiculares se cortan formando ángulos rectos (90°), como las esquinas de una hoja.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 5° Básico, OA 17.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Una ventana rectangular tiene 2 pares de lados paralelos y 4 ángulos rectos. Un triángulo no tiene lados paralelos.",
+    "status": "published",
+    "questions": [
+      [
+        "Pares de lados paralelos en un cuadrado",
+        2,
+        "¿Cuántos pares de lados paralelos tiene un cuadrado? Las rectas paralelas nunca se juntan, como los rieles del tren.",
+        "Busca lados que vayan en la misma dirección, sin juntarse nunca.",
+        "Un cuadrado tiene 2 pares de lados paralelos.",
+        [
+          [
+            4,
+            "Se cuentan pares de lados, no lados."
+          ]
+        ]
+      ],
+      [
+        "Ángulos rectos en un triángulo rectángulo",
+        1,
+        "Dos lados perpendiculares forman un ángulo recto (90°). ¿Cuántos ángulos rectos tiene un triángulo rectángulo?",
+        "📐 Un ángulo recto es como la esquina de una hoja.",
+        "Un triángulo rectángulo tiene 1 ángulo recto.",
+        [
+          [
+            2,
+            "Revisa cada esquina."
+          ]
+        ]
+      ],
+      [
+        "Prisma de base pentagonal: aristas paralelas a una arista de pie",
+        4,
+        "En un prisma de base pentagonal, las aristas de pie son paralelas entre sí. Sin contar la arista elegida, ¿cuántas son paralelas a ella?",
+        "Cuenta todas las aristas que van de pie y quita la elegida.",
+        "Hay 5 aristas de pie; sin la elegida quedan 4.",
+        [
+          [
+            5,
+            "No se cuenta la arista elegida."
+          ]
+        ]
+      ],
+      [
+        "Rectas que se cortan en 60°: falta para ser perpendiculares",
+        30,
+        "Dos rectas se cortan formando un ángulo de 60°. ¿Cuántos grados más tendría que abrirse para que fueran perpendiculares?",
+        "Las rectas perpendiculares forman 90°.",
+        "90 − 60 = 30°.",
+        [
+          [
+            120,
+            "Perpendicular es 90°, no 180°."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Rectas que se cortan en 30°: falta para ser perpendiculares",
+      60,
+      "Dos rectas se cortan formando un ángulo de 30°. ¿Cuántos grados más tendría que abrirse para que fueran perpendiculares?",
+      "Las rectas perpendiculares forman 90°.",
+      "90 − 30 = 60°.",
+      [
+        [
+          150,
+          "Perpendicular es 90°, no 180°."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-posibilidad",
+    "since": "2026-11-28",
+    "title": "Seguro, posible o imposible",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 24 · ¿Qué tan posible es?",
+    "concept": "Un suceso es seguro si pasa siempre, imposible si nunca pasa y posible si a veces pasa. Entre dos posibles, es más probable el que tiene más casos a favor del total.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 5° Básico, OA 24 y OA 25.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Con un dado, sacar 7 es imposible y sacar menos de 10 es seguro. En una bolsa con 9 verdes y 1 amarilla, sacar verde es más probable que sacar amarilla.",
+    "status": "published",
+    "questions": [
+      [
+        "Bolsa con 5 rojas y 0 azules: sacar una roja\n1. Seguro\n2. Posible\n3. Imposible",
+        1,
+        "Sacar una bolita roja sin mirar, ¿es seguro, posible o imposible?",
+        "Seguro: pasa siempre. Imposible: nunca pasa. Posible: a veces sí y a veces no.",
+        "Con 5 rojas y 0 azules, sacar roja pasa siempre: es seguro."
+      ],
+      [
+        "Dado: sacar un número menor que 1\n1. Seguro\n2. Posible\n3. Imposible",
+        3,
+        "Al lanzar un dado (1 a 6), sacar un número menor que 1, ¿es seguro, posible o imposible?",
+        "Piensa qué caras del dado son menores que 1.",
+        "Ninguna cara es menor que 1: es imposible."
+      ],
+      [
+        "Bolsa A: 5 rojas de 8; bolsa B: 1 roja de 8. ¿Dónde es más probable sacar roja?\n1. Bolsa A\n2. Bolsa B\n3. Es igual de probable",
+        1,
+        "Compara sin calcular: ¿en qué bolsa es más probable sacar una roja?",
+        "Las bolsas tienen el mismo total: gana la que tiene más rojas.",
+        "Con el mismo total, A tiene más rojas: es más probable en la bolsa A."
+      ],
+      [
+        "Ruleta de 6 partes iguales, 1 roja: ¿qué es más probable?\n1. Que salga rojo\n2. Que no salga rojo\n3. Es igual de probable",
+        2,
+        "Compara sin calcular.",
+        "Compara cuántas partes son rojas y cuántas no.",
+        "1 parte rojas y 5 de otro color: es más probable que no salga rojo."
+      ]
+    ],
+    "review": [
+      "Ruleta de 6 partes iguales, 4 rojas: ¿qué es más probable?\n1. Que salga rojo\n2. Que no salga rojo\n3. Es igual de probable",
+      1,
+      "Compara sin calcular.",
+      "Compara cuántas partes son rojas y cuántas no.",
+      "4 partes rojas y 2 de otro color: es más probable rojo."
+    ]
+  },
+  {
+    "id": "base-volumen-cubitos",
+    "since": "2026-11-28",
+    "title": "Volumen con cubitos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 24 · Cuántos cubitos caben",
+    "concept": "El volumen dice cuánto espacio ocupa un cuerpo: se cuentan los cubitos que caben. En una caja se cuentan los cubitos de una capa (el piso) y se multiplica por las capas.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 4° Básico, OA 24.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Una caja de 6 por 2 cubitos de piso y 4 capas tiene 6 · 2 = 12 cubitos por capa y 12 · 4 = 48 en total.",
+    "status": "published",
+    "questions": [
+      [
+        "Caja de 2 por 4 por 3 cubitos",
+        24,
+        "Una caja mide 2 cubitos de largo, 4 de ancho y 3 de alto. ¿Cuántos cubitos caben?",
+        "🧊 Cuenta los cubitos de una capa y multiplica por las capas.",
+        "Una capa: 2 · 4 = 8; 3 capas: 8 · 3 = 24 cubitos.",
+        [
+          [
+            9,
+            "Se multiplica: son capas de filas de cubitos."
+          ],
+          [
+            8,
+            "Esa es una sola capa."
+          ]
+        ]
+      ],
+      [
+        "Cubo de 2 cubitos por lado",
+        8,
+        "Un cubo grande tiene 2 cubitos en cada arista. ¿Cuántos cubitos lo forman?",
+        "Largo, ancho y alto miden 2.",
+        "2 · 2 · 2 = 8 cubitos.",
+        [
+          [
+            6,
+            "Es 2 · 2 · 2, no 3 · 2."
+          ],
+          [
+            4,
+            "Esa es una sola capa."
+          ]
+        ]
+      ],
+      [
+        "Caja A: 3·3·2; caja B: 5·3·2: diferencia",
+        12,
+        "La caja A mide 3 por 3 por 2 cubitos y la caja B, 5 por 3 por 2. ¿Cuántos cubitos más tiene la más grande?",
+        "Calcula los cubitos de cada caja y réstalos.",
+        "A: 18 cubitos; B: 30 cubitos; diferencia: 12.",
+        [
+          [
+            48,
+            "Se pide la diferencia, no el total."
+          ]
+        ]
+      ],
+      [
+        "Caja de 24 cubitos con piso de 3 por 2: capas",
+        4,
+        "Una caja tiene 24 cubitos y su piso es de 3 por 2 cubitos. ¿Cuántas capas tiene?",
+        "Primero cuenta los cubitos de una capa (el piso).",
+        "El piso tiene 6 cubitos; 24 ÷ 6 = 4 capas.",
+        [
+          [
+            6,
+            "Ese es el piso. Se piden las capas."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Caja de 60 cubitos con piso de 5 por 4: capas",
+      3,
+      "Una caja tiene 60 cubitos y su piso es de 5 por 4 cubitos. ¿Cuántas capas tiene?",
+      "Primero cuenta los cubitos de una capa (el piso).",
+      "El piso tiene 20 cubitos; 60 ÷ 20 = 3 capas.",
+      [
+        [
+          20,
+          "Ese es el piso. Se piden las capas."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-cuadriculas",
+    "since": "2026-11-28",
+    "title": "Moverse en una cuadrícula",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 15 · Columnas, filas y caminos",
+    "concept": "En una cuadrícula, cada casilla tiene una columna y una fila. Moverse a la derecha cambia la columna; moverse arriba o abajo cambia la fila. Sin diagonales, el camino más corto suma los pasos hacia el lado y hacia arriba.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° y 4° Básico, OA 14 y OA 15.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Desde la columna 2, fila 6, bajando 4 casillas llegas a la fila 2. De (1, 1) a (7, 3) hay 6 + 2 = 8 pasos.",
+    "status": "published",
+    "questions": [
+      [
+        "Desde la columna 2: 5 a la derecha",
+        7,
+        "En una cuadrícula estás en la columna 2, fila 5. Avanzas 5 casillas a la derecha. ¿En qué columna quedas?",
+        "Hacia la derecha la columna aumenta; la fila no cambia.",
+        "2 + 5 = columna 7.",
+        [
+          [
+            5,
+            "Esa es la fila. Se pide la columna."
+          ]
+        ]
+      ],
+      [
+        "Desde la fila 5: 1 hacia abajo",
+        4,
+        "Estás en la columna 3, fila 5. Te mueves 1 casillas hacia abajo. ¿En qué fila quedas?",
+        "Hacia arriba la fila aumenta; hacia abajo, disminuye.",
+        "5 − 1 = fila 4.",
+        [
+          [
+            6,
+            "Revisa la dirección: arriba suma, abajo resta."
+          ]
+        ]
+      ],
+      [
+        "De (4, 5) a (7, 8): pasos mínimos",
+        6,
+        "En una cuadrícula solo puedes caminar por los lados (no en diagonal). ¿Cuántos pasos como mínimo hay de (4, 5) a (7, 8)?",
+        "Cuenta los pasos hacia el lado y los pasos hacia arriba, y súmalos.",
+        "3 hacia el lado + 3 hacia arriba = 6 pasos.",
+        [
+          [
+            3,
+            "Sin diagonales: hay que sumar los dos tramos."
+          ]
+        ]
+      ],
+      [
+        "Mapa: cada cuadrado 50 m; 9 cuadrados",
+        450,
+        "En un mapa, cada cuadrado de la cuadrícula representa 50 metros. Si caminas 9 cuadrados, ¿cuántos metros caminas?",
+        "Cada cuadrado vale lo mismo: multiplica.",
+        "9 · 50 = 450 metros.",
+        [
+          [
+            9,
+            "Cada cuadrado vale 50 m, no 1."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Mapa: cada cuadrado 10 m; 5 cuadrados",
+      50,
+      "En un mapa, cada cuadrado de la cuadrícula representa 10 metros. Si caminas 5 cuadrados, ¿cuántos metros caminas?",
+      "Cada cuadrado vale lo mismo: multiplica.",
+      "5 · 10 = 50 metros.",
+      [
+        [
+          5,
+          "Cada cuadrado vale 10 m, no 1."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-cero-uno",
+    "since": "2026-11-28",
+    "title": "El 0 y el 1 en las operaciones",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 04 · Números con poderes especiales",
+    "concept": "Cualquier número por 0 da 0: son cero grupos. Por 1 queda igual: es un solo grupo. Dividir por 1 deja el número igual, 0 dividido en partes da 0 y un número dividido por sí mismo da 1.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 4° Básico, OA 4.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "75 · 0 = 0, 75 · 1 = 75, 75 ÷ 75 = 1 y 0 ÷ 75 = 0.",
+    "status": "published",
+    "questions": [
+      [
+        "474 · 0",
+        0,
+        "Calcula.",
+        "Multiplicar por 0 es tener cero grupos.",
+        "474 · 0 = 0: cualquier número por 0 da 0.",
+        [
+          [
+            474,
+            "Multiplicar por 0 no deja el número igual: da 0."
+          ]
+        ]
+      ],
+      [
+        "168 · 1",
+        168,
+        "Calcula.",
+        "Multiplicar por 1 es tener un solo grupo.",
+        "168 · 1 = 168: por 1, el número queda igual.",
+        [
+          [
+            1,
+            "Por 1 el número no cambia."
+          ],
+          [
+            0,
+            "Eso pasa al multiplicar por 0, no por 1."
+          ]
+        ]
+      ],
+      [
+        "0 ÷ 189",
+        0,
+        "Calcula.",
+        "Repartir 0 entre 189 grupos: ¿cuánto le toca a cada uno?",
+        "0 ÷ 189 = 0: si no hay nada que repartir, a cada uno le toca 0.",
+        [
+          [
+            189,
+            "Si no hay nada, no se puede repartir nada."
+          ]
+        ]
+      ],
+      [
+        "297 ÷ 297",
+        1,
+        "Calcula.",
+        "Un número dividido por sí mismo: ¿cuántas veces cabe?",
+        "297 ÷ 297 = 1: cabe exactamente una vez.",
+        [
+          [
+            0,
+            "Cabe una vez, no cero."
+          ],
+          [
+            297,
+            "Dividir por sí mismo da 1."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "766 ÷ 1",
+      766,
+      "Calcula.",
+      "Repartir en un solo grupo: todo queda junto.",
+      "766 ÷ 1 = 766: dividir por 1 deja el número igual.",
+      [
+        [
+          1,
+          "Dividir por 1 deja el número igual."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-patrones",
+    "since": "2026-11-28",
+    "title": "Patrones numéricos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA03 OA 12 · ¿Qué número sigue?",
+    "concept": "Un patrón numérico repite una regla: sumar, restar o multiplicar siempre lo mismo. Para descubrirla, mira qué cambia de un número al siguiente y después úsala para seguir.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° y 4° Básico, OA 12 y OA 13.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "5, 11, 17, 23… suma 6 cada vez: sigue 29. Y 2, 6, 18… multiplica por 3: sigue 54.",
+    "status": "published",
+    "questions": [
+      [
+        "20, 25, 30, ?",
+        35,
+        "¿Qué número sigue?",
+        "Mira cuánto aumenta de un número al siguiente.",
+        "Siempre se suma 5: 30 + 5 = 35.",
+        [
+          [
+            31,
+            "No se suma 1: se suma 5 cada vez."
+          ]
+        ]
+      ],
+      [
+        "43, 34, 25, ?",
+        16,
+        "¿Qué número sigue?",
+        "Mira cuánto disminuye de un número al siguiente.",
+        "Siempre se resta 9: 25 − 9 = 16.",
+        [
+          [
+            34,
+            "Ya pasaste ese número: el patrón va bajando."
+          ]
+        ]
+      ],
+      [
+        "2, 4, 8, ?",
+        16,
+        "¿Qué número sigue?",
+        "No se suma lo mismo: mira por cuánto se multiplica.",
+        "Cada número se multiplica por 2: 8 · 2 = 16.",
+        [
+          [
+            12,
+            "Aquí no se suma lo mismo: se multiplica."
+          ]
+        ]
+      ],
+      [
+        "5, 15, 25, …: número en la posición 9",
+        85,
+        "El patrón sigue igual. ¿Qué número está en la posición 9?",
+        "Desde el primero, ¿cuántos saltos de 10 hay hasta la posición 9?",
+        "Hay 8 saltos de 10: 5 + 8 · 10 = 85.",
+        [
+          [
+            95,
+            "Desde la posición 1 a la 9 hay 8 saltos, no 9."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "11, 14, 17, …: número en la posición 10",
+      38,
+      "El patrón sigue igual. ¿Qué número está en la posición 10?",
+      "Desde el primero, ¿cuántos saltos de 3 hay hasta la posición 10?",
+      "Hay 9 saltos de 3: 11 + 9 · 3 = 38.",
+      [
+        [
+          41,
+          "Desde la posición 1 a la 10 hay 9 saltos, no 10."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "triangulos-clasificar",
+    "since": "2026-11-28",
+    "title": "Clasificar triángulos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 12 · Por sus lados y por sus ángulos",
+    "concept": "Por sus lados, un triángulo es equilátero (3 iguales), isósceles (2 iguales) o escaleno (todos distintos). Por sus ángulos, es acutángulo, rectángulo u obtusángulo. Y solo se puede armar si los dos lados más cortos suman más que el más largo.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 6° Básico, OA 12.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Con lados 7, 7 y 10 cm sale un isósceles. Con 2, 3 y 6 cm no se arma: 2 + 3 = 5 no alcanza a 6.",
+    "status": "published",
+    "questions": [
+      [
+        "Triángulo de lados 11, 9, 9 cm\n1. Equilátero\n2. Isósceles\n3. Escaleno",
+        2,
+        "¿Cómo se llama este triángulo según sus lados?",
+        "Equilátero: 3 lados iguales. Isósceles: 2 iguales. Escaleno: todos distintos.",
+        "Tiene 2 lados iguales: isósceles."
+      ],
+      [
+        "Triángulo con ángulos 20°, 30°, 130°\n1. Acutángulo\n2. Rectángulo\n3. Obtusángulo",
+        3,
+        "¿Cómo se llama este triángulo según sus ángulos?",
+        "Mira el ángulo más grande: menos de 90°, justo 90° o más de 90°.",
+        "El mayor ángulo mide 130°: tiene un ángulo obtuso, obtusángulo."
+      ],
+      [
+        "¿Se arma un triángulo con 4, 5 y 10 cm?\n1. Sí\n2. No",
+        2,
+        "¿Se puede armar un triángulo con esos tres lados?",
+        "Los dos lados más cortos, juntos, deben ser más largos que el tercero.",
+        "4 + 5 = 9, que no supera a 10: no alcanza para cerrar el triángulo."
+      ],
+      [
+        "Lados de 8 y 5 cm: tercer lado más largo (entero)",
+        12,
+        "Un triángulo tiene lados de 8 cm y 5 cm. Si el tercer lado mide un número entero de cm, ¿cuál es su largo máximo?",
+        "El tercer lado debe ser menor que la suma de los otros dos.",
+        "Debe ser menor que 8 + 5 = 13: el mayor entero es 12.",
+        [
+          [
+            13,
+            "Igual a 13 no alcanza: debe ser menor."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Lados de 6 y 9 cm: tercer lado más largo (entero)",
+      14,
+      "Un triángulo tiene lados de 6 cm y 9 cm. Si el tercer lado mide un número entero de cm, ¿cuál es su largo máximo?",
+      "El tercer lado debe ser menor que la suma de los otros dos.",
+      "Debe ser menor que 6 + 9 = 15: el mayor entero es 14.",
+      [
+        [
+          15,
+          "Igual a 15 no alcanza: debe ser menor."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "angulos-paralelas",
+    "since": "2026-11-28",
+    "title": "Ángulos entre paralelas",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA06 OA 21 · Correspondientes, alternos y colaterales",
+    "concept": "Cuando una recta (la transversal) corta a dos paralelas, se forman ángulos relacionados: los correspondientes y los alternos internos son iguales, y los colaterales internos suman 180°.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 6° Básico, OA 21.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Si la transversal forma 65° con la primera paralela, su correspondiente en la segunda también mide 65°, y su colateral interno mide 180 − 65 = 115°.",
+    "status": "published",
+    "questions": [
+      [
+        "Paralelas cortadas por una transversal: ángulo de 60°; su correspondiente",
+        60,
+        "¿Cuánto mide su ángulo correspondiente?",
+        "Los ángulos correspondientes están en la misma posición en cada paralela.",
+        "Entre paralelas, los ángulos correspondientes son iguales: 60°.",
+        [
+          [
+            120,
+            "Ese es su suplementario. Los correspondientes son iguales."
+          ]
+        ]
+      ],
+      [
+        "Paralelas cortadas por una transversal: ángulo de 125°; su alterno interno",
+        125,
+        "¿Cuánto mide su ángulo alterno interno?",
+        "Los alternos internos están entre las paralelas, a lados distintos de la transversal.",
+        "Entre paralelas, los ángulos alternos internos son iguales: 125°.",
+        [
+          [
+            55,
+            "Ese es su suplementario. Los alternos internos son iguales."
+          ]
+        ]
+      ],
+      [
+        "Paralelas cortadas por una transversal: ángulo de 35°; su colateral interno",
+        145,
+        "¿Cuánto mide su ángulo colateral interno (al mismo lado, entre las paralelas)?",
+        "Los colaterales internos suman 180°.",
+        "180 − 35 = 145°.",
+        [
+          [
+            35,
+            "Los colaterales internos no son iguales: suman 180°."
+          ]
+        ]
+      ],
+      [
+        "Triángulo entre paralelas: ángulos de 45° y 75° en la base; ¿ángulo de arriba?",
+        60,
+        "Un triángulo tiene su base en una recta y su vértice en una paralela a ella. Los ángulos de la base miden 45° y 75°. ¿Cuánto mide el ángulo de arriba?",
+        "Los ángulos de un triángulo suman 180° (se ve con los alternos internos en la paralela de arriba).",
+        "180 − 45 − 75 = 60°.",
+        [
+          [
+            120,
+            "Esa es la suma de los dos. Falta restarla de 180°."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Triángulo entre paralelas: ángulos de 55° y 60° en la base; ¿ángulo de arriba?",
+      65,
+      "Un triángulo tiene su base en una recta y su vértice en una paralela a ella. Los ángulos de la base miden 55° y 60°. ¿Cuánto mide el ángulo de arriba?",
+      "Los ángulos de un triángulo suman 180° (se ve con los alternos internos en la paralela de arriba).",
+      "180 − 55 − 60 = 65°.",
+      [
+        [
+          115,
+          "Esa es la suma de los dos. Falta restarla de 180°."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "trigonometria-aplicada",
+    "since": "2026-11-28",
+    "title": "Trigonometría aplicada",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "MA2M OA 09 · Alturas, rampas y sombras",
+    "concept": "Las razones trigonométricas permiten medir lo que no se alcanza: la tangente relaciona altura y distancia, el seno altura e hipotenusa, y el coseno distancia e hipotenusa. Se elige la razón según los lados que conoces y el que buscas.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 2° Medio, OA 9.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Desde 20 m de un edificio, con un ángulo de elevación de tangente 1,2, la altura es 1,2 · 20 = 24 m.",
+    "status": "published",
+    "questions": [
+      [
+        "Elevación con tan = 1,5, a 8 m: altura",
+        12,
+        "Estás a 8 m de un árbol y miras su punta con un ángulo de elevación cuya tangente es 1,5. ¿Cuánto mide el árbol?",
+        "📐 tan = opuesto ÷ adyacente: la altura es el opuesto y la distancia, el adyacente.",
+        "altura = tan · distancia = 1,5 · 8 = 12 m.",
+        [
+          [
+            5.33,
+            "Se multiplica la distancia por la tangente, no se divide."
+          ]
+        ]
+      ],
+      [
+        "Rampa de 10 m inclinada 30° (sen 30° = 0,5): altura",
+        5,
+        "Una rampa de 10 m de largo sube con una inclinación de 30°. Con sen 30° = 0,5, ¿qué altura alcanza?",
+        "sen = opuesto ÷ hipotenusa: la rampa es la hipotenusa.",
+        "altura = 0,5 · 10 = 5 m.",
+        [
+          [
+            20,
+            "Se multiplica por 0,5: queda la mitad."
+          ]
+        ]
+      ],
+      [
+        "Escalera de 10 m a 60° del suelo (cos 60° = 0,5): distancia al muro",
+        5,
+        "Una escalera de 10 m se apoya en un muro formando 60° con el suelo. Con cos 60° = 0,5, ¿a qué distancia del muro está su pie?",
+        "cos = adyacente ÷ hipotenusa: la escalera es la hipotenusa.",
+        "distancia = 0,5 · 10 = 5 m.",
+        [
+          [
+            10,
+            "Esa es la escalera. La distancia es el lado adyacente."
+          ]
+        ]
+      ],
+      [
+        "Poste de 10 m, tan del ángulo del sol = 2: sombra",
+        5,
+        "Un poste mide 10 m. Los rayos del sol llegan con un ángulo cuya tangente es 2. ¿Cuánto mide su sombra?",
+        "tan = altura ÷ sombra: despeja la sombra.",
+        "sombra = altura ÷ tan = 10 ÷ 2 = 5 m.",
+        [
+          [
+            20,
+            "La sombra se despeja dividiendo por la tangente."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Poste de 3 m, tan del ángulo del sol = 0,5: sombra",
+      6,
+      "Un poste mide 3 m. Los rayos del sol llegan con un ángulo cuya tangente es 0,5. ¿Cuánto mide su sombra?",
+      "tan = altura ÷ sombra: despeja la sombra.",
+      "sombra = altura ÷ tan = 3 ÷ 0,5 = 6 m.",
+      [
+        [
+          1.5,
+          "La sombra se despeja dividiendo por la tangente."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "complejos-division",
+    "since": "2026-11-28",
+    "title": "Dividir números complejos",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "FG-3M OA 1 · El conjugado ordena la división",
+    "concept": "Para dividir por un número complejo, multiplica arriba y abajo por su conjugado: abajo queda un número real, a² + b², y la división se hace parte por parte.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° Medio, OA 1.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "15 ÷ (1 + 2i) = 15(1 − 2i) ÷ (1 + 4) = 3(1 − 2i) = 3 − 6i.",
+    "status": "published",
+    "questions": [
+      [
+        "(10 − 25i) ÷ 5: parte real",
+        2,
+        "Divide el número complejo por 5. ¿Cuál es la parte real del resultado?",
+        "Dividir por un número real es dividir cada parte por 5.",
+        "10 ÷ 5 = 2 y −25 ÷ 5 = −5: 2 − 5i.",
+        [
+          [
+            -5,
+            "Esa es la parte imaginaria."
+          ]
+        ]
+      ],
+      [
+        "(−6 − i) ÷ i: parte real",
+        -1,
+        "Divide por i. ¿Cuál es la parte real del resultado?",
+        "Multiplica arriba y abajo por −i (el conjugado de i): i · (−i) = 1.",
+        "(−6 − i) · (−i) = −1 + 6i, porque i² = −1.",
+        [
+          [
+            -6,
+            "Al dividir por i, las partes cambian de lugar."
+          ]
+        ]
+      ],
+      [
+        "25 ÷ (1 − 2i): parte real",
+        5,
+        "Divide. ¿Cuál es la parte real del resultado?",
+        "Multiplica arriba y abajo por el conjugado: abajo queda a² + b².",
+        "25 · (1 + 2i) ÷ (1 + 4) = 5(1 + 2i) = 5 + 10i.",
+        [
+          [
+            25,
+            "No se divide parte por parte: hay que usar el conjugado."
+          ]
+        ]
+      ],
+      [
+        "10 ÷ (1 + i): parte imaginaria",
+        -5,
+        "Divide. ¿Cuál es la parte imaginaria del resultado?",
+        "Multiplica arriba y abajo por el conjugado: abajo queda a² + b².",
+        "10 · (1 − i) ÷ 2 = 5 − 5i.",
+        [
+          [
+            5,
+            "El conjugado cambia el signo de la parte imaginaria."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "40 ÷ (2 + 2i): parte imaginaria",
+      -10,
+      "Divide. ¿Cuál es la parte imaginaria del resultado?",
+      "Multiplica arriba y abajo por el conjugado: abajo queda a² + b².",
+      "40 · (2 − 2i) ÷ 8 = 10 − 10i.",
+      [
+        [
+          10,
+          "El conjugado cambia el signo de la parte imaginaria."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "circunferencia-secantes",
+    "since": "2026-11-28",
+    "title": "Secantes, tangentes y ángulos en la circunferencia",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "FG-3M OA 4 · Arcos, cuerdas y secantes",
+    "concept": "Desde un punto exterior, los productos de las secantes son iguales (PA · PB = PC · PD) y con una tangente, PT² = PA · PB. Un ángulo interior mide la semisuma de sus arcos y uno exterior, la semidiferencia. En un cuadrilátero inscrito, los ángulos opuestos suman 180°.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° Medio, OA 4.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Si PA = 3 y PB = 12, la tangente mide √36 = 6. Dos cuerdas que encierran arcos de 100° y 40° forman un ángulo de 70°.",
+    "status": "published",
+    "questions": [
+      [
+        "Secantes: PA = 3, PB = 12, PC = 2: PD",
+        18,
+        "Desde un punto P salen dos secantes. La primera corta la circunferencia en A y B (PA = 3, PB = 12); la segunda, en C y D (PC = 2). ¿Cuánto mide PD?",
+        "Teorema de las secantes: PA · PB = PC · PD.",
+        "3 · 12 = 36 = 2 · PD, así que PD = 18.",
+        [
+          [
+            11,
+            "No se suma ni se resta: los productos son iguales."
+          ]
+        ]
+      ],
+      [
+        "Tangente: PA = 4, PB = 25: PT",
+        10,
+        "Desde P sale una tangente que toca la circunferencia en T y una secante que la corta en A y B (PA = 4, PB = 25). ¿Cuánto mide PT?",
+        "Tangente y secante: PT² = PA · PB.",
+        "PT² = 4 · 25 = 100, así que PT = 10.",
+        [
+          [
+            100,
+            "Ese es PT². Saca la raíz."
+          ]
+        ]
+      ],
+      [
+        "Cuerdas que se cortan: arcos de 86° y 78°: ángulo",
+        82,
+        "Dos cuerdas se cortan dentro de la circunferencia. Los arcos que encierra el ángulo y su opuesto miden 86° y 78°. ¿Cuánto mide el ángulo?",
+        "Ángulo interior: la mitad de la suma de los arcos.",
+        "(86 + 78) ÷ 2 = 82°.",
+        [
+          [
+            164,
+            "Falta dividir por 2."
+          ],
+          [
+            4,
+            "Para un ángulo interior se suman los arcos."
+          ]
+        ]
+      ],
+      [
+        "Secantes desde fuera: arcos de 96° y 56°: ángulo",
+        20,
+        "Dos secantes salen de un punto fuera de la circunferencia y encierran arcos de 96° y 56°. ¿Cuánto mide el ángulo que forman?",
+        "Ángulo exterior: la mitad de la diferencia de los arcos.",
+        "(96 − 56) ÷ 2 = 20°.",
+        [
+          [
+            76,
+            "Para un ángulo exterior se restan los arcos."
+          ],
+          [
+            40,
+            "Falta dividir por 2."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Secantes desde fuera: arcos de 98° y 38°: ángulo",
+      30,
+      "Dos secantes salen de un punto fuera de la circunferencia y encierran arcos de 98° y 38°. ¿Cuánto mide el ángulo que forman?",
+      "Ángulo exterior: la mitad de la diferencia de los arcos.",
+      "(98 − 38) ÷ 2 = 30°.",
+      [
+        [
+          68,
+          "Para un ángulo exterior se restan los arcos."
+        ],
+        [
+          60,
+          "Falta dividir por 2."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "ipc-uf",
+    "since": "2026-11-28",
+    "title": "IPC y UF",
+    "subject": "matematica",
+    "grade": "4m",
+    "description": "FG-4M OA 1 · Inflación y unidades reajustables",
+    "concept": "El IPC mide cuánto suben los precios en un período (la inflación). La UF es una unidad que se reajusta con el IPC: sirve para arriendos, créditos y seguros. Para pasar de UF a pesos se multiplica por el valor del día; de pesos a UF, se divide.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 4° Medio, OA 1.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Con la UF a $37.500 (valor de ejemplo), 12 UF son 12 · 37.500 = $450.000. Si un pan de $2.500 sube con un IPC de 6 %, queda en $2.650.",
+    "status": "published",
+    "questions": [
+      [
+        "$28.000 con IPC de 4 %",
+        29120,
+        "Un producto costaba $28.000. Si el IPC (la inflación) del año fue 4 % y el precio subió igual, ¿cuánto cuesta ahora?",
+        "Calcula el 4 % del precio y súmalo.",
+        "4 % de 28.000 = 1.120; 28.000 + 1.120 = $29.120.",
+        [
+          [
+            1120,
+            "Ese es solo el aumento: súmalo al precio."
+          ]
+        ]
+      ],
+      [
+        "9 UF con UF = $40.000",
+        360000,
+        "Un arriendo cuesta 9 UF. Si la UF vale $40.000 (valor de ejemplo), ¿cuántos pesos son?",
+        "Cada UF vale lo mismo en pesos ese día: multiplica.",
+        "9 · 40.000 = $360.000.",
+        [
+          [
+            40009,
+            "Se multiplica, no se suma."
+          ]
+        ]
+      ],
+      [
+        "$600.000 en UF (UF = $40.000)",
+        15,
+        "Con la UF a $40.000 (valor de ejemplo), ¿cuántas UF son $600.000?",
+        "Divide los pesos por el valor de una UF.",
+        "600.000 ÷ 40.000 = 15 UF.",
+        [
+          [
+            24000000000,
+            "Para pasar de pesos a UF se divide."
+          ]
+        ]
+      ],
+      [
+        "Sueldo sube 7 %, IPC 3 %: aumento real aproximado",
+        4,
+        "Tu sueldo subió 7 % en el año y el IPC fue 3 %. Aproximadamente, ¿en qué porcentaje subió lo que puedes comprar?",
+        "La inflación se come parte del aumento: resta los porcentajes.",
+        "7 % − 3 % ≈ 4 %. Lo demás del aumento solo compensa la subida de precios.",
+        [
+          [
+            7,
+            "Parte de ese aumento se lo come la inflación."
+          ],
+          [
+            10,
+            "La inflación resta, no suma."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Sueldo sube 9 %, IPC 5 %: aumento real aproximado",
+      4,
+      "Tu sueldo subió 9 % en el año y el IPC fue 5 %. Aproximadamente, ¿en qué porcentaje subió lo que puedes comprar?",
+      "La inflación se come parte del aumento: resta los porcentajes.",
+      "9 % − 5 % ≈ 4 %. Lo demás del aumento solo compensa la subida de precios.",
+      [
+        [
+          9,
+          "Parte de ese aumento se lo come la inflación."
+        ],
+        [
+          14,
+          "La inflación resta, no suma."
         ]
       ]
     ]

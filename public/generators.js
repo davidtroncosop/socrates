@@ -3205,6 +3205,404 @@ function ecuacionesFracciones(rng, level) {
     `${l / a}x − ${l / b}x = ${l * (x / a - x / b)} → ${l / a - l / b === 1 ? `x = ${x}` : `${coef(l / a - l / b)} = ${l * (x / a - x / b)} → x = ${x}`}.`, [[x / a - x / b, "Ese es el lado derecho. Despeja x."]]];
 }
 
+// Lote 14: objetivos que faltaban según las Bases Curriculares.
+const CHANCE = "\n1. Seguro\n2. Posible\n3. Imposible";
+
+function baseCalendario(rng, level) {
+  if (level === 0) {
+    const a = int(rng, 1, 15);
+    const b = a + int(rng, 3, 14);
+    return [`Del ${a} al ${b} de marzo: ¿cuántos días después?`, b - a, `Hoy es ${a} de marzo. ¿Cuántos días faltan para el ${b} de marzo?`, "📅 Cuenta los días que avanzas desde hoy, sin contar el día de hoy.",
+      `${b} − ${a} = ${b - a} días.`, [[b - a + 1, "Contaste también el día de partida."]]];
+  }
+  if (level === 1) {
+    const w = int(rng, 2, 9);
+    return [`${w} semanas = ? días`, 7 * w, `¿Cuántos días son ${w} semanas?`, "Una semana tiene 7 días.", `${w} · 7 = ${7 * w} días.`, [[w + 7, "Se multiplica: son 7 días por cada semana."]]];
+  }
+  if (level === 2) {
+    const y1 = int(rng, 1990, 2018);
+    return [`Línea de tiempo: de ${y1} a 2026`, 2026 - y1, `En una línea de tiempo, un hecho ocurrió en ${y1}. ¿Cuántos años pasaron hasta 2026?`, "Resta el año menor al año mayor.",
+      `2026 − ${y1} = ${2026 - y1} años.`, [[2026 - y1 + 1, "Revisa la resta: no se cuenta un año extra."]]];
+  }
+  const [k, d] = [int(rng, 1, 6), int(rng, 1, 6)];
+  return [`${k} semanas y ${d} días: ¿cuántos días?`, 7 * k + d, `Unas vacaciones duran ${k} semanas y ${d} días. ¿Cuántos días son en total?`, "Pasa las semanas a días y suma los días sueltos.",
+    `${k} · 7 = ${7 * k}; ${7 * k} + ${d} = ${7 * k + d} días.`, [[k + d, "Las semanas tienen 7 días cada una."]]];
+}
+
+function baseRedesVistas(rng, level) {
+  const n = pick(rng, [3, 4, 5, 6, 8]);
+  if (level === 0)
+    return [`Red de un prisma de base ${BASE_NAME[n]}: figuras`, n + 2, `Si recortas y despliegas un prisma de base ${BASE_NAME[n]} (${n} lados), ¿cuántas figuras tiene su red?`, "📦 La red tiene las dos bases y un rectángulo por cada lado de la base.",
+      `2 bases + ${n} rectángulos = ${n + 2} figuras.`, [[n, "Faltan las dos bases."], [n + 1, "Un prisma tiene dos bases, no una."]]];
+  if (level === 1)
+    return [`Red de una pirámide de base ${BASE_NAME[n]}: figuras`, n + 1, `Si despliegas una pirámide de base ${BASE_NAME[n]} (${n} lados), ¿cuántas figuras tiene su red?`, "🔺 La red tiene la base y un triángulo por cada lado de la base.",
+      `1 base + ${n} triángulos = ${n + 1} figuras.`, [[n + 2, "La pirámide tiene una sola base."]]];
+  const [a, b] = [int(rng, 3, 8), int(rng, 2, 5)];
+  if (level === 2)
+    return [`Muro de ${a} por ${b} cubos: vista de frente`, a * b, `Un muro tiene ${a} cubos de largo, ${b} de alto y 1 de fondo. Mirándolo de frente, ¿cuántos cuadrados ves?`, "De frente ves cada fila y cada columna de cubos.",
+      `${b} filas de ${a} cuadrados: ${a * b}.`, [[a, "Esa es la vista desde arriba."]]];
+  return [`Muro de ${a} por ${b} cubos: vista desde arriba`, a, `Un muro tiene ${a} cubos de largo, ${b} de alto y 1 de fondo. Mirándolo desde arriba, ¿cuántos cuadrados ves?`, "Desde arriba solo ves la última fila de cubos.",
+    `Desde arriba se ve una fila de ${a} cuadrados.`, [[a * b, "Esa es la vista de frente."]]];
+}
+
+function baseDiagramaPuntos(rng, level) {
+  const values = shuffle(rng, [1, 2, 3, 4, 5, 6]).slice(0, 4).sort((x, y) => x - y);
+  const counts = shuffle(rng, [1, 2, 3, 4]);
+  const data = values.flatMap((v, i) => Array(counts[i]).fill(v));
+  const list = data.join(", ");
+  const most = values[counts.indexOf(4)],
+    least = values[counts.indexOf(1)];
+  if (level === 0) {
+    const i = int(rng, 0, 3);
+    return [`Dado: ${list}. ¿Puntos sobre el ${values[i]}?`, counts[i], `Lanzaste un dado varias veces y anotaste: ${list}. En un diagrama de puntos, ¿cuántos puntos van sobre el ${values[i]}?`, "Cada vez que sale un número, se dibuja un punto sobre él.",
+      `El ${values[i]} salió ${counts[i]} ${counts[i] === 1 ? "vez" : "veces"}: ${counts[i]} ${counts[i] === 1 ? "punto" : "puntos"}.`, [[values[i], "Ese es el número. Se pide cuántas veces salió."]]];
+  }
+  if (level === 1)
+    return [`Dado: ${list}. ¿Qué número salió más?`, most, `Anotaste los resultados de un dado: ${list}. ¿Qué número salió más veces?`, "Busca la columna de puntos más alta.", `El ${most} salió 4 veces: es el que más salió.`,
+      [[4, "Eso es cuántas veces salió. Se pide qué número fue."]]];
+  if (level === 2)
+    return [`Dado: ${list}. ¿Qué número salió menos?`, least, `Anotaste los resultados de un dado: ${list}. De los que salieron, ¿cuál salió menos veces?`, "Busca la columna de puntos más baja.", `El ${least} salió una sola vez.`,
+      [[most, "Ese es el que más salió."]]];
+  const cut = values[1];
+  const over = data.filter((v) => v > cut).length;
+  return [`Dado: ${list}. ¿Cuántos resultados mayores que ${cut}?`, over, `Anotaste los resultados de un dado: ${list}. ¿Cuántos resultados son mayores que ${cut}?`, `Cuenta los puntos de las columnas que están a la derecha del ${cut}.`,
+    `Mayores que ${cut}: ${data.filter((v) => v > cut).join(", ")}. Son ${over}.`, [[data.filter((v) => v >= cut).length, `«Mayor que ${cut}» no incluye al ${cut}.`]]];
+}
+
+function baseNumerosGrandes(rng, level) {
+  if (level === 0) {
+    const digits = shuffle(rng, [1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 7);
+    const n = Number(digits.join(""));
+    const place = int(rng, 3, 6);
+    const d = digits[6 - place];
+    const names = { 3: "unidades de mil", 4: "decenas de mil", 5: "centenas de mil", 6: "millones" };
+    return [`¿Cuánto vale el ${d} en ${pesos(n)}?`, d * 10 ** place, `Escribe cuánto vale el ${d} según su lugar.`, "Cuenta los lugares desde la derecha: unidades, decenas, centenas, unidades de mil…",
+      `El ${d} está en las ${names[place]}: ${d} · ${pesos(10 ** place)} = ${pesos(d * 10 ** place)}.`, [[d, "Esa es la cifra; vale según su lugar."]]];
+  }
+  if (level === 1) {
+    const [m, k, u] = [int(rng, 1, 9), int(rng, 1, 99), int(rng, 1, 999)];
+    const n = m * 1e6 + k * 1000 + u;
+    return [`${m} ${m === 1 ? "millón" : "millones"} ${k} mil ${u}`, n, "Escribe el número con cifras.", "Arma el número por grupos de tres cifras: millones, miles y lo que queda.",
+      `${m} ${m === 1 ? "millón" : "millones"} = ${pesos(m * 1e6)}; ${k} mil = ${pesos(k * 1000)}; total: ${pesos(n)}.`, [[Number(`${m}${k}${u}`), "Cada grupo lleva tres cifras: completa con ceros."]]];
+  }
+  if (level === 2) {
+    const m = int(rng, 1, 9);
+    const rest = 100000 * int(rng, 1, 9) + 1000 * int(rng, 0, 99);
+    const n = m * 1e6 + rest;
+    const r = Math.round(n / 1e6) * 1e6;
+    return [`${pesos(n)} redondeado al millón`, r, `Redondea ${pesos(n)} al millón más cercano.`, "Mira la cifra de las centenas de mil: si es 5 o más, sube al millón siguiente.",
+      `Las centenas de mil son ${Math.floor(rest / 100000)}: queda ${pesos(r)}.`, [[m * 1e6 === r ? (m + 1) * 1e6 : m * 1e6, "Revisa la cifra de las centenas de mil."]]];
+  }
+  const n = 1000 * int(rng, 1200, 9800) + int(rng, 0, 999);
+  return [`¿Cuántos miles completos hay en ${pesos(n)}?`, Math.floor(n / 1000), `¿Cuántos miles completos caben en ${pesos(n)}?`, "Tapa las tres últimas cifras: lo que queda son los miles.",
+    `${pesos(n)} tiene ${pesos(Math.floor(n / 1000))} miles y sobran ${n % 1000}.`, [[n % 1000, "Eso es lo que sobra, no los miles."]]];
+}
+
+const FRAC_DEC = [[1, 2], [1, 4], [3, 4], [1, 5], [2, 5], [3, 5], [4, 5], [3, 10], [7, 10], [1, 8], [3, 8]];
+function baseDecimalesComparar(rng, level) {
+  if (level === 0) {
+    const [a, b] = pick(rng, FRAC_DEC);
+    return [`${a}/${b} como decimal`, a / b, `Escribe ${a}/${b} como número decimal.`, `Divide ${a} entre ${b}, o busca una fracción igual con denominador 10, 100 o 1000.`,
+      `${a}/${b} = ${a} ÷ ${b} = ${dec(a / b)}.`, [[Number(`${a}.${b}`), `${a}/${b} no se escribe «${a},${b}»: hay que dividir.`]]];
+  }
+  if (level === 1 || level === 2) {
+    const sets = [[0.5, 0.45], [0.3, 0.25], [0.7, 0.65], [0.08, 0.1], [1.2, 1.15], [0.4, 0.375], [2.05, 2.5], [0.9, 0.89]];
+    const [x, y] = shuffle(rng, pick(rng, sets));
+    if (level === 1)
+      return [`Mayor: ${dec(x)} o ${dec(y)}`, Math.max(x, y), "¿Cuál de los dos números es mayor? Escríbelo.", "Compara cifra por cifra desde la coma: primero los décimos, después los centésimos.",
+        `${dec(Math.max(x, y))} > ${dec(Math.min(x, y))}: ${dec(Math.max(x, y))} tiene más décimos.`, [[Math.min(x, y), "Tener más cifras no lo hace mayor: compara los décimos."]]];
+    const z = cents(Math.min(x, y) + 0.01 * int(rng, 1, 3));
+    const three = shuffle(rng, [x, y, z]);
+    return [`Menor: ${three.map(dec).join(", ")}`, Math.min(...three), "¿Cuál es el menor de los tres? Escríbelo.", "Compara primero los enteros, después los décimos y al final los centésimos.",
+      `Ordenados: ${[...three].sort((p, q) => p - q).map(dec).join(" < ")}.`, [[Math.max(...three), "Ese es el mayor."]]];
+  }
+  const [num_, den] = pick(rng, [[35, 100], [8, 100], [125, 1000], [45, 100], [6, 100], [375, 1000]]);
+  return [`${dec(num_ / den)} = ?/${den}`, num_, `Escribe ${dec(num_ / den)} como fracción con denominador ${den}.`, `Lee el decimal en ${den === 100 ? "centésimos" : "milésimos"}.`,
+    `${dec(num_ / den)} son ${num_} ${den === 100 ? "centésimos" : "milésimos"}: ${num_}/${den}.`, [[num_ / 10, "Cuenta bien las cifras después de la coma."]]];
+}
+
+const PARALLEL = [["un cuadrado", 2], ["un rectángulo", 2], ["un trapecio que no es paralelogramo", 1], ["un triángulo", 0], ["un hexágono regular", 3], ["un paralelogramo", 2]];
+const RIGHT = [["un cuadrado", 4], ["un rectángulo", 4], ["un triángulo rectángulo", 1], ["un trapecio rectángulo", 2], ["un rombo que no es cuadrado", 0]];
+function baseParalelas(rng, level) {
+  if (level === 0) {
+    const [name, v] = pick(rng, PARALLEL);
+    return [`Pares de lados paralelos en ${name}`, v, `¿Cuántos pares de lados paralelos tiene ${name}? Las rectas paralelas nunca se juntan, como los rieles del tren.`, "Busca lados que vayan en la misma dirección, sin juntarse nunca.",
+      `${name[0].toUpperCase() + name.slice(1)} tiene ${v} ${v === 1 ? "par" : "pares"} de lados paralelos.`, [[4, "Se cuentan pares de lados, no lados."]]];
+  }
+  if (level === 1) {
+    const [name, v] = pick(rng, RIGHT);
+    return [`Ángulos rectos en ${name}`, v, `Dos lados perpendiculares forman un ángulo recto (90°). ¿Cuántos ángulos rectos tiene ${name}?`, "📐 Un ángulo recto es como la esquina de una hoja.",
+      `${name[0].toUpperCase() + name.slice(1)} tiene ${v} ${v === 1 ? "ángulo recto" : "ángulos rectos"}.`, [[2, "Revisa cada esquina."]]];
+  }
+  if (level === 2) {
+    const n = pick(rng, [3, 4, 5, 6, 8]);
+    return [`Prisma de base ${BASE_NAME[n]}: aristas paralelas a una arista de pie`, n - 1, `En un prisma de base ${BASE_NAME[n]}, las aristas de pie son paralelas entre sí. Sin contar la arista elegida, ¿cuántas son paralelas a ella?`, "Cuenta todas las aristas que van de pie y quita la elegida.",
+      `Hay ${n} aristas de pie; sin la elegida quedan ${n - 1}.`, [[n, "No se cuenta la arista elegida."]]];
+  }
+  const a = 10 * int(rng, 1, 8);
+  return [`Rectas que se cortan en ${a}°: falta para ser perpendiculares`, 90 - a, `Dos rectas se cortan formando un ángulo de ${a}°. ¿Cuántos grados más tendría que abrirse para que fueran perpendiculares?`, "Las rectas perpendiculares forman 90°.",
+    `90 − ${a} = ${90 - a}°.`, [[180 - a, "Perpendicular es 90°, no 180°."]]];
+}
+
+function basePosibilidad(rng, level) {
+  const label = (p) => (p === 1 ? 1 : p === 0 ? 3 : 2);
+  const why = ["", "pasa siempre: es seguro", "puede pasar o no: es posible", "nunca puede pasar: es imposible"];
+  if (level === 0) {
+    const [r, a] = pick(rng, [[int(rng, 1, 6), 0], [0, int(rng, 1, 6)], [int(rng, 1, 6), int(rng, 1, 6)]]);
+    const ans = label(r / (r + a));
+    return [`Bolsa con ${r} rojas y ${a} azules: sacar una roja${CHANCE}`, ans, "Sacar una bolita roja sin mirar, ¿es seguro, posible o imposible?", "Seguro: pasa siempre. Imposible: nunca pasa. Posible: a veces sí y a veces no.",
+      `Con ${r} rojas y ${a} azules, sacar roja ${why[ans]}.`, []];
+  }
+  if (level === 1) {
+    const k = int(rng, 1, 8);
+    const ans = label((Math.min(k, 7) - 1) / 6);
+    return [`Dado: sacar un número menor que ${k}${CHANCE}`, ans, `Al lanzar un dado (1 a 6), sacar un número menor que ${k}, ¿es seguro, posible o imposible?`, `Piensa qué caras del dado son menores que ${k}.`,
+      `${k === 1 ? "Ninguna cara es menor que 1" : k >= 7 ? "Todas las caras son menores que " + k : `Las caras 1 a ${k - 1} sirven y las demás no`}: ${why[ans].split(": ")[1]}.`, []];
+  }
+  if (level === 2) {
+    const same = rng() < 0.5;
+    const [a, n, b, m] = same ? (() => { const t = int(rng, 6, 12); const [x, y] = shuffle(rng, [1, 2, 3, 4, 5]).slice(0, 2); return [x, t, y, t]; })() : (() => { const r = int(rng, 2, 5); const [x, y] = shuffle(rng, [6, 8, 10, 12]).slice(0, 2); return [r, x, r, y]; })();
+    const ans = a / n > b / m ? 1 : a / n < b / m ? 2 : 3;
+    return [`Bolsa A: ${a} rojas de ${n}; bolsa B: ${b} rojas de ${m}. ¿Dónde es más probable sacar roja?\n1. Bolsa A\n2. Bolsa B\n3. Es igual de probable`, ans,
+      "Compara sin calcular: ¿en qué bolsa es más probable sacar una roja?", same ? "Las bolsas tienen el mismo total: gana la que tiene más rojas." : "Las bolsas tienen las mismas rojas: gana la que tiene menos bolitas en total.",
+      `${same ? `Con el mismo total, ${a > b ? "A tiene más rojas" : "B tiene más rojas"}` : `Con las mismas rojas, ${n < m ? "A tiene menos bolitas" : "B tiene menos bolitas"}`}: es más probable en la bolsa ${ans === 1 ? "A" : "B"}.`, []];
+  }
+  const t = pick(rng, [4, 6, 8, 10]);
+  const p = int(rng, 1, t - 1);
+  const ans = p > t - p ? 1 : p < t - p ? 2 : 3;
+  return [`Ruleta de ${t} partes iguales, ${p} rojas: ¿qué es más probable?\n1. Que salga rojo\n2. Que no salga rojo\n3. Es igual de probable`, ans,
+    "Compara sin calcular.", "Compara cuántas partes son rojas y cuántas no.", `${p} partes rojas y ${t - p} de otro color: ${ans === 3 ? "es igual de probable" : ans === 1 ? "es más probable rojo" : "es más probable que no salga rojo"}.`, []];
+}
+
+function baseVolumenCubitos(rng, level) {
+  if (level === 0) {
+    const [a, b, c] = [int(rng, 2, 5), int(rng, 2, 4), int(rng, 2, 4)];
+    return [`Caja de ${a} por ${b} por ${c} cubitos`, a * b * c, `Una caja mide ${a} cubitos de largo, ${b} de ancho y ${c} de alto. ¿Cuántos cubitos caben?`, "🧊 Cuenta los cubitos de una capa y multiplica por las capas.",
+      `Una capa: ${a} · ${b} = ${a * b}; ${c} capas: ${a * b} · ${c} = ${a * b * c} cubitos.`, [[a + b + c, "Se multiplica: son capas de filas de cubitos."], [a * b, "Esa es una sola capa."]]];
+  }
+  if (level === 1) {
+    const n = int(rng, 2, 5);
+    return [`Cubo de ${n} cubitos por lado`, n ** 3, `Un cubo grande tiene ${n} cubitos en cada arista. ¿Cuántos cubitos lo forman?`, `Largo, ancho y alto miden ${n}.`, `${n} · ${n} · ${n} = ${n ** 3} cubitos.`,
+      [[3 * n, `Es ${n} · ${n} · ${n}, no 3 · ${n}.`], [n * n, "Esa es una sola capa."]]];
+  }
+  if (level === 2) {
+    const [a, b, c, d] = [int(rng, 2, 5), int(rng, 2, 4), int(rng, 2, 4), int(rng, 2, 5)];
+    const [v1, v2] = [a * b * c, d * b * c];
+    if (v1 === v2) return baseVolumenCubitos(rng, level);
+    return [`Caja A: ${a}·${b}·${c}; caja B: ${d}·${b}·${c}: diferencia`, Math.abs(v1 - v2), `La caja A mide ${a} por ${b} por ${c} cubitos y la caja B, ${d} por ${b} por ${c}. ¿Cuántos cubitos más tiene la más grande?`, "Calcula los cubitos de cada caja y réstalos.",
+      `A: ${v1} cubitos; B: ${v2} cubitos; diferencia: ${Math.abs(v1 - v2)}.`, [[v1 + v2, "Se pide la diferencia, no el total."]]];
+  }
+  const [a, b, h] = [int(rng, 2, 5), int(rng, 2, 4), int(rng, 2, 6)];
+  return [`Caja de ${a * b * h} cubitos con piso de ${a} por ${b}: capas`, h, `Una caja tiene ${a * b * h} cubitos y su piso es de ${a} por ${b} cubitos. ¿Cuántas capas tiene?`, "Primero cuenta los cubitos de una capa (el piso).",
+    `El piso tiene ${a * b} cubitos; ${a * b * h} ÷ ${a * b} = ${h} capas.`, [[a * b, "Ese es el piso. Se piden las capas."]]];
+}
+
+function baseCuadriculas(rng, level) {
+  const [x, y] = [int(rng, 1, 5), int(rng, 1, 5)];
+  if (level === 0) {
+    const dx = int(rng, 1, 5);
+    return [`Desde la columna ${x}: ${dx} a la derecha`, x + dx, `En una cuadrícula estás en la columna ${x}, fila ${y}. Avanzas ${dx} casillas a la derecha. ¿En qué columna quedas?`, "Hacia la derecha la columna aumenta; la fila no cambia.",
+      `${x} + ${dx} = columna ${x + dx}.`, [[y, "Esa es la fila. Se pide la columna."]]];
+  }
+  if (level === 1) {
+    // Las filas parten en 1: hacia abajo solo se baja hasta la fila 1.
+    const up = y === 1 || rng() < 0.5;
+    const dy = up ? int(rng, 1, 5) : int(rng, 1, y - 1);
+    const fy = up ? y + dy : y - dy;
+    return [`Desde la fila ${y}: ${dy} hacia ${up ? "arriba" : "abajo"}`, fy, `Estás en la columna ${x}, fila ${y}. Te mueves ${dy} casillas hacia ${up ? "arriba" : "abajo"}. ¿En qué fila quedas?`, `Hacia arriba la fila aumenta; hacia abajo, disminuye.`,
+      `${y} ${up ? "+" : "−"} ${dy} = fila ${fy}.`, [[up ? y - dy : y + dy, "Revisa la dirección: arriba suma, abajo resta."]]];
+  }
+  if (level === 2) {
+    const [x2, y2] = [x + int(rng, 1, 5), y + int(rng, 1, 5)];
+    return [`De ${pt(x, y)} a ${pt(x2, y2)}: pasos mínimos`, x2 - x + y2 - y, `En una cuadrícula solo puedes caminar por los lados (no en diagonal). ¿Cuántos pasos como mínimo hay de ${pt(x, y)} a ${pt(x2, y2)}?`, "Cuenta los pasos hacia el lado y los pasos hacia arriba, y súmalos.",
+      `${x2 - x} hacia el lado + ${y2 - y} hacia arriba = ${x2 - x + y2 - y} pasos.`, [[Math.max(x2 - x, y2 - y), "Sin diagonales: hay que sumar los dos tramos."]]];
+  }
+  const [k, n] = [pick(rng, [10, 50, 100]), int(rng, 3, 9)];
+  return [`Mapa: cada cuadrado ${k} m; ${n} cuadrados`, k * n, `En un mapa, cada cuadrado de la cuadrícula representa ${k} metros. Si caminas ${n} cuadrados, ¿cuántos metros caminas?`, "Cada cuadrado vale lo mismo: multiplica.",
+    `${n} · ${k} = ${k * n} metros.`, [[n, `Cada cuadrado vale ${k} m, no 1.`]]];
+}
+
+function baseCeroUno(rng, level) {
+  const n = int(rng, 2, 999);
+  if (level === 0) {
+    const zeroFirst = rng() < 0.5;
+    return [zeroFirst ? `0 · ${n}` : `${n} · 0`, 0, "Calcula.", "Multiplicar por 0 es tener cero grupos.", `${zeroFirst ? `0 · ${n}` : `${n} · 0`} = 0: cualquier número por 0 da 0.`, [[n, "Multiplicar por 0 no deja el número igual: da 0."]]];
+  }
+  if (level === 1) {
+    const oneFirst = rng() < 0.5;
+    return [oneFirst ? `1 · ${n}` : `${n} · 1`, n, "Calcula.", "Multiplicar por 1 es tener un solo grupo.", `${oneFirst ? `1 · ${n}` : `${n} · 1`} = ${n}: por 1, el número queda igual.`, [[1, "Por 1 el número no cambia."], [0, "Eso pasa al multiplicar por 0, no por 1."]]];
+  }
+  if (level === 2)
+    return [`0 ÷ ${n}`, 0, "Calcula.", `Repartir 0 entre ${n} grupos: ¿cuánto le toca a cada uno?`, `0 ÷ ${n} = 0: si no hay nada que repartir, a cada uno le toca 0.`, [[n, "Si no hay nada, no se puede repartir nada."]]];
+  return rng() < 0.5
+    ? [`${n} ÷ ${n}`, 1, "Calcula.", "Un número dividido por sí mismo: ¿cuántas veces cabe?", `${n} ÷ ${n} = 1: cabe exactamente una vez.`, [[0, "Cabe una vez, no cero."], [n, "Dividir por sí mismo da 1."]]]
+    : [`${n} ÷ 1`, n, "Calcula.", "Repartir en un solo grupo: todo queda junto.", `${n} ÷ 1 = ${n}: dividir por 1 deja el número igual.`, [[1, "Dividir por 1 deja el número igual."]]];
+}
+
+function basePatrones(rng, level) {
+  const [a, d] = [int(rng, 2, 20), int(rng, 2, 10)];
+  if (level === 0)
+    return [`${a}, ${a + d}, ${a + 2 * d}, ?`, a + 3 * d, "¿Qué número sigue?", "Mira cuánto aumenta de un número al siguiente.", `Siempre se suma ${d}: ${a + 2 * d} + ${d} = ${a + 3 * d}.`,
+      [[a + 2 * d + 1, `No se suma 1: se suma ${d} cada vez.`]]];
+  if (level === 1) {
+    const s = a + 4 * d;
+    return [`${s}, ${s - d}, ${s - 2 * d}, ?`, s - 3 * d, "¿Qué número sigue?", "Mira cuánto disminuye de un número al siguiente.", `Siempre se resta ${d}: ${s - 2 * d} − ${d} = ${s - 3 * d}.`,
+      [[s - d, "Ya pasaste ese número: el patrón va bajando."]]];
+  }
+  if (level === 2) {
+    const [b, k] = [int(rng, 1, 5), pick(rng, [2, 3])];
+    return [`${b}, ${b * k}, ${b * k * k}, ?`, b * k ** 3, "¿Qué número sigue?", "No se suma lo mismo: mira por cuánto se multiplica.", `Cada número se multiplica por ${k}: ${b * k * k} · ${k} = ${b * k ** 3}.`,
+      [[b * k * k + (b * k * k - b * k), "Aquí no se suma lo mismo: se multiplica."]]];
+  }
+  const n = int(rng, 6, 12);
+  return [`${a}, ${a + d}, ${a + 2 * d}, …: número en la posición ${n}`, a + (n - 1) * d, `El patrón sigue igual. ¿Qué número está en la posición ${n}?`, `Desde el primero, ¿cuántos saltos de ${d} hay hasta la posición ${n}?`,
+    `Hay ${n - 1} saltos de ${d}: ${a} + ${n - 1} · ${d} = ${a + (n - 1) * d}.`, [[a + n * d, `Desde la posición 1 a la ${n} hay ${n - 1} saltos, no ${n}.`]]];
+}
+
+function triangulosClasificar(rng, level) {
+  if (level === 0) {
+    const kind = int(rng, 1, 3);
+    const s = int(rng, 3, 9);
+    const sides = kind === 1 ? [s, s, s] : kind === 2 ? shuffle(rng, [s, s, s + int(rng, 1, 3)]) : shuffle(rng, [s, s + 1, s + 2]);
+    return [`Triángulo de lados ${sides.join(", ")} cm\n1. Equilátero\n2. Isósceles\n3. Escaleno`, kind, "¿Cómo se llama este triángulo según sus lados?", "Equilátero: 3 lados iguales. Isósceles: 2 iguales. Escaleno: todos distintos.",
+      `Tiene ${kind === 1 ? "los 3 lados iguales: equilátero" : kind === 2 ? "2 lados iguales: isósceles" : "todos los lados distintos: escaleno"}.`, []];
+  }
+  if (level === 1) {
+    const kind = int(rng, 1, 3);
+    const a = kind === 2 ? 90 : kind === 1 ? 10 * int(rng, 5, 8) : 10 * int(rng, 10, 14);
+    const b = kind === 1 ? 10 * int(rng, Math.max(2, 10 - a / 10 + 1), 8) : 10 * int(rng, 2, Math.min(5, (170 - a) / 10));
+    const c = 180 - a - b;
+    const angles = shuffle(rng, [a, b, c]);
+    const real = Math.max(...angles) > 90 ? 3 : Math.max(...angles) === 90 ? 2 : 1;
+    return [`Triángulo con ángulos ${angles.join("°, ")}°\n1. Acutángulo\n2. Rectángulo\n3. Obtusángulo`, real, "¿Cómo se llama este triángulo según sus ángulos?", "Mira el ángulo más grande: menos de 90°, justo 90° o más de 90°.",
+      `El mayor ángulo mide ${Math.max(...angles)}°: ${real === 1 ? "todos son agudos, acutángulo" : real === 2 ? "tiene un ángulo recto, rectángulo" : "tiene un ángulo obtuso, obtusángulo"}.`, []];
+  }
+  if (level === 2) {
+    const [a, b] = [int(rng, 2, 8), int(rng, 2, 8)];
+    const ok = rng() < 0.5;
+    const c = ok ? int(rng, Math.abs(a - b) + 1, a + b - 1) : a + b + int(rng, 0, 4);
+    return [`¿Se arma un triángulo con ${a}, ${b} y ${c} cm?\n1. Sí\n2. No`, ok ? 1 : 2, "¿Se puede armar un triángulo con esos tres lados?", "Los dos lados más cortos, juntos, deben ser más largos que el tercero.",
+      ok ? "Los dos más cortos suman más que el más largo: sí se puede." : `${a} + ${b} = ${a + b}, que no supera a ${c}: no alcanza para cerrar el triángulo.`, []];
+  }
+  const [a, b] = [int(rng, 3, 9), int(rng, 3, 9)];
+  return [`Lados de ${a} y ${b} cm: tercer lado más largo (entero)`, a + b - 1, `Un triángulo tiene lados de ${a} cm y ${b} cm. Si el tercer lado mide un número entero de cm, ¿cuál es su largo máximo?`, "El tercer lado debe ser menor que la suma de los otros dos.",
+    `Debe ser menor que ${a} + ${b} = ${a + b}: el mayor entero es ${a + b - 1}.`, [[a + b, `Igual a ${a + b} no alcanza: debe ser menor.`]]];
+}
+
+function angulosParalelas(rng, level) {
+  const a = 5 * int(rng, 7, 29);
+  if (level === 0)
+    return [`Paralelas cortadas por una transversal: ángulo de ${a}°; su correspondiente`, a, "¿Cuánto mide su ángulo correspondiente?", "Los ángulos correspondientes están en la misma posición en cada paralela.",
+      `Entre paralelas, los ángulos correspondientes son iguales: ${a}°.`, [[180 - a, "Ese es su suplementario. Los correspondientes son iguales."]]];
+  if (level === 1)
+    return [`Paralelas cortadas por una transversal: ángulo de ${a}°; su alterno interno`, a, "¿Cuánto mide su ángulo alterno interno?", "Los alternos internos están entre las paralelas, a lados distintos de la transversal.",
+      `Entre paralelas, los ángulos alternos internos son iguales: ${a}°.`, [[180 - a, "Ese es su suplementario. Los alternos internos son iguales."]]];
+  if (level === 2)
+    return [`Paralelas cortadas por una transversal: ángulo de ${a}°; su colateral interno`, 180 - a, "¿Cuánto mide su ángulo colateral interno (al mismo lado, entre las paralelas)?", "Los colaterales internos suman 180°.",
+      `180 − ${a} = ${180 - a}°.`, [[a, "Los colaterales internos no son iguales: suman 180°."]]];
+  // Los dos ángulos de la base suman menos de 180°.
+  const [p, q] = [5 * int(rng, 7, 17), 5 * int(rng, 7, 17)];
+  return [`Triángulo entre paralelas: ángulos de ${p}° y ${q}° en la base; ¿ángulo de arriba?`, 180 - p - q, `Un triángulo tiene su base en una recta y su vértice en una paralela a ella. Los ángulos de la base miden ${p}° y ${q}°. ¿Cuánto mide el ángulo de arriba?`,
+    "Los ángulos de un triángulo suman 180° (se ve con los alternos internos en la paralela de arriba).", `180 − ${p} − ${q} = ${180 - p - q}°.`, [[p + q, "Esa es la suma de los dos. Falta restarla de 180°."]]];
+}
+
+function trigonometriaAplicada(rng, level) {
+  if (level === 0) {
+    const [t, d] = [pick(rng, [0.5, 0.75, 1, 1.5, 2]), 4 * int(rng, 2, 10)];
+    return [`Elevación con tan = ${dec(t)}, a ${d} m: altura`, t * d, `Estás a ${d} m de un árbol y miras su punta con un ángulo de elevación cuya tangente es ${dec(t)}. ¿Cuánto mide el árbol?`, "📐 tan = opuesto ÷ adyacente: la altura es el opuesto y la distancia, el adyacente.",
+      `altura = tan · distancia = ${dec(t)} · ${d} = ${dec(t * d)} m.`, [[cents(d / t), "Se multiplica la distancia por la tangente, no se divide."]]];
+  }
+  if (level === 1) {
+    const L = 2 * int(rng, 2, 12);
+    return [`Rampa de ${L} m inclinada 30° (sen 30° = 0,5): altura`, L / 2, `Una rampa de ${L} m de largo sube con una inclinación de 30°. Con sen 30° = 0,5, ¿qué altura alcanza?`, "sen = opuesto ÷ hipotenusa: la rampa es la hipotenusa.",
+      `altura = 0,5 · ${L} = ${L / 2} m.`, [[2 * L, "Se multiplica por 0,5: queda la mitad."]]];
+  }
+  if (level === 2) {
+    const L = 2 * int(rng, 2, 8);
+    return [`Escalera de ${L} m a 60° del suelo (cos 60° = 0,5): distancia al muro`, L / 2, `Una escalera de ${L} m se apoya en un muro formando 60° con el suelo. Con cos 60° = 0,5, ¿a qué distancia del muro está su pie?`, "cos = adyacente ÷ hipotenusa: la escalera es la hipotenusa.",
+      `distancia = 0,5 · ${L} = ${L / 2} m.`, [[L, "Esa es la escalera. La distancia es el lado adyacente."]]];
+  }
+  const t = pick(rng, [0.5, 1, 2]);
+  const h = t === 2 ? 2 * int(rng, 2, 10) : int(rng, 2, 12);
+  return [`Poste de ${h} m, tan del ángulo del sol = ${dec(t)}: sombra`, h / t, `Un poste mide ${h} m. Los rayos del sol llegan con un ángulo cuya tangente es ${dec(t)}. ¿Cuánto mide su sombra?`, "tan = altura ÷ sombra: despeja la sombra.",
+    `sombra = altura ÷ tan = ${h} ÷ ${dec(t)} = ${dec(h / t)} m.`, [[cents(h * t), "La sombra se despeja dividiendo por la tangente."]]];
+}
+
+function complejosDivision(rng, level) {
+  const k = int(rng, 2, 5);
+  if (level === 0) {
+    const [a, b] = [k * nonZero(rng, -6, 6), k * nonZero(rng, -6, 6)];
+    return [`(${cx(a, b)}) ÷ ${k}: parte real`, a / k, `Divide el número complejo por ${k}. ¿Cuál es la parte real del resultado?`, `Dividir por un número real es dividir cada parte por ${k}.`,
+      `${num(a)} ÷ ${k} = ${num(a / k)} y ${num(b)} ÷ ${k} = ${num(b / k)}: ${cx(a / k, b / k)}.`, [[b / k, "Esa es la parte imaginaria."]]];
+  }
+  if (level === 1) {
+    const [p, q] = [nonZero(rng, -9, 9), nonZero(rng, -9, 9)];
+    return [`(${cx(p, q)}) ÷ i: parte real`, q, "Divide por i. ¿Cuál es la parte real del resultado?", "Multiplica arriba y abajo por −i (el conjugado de i): i · (−i) = 1.",
+      `(${cx(p, q)}) · (−i) = ${cx(q, -p)}, porque i² = −1.`, [[p, "Al dividir por i, las partes cambian de lugar."]]];
+  }
+  const [a, b] = [int(rng, 1, 4), nonZero(rng, -4, 4)];
+  const c = k * (a * a + b * b);
+  if (level === 2)
+    return [`${c} ÷ (${cx(a, b)}): parte real`, k * a, "Divide. ¿Cuál es la parte real del resultado?", "Multiplica arriba y abajo por el conjugado: abajo queda a² + b².",
+      `${c} · (${cx(a, -b)}) ÷ (${a * a} + ${b * b}) = ${k}(${cx(a, -b)}) = ${cx(k * a, -k * b)}.`, [[c / a, "No se divide parte por parte: hay que usar el conjugado."]]];
+  return [`${c} ÷ (${cx(a, b)}): parte imaginaria`, -k * b, "Divide. ¿Cuál es la parte imaginaria del resultado?", "Multiplica arriba y abajo por el conjugado: abajo queda a² + b².",
+    `${c} · (${cx(a, -b)}) ÷ ${a * a + b * b} = ${cx(k * a, -k * b)}.`, [[k * b, "El conjugado cambia el signo de la parte imaginaria."]]];
+}
+
+function circunferenciaSecantes(rng, level) {
+  if (level === 0) {
+    const a = int(rng, 2, 6);
+    const b = a + int(rng, 3, 10);
+    const pc = pick(rng, [2, 3, 4, 6].filter((v) => (a * b) % v === 0 && v !== a));
+    if (!pc) return circunferenciaSecantes(rng, level);
+    return [`Secantes: PA = ${a}, PB = ${b}, PC = ${pc}: PD`, (a * b) / pc, `Desde un punto P salen dos secantes. La primera corta la circunferencia en A y B (PA = ${a}, PB = ${b}); la segunda, en C y D (PC = ${pc}). ¿Cuánto mide PD?`, "Teorema de las secantes: PA · PB = PC · PD.",
+      `${a} · ${b} = ${a * b} = ${pc} · PD, así que PD = ${(a * b) / pc}.`, [[b - a + pc, "No se suma ni se resta: los productos son iguales."]]];
+  }
+  if (level === 1) {
+    const t = int(rng, 3, 12);
+    const a = pick(rng, [1, 2, 3, 4].filter((v) => (t * t) % v === 0 && t * t / v > v));
+    return [`Tangente: PA = ${a}, PB = ${(t * t) / a}: PT`, t, `Desde P sale una tangente que toca la circunferencia en T y una secante que la corta en A y B (PA = ${a}, PB = ${(t * t) / a}). ¿Cuánto mide PT?`, "Tangente y secante: PT² = PA · PB.",
+      `PT² = ${a} · ${(t * t) / a} = ${t * t}, así que PT = ${t}.`, [[t * t, "Ese es PT². Saca la raíz."]]];
+  }
+  if (level === 2) {
+    const [x, y] = [2 * int(rng, 15, 70), 2 * int(rng, 10, 50)];
+    return [`Cuerdas que se cortan: arcos de ${x}° y ${y}°: ángulo`, (x + y) / 2, `Dos cuerdas se cortan dentro de la circunferencia. Los arcos que encierra el ángulo y su opuesto miden ${x}° y ${y}°. ¿Cuánto mide el ángulo?`, "Ángulo interior: la mitad de la suma de los arcos.",
+      `(${x} + ${y}) ÷ 2 = ${(x + y) / 2}°.`, [[x + y, "Falta dividir por 2."], [(x - y) / 2, "Para un ángulo interior se suman los arcos."]]];
+  }
+  if (rng() < 0.5) {
+    const a = 5 * int(rng, 10, 26);
+    return [`Cuadrilátero inscrito: un ángulo de ${a}°; el opuesto`, 180 - a, `Un cuadrilátero tiene sus cuatro vértices en una circunferencia. Uno de sus ángulos mide ${a}°. ¿Cuánto mide el ángulo opuesto?`, "En un cuadrilátero inscrito, los ángulos opuestos suman 180°.",
+      `180 − ${a} = ${180 - a}°.`, [[a, "Los opuestos no son iguales: suman 180°."]]];
+  }
+  const y = 2 * int(rng, 10, 40);
+  const x = y + 4 * int(rng, 5, 25);
+  return [`Secantes desde fuera: arcos de ${x}° y ${y}°: ángulo`, (x - y) / 2, `Dos secantes salen de un punto fuera de la circunferencia y encierran arcos de ${x}° y ${y}°. ¿Cuánto mide el ángulo que forman?`, "Ángulo exterior: la mitad de la diferencia de los arcos.",
+    `(${x} − ${y}) ÷ 2 = ${(x - y) / 2}°.`, [[(x + y) / 2, "Para un ángulo exterior se restan los arcos."], [x - y, "Falta dividir por 2."]]];
+}
+
+function ipcUf(rng, level) {
+  const uf = pick(rng, [38000, 39000, 40000]);
+  if (level === 0) {
+    const [p, r] = [1000 * int(rng, 2, 30), pick(rng, [2, 3, 4, 5, 10])];
+    return [`$${pesos(p)} con IPC de ${r} %`, (p * (100 + r)) / 100, `Un producto costaba $${pesos(p)}. Si el IPC (la inflación) del año fue ${r} % y el precio subió igual, ¿cuánto cuesta ahora?`, `Calcula el ${r} % del precio y súmalo.`,
+      `${r} % de ${pesos(p)} = ${pesos((p * r) / 100)}; ${pesos(p)} + ${pesos((p * r) / 100)} = $${pesos((p * (100 + r)) / 100)}.`, [[(p * r) / 100, "Ese es solo el aumento: súmalo al precio."]]];
+  }
+  if (level === 1) {
+    const k = int(rng, 2, 20);
+    return [`${k} UF con UF = $${pesos(uf)}`, k * uf, `Un arriendo cuesta ${k} UF. Si la UF vale $${pesos(uf)} (valor de ejemplo), ¿cuántos pesos son?`, "Cada UF vale lo mismo en pesos ese día: multiplica.",
+      `${k} · ${pesos(uf)} = $${pesos(k * uf)}.`, [[k + uf, "Se multiplica, no se suma."]]];
+  }
+  if (level === 2) {
+    const k = int(rng, 2, 30);
+    return [`$${pesos(k * uf)} en UF (UF = $${pesos(uf)})`, k, `Con la UF a $${pesos(uf)} (valor de ejemplo), ¿cuántas UF son $${pesos(k * uf)}?`, "Divide los pesos por el valor de una UF.",
+      `${pesos(k * uf)} ÷ ${pesos(uf)} = ${k} UF.`, [[k * uf * uf, "Para pasar de pesos a UF se divide."]]];
+  }
+  const b = int(rng, 2, 6);
+  const a = b + int(rng, 1, 6);
+  return [`Sueldo sube ${a} %, IPC ${b} %: aumento real aproximado`, a - b, `Tu sueldo subió ${a} % en el año y el IPC fue ${b} %. Aproximadamente, ¿en qué porcentaje subió lo que puedes comprar?`, "La inflación se come parte del aumento: resta los porcentajes.",
+    `${a} % − ${b} % ≈ ${a - b} %. Lo demás del aumento solo compensa la subida de precios.`, [[a, "Parte de ese aumento se lo come la inflación."], [a + b, "La inflación resta, no suma."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -3344,6 +3742,23 @@ export const generators = {
   "despejar-formulas": despejarFormulas,
   "diagrama-cajon": diagramaCajon,
   "geometria-analitica": geometriaAnalitica,
+  "base-calendario": baseCalendario,
+  "base-redes-vistas": baseRedesVistas,
+  "base-diagrama-puntos": baseDiagramaPuntos,
+  "base-numeros-grandes": baseNumerosGrandes,
+  "base-decimales-comparar": baseDecimalesComparar,
+  "base-paralelas": baseParalelas,
+  "base-posibilidad": basePosibilidad,
+  "base-volumen-cubitos": baseVolumenCubitos,
+  "base-cuadriculas": baseCuadriculas,
+  "base-cero-uno": baseCeroUno,
+  "base-patrones": basePatrones,
+  "triangulos-clasificar": triangulosClasificar,
+  "angulos-paralelas": angulosParalelas,
+  "trigonometria-aplicada": trigonometriaAplicada,
+  "complejos-division": complejosDivision,
+  "circunferencia-secantes": circunferenciaSecantes,
+  "ipc-uf": ipcUf,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);

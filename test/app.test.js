@@ -1247,14 +1247,14 @@ test("Kumon fluency sheets: 8 exercises, 100% self-correction, silent SCT, print
 
 test("la ruta parte en la vista de lista: un paso siguiente, niveles con avance y solo la unidad actual abierta", async () => {
   const h = await harness(
-    { version: 1, diagnosed: true, completed: ["base-valor-posicional", "base-redondeo"], mastered: [], attempts: [], notes: [], reviews: [] },
+    { version: 1, diagnosed: true, completed: ["base-valor-posicional", "base-numeros-grandes", "base-redondeo"], mastered: [], attempts: [], notes: [], reviews: [] },
     { routeView: null, subjects: ["matematica"] },
   );
   let html = h.node("#app").innerHTML;
   // Un solo llamado arriba, con la lección que sigue y su lugar en la unidad.
   assert.match(html, /id="next-step"/);
   assert.match(html, /Sigue con «Sumar y restar con canje»/);
-  assert.match(html, /Nivel A · Lección 3 de 22/);
+  assert.match(html, /Nivel A · Lección 4 de 33/);
   assert.equal(html.match(/data-action="lesson:base-suma-resta"/g).length, 3, "tarjeta, lista y barra flotante");
   assert.doesNotMatch(html, /¡EMPEZAR!/, "sin la burbuja del camino");
   // Barra de niveles: un tramo por unidad, con el nivel actual marcado.

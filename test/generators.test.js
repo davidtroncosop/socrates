@@ -27,6 +27,11 @@ function baseAnswer(expr, id, prompt) {
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
+  if (LOTE14.includes(id)) {
+    const answer = lote14Answer(expr, id);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return Math.round(answer * 1e9) / 1e9;
+  }
   if (LOTE13.includes(id)) {
     const answer = lote13Answer(expr, id);
     assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
@@ -920,6 +925,166 @@ function lote13Answer(expr, id) {
   return null;
 }
 
+// Lote 14: objetivos que faltaban según las Bases Curriculares.
+const LOTE14 = ["base-calendario", "base-redes-vistas", "base-diagrama-puntos", "base-numeros-grandes", "base-decimales-comparar", "base-paralelas", "base-posibilidad",
+  "base-volumen-cubitos", "base-cuadriculas", "base-cero-uno", "base-patrones", "triangulos-clasificar", "angulos-paralelas", "trigonometria-aplicada", "complejos-division",
+  "circunferencia-secantes", "ipc-uf"];
+function lote14Answer(expr, id) {
+  let m;
+  const n = (v) => Number(String(v).replace(/−/g, "-").replace(/\$/g, "").replace(/\.(?=\d{3})/g, "").replace(",", "."));
+  const SIDES = { triangular: 3, cuadrada: 4, pentagonal: 5, hexagonal: 6, octogonal: 8 };
+  const stem = expr.split("\n")[0];
+  // Seguro (1), posible (2) o imposible (3) según la probabilidad.
+  const chance = (p) => (p === 1 ? 1 : p === 0 ? 3 : 2);
+  const cplx = (s) => {
+    const t = s.replace(/−/g, "-").replace(/\s/g, "");
+    const mm = t.match(/^(-?\d+)?([+-]\d*)?i?$/);
+    if (!t.includes("i")) return [Number(t), 0];
+    const re = /^(-?\d+)([+-]\d*)i$/.exec(t);
+    if (re) return [Number(re[1]), re[2] === "+" ? 1 : re[2] === "-" ? -1 : Number(re[2])];
+    const im = /^(-?\d*)i$/.exec(t);
+    return [0, im[1] === "" ? 1 : im[1] === "-" ? -1 : Number(im[1])];
+  };
+  switch (id) {
+    case "base-calendario":
+      if ((m = stem.match(/^Del (\d+) al (\d+) de marzo: ¿cuántos días después\?$/))) return m[2] - m[1];
+      if ((m = stem.match(/^(\d+) semanas = \? días$/))) return 7 * m[1];
+      if ((m = stem.match(/^Línea de tiempo: de (\d+) a (\d+)$/))) return m[2] - m[1];
+      if ((m = stem.match(/^(\d+) semanas? y (\d+) días?: ¿cuántos días\?$/))) return 7 * m[1] + Number(m[2]);
+      break;
+    case "base-redes-vistas":
+      if ((m = stem.match(/^Red de un prisma de base (\w+): figuras$/))) return SIDES[m[1]] + 2;
+      if ((m = stem.match(/^Red de una pirámide de base (\w+): figuras$/))) return SIDES[m[1]] + 1;
+      if ((m = stem.match(/^Muro de (\d+) por (\d+) cubos: vista de frente$/))) return m[1] * m[2];
+      if ((m = stem.match(/^Muro de (\d+) por (\d+) cubos: vista desde arriba$/))) return Number(m[1]);
+      break;
+    case "base-diagrama-puntos": {
+      const data = (stem.match(/^Dado: ([\d, ]+)\./)?.[1] ?? "").split(", ").map(Number);
+      const freq = (v) => data.filter((x) => x === v).length;
+      const vals = [...new Set(data)];
+      if ((m = stem.match(/¿Puntos sobre el (\d)\?$/))) return freq(Number(m[1]));
+      if (/¿Qué número salió más\?$/.test(stem)) return vals.reduce((a, b) => (freq(b) > freq(a) ? b : a));
+      if (/¿Qué número salió menos\?$/.test(stem)) return vals.reduce((a, b) => (freq(b) < freq(a) ? b : a));
+      if ((m = stem.match(/¿Cuántos resultados mayores que (\d)\?$/))) return data.filter((x) => x > Number(m[1])).length;
+      break;
+    }
+    case "base-numeros-grandes": {
+      if ((m = stem.match(/^¿Cuánto vale el (\d) en ([\d.]+)\?$/))) {
+        const digits = m[2].replace(/\./g, "");
+        assert.equal(digits.split(m[1]).length, 2, `${expr}: la cifra no se repite`);
+        return m[1] * 10 ** (digits.length - 1 - digits.indexOf(m[1]));
+      }
+      if ((m = stem.match(/^(\d) mill(?:ón|ones) (\d+) mil (\d+)$/))) return m[1] * 1e6 + m[2] * 1000 + Number(m[3]);
+      if ((m = stem.match(/^([\d.]+) redondeado al millón$/))) return Math.round(n(m[1]) / 1e6) * 1e6;
+      if ((m = stem.match(/^¿Cuántos miles completos hay en ([\d.]+)\?$/))) return Math.floor(n(m[1]) / 1000);
+      break;
+    }
+    case "base-decimales-comparar":
+      if ((m = stem.match(/^(\d+)\/(\d+) como decimal$/))) return m[1] / m[2];
+      if ((m = stem.match(/^Mayor: ([\d,]+) o ([\d,]+)$/))) return Math.max(n(m[1]), n(m[2]));
+      if ((m = stem.match(/^Menor: (.+)$/))) return Math.min(...m[1].split(", ").map(n));
+      if ((m = stem.match(/^([\d,]+) = \?\/(\d+)$/))) return Math.round(n(m[1]) * m[2]);
+      break;
+    case "base-paralelas": {
+      const PAR = { "un cuadrado": 2, "un rectángulo": 2, "un trapecio que no es paralelogramo": 1, "un triángulo": 0, "un hexágono regular": 3, "un paralelogramo": 2 };
+      const RIGHT = { "un cuadrado": 4, "un rectángulo": 4, "un triángulo rectángulo": 1, "un trapecio rectángulo": 2, "un rombo que no es cuadrado": 0 };
+      if ((m = stem.match(/^Pares de lados paralelos en (.+)$/))) return PAR[m[1]];
+      if ((m = stem.match(/^Ángulos rectos en (.+)$/))) return RIGHT[m[1]];
+      if ((m = stem.match(/^Prisma de base (\w+): aristas paralelas a una arista de pie$/))) return SIDES[m[1]] - 1;
+      if ((m = stem.match(/^Rectas que se cortan en (\d+)°: falta para ser perpendiculares$/))) return 90 - m[1];
+      break;
+    }
+    case "base-posibilidad":
+      if ((m = stem.match(/^Bolsa con (\d+) rojas? y (\d+) azul(?:es)?: sacar una roja$/))) return chance(m[1] / (+m[1] + +m[2]));
+      if ((m = stem.match(/^Dado: sacar un número menor que (\d)$/))) return chance([1, 2, 3, 4, 5, 6].filter((v) => v < m[1]).length / 6);
+      if ((m = stem.match(/^Bolsa A: (\d+) rojas? de (\d+); bolsa B: (\d+) rojas? de (\d+)\./))) {
+        const [a, b] = [m[1] / m[2], m[3] / m[4]];
+        return a > b ? 1 : a < b ? 2 : 3;
+      }
+      if ((m = stem.match(/^Ruleta de (\d+) partes iguales, (\d+) rojas?:/))) return +m[2] > m[1] - m[2] ? 1 : +m[2] < m[1] - m[2] ? 2 : 3;
+      break;
+    case "base-volumen-cubitos":
+      if ((m = stem.match(/^Caja de (\d+) por (\d+) por (\d+) cubitos$/))) return m[1] * m[2] * m[3];
+      if ((m = stem.match(/^Cubo de (\d+) cubitos por lado$/))) return m[1] ** 3;
+      if ((m = stem.match(/^Caja A: (\d+)·(\d+)·(\d+); caja B: (\d+)·(\d+)·(\d+): diferencia$/))) return Math.abs(m[1] * m[2] * m[3] - m[4] * m[5] * m[6]);
+      if ((m = stem.match(/^Caja de (\d+) cubitos con piso de (\d+) por (\d+): capas$/))) return m[1] / (m[2] * m[3]);
+      break;
+    case "base-cuadriculas":
+      if ((m = stem.match(/^Desde la columna (\d+): (\d+) a la derecha$/))) return +m[1] + +m[2];
+      if ((m = stem.match(/^Desde la fila (\d+): (\d+) hacia (arriba|abajo)$/))) {
+        const r = m[3] === "arriba" ? +m[1] + +m[2] : m[1] - m[2];
+        assert.ok(r >= 1, `${expr}: las filas parten en 1`);
+        return r;
+      }
+      if ((m = stem.match(/^De \((\d+), (\d+)\) a \((\d+), (\d+)\): pasos mínimos$/))) return Math.abs(m[3] - m[1]) + Math.abs(m[4] - m[2]);
+      if ((m = stem.match(/^Mapa: cada cuadrado (\d+) m; (\d+) cuadrados?$/))) return m[1] * m[2];
+      break;
+    case "base-cero-uno":
+      if ((m = stem.match(/^(\d+) · (\d+)$/))) return m[1] * m[2];
+      if ((m = stem.match(/^(\d+) ÷ (\d+)$/))) return m[1] / m[2];
+      break;
+    case "base-patrones": {
+      if ((m = stem.match(/^([\d, ]+), \?$/))) {
+        const s = m[1].split(", ").map(Number);
+        const [d, r] = [s[1] - s[0], s[1] / s[0]];
+        if (s[2] - s[1] === d) return s.at(-1) + d;
+        assert.equal(s[2] / s[1], r, expr);
+        return s.at(-1) * r;
+      }
+      if ((m = stem.match(/^(\d+), (\d+), (\d+), …: número en la posición (\d+)$/))) return +m[1] + (m[4] - 1) * (m[2] - m[1]);
+      break;
+    }
+    case "triangulos-clasificar": {
+      if ((m = stem.match(/^Triángulo de lados (\d+), (\d+), (\d+) cm$/))) {
+        const distinct = new Set(m.slice(1, 4)).size;
+        return distinct === 1 ? 1 : distinct === 2 ? 2 : 3;
+      }
+      if ((m = stem.match(/^Triángulo con ángulos (\d+)°, (\d+)°, (\d+)°$/))) {
+        assert.equal(+m[1] + +m[2] + +m[3], 180, expr);
+        const big = Math.max(m[1], m[2], m[3]);
+        return big < 90 ? 1 : big === 90 ? 2 : 3;
+      }
+      if ((m = stem.match(/^¿Se arma un triángulo con (\d+), (\d+) y (\d+) cm\?$/))) {
+        const [a, b, c] = m.slice(1, 4).map(Number).sort((x, y) => x - y);
+        return a + b > c ? 1 : 2;
+      }
+      if ((m = stem.match(/^Lados de (\d+) y (\d+) cm: tercer lado más largo \(entero\)$/))) return +m[1] + +m[2] - 1;
+      break;
+    }
+    case "angulos-paralelas":
+      if ((m = stem.match(/^Paralelas cortadas por una transversal: ángulo de (\d+)°; su (correspondiente|alterno interno|colateral interno)$/))) return m[2] === "colateral interno" ? 180 - m[1] : Number(m[1]);
+      if ((m = stem.match(/^Triángulo entre paralelas: ángulos de (\d+)° y (\d+)° en la base; ¿ángulo de arriba\?$/))) { const r = 180 - m[1] - m[2]; assert.ok(r > 0, expr); return r; }
+      break;
+    case "trigonometria-aplicada":
+      if ((m = stem.match(/^Elevación con tan = ([\d,]+), a (\d+) m: altura$/))) return n(m[1]) * m[2];
+      if ((m = stem.match(/^Rampa de (\d+) m inclinada 30° \(sen 30° = 0,5\): altura$/))) return m[1] * Math.sin(Math.PI / 6);
+      if ((m = stem.match(/^Escalera de (\d+) m a 60° del suelo \(cos 60° = 0,5\): distancia al muro$/))) return m[1] * Math.cos(Math.PI / 3);
+      if ((m = stem.match(/^Poste de (\d+) m, tan del ángulo del sol = ([\d,]+): sombra$/))) return m[1] / n(m[2]);
+      break;
+    case "complejos-division": {
+      const div = ([a, b], [c, d]) => [(a * c + b * d) / (c * c + d * d), (b * c - a * d) / (c * c + d * d)];
+      if ((m = stem.match(/^\((.+)\) ÷ (\d+): parte real$/))) return div(cplx(m[1]), [Number(m[2]), 0])[0];
+      if ((m = stem.match(/^\((.+)\) ÷ i: parte real$/))) return div(cplx(m[1]), [0, 1])[0];
+      if ((m = stem.match(/^(\d+) ÷ \((.+)\): parte (real|imaginaria)$/))) return div([Number(m[1]), 0], cplx(m[2]))[m[3] === "real" ? 0 : 1];
+      break;
+    }
+    case "circunferencia-secantes":
+      if ((m = stem.match(/^Secantes: PA = (\d+), PB = (\d+), PC = (\d+): PD$/))) return (m[1] * m[2]) / m[3];
+      if ((m = stem.match(/^Tangente: PA = (\d+), PB = (\d+): PT$/))) return Math.sqrt(m[1] * m[2]);
+      if ((m = stem.match(/^Cuerdas que se cortan: arcos de (\d+)° y (\d+)°: ángulo$/))) return (+m[1] + +m[2]) / 2;
+      if ((m = stem.match(/^Secantes desde fuera: arcos de (\d+)° y (\d+)°: ángulo$/))) return (m[1] - m[2]) / 2;
+      if ((m = stem.match(/^Cuadrilátero inscrito: un ángulo de (\d+)°; el opuesto$/))) return 180 - m[1];
+      break;
+    case "ipc-uf":
+      if ((m = stem.match(/^\$([\d.]+) con IPC de (\d+) %$/))) return n(m[1]) * (1 + m[2] / 100);
+      if ((m = stem.match(/^(\d+) UF con UF = \$([\d.]+)$/))) return m[1] * n(m[2]);
+      if ((m = stem.match(/^\$([\d.]+) en UF \(UF = \$([\d.]+)\)$/))) return n(m[1]) / n(m[2]);
+      if ((m = stem.match(/^Sueldo sube (\d+) %, IPC (\d+) %: aumento real aproximado$/))) return m[1] - m[2];
+      break;
+  }
+  return null;
+}
+
 // Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
 function solveSystem(expr) {
   const letters = [...new Set(expr.match(/[a-z]/g))];
@@ -979,7 +1144,7 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-") || ["base-fracciones-recta", "potencias-negativas","probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e", "base-longitud", "base-tiempo", "base-masa", "problemas-recetas"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || ["base-fracciones-recta", "base-decimales-comparar", "potencias-negativas","probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e", "base-longitud", "base-tiempo", "base-masa", "problemas-recetas"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
         else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos", "crecimiento-exponencial", "cono", "homotecia", "cambio-porcentual", "esfera", "funcion-inversa"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);
