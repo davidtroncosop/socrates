@@ -9835,5 +9835,1323 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "base-area",
+    "since": "2026-11-27",
+    "title": "Área con cuadraditos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "3° y 4° Básico · Contar cuadraditos para medir superficies",
+    "concept": "El área mide cuánta superficie cubre una figura: se cuentan los cuadraditos que caben adentro. En un rectángulo hay filas iguales, así que se multiplica largo por ancho. El perímetro, en cambio, es el borde.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° y 4° Básico.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Un rectángulo de 5 por 3 cuadraditos tiene 3 filas de 5: 5 · 3 = 15 cuadraditos. Su perímetro es 5 + 3 + 5 + 3 = 16.",
+    "status": "published",
+    "questions": [
+      [
+        "Rectángulo de 6 por 8 cuadraditos: área",
+        48,
+        "Un rectángulo mide 6 cuadraditos de largo y 8 de alto. ¿Cuántos cuadraditos cubren su superficie?",
+        "🟦 Son 8 filas iguales de cuadraditos.",
+        "8 filas de 6 cuadraditos: 6 · 8 = 48.",
+        [
+          [
+            28,
+            "Ese es el perímetro (el borde). El área cuenta los cuadraditos de adentro."
+          ],
+          [
+            14,
+            "Se multiplica: son filas iguales de cuadraditos."
+          ]
+        ]
+      ],
+      [
+        "Cuadrado de lado 6 cm: área",
+        36,
+        "¿Cuál es el área de un cuadrado de 6 cm de lado, en cm²?",
+        "En un cuadrado, el largo y el ancho miden lo mismo.",
+        "6 · 6 = 36 cm².",
+        [
+          [
+            24,
+            "Ese es el perímetro. El área es lado · lado."
+          ],
+          [
+            12,
+            "Es lado · lado, no lado · 2."
+          ]
+        ]
+      ],
+      [
+        "Rectángulo de 54 cm² con base 6 cm: altura",
+        9,
+        "Un rectángulo tiene 54 cm² de área y su base mide 6 cm. ¿Cuánto mide su altura?",
+        "Área = base · altura. ¿Qué número multiplicado por la base da el área?",
+        "54 ÷ 6 = 9 cm. Comprobación: 6 · 9 = 54.",
+        [
+          [
+            48,
+            "Se divide el área por la base, no se resta."
+          ]
+        ]
+      ],
+      [
+        "Figura en L: 9 por 4 más 2 por 4",
+        44,
+        "Una figura en forma de L se arma con un rectángulo de 9 cm por 4 cm y otro de 2 cm por 4 cm. ¿Cuál es su área en cm²?",
+        "Calcula el área de cada rectángulo por separado y después júntalas.",
+        "9 · 4 = 36; 2 · 4 = 8; 36 + 8 = 44 cm².",
+        [
+          [
+            36,
+            "Falta sumar el área del otro rectángulo."
+          ],
+          [
+            288,
+            "Las áreas se suman, no se multiplican."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Figura en L: 6 por 2 más 2 por 3",
+      18,
+      "Una figura en forma de L se arma con un rectángulo de 6 cm por 2 cm y otro de 2 cm por 3 cm. ¿Cuál es su área en cm²?",
+      "Calcula el área de cada rectángulo por separado y después júntalas.",
+      "6 · 2 = 12; 2 · 3 = 6; 12 + 6 = 18 cm².",
+      [
+        [
+          12,
+          "Falta sumar el área del otro rectángulo."
+        ],
+        [
+          72,
+          "Las áreas se suman, no se multiplican."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-cuerpos",
+    "since": "2026-11-27",
+    "title": "Cuerpos geométricos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "3° y 4° Básico · Caras, aristas y vértices",
+    "concept": "Un cuerpo geométrico tiene caras (las superficies planas), aristas (los bordes donde se juntan dos caras) y vértices (las esquinas). Un prisma tiene dos bases iguales; una pirámide tiene una base y una punta.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° y 4° Básico.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Un prisma de base triangular tiene 2 bases y 3 caras laterales: 5 caras. Sus aristas son 3 arriba, 3 abajo y 3 de pie: 9.",
+    "status": "published",
+    "questions": [
+      [
+        "Cubo: ¿vértices?",
+        8,
+        "¿Cuántas vértices tiene un cubo?",
+        "🎲 Piensa en un dado y recórrelo de arriba hacia abajo.",
+        "Un cubo tiene 4 esquinas arriba y 4 abajo: 8 vértices.",
+        [
+          [
+            6,
+            "Esas son las caras."
+          ],
+          [
+            12,
+            "Esas son las aristas (los bordes)."
+          ]
+        ]
+      ],
+      [
+        "Prisma de base octogonal: ¿vértices?",
+        16,
+        "Un prisma tiene dos bases iguales y caras laterales con forma de rectángulo. ¿Cuántas vértices tiene un prisma de base octogonal (8 lados)?",
+        "📦 Cuenta las esquinas de la base de arriba y las de abajo.",
+        "8 arriba + 8 abajo = 16 vértices.",
+        [
+          [
+            8,
+            "La base tiene 8 lados, pero el prisma tiene más vértices."
+          ]
+        ]
+      ],
+      [
+        "Pirámide de base octogonal: ¿vértices?",
+        9,
+        "Una pirámide tiene una base y caras con forma de triángulo que se juntan en una punta. ¿Cuántas vértices tiene una pirámide de base octogonal (8 lados)?",
+        "🔺 Cuenta las esquinas de la base y la punta.",
+        "8 esquinas + 1 punta = 9 vértices.",
+        [
+          [
+            8,
+            "La base tiene 8 lados, pero la pirámide tiene más vértices."
+          ]
+        ]
+      ],
+      [
+        "Poliedro con 5 caras y 6 vértices: ¿aristas?",
+        9,
+        "En todo poliedro se cumple la fórmula de Euler: caras + vértices − aristas = 2. ¿Cuántas aristas tiene?",
+        "Reemplaza en la fórmula y despeja las aristas.",
+        "5 + 6 − aristas = 2, así que aristas = 11 − 2 = 9.",
+        [
+          [
+            11,
+            "Falta restar 2."
+          ],
+          [
+            13,
+            "Se resta 2, no se suma."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Poliedro con 6 caras y 6 vértices: ¿aristas?",
+      10,
+      "En todo poliedro se cumple la fórmula de Euler: caras + vértices − aristas = 2. ¿Cuántas aristas tiene?",
+      "Reemplaza en la fórmula y despeja las aristas.",
+      "6 + 6 − aristas = 2, así que aristas = 12 − 2 = 10.",
+      [
+        [
+          12,
+          "Falta restar 2."
+        ],
+        [
+          14,
+          "Se resta 2, no se suma."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-simetria",
+    "since": "2026-11-27",
+    "title": "Simetría y reflejos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "3° y 4° Básico · Doblar la figura por la mitad",
+    "concept": "Una figura es simétrica si al doblarla por una línea las dos mitades calzan: esa línea es el eje de simetría. Un reflejo queda a la misma distancia del espejo, pero al otro lado.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° y 4° Básico.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "La letra A tiene un eje de simetría vertical. En la recta numérica, si el espejo está en el 5, el reflejo del 3 (a 2 pasos) queda en el 7.",
+    "status": "published",
+    "questions": [
+      [
+        "Ejes de simetría de un triángulo isósceles que no es equilátero",
+        1,
+        "¿Cuántos ejes de simetría tiene un triángulo isósceles que no es equilátero? Un eje de simetría divide la figura en dos mitades que calzan al doblarla.",
+        "🪞 Imagina que doblas la figura: ¿por cuántas líneas distintas calzan las dos mitades?",
+        "Tiene 1: solo por la línea que baja desde el vértice entre los lados iguales.",
+        [
+          [
+            4,
+            "Revisa si las diagonales calzan al doblar."
+          ],
+          [
+            0,
+            "Sí tiene: prueba doblándola por la mitad."
+          ]
+        ]
+      ],
+      [
+        "Ejes de simetría de un polígono regular de 10 lados",
+        10,
+        "Un polígono regular tiene todos sus lados y ángulos iguales. ¿Cuántos ejes de simetría tiene uno de 10 lados?",
+        "Compara con el triángulo equilátero (3 lados) y el cuadrado (4 lados): ¿qué relación ves?",
+        "Tiene 10 ejes, tantos como lados.",
+        [
+          [
+            20,
+            "Cada eje pasa por dos puntos de la figura: se cuentan 10 ejes."
+          ]
+        ]
+      ],
+      [
+        "Reflejo de 5 con el espejo en 6",
+        7,
+        "En una recta numérica hay un espejo en el 6. ¿En qué número queda el reflejo del punto 5?",
+        "¿A cuántos pasos del espejo está el 5? El reflejo queda a los mismos pasos, al otro lado.",
+        "5 está a 1 pasos del espejo: 6 + 1 = 7.",
+        [
+          [
+            11,
+            "No se suman: se cuentan los pasos hasta el espejo."
+          ],
+          [
+            6,
+            "Ese es el espejo. El reflejo queda al otro lado."
+          ]
+        ]
+      ],
+      [
+        "Mitad pintada: 13 cuadraditos; figura completa",
+        26,
+        "Un dibujo simétrico tiene 13 cuadraditos pintados a la izquierda del eje. Al completarlo, ¿cuántos cuadraditos pintados tiene en total?",
+        "El lado derecho es el reflejo del izquierdo.",
+        "13 + 13 = 26 cuadraditos.",
+        [
+          [
+            13,
+            "Falta el otro lado del eje."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Mitad pintada: 11 cuadraditos; figura completa",
+      22,
+      "Un dibujo simétrico tiene 11 cuadraditos pintados a la izquierda del eje. Al completarlo, ¿cuántos cuadraditos pintados tiene en total?",
+      "El lado derecho es el reflejo del izquierdo.",
+      "11 + 11 = 22 cuadraditos.",
+      [
+        [
+          11,
+          "Falta el otro lado del eje."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-angulos-tipos",
+    "since": "2026-11-27",
+    "title": "Ángulos y giros",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "4° y 5° Básico · Agudo, recto, obtuso y llano",
+    "concept": "Un ángulo mide cuánto gira algo. Una vuelta completa son 360°. El recto mide 90° (la esquina de una hoja); el agudo, menos de 90°; el obtuso, entre 90° y 180°; el llano, 180° (una línea recta).\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 4° y 5° Básico.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Un ángulo de 35° es agudo y le faltan 90 − 35 = 55° para ser recto. Media vuelta son 180°.",
+    "status": "published",
+    "questions": [
+      [
+        "Le falta a 80° para un ángulo recto",
+        10,
+        "Un ángulo recto mide 90°. ¿Cuántos grados le faltan a un ángulo de 80° para ser recto?",
+        "📐 Un ángulo recto es la esquina de una hoja de cuaderno.",
+        "90 − 80 = 10°.",
+        [
+          [
+            100,
+            "Eso le falta para un ángulo llano (180°). El recto mide 90°."
+          ]
+        ]
+      ],
+      [
+        "Le falta a 60° para un ángulo llano",
+        120,
+        "Un ángulo llano mide 180°: es media vuelta, una línea recta. ¿Cuántos grados le faltan a un ángulo de 60°?",
+        "Un ángulo llano forma una línea recta.",
+        "180 − 60 = 120°.",
+        [
+          [
+            30,
+            "Eso es respecto del recto (90°). El llano mide 180°."
+          ]
+        ]
+      ],
+      [
+        "Tres cuartos de vuelta en grados",
+        270,
+        "¿Cuántos grados gira algo que da tres cuartos de vuelta?",
+        "🔄 Una vuelta completa son 360°.",
+        "3 · 90 = 270°.",
+        [
+          [
+            360,
+            "Esa es la vuelta completa."
+          ]
+        ]
+      ],
+      [
+        "Reloj a las 6:00: ángulo entre las manecillas",
+        180,
+        "A las 6:00, ¿cuántos grados mide el ángulo menor entre las manecillas del reloj?",
+        "🕒 Entre dos números seguidos del reloj hay 360 ÷ 12 = 30°.",
+        "Hay 6 espacios de 30° entre las manecillas: 6 · 30 = 180°.",
+        [
+          [
+            6,
+            "Son 6 espacios de 30°, no 6 grados."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Reloj a las 7:00: ángulo entre las manecillas",
+      150,
+      "A las 7:00, ¿cuántos grados mide el ángulo menor entre las manecillas del reloj?",
+      "🕒 Entre dos números seguidos del reloj hay 360 ÷ 12 = 30°.",
+      "Hay 5 espacios de 30° entre las manecillas: 5 · 30 = 150°.",
+      [
+        [
+          210,
+          "Ese es el ángulo mayor. Se pide el menor."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-graficos-barras",
+    "since": "2026-11-27",
+    "title": "Pictogramas y gráficos de barras",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "3° y 4° Básico · Leer datos en dibujos y barras",
+    "concept": "Un pictograma usa dibujos: la clave dice cuánto vale cada uno. En un gráfico de barras, el largo de cada barra muestra la cantidad, y se comparan restando o se juntan sumando.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° y 4° Básico.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Si cada 🚲 vale 3 bicicletas y hay 7 dibujos, son 7 · 3 = 21 bicicletas. Si una barra marca 45 y otra 20, la diferencia es 25.",
+    "status": "published",
+    "questions": [
+      [
+        "Pictograma: cada ícono vale 5; hay 4 íconos",
+        20,
+        "En un pictograma, cada 🍎 representa 5 manzanas. Si hay 4 🍎 dibujadas, ¿cuántas manzanas son?",
+        "Cada dibujo vale más de uno: fíjate en la clave del pictograma.",
+        "4 · 5 = 20 manzanas.",
+        [
+          [
+            4,
+            "Cada 🍎 vale 5, no 1."
+          ]
+        ]
+      ],
+      [
+        "Barras: lunes 60, martes 25: diferencia",
+        35,
+        "En un gráfico de barras, el lunes se vendieron 60 helados y el martes 25. ¿Cuántos helados más se vendieron el día con más ventas?",
+        "📊 Compara la barra más alta con la más baja.",
+        "60 − 25 = 35 helados.",
+        [
+          [
+            85,
+            "Ese es el total. Se pide la diferencia."
+          ]
+        ]
+      ],
+      [
+        "Barras: 15, 20 y 15: total",
+        50,
+        "Un gráfico de barras muestra los libros leídos por tres cursos: 15, 20 y 15. ¿Cuántos libros leyeron en total?",
+        "Junta lo que muestra cada barra.",
+        "15 + 20 + 15 = 50 libros.",
+        [
+          [
+            20,
+            "Esa es solo la barra más alta."
+          ]
+        ]
+      ],
+      [
+        "Pictograma: cada ícono vale 2; total 8: ¿íconos?",
+        4,
+        "En un pictograma, cada ⭐ representa 2 estudiantes. Para mostrar 8 estudiantes, ¿cuántas ⭐ hay que dibujar?",
+        "¿Cuántas veces cabe 2 en 8?",
+        "8 ÷ 2 = 4 ⭐.",
+        [
+          [
+            8,
+            "Cada ⭐ vale 2: hay que dividir."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Pictograma: cada ícono vale 5; total 45: ¿íconos?",
+      9,
+      "En un pictograma, cada ⭐ representa 5 estudiantes. Para mostrar 45 estudiantes, ¿cuántas ⭐ hay que dibujar?",
+      "¿Cuántas veces cabe 5 en 45?",
+      "45 ÷ 5 = 9 ⭐.",
+      [
+        [
+          45,
+          "Cada ⭐ vale 5: hay que dividir."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-division-resto",
+    "since": "2026-11-27",
+    "title": "División con resto",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "4° Básico · Lo que sobra al repartir",
+    "concept": "Al repartir en grupos iguales a veces sobra algo: el resto. El resto siempre es menor que el divisor. Según la pregunta, lo que sobra se deja fuera o necesita un grupo más.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 4° Básico.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "17 lápices en cajas de 5: caben 3 cajas completas (15 lápices) y sobran 2. Para guardarlos todos se necesitan 4 cajas.",
+    "status": "published",
+    "questions": [
+      [
+        "19 estudiantes en grupos de 3: grupos completos",
+        6,
+        "19 estudiantes se ordenan en grupos de 3. ¿Cuántos grupos completos se forman?",
+        "¿Cuántas veces cabe 3 en 19?",
+        "3 · 6 = 18 y sobra 1: 6 grupos completos.",
+        [
+          [
+            7,
+            "El último grupo tendría solo 1: no está completo."
+          ]
+        ]
+      ],
+      [
+        "23 estudiantes en grupos de 6: sobran",
+        5,
+        "23 estudiantes se ordenan en grupos de 6. ¿Cuántos estudiantes quedan sin grupo completo?",
+        "Primero arma todos los grupos completos que puedas.",
+        "6 · 3 = 18; 23 − 18 = 5.",
+        [
+          [
+            3,
+            "Esos son los grupos. Se pide cuántos sobran."
+          ]
+        ]
+      ],
+      [
+        "32 personas, autos de 6 asientos: autos",
+        6,
+        "32 personas van a un paseo en autos de 6 asientos. ¿Cuántos autos se necesitan para que viajen todas?",
+        "Si sobran personas, igual necesitan un auto para ellas.",
+        "32 ÷ 6 = 5 y sobran 2: hace falta un auto más, 6 autos.",
+        [
+          [
+            5,
+            "Quedarían 2 personas sin auto."
+          ]
+        ]
+      ],
+      [
+        "Cociente 9, divisor 6, resto 1: dividendo",
+        55,
+        "En una división, el cociente es 9, el divisor es 6 y el resto es 1. ¿Qué número se dividió?",
+        "Dividendo = divisor · cociente + resto.",
+        "6 · 9 + 1 = 54 + 1 = 55.",
+        [
+          [
+            54,
+            "Falta sumar el resto."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Cociente 10, divisor 8, resto 2: dividendo",
+      82,
+      "En una división, el cociente es 10, el divisor es 8 y el resto es 2. ¿Qué número se dividió?",
+      "Dividendo = divisor · cociente + resto.",
+      "8 · 10 + 2 = 80 + 2 = 82.",
+      [
+        [
+          80,
+          "Falta sumar el resto."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-fracciones-recta",
+    "since": "2026-11-27",
+    "title": "Fracciones en la recta numérica",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "4° y 5° Básico · Ubicar partes del entero",
+    "concept": "Para ubicar una fracción, divide el tramo del 0 al 1 en tantas partes iguales como dice el denominador y avanza tantas partes como dice el numerador. Más a la derecha significa más grande.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 4° y 5° Básico.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Para ubicar 3/7, divide del 0 al 1 en 7 partes y avanza 3. Como 3/7 es menor que 1, queda antes del 1.",
+    "status": "published",
+    "questions": [
+      [
+        "Recta de 0 a 1 en 5 partes: marca 1",
+        0.2,
+        "La recta del 0 al 1 está dividida en 5 partes iguales. ¿Qué fracción marca la raya número 1, contando desde el 0? Responde como fracción.",
+        "📏 Cada parte es un quinto del entero.",
+        "1 parte de 1/5: 1/5.",
+        [
+          [
+            1,
+            "Cada raya vale una parte del entero, no 1."
+          ]
+        ]
+      ],
+      [
+        "1 y 1/5 = ?/5",
+        6,
+        "Un punto de la recta está en 1 y 1/5. Escríbelo como una sola fracción con denominador 5.",
+        "El 1 entero también se puede escribir con 5 en el denominador.",
+        "1 = 5/5; 5/5 + 1/5 = 6/5.",
+        [
+          [
+            2,
+            "El 1 entero son 5/5, no 1/5."
+          ]
+        ]
+      ],
+      [
+        "Más a la derecha: 2/8 o 1/8",
+        0.25,
+        "En la recta numérica, ¿cuál de las dos fracciones queda más a la derecha? Escríbela.",
+        "Las dos tienen partes del mismo tamaño: ¿cuál toma más partes?",
+        "Mismo denominador: 2 partes son más que 1. Queda a la derecha 2/8.",
+        [
+          [
+            0.125,
+            "Esa queda más a la izquierda: es la menor."
+          ]
+        ]
+      ],
+      [
+        "Punto medio entre 0 y 1/2",
+        0.25,
+        "¿Qué fracción está justo en la mitad entre 0 y 1/2? Responde como fracción.",
+        "Partir cada parte en dos deja el doble de partes, cada una más chica.",
+        "Con partes de 1/4, 1/2 = 2/4; la mitad es 1/4.",
+        [
+          [
+            0.5,
+            "Esa es la fracción completa. Se pide su mitad."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Punto medio entre 0 y 1/4",
+      0.125,
+      "¿Qué fracción está justo en la mitad entre 0 y 1/4? Responde como fracción.",
+      "Partir cada parte en dos deja el doble de partes, cada una más chica.",
+      "Con partes de 1/8, 1/4 = 2/8; la mitad es 1/8.",
+      [
+        [
+          0.25,
+          "Esa es la fracción completa. Se pide su mitad."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-ecuaciones-cajitas",
+    "since": "2026-11-27",
+    "title": "El número escondido",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "3° a 5° Básico · Ecuaciones con cajitas",
+    "concept": "Una cajita □ esconde un número. Para encontrarlo se usa la operación contraria: la resta deshace la suma y la división deshace la multiplicación. Al final, comprueba reemplazando.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° a 5° Básico.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "En □ + 7 = 15, se resta: 15 − 7 = 8. Comprobación: 8 + 7 = 15.",
+    "status": "published",
+    "questions": [
+      [
+        "□ + 6 = 10",
+        4,
+        "¿Qué número va en la cajita?",
+        "Haz la operación contraria: ¿qué le falta a 6 para llegar a 10?",
+        "10 − 6 = 4. Comprobación: 4 + 6 = 10.",
+        [
+          [
+            16,
+            "Se resta para encontrar lo que falta."
+          ]
+        ]
+      ],
+      [
+        "□ − 3 = 11",
+        14,
+        "¿Qué número va en la cajita?",
+        "Haz la operación contraria: si le quitaron algo, súmaselo de vuelta.",
+        "11 + 3 = 14. Comprobación: 14 − 3 = 11.",
+        [
+          [
+            8,
+            "Si al número le quitaron algo, hay que sumárselo de vuelta."
+          ]
+        ]
+      ],
+      [
+        "4 · □ = 48",
+        12,
+        "¿Qué número va en la cajita?",
+        "¿Qué número multiplicado por 4 da 48?",
+        "48 ÷ 4 = 12. Comprobación: 4 · 12 = 48.",
+        [
+          [
+            44,
+            "Se divide, no se resta."
+          ]
+        ]
+      ],
+      [
+        "□ ÷ 3 = 3",
+        9,
+        "¿Qué número va en la cajita?",
+        "Haz la operación contraria: si lo repartieron, júntalo de nuevo.",
+        "3 · 3 = 9. Comprobación: 9 ÷ 3 = 3.",
+        [
+          [
+            6,
+            "Se multiplica para deshacer la división."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "□ ÷ 5 = 10",
+      50,
+      "¿Qué número va en la cajita?",
+      "Haz la operación contraria: si lo repartieron, júntalo de nuevo.",
+      "10 · 5 = 50. Comprobación: 50 ÷ 5 = 10.",
+      [
+        [
+          15,
+          "Se multiplica para deshacer la división."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "factorizacion",
+    "since": "2026-11-27",
+    "title": "Factorización",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "1° Medio · Productos notables al revés",
+    "concept": "Factorizar es escribir una expresión como multiplicación: el camino de vuelta de los productos notables. Primero busca un factor común; después revisa si es un trinomio, una diferencia de cuadrados o un cuadrado de binomio.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 1° Medio.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "8x + 12 = 4(2x + 3), porque 4 divide a los dos términos. Y x² − 25 = (x + 5)(x − 5).",
+    "status": "published",
+    "questions": [
+      [
+        "10x + 25 = ?(2x + 5)",
+        5,
+        "Factor común: ¿qué número va delante del paréntesis?",
+        "Busca el número más grande que divide a los dos términos.",
+        "10x = 5 · 2x y 25 = 5 · 5: 5(2x + 5).",
+        [
+          [
+            10,
+            "Ese es el primer término completo. Busca lo que tienen en común."
+          ]
+        ]
+      ],
+      [
+        "x² + 15x + 56 = (x + 8)(x + ?)",
+        7,
+        "Factoriza el trinomio: ¿qué número falta?",
+        "Busca dos números que sumados den el término del medio y multiplicados den el último.",
+        "8 + 7 = 15 y 8 · 7 = 56: (x + 8)(x + 7).",
+        [
+          [
+            15,
+            "Ese es el término del medio. Busca el número que falta."
+          ],
+          [
+            56,
+            "Ese es el último término."
+          ]
+        ]
+      ],
+      [
+        "x² − 81 = (x + ?)(x − ?)",
+        9,
+        "Factoriza la diferencia de cuadrados: ¿qué número va en los dos paréntesis?",
+        "Diferencia de cuadrados: x² − b² = (x + b)(x − b).",
+        "81 = 9²: x² − 81 = (x + 9)(x − 9).",
+        [
+          [
+            40.5,
+            "No es la mitad: busca qué número al cuadrado da ese valor."
+          ]
+        ]
+      ],
+      [
+        "x² + 8x + 16 = (x + ?)²",
+        4,
+        "Escribe el trinomio como un cuadrado de binomio: ¿qué número falta?",
+        "Cuadrado de binomio: (x + b)² = x² + 2bx + b².",
+        "16 = 4² y 2 · 4 = 8: (x + 4)².",
+        [
+          [
+            8,
+            "Ese es el doble. El número es la mitad del término del medio."
+          ],
+          [
+            16,
+            "Ese es el cuadrado. Busca su raíz."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "x² + 16x + 64 = (x + ?)²",
+      8,
+      "Escribe el trinomio como un cuadrado de binomio: ¿qué número falta?",
+      "Cuadrado de binomio: (x + b)² = x² + 2bx + b².",
+      "64 = 8² y 2 · 8 = 16: (x + 8)².",
+      [
+        [
+          16,
+          "Ese es el doble. El número es la mitad del término del medio."
+        ],
+        [
+          64,
+          "Ese es el cuadrado. Busca su raíz."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "notacion-cientifica",
+    "since": "2026-11-27",
+    "title": "Notación científica",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "8° Básico y 1° Medio · Números muy grandes y muy chicos",
+    "concept": "La notación científica escribe un número como una cifra entre 1 y 10 multiplicada por una potencia de 10. El exponente cuenta los lugares que se mueve la coma: positivo para números grandes y negativo para números menores que 1.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 8° Básico y 1° Medio.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "La distancia a la Luna, unos 384.000 km, es 3,84 · 10⁵ km. Y 0,02 = 2 · 10⁻².",
+    "status": "published",
+    "questions": [
+      [
+        "700.000.000 = 7 · 10^?",
+        8,
+        "Escribe el número en notación científica: ¿cuál es el exponente?",
+        "Cuenta cuántos lugares se mueve la coma hasta dejar una sola cifra antes de ella.",
+        "La coma se mueve 8 lugares: 700.000.000 = 7 · 10⁸.",
+        [
+          [
+            9,
+            "Contaste todas las cifras. Cuenta los lugares que se mueve la coma."
+          ]
+        ]
+      ],
+      [
+        "4,5 · 10² = ?",
+        450,
+        "Escribe el número sin potencia.",
+        "Multiplicar por 10² mueve la coma 2 lugares a la derecha.",
+        "4,5 · 10² = 450.",
+        [
+          [
+            90,
+            "10² no es 10 · 2: es 2 veces 10."
+          ]
+        ]
+      ],
+      [
+        "0,0045 = 4,5 · 10^?",
+        -3,
+        "Escribe el número en notación científica: ¿cuál es el exponente?",
+        "Para números menores que 1, la coma se mueve a la derecha y el exponente es negativo.",
+        "La coma se mueve 3 lugares a la derecha: 0,0045 = 4,5 · 10⁻³.",
+        [
+          [
+            3,
+            "Para un número menor que 1, el exponente es negativo."
+          ]
+        ]
+      ],
+      [
+        "(4 · 10⁵) · (2 · 10³) = 8 · 10^?",
+        8,
+        "Multiplica en notación científica: ¿cuál es el exponente del resultado?",
+        "Multiplica los números por un lado y junta las potencias de 10 por otro.",
+        "4 · 2 = 8 y 10⁵ · 10³ = 10⁸.",
+        [
+          [
+            15,
+            "Al multiplicar potencias de igual base, los exponentes se suman."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "(2 · 10²) · (4 · 10⁶) = 8 · 10^?",
+      8,
+      "Multiplica en notación científica: ¿cuál es el exponente del resultado?",
+      "Multiplica los números por un lado y junta las potencias de 10 por otro.",
+      "2 · 4 = 8 y 10² · 10⁶ = 10⁸.",
+      [
+        [
+          12,
+          "Al multiplicar potencias de igual base, los exponentes se suman."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "irracionales",
+    "since": "2026-11-27",
+    "title": "Números irracionales",
+    "subject": "matematica",
+    "grade": "2m",
+    "description": "2° Medio · Raíces que no son exactas",
+    "concept": "Un número irracional tiene infinitos decimales sin patrón, como √2 o π. Para ubicar una raíz que no es exacta, búscala entre dos cuadrados perfectos.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 2° Medio.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "√10 está entre 3 y 4 porque 3² = 9 y 4² = 16; está más cerca de 3. Y √2 · √18 = √36 = 6.",
+    "status": "published",
+    "questions": [
+      [
+        "√69 está entre ? y el siguiente entero",
+        8,
+        "√69 no es un número entero. ¿Entre qué enteros seguidos está? Escribe el menor.",
+        "Busca los cuadrados perfectos más cercanos a 69, uno menor y uno mayor.",
+        "8² = 64 y 9² = 81: √69 está entre 8 y 9.",
+        [
+          [
+            34,
+            "No es la mitad: busca qué número al cuadrado se acerca."
+          ]
+        ]
+      ],
+      [
+        "√45 al entero más cercano",
+        7,
+        "Aproxima √45 al entero más cercano.",
+        "Ubica √45 entre dos enteros y decide a cuál está más cerca.",
+        "√45 ≈ 6,71: está entre 6 y 7, más cerca de 7.",
+        [
+          [
+            6,
+            "√45 ≈ 6,71: revisa a qué entero está más cerca."
+          ]
+        ]
+      ],
+      [
+        "√6 · √96",
+        24,
+        "Multiplica las raíces. El resultado es un número entero.",
+        "√a · √b = √(a · b).",
+        "√6 · √96 = √576 = 24.",
+        [
+          [
+            576,
+            "Falta sacar la raíz."
+          ]
+        ]
+      ],
+      [
+        "Enteros entre √17 y √37",
+        2,
+        "¿Cuántos números enteros hay entre √17 y √37?",
+        "Ubica cada raíz entre dos enteros y cuenta los enteros que quedan al medio.",
+        "√17 está entre 4 y 5; √37, entre 6 y 7. Al medio: del 5 al 6, 2 enteros.",
+        [
+          [
+            19,
+            "Se cuentan los enteros entre las raíces, no entre los números de adentro."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Enteros entre √15 y √57",
+      4,
+      "¿Cuántos números enteros hay entre √15 y √57?",
+      "Ubica cada raíz entre dos enteros y cuenta los enteros que quedan al medio.",
+      "√15 está entre 3 y 4; √57, entre 7 y 8. Al medio: del 4 al 7, 4 enteros.",
+      [
+        [
+          41,
+          "Se cuentan los enteros entre las raíces, no entre los números de adentro."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "recta-pendiente",
+    "since": "2026-11-27",
+    "title": "Pendiente y ecuación de la recta",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "8° Básico y 1° Medio · Cuánto sube por cada paso",
+    "concept": "En y = mx + n, la pendiente m dice cuánto sube (o baja) la recta por cada paso a la derecha, y n es dónde corta el eje y. Con dos puntos: m = (y₂ − y₁) ÷ (x₂ − x₁).\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 8° Básico y 1° Medio.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "De (1, 2) a (4, 11) sube 9 y avanza 3: m = 9 ÷ 3 = 3. Reemplazando (1, 2): 2 = 3 · 1 + n, así que n = −1.",
+    "status": "published",
+    "questions": [
+      [
+        "Pendiente de (3, 4) a (5, 2)",
+        -1,
+        "Calcula la pendiente de la recta que pasa por los dos puntos.",
+        "Pendiente = cuánto sube (o baja) ÷ cuánto avanza: (y₂ − y₁) ÷ (x₂ − x₁).",
+        "(2 − 4) ÷ (5 − 3) = −2 ÷ 2 = −1.",
+        [
+          [
+            1,
+            "Revisa el orden: resta en el mismo orden arriba y abajo."
+          ],
+          [
+            -2,
+            "Falta dividir por lo que avanza (2)."
+          ]
+        ]
+      ],
+      [
+        "y = 2x + n pasa por (2, −3): ¿n?",
+        -7,
+        "La recta y = 2x + n pasa por el punto (2, −3). ¿Cuánto vale n?",
+        "Reemplaza x = 2 e y = −3 en la recta y despeja n.",
+        "−3 = 2·2 + n → −3 = 4 + n → n = −7.",
+        [
+          [
+            1,
+            "Al despejar n, el término pasa al otro lado con el signo contrario."
+          ]
+        ]
+      ],
+      [
+        "Recta por (0, 4) y (3, 1): ¿n en y = mx + n?",
+        4,
+        "Una recta pasa por (0, 4) y (3, 1). Si su ecuación es y = mx + n, ¿cuánto vale n?",
+        "Primero calcula la pendiente m; después reemplaza un punto para despejar n.",
+        "m = −3 ÷ 3 = −1; 4 = −1·0 + n → n = 4.",
+        [
+          [
+            -1,
+            "Esa es la pendiente m. Se pide n."
+          ]
+        ]
+      ],
+      [
+        "Cruce de y = −3x + 5 e y = x + 5: ¿x?",
+        0,
+        "¿En qué valor de x se cruzan las dos rectas?",
+        "En el cruce, las dos rectas tienen el mismo y: iguala las expresiones.",
+        "−3x + 5 = x + 5 → −4x = 0 → x = 0."
+      ]
+    ],
+    "review": [
+      "Cruce de y = −2x − 4 e y = 3x − 14: ¿x?",
+      2,
+      "¿En qué valor de x se cruzan las dos rectas?",
+      "En el cruce, las dos rectas tienen el mismo y: iguala las expresiones.",
+      "−2x − 4 = 3x − 14 → −5x = −10 → x = 2.",
+      [
+        [
+          -2,
+          "Revisa el signo al despejar x."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "ecuaciones-fracciones",
+    "since": "2026-11-27",
+    "title": "Ecuaciones con fracciones",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "8° Básico y 1° Medio · Sacar los denominadores",
+    "concept": "Si una ecuación tiene fracciones, multiplica todo por el mínimo común múltiplo de los denominadores: las fracciones desaparecen y queda una ecuación como las que ya sabes resolver.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 8° Básico y 1° Medio.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "x/5 + x/10 = 9: multiplica todo por 10 → 2x + x = 90 → 3x = 90 → x = 30.",
+    "status": "published",
+    "questions": [
+      [
+        "(x + 9)/2 = 4",
+        -1,
+        "Resuelve la ecuación.",
+        "Multiplica los dos lados por 2 para sacar la fracción.",
+        "x + 9 = 8; x = −1.",
+        [
+          [
+            -5,
+            "Primero multiplica por 2; después despeja."
+          ]
+        ]
+      ],
+      [
+        "x/10 = 1/2",
+        5,
+        "Resuelve la proporción.",
+        "Multiplica los dos lados por 10.",
+        "x = 10 · 1/2 = 10/2 = 5.",
+        [
+          [
+            20,
+            "Revisa: x se despeja multiplicando por su denominador."
+          ]
+        ]
+      ],
+      [
+        "x/3 + x/4 = 28",
+        48,
+        "Resuelve la ecuación.",
+        "Multiplica todo por 12, el mínimo común múltiplo de 3 y 4.",
+        "4x + 3x = 336 → 7x = 336 → x = 48.",
+        [
+          [
+            28,
+            "Ese es el lado derecho. Despeja x."
+          ]
+        ]
+      ],
+      [
+        "x/3 − x/6 = 2",
+        12,
+        "Resuelve la ecuación.",
+        "Multiplica todo por 6, el mínimo común múltiplo de 3 y 6.",
+        "2x − x = 12 → x = 12.",
+        [
+          [
+            2,
+            "Ese es el lado derecho. Despeja x."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "x/3 − x/4 = 4",
+      48,
+      "Resuelve la ecuación.",
+      "Multiplica todo por 12, el mínimo común múltiplo de 3 y 4.",
+      "4x − 3x = 48 → x = 48.",
+      [
+        [
+          4,
+          "Ese es el lado derecho. Despeja x."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "despejar-formulas",
+    "since": "2026-11-27",
+    "title": "Despejar fórmulas",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "1° Medio · Usar una fórmula al revés",
+    "concept": "Una fórmula relaciona varias cantidades. Si conoces todas menos una, reemplaza los datos y despeja la que falta como en una ecuación: con la operación contraria y en orden inverso.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 1° Medio.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Con A = b · h, si A = 63 y b = 9: 63 = 9 · h, así que h = 63 ÷ 9 = 7.",
+    "status": "published",
+    "questions": [
+      [
+        "A = b · h; A = 15, b = 3: h",
+        5,
+        "El área de un rectángulo es A = b · h. Si A = 15 cm² y b = 3 cm, ¿cuánto mide h?",
+        "Reemplaza los datos y despeja h como en una ecuación.",
+        "15 = 3 · h → h = 15 ÷ 3 = 5 cm.",
+        [
+          [
+            12,
+            "h está multiplicada: se divide."
+          ]
+        ]
+      ],
+      [
+        "v = d ÷ t; v = 50, d = 100: t",
+        2,
+        "La rapidez es v = d ÷ t. Si un bus va a 50 km/h y recorre 100 km, ¿cuántas horas viaja?",
+        "t está dividiendo: despeja con cuidado, t = d ÷ v.",
+        "t = 100 ÷ 50 = 2 horas.",
+        [
+          [
+            5000,
+            "Se divide la distancia por la rapidez."
+          ]
+        ]
+      ],
+      [
+        "P = 2(a + b); P = 48, a = 15: b",
+        9,
+        "El perímetro de un rectángulo es P = 2(a + b). Si P = 48 cm y a = 15 cm, ¿cuánto mide b?",
+        "Primero divide por 2; después resta a.",
+        "48 ÷ 2 = 24; 24 − 15 = 9 cm.",
+        [
+          [
+            3,
+            "Primero se divide por 2 y después se resta a."
+          ],
+          [
+            33,
+            "Falta dividir por 2."
+          ]
+        ]
+      ],
+      [
+        "F = 1,8C + 32; F = 68: C",
+        20,
+        "Para pasar de grados Celsius a Fahrenheit se usa F = 1,8C + 32. Si un termómetro marca 68 °F, ¿cuántos °C son?",
+        "Primero resta 32; después divide por 1,8.",
+        "68 − 32 = 36; 36 ÷ 1,8 = 20 °C.",
+        [
+          [
+            64.8,
+            "Se divide por 1,8, no se multiplica."
+          ],
+          [
+            37.78,
+            "Primero hay que restar 32."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "F = 1,8C + 32; F = 41: C",
+      5,
+      "Para pasar de grados Celsius a Fahrenheit se usa F = 1,8C + 32. Si un termómetro marca 41 °F, ¿cuántos °C son?",
+      "Primero resta 32; después divide por 1,8.",
+      "41 − 32 = 9; 9 ÷ 1,8 = 5 °C.",
+      [
+        [
+          16.2,
+          "Se divide por 1,8, no se multiplica."
+        ],
+        [
+          22.78,
+          "Primero hay que restar 32."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "diagrama-cajon",
+    "since": "2026-11-27",
+    "title": "Diagrama de cajón",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "8° Básico y 1° Medio · Cinco números que resumen los datos",
+    "concept": "El diagrama de cajón resume los datos con cinco números: mínimo, Q1, mediana, Q3 y máximo. La caja va de Q1 a Q3 y guarda la mitad central de los datos; su largo es el rango intercuartil (RIC).\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 8° Básico y 1° Medio.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Con mín 3, Q1 10, mediana 15, Q3 21 y máx 40: el RIC es 21 − 10 = 11 y el rango es 40 − 3 = 37.",
+    "status": "published",
+    "questions": [
+      [
+        "Cajón: mín 7, Q1 13, mediana 23, Q3 29, máx 35: rango intercuartil",
+        16,
+        "Un diagrama de cajón muestra: mín 7, Q1 13, mediana 23, Q3 29, máx 35. ¿Cuál es el rango intercuartil (el largo de la caja)?",
+        "📦 La caja va de Q1 a Q3.",
+        "RIC = Q3 − Q1 = 29 − 13 = 16.",
+        [
+          [
+            28,
+            "Ese es el rango (de mínimo a máximo). El RIC es el largo de la caja."
+          ]
+        ]
+      ],
+      [
+        "Cajón: mín 1, Q1 11, mediana 19, Q3 21, máx 24: rango",
+        23,
+        "Un diagrama de cajón muestra: mín 1, Q1 11, mediana 19, Q3 21, máx 24. ¿Cuál es el rango de los datos?",
+        "El rango va de un bigote al otro.",
+        "Rango = máx − mín = 24 − 1 = 23.",
+        [
+          [
+            10,
+            "Ese es el rango intercuartil (la caja). El rango va de extremo a extremo."
+          ]
+        ]
+      ],
+      [
+        "Cajón: % de los datos bajo Q3",
+        75,
+        "En un diagrama de cajón, ¿qué porcentaje de los datos queda bajo Q3?",
+        "Los cuartiles parten los datos en cuatro grupos, cada uno con la cuarta parte de los datos.",
+        "Cada tramo tiene el 25 % de los datos: bajo Q3 hay 75 %.",
+        [
+          [
+            25,
+            "Revisa hacia qué lado del cuartil se pregunta."
+          ]
+        ]
+      ],
+      [
+        "Q1 25, Q3 29: límite para datos atípicos",
+        35,
+        "Un dato se considera atípico si supera Q3 + 1,5 · RIC. Si Q1 = 25 y Q3 = 29, ¿desde qué valor un dato es atípico?",
+        "Primero calcula el RIC (Q3 − Q1); después multiplícalo por 1,5 y súmalo a Q3.",
+        "RIC = 4; 1,5 · 4 = 6; 29 + 6 = 35.",
+        [
+          [
+            33,
+            "Se suma 1,5 veces el RIC, no una vez."
+          ],
+          [
+            6,
+            "Falta sumarlo a Q3."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Q1 7, Q3 21: límite para datos atípicos",
+      42,
+      "Un dato se considera atípico si supera Q3 + 1,5 · RIC. Si Q1 = 7 y Q3 = 21, ¿desde qué valor un dato es atípico?",
+      "Primero calcula el RIC (Q3 − Q1); después multiplícalo por 1,5 y súmalo a Q3.",
+      "RIC = 14; 1,5 · 14 = 21; 21 + 21 = 42.",
+      [
+        [
+          35,
+          "Se suma 1,5 veces el RIC, no una vez."
+        ],
+        [
+          21,
+          "Falta sumarlo a Q3."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "geometria-analitica",
+    "since": "2026-11-27",
+    "title": "Rectas y circunferencias en el plano",
+    "subject": "matematica",
+    "grade": "3m",
+    "description": "3° Medio · Distancias, punto medio y circunferencia",
+    "concept": "En el plano cartesiano, la distancia entre dos puntos se calcula con Pitágoras, el punto medio promedia las coordenadas y la circunferencia de centro (a, b) y radio r es (x − a)² + (y − b)² = r².\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° Medio.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Entre (0, 0) y (7, 24) la distancia es √(49 + 576) = √625 = 25. El punto medio de (2, 4) y (10, 8) es (6, 6).",
+    "status": "published",
+    "questions": [
+      [
+        "Distancia entre (−3, −4) y (−9, −12)",
+        10,
+        "¿Cuál es la distancia entre los dos puntos?",
+        "📐 Es la hipotenusa de un triángulo rectángulo: d = √((x₂ − x₁)² + (y₂ − y₁)²).",
+        "Avanza 6 y sube o baja 8: √(36 + 64) = √100 = 10.",
+        [
+          [
+            14,
+            "No se suman los lados: se usa Pitágoras."
+          ]
+        ]
+      ],
+      [
+        "Punto medio de (8, −5) y (12, −3): ¿x?",
+        10,
+        "¿Cuál es la coordenada x del punto medio?",
+        "El punto medio promedia las coordenadas: (x₁ + x₂) ÷ 2.",
+        "(8 + 12) ÷ 2 = 20 ÷ 2 = 10.",
+        [
+          [
+            20,
+            "Falta dividir por 2."
+          ],
+          [
+            2,
+            "Se suman las coordenadas, no se restan."
+          ]
+        ]
+      ],
+      [
+        "(x + 2)² + (y + 3)² = 225: radio",
+        15,
+        "Esta es la ecuación de una circunferencia. ¿Cuánto mide su radio?",
+        "En (x − a)² + (y − b)² = r², el número de la derecha es el radio al cuadrado.",
+        "r² = 225, así que r = 15. El centro es (−2, −3).",
+        [
+          [
+            225,
+            "Ese es el radio al cuadrado. Saca la raíz."
+          ]
+        ]
+      ],
+      [
+        "Centro (3, 2) y pasa por (8, −10): radio",
+        13,
+        "Una circunferencia tiene centro (3, 2) y pasa por el punto (8, −10). ¿Cuánto mide su radio?",
+        "El radio es la distancia del centro a cualquier punto de la circunferencia.",
+        "√(25 + 144) = √169 = 13.",
+        [
+          [
+            169,
+            "Falta sacar la raíz."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Centro (−3, 4) y pasa por (−15, −1): radio",
+      13,
+      "Una circunferencia tiene centro (−3, 4) y pasa por el punto (−15, −1). ¿Cuánto mide su radio?",
+      "El radio es la distancia del centro a cualquier punto de la circunferencia.",
+      "√(144 + 25) = √169 = 13.",
+      [
+        [
+          169,
+          "Falta sacar la raíz."
+        ]
+      ]
+    ]
   }
 ];

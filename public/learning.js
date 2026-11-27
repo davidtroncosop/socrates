@@ -906,6 +906,8 @@ export function forStudent(text) {
     .join("\n")
     .replace(/\s*\((?:Mineduc|MINEDUC)[^)]*\)/g, "")
     .replace(/^\s*(?:(?:(?:MA|LE)\w{2}|FG-\dM) OA \d{1,2}\s*(?:\/\s*)?)+·\s*/, "")
+    // El curso tampoco se muestra: los niveles son neutros («3° y 4° Básico · …»).
+    .replace(/^\s*(?:\d°[^·\n]*(?:Básico|Medio)|Electivo)[^·\n]*·\s*/, "")
     .trim();
 }
 

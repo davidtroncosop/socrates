@@ -223,6 +223,16 @@ let session = null,
   currentLevel = state.grade ?? "all",
   currentKumonLevel = "all",
   currentSubject = "all";
+// La ruta se ve como camino o como lista compacta por unidad; cada navegador
+// recuerda la vista elegida.
+const ROUTE_VIEW_KEY = "socatres.routeView";
+let routeView = (() => {
+  try {
+    return localStorage.getItem(ROUTE_VIEW_KEY) === "list" ? "list" : "path";
+  } catch {
+    return "path";
+  }
+})();
 function save() {
   Object.assign(state, compactAttempts(state));
   try {
@@ -378,6 +388,52 @@ function demoNotice() {
   const when = end.toDateString() === new Date().toDateString() ? `hoy a las ${hour}` : `mañana a las ${hour}`;
   return `<section class="callout demo-notice" role="note"><strong>🕒 Estás probando socatres sin cuenta.</strong> La sesión termina ${when} y tu avance queda solo en este navegador. Si creas tu cuenta, conservas lo que ya practicaste (si tienes menos de 14 años, pídele a tu apoderado que la cree). ${button("Crear mi cuenta", "demo-signup", "secondary")}</section>`;
 }
+// Vista de lista: cada unidad se pliega y muestra su avance; se abre sola la
+// unidad de la lección que sigue. Pensada para quien ya sabe qué busca.
+function routeList(units, next) {
+  return `<div class="route-list">${units
+    .map((unit) => {
+      const done = unit.lessons.filter((l) => state.completed.includes(l.id)).length;
+      const total = unit.lessons.length;
+      const open = unit.lessons.some((l) => l.id === next.id);
+      const rows = unit.lessons
+        .map((l) => {
+          const blocker = lockedBy(l);
+          const mastered = state.mastered.includes(l.id);
+          const completed = state.completed.includes(l.id);
+          const isNext = next.id === l.id;
+          const [icon, status] = mastered
+            ? ["👑", "Dominio confirmado"]
+            : completed
+              ? ["✓", "Completada"]
+              : blocker
+                ? ["🔒", `Se abre al completar «${escape(displayTitle(blocker))}»`]
+                : isNext
+                  ? ["▶", "Te toca ahora"]
+                  : ["○", escape(forStudent(l.description))];
+          const isLang = getSubject(l) === "lenguaje";
+          return `<li class="route-row${isNext ? " route-row-next" : ""}${completed ? " route-row-done" : ""}">
+            <span class="route-row-icon" aria-hidden="true">${icon}</span>
+            <div class="route-row-text"><strong>${escape(displayTitle(l))}</strong><small>${status}${l.video ? " · 🎬 Video" : ""}</small></div>
+            <div class="route-row-actions">
+              <button class="duo-card-btn ${isNext ? "primary" : ""}" data-action="lesson:${l.id}" ${blocker ? "disabled" : ""}>${blocker ? "Bloqueada" : completed ? "Practicar" : "Empezar →"}</button>
+              ${!blocker && !isLang ? `<button class="duo-card-btn sheet-card-btn" data-action="sheet:${l.id}" title="Hoja de fluidez (${SHEET_SIZE} ejercicios)" aria-label="Hoja de fluidez de ${escape(displayTitle(l))}">📄</button>` : ""}
+            </div>
+          </li>`;
+        })
+        .join("");
+      return `<details class="route-list-unit ${unit.theme}"${open ? " open" : ""}>
+        <summary>
+          <span class="route-list-level">${escape(unitLevel(unit).label)}</span>
+          <span class="route-list-title">${escape(unit.title)}</span>
+          <span class="route-list-progress"><span class="muted">${done} / ${total}</span><span class="bar mini-bar"><span style="width:${Math.round((done / total) * 100)}%"></span></span></span>
+        </summary>
+        <ul class="route-list-rows">${rows}</ul>
+        <button class="duo-guide-btn route-list-guide" data-action="unit-guide:${unit.id}">📖 Guía de unidad</button>
+      </details>`;
+    })
+    .join("")}</div>`;
+}
 function route() {
   if (!lessons.length) {
     app.innerHTML =
@@ -428,7 +484,9 @@ function route() {
   );
 
   let unitsHTML = "";
-  if (activeUnits.length) {
+  if (activeUnits.length && routeView === "list") {
+    unitsHTML = routeList(activeUnits, next);
+  } else if (activeUnits.length) {
     unitsHTML = activeUnits
       .map((unit) => {
         const unitCompleted = unit.lessons.filter((l) =>
@@ -577,7 +635,7 @@ function route() {
     ${demoNotice()}
     <div class="dashboard">
       <div>
-        ${coachCard()}
+        ${coachCard(!state.diagnosed && !state.completed.length && state.attempts.length ? next : null)}
         ${
           state.diagnosed || state.completed.length
             ? dailyHero(next)
@@ -607,6 +665,10 @@ function route() {
         <div class="section-title">
           <h2>Tu ruta</h2>
           <span class="muted">${activeCompleted().length} de ${lessons.length} lecciones</span>
+          <div class="route-view-toggle" role="group" aria-label="Ver la ruta como">
+            <button class="filter-btn ${routeView === "path" ? "active" : ""}" data-action="route-view:path" aria-pressed="${routeView === "path"}">🛤️ Camino</button>
+            <button class="filter-btn ${routeView === "list" ? "active" : ""}" data-action="route-view:list" aria-pressed="${routeView === "list"}">☰ Lista</button>
+          </div>
         </div>
 
         <div class="route-filter-container">
@@ -766,14 +828,15 @@ function cachedCoach() {
     return null;
   }
 }
-function coachCard() {
+// `next`: lección para seguir de inmediato, cuando ninguna otra tarjeta la ofrece.
+function coachCard(next) {
   const message = cachedCoach()?.message || localEncouragement(coachSummary());
   return `<section class="coach-card" aria-labelledby="coach-title">
     <img class="coach-owl-img" src="buho-saluda.webp" alt="" width="78" height="96" />
     <div>
       <h2 id="coach-title" class="mini-label">EL BÚHO TE DICE</h2>
       <p id="coach-message">${escape(message)}</p>
-      ${speakButton("coach", "Escuchar")}
+      <div class="coach-actions">${speakButton("coach", "Escuchar")}${next ? button(`Continuar: ${escape(displayTitle(next))} →`, "lesson:" + next.id, "primary") : ""}</div>
     </div>
   </section>`;
 }
@@ -2453,6 +2516,12 @@ app.addEventListener("click", (e) => {
     route();
   } else if (action === "kumon-level") {
     currentKumonLevel = id;
+    route();
+  } else if (action === "route-view") {
+    routeView = id === "list" ? "list" : "path";
+    try {
+      localStorage.setItem(ROUTE_VIEW_KEY, routeView);
+    } catch {}
     route();
   } else if (action === "subject") {
     currentSubject = id;

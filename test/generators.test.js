@@ -27,6 +27,11 @@ function baseAnswer(expr, id, prompt) {
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
+  if (LOTE13.includes(id)) {
+    const answer = lote13Answer(expr, id);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
   if (LOTE12.includes(id)) {
     const answer = lote12Answer(expr, id, prompt);
     assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
@@ -775,6 +780,146 @@ function lote12Answer(expr, id, prompt) {
   return null;
 }
 
+// Lote 13: temas que faltaban de 3° Básico a 3° Medio. «ecuaciones-fracciones»
+// se comprueba reemplazando x en la ecuación (más abajo).
+const LOTE13 = ["base-area", "base-cuerpos", "base-simetria", "base-angulos-tipos", "base-graficos-barras", "base-division-resto", "base-fracciones-recta",
+  "base-ecuaciones-cajitas", "factorizacion", "notacion-cientifica", "irracionales", "recta-pendiente", "despejar-formulas", "diagrama-cajon", "geometria-analitica"];
+function lote13Answer(expr, id) {
+  let m;
+  const n = (v) => Number(v.replace(/−/g, "-").replace(/\./g, "").replace(",", "."));
+  const sup = (v) => Number(v.replace("⁻", "-").replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)));
+  const P = "\\((−?\\d+), (−?\\d+)\\)";
+  const SIDES = { triangular: 3, cuadrada: 4, pentagonal: 5, hexagonal: 6, octogonal: 8 };
+  switch (id) {
+    case "base-area":
+      if ((m = expr.match(/^Rectángulo de (\d+) por (\d+) cuadraditos: área$/))) return m[1] * m[2];
+      if ((m = expr.match(/^Cuadrado de lado (\d+) cm: área$/))) return m[1] ** 2;
+      if ((m = expr.match(/^Rectángulo de (\d+) cm² con base (\d+) cm: altura$/))) return m[1] / m[2];
+      if ((m = expr.match(/^Figura en L: (\d+) por (\d+) más (\d+) por (\d+)$/))) return m[1] * m[2] + m[3] * m[4];
+      break;
+    case "base-cuerpos": {
+      if ((m = expr.match(/^Cubo: ¿(caras|aristas|vértices)\?$/))) return { caras: 6, aristas: 12, vértices: 8 }[m[1]];
+      if ((m = expr.match(/^Prisma de base (\w+): ¿(caras|aristas|vértices)\?$/))) { const s = SIDES[m[1]]; return { caras: s + 2, aristas: 3 * s, vértices: 2 * s }[m[2]]; }
+      if ((m = expr.match(/^Pirámide de base (\w+): ¿(caras|aristas|vértices)\?$/))) { const s = SIDES[m[1]]; return { caras: s + 1, aristas: 2 * s, vértices: s + 1 }[m[2]]; }
+      if ((m = expr.match(/^Poliedro con (\d+) caras y (\d+) vértices: ¿aristas\?$/))) return +m[1] + +m[2] - 2;
+      break;
+    }
+    case "base-simetria": {
+      const AXES = { "un cuadrado": 4, "un rectángulo que no es cuadrado": 2, "un triángulo equilátero": 3, "un rombo que no es cuadrado": 2, "un triángulo isósceles que no es equilátero": 1 };
+      if ((m = expr.match(/^Ejes de simetría de un polígono regular de (\d+) lados$/))) return Number(m[1]);
+      if ((m = expr.match(/^Ejes de simetría de (.+)$/)) && AXES[m[1]]) return AXES[m[1]];
+      if ((m = expr.match(/^Reflejo de (\d+) con el espejo en (\d+)$/))) return 2 * m[2] - m[1];
+      if ((m = expr.match(/^Mitad pintada: (\d+) cuadraditos; figura completa$/))) return 2 * m[1];
+      break;
+    }
+    case "base-angulos-tipos": {
+      const TURN = { "Un cuarto de vuelta": 90, "Media vuelta": 180, "Tres cuartos de vuelta": 270, "Un tercio de vuelta": 120, "Un sexto de vuelta": 60 };
+      if ((m = expr.match(/^Le falta a (\d+)° para un ángulo recto$/))) return 90 - m[1];
+      if ((m = expr.match(/^Le falta a (\d+)° para un ángulo llano$/))) return 180 - m[1];
+      if ((m = expr.match(/^(.+) en grados$/)) && TURN[m[1]]) return TURN[m[1]];
+      if ((m = expr.match(/^Reloj a las (\d+):00: ángulo entre las manecillas$/))) return Math.min(30 * m[1], 360 - 30 * m[1]);
+      break;
+    }
+    case "base-graficos-barras":
+      if ((m = expr.match(/^Pictograma: cada ícono vale (\d+); hay (\d+) íconos?$/))) return m[1] * m[2];
+      if ((m = expr.match(/^Barras: lunes (\d+), martes (\d+): diferencia$/))) return Math.abs(m[1] - m[2]);
+      if ((m = expr.match(/^Barras: (\d+), (\d+) y (\d+): total$/))) return +m[1] + +m[2] + +m[3];
+      if ((m = expr.match(/^Pictograma: cada ícono vale (\d+); total (\d+): ¿íconos\?$/))) return m[2] / m[1];
+      break;
+    case "base-division-resto":
+      if ((m = expr.match(/^(\d+) estudiantes en grupos de (\d+): grupos completos$/))) return Math.floor(m[1] / m[2]);
+      if ((m = expr.match(/^(\d+) estudiantes en grupos de (\d+): sobran$/))) return m[1] % m[2];
+      if ((m = expr.match(/^(\d+) personas, autos de (\d+) asientos: autos$/))) return Math.ceil(m[1] / m[2]);
+      if ((m = expr.match(/^Cociente (\d+), divisor (\d+), resto (\d+): dividendo$/))) { assert.ok(+m[3] < +m[2], expr); return m[1] * m[2] + +m[3]; }
+      break;
+    case "base-fracciones-recta":
+      if ((m = expr.match(/^Recta de 0 a 1 en (\d+) partes: marca (\d+)$/))) return m[2] / m[1];
+      if ((m = expr.match(/^1 y (\d+)\/(\d+) = \?\/(\d+)$/))) return +m[2] + +m[1];
+      if ((m = expr.match(/^Más a la derecha: (\d+)\/(\d+) o (\d+)\/(\d+)$/))) return Math.max(m[1] / m[2], m[3] / m[4]);
+      if ((m = expr.match(/^Punto medio entre 0 y (\d+)\/(\d+)$/))) return m[1] / m[2] / 2;
+      break;
+    case "base-ecuaciones-cajitas":
+      if ((m = expr.match(/^□ \+ (\d+) = (\d+)$/))) return m[2] - m[1];
+      if ((m = expr.match(/^□ − (\d+) = (\d+)$/))) return +m[2] + +m[1];
+      if ((m = expr.match(/^(\d+) · □ = (\d+)$/))) return m[2] / m[1];
+      if ((m = expr.match(/^□ ÷ (\d+) = (\d+)$/))) return m[2] * m[1];
+      break;
+    case "factorizacion": {
+      if ((m = expr.match(/^(\d*)x \+ (\d+) = \?\((\d*)x \+ (\d+)\)$/))) {
+        const k = m[2] / m[4];
+        assert.equal(Number(m[1] || 1), k * Number(m[3] || 1), expr);
+        return k;
+      }
+      if ((m = expr.match(/^x² \+ (\d+)x \+ (\d+) = \(x \+ (\d+)\)\(x \+ \?\)$/))) { const q = m[2] / m[3]; assert.equal(+m[3] + q, +m[1], expr); return q; }
+      if ((m = expr.match(/^x² − (\d+) = \(x \+ \?\)\(x − \?\)$/))) return Math.sqrt(m[1]);
+      if ((m = expr.match(/^x² \+ (\d+)x \+ (\d+) = \(x \+ \?\)²$/))) { assert.equal((m[1] / 2) ** 2, +m[2], expr); return m[1] / 2; }
+      break;
+    }
+    case "notacion-cientifica":
+      if ((m = expr.match(/^([\d.]+) = ([\d,]+) · 10\^\?$/))) return Math.round(Math.log10(n(m[1]) / n(m[2])));
+      if ((m = expr.match(/^([\d,]+) · 10([⁰¹²³⁴⁵⁶⁷⁸⁹]+) = \?$/))) return Math.round(n(m[1]) * 10 ** sup(m[2]));
+      if ((m = expr.match(/^(0,\d+) = ([\d,]+) · 10\^\?$/))) return Math.round(Math.log10(Number(m[1].replace(",", ".")) / n(m[2])));
+      if ((m = expr.match(/^\(([\d,]+) · 10([⁰¹²³⁴⁵⁶⁷⁸⁹]+)\) · \((\d+) · 10([⁰¹²³⁴⁵⁶⁷⁸⁹]+)\) = ([\d,]+) · 10\^\?$/))) {
+        assert.ok(Math.abs(n(m[1]) * n(m[3]) - n(m[5])) < 1e-9, expr);
+        return sup(m[2]) + sup(m[4]);
+      }
+      break;
+    case "irracionales":
+      if ((m = expr.match(/^√(\d+) está entre \? y el siguiente entero$/))) return Math.floor(Math.sqrt(m[1]));
+      if ((m = expr.match(/^√(\d+) al entero más cercano$/))) return Math.round(Math.sqrt(m[1]));
+      if ((m = expr.match(/^√(\d+) · √(\d+)$/))) return Math.sqrt(m[1] * m[2]);
+      if ((m = expr.match(/^Enteros entre √(\d+) y √(\d+)$/))) {
+        let count = 0;
+        for (let k = 0; k * k < +m[2]; k++) if (k * k > +m[1]) count++;
+        return count;
+      }
+      break;
+    case "recta-pendiente": {
+      if ((m = expr.match(new RegExp(`^Pendiente de ${P} a ${P}$`)))) { const [x1, y1, x2, y2] = m.slice(1).map(n); return (y2 - y1) / (x2 - x1); }
+      if ((m = expr.match(new RegExp(`^y = (−?\\d*)x \\+ n pasa por ${P}: ¿n\\?$`)))) {
+        const k = m[1] === "" ? 1 : m[1] === "−" ? -1 : n(m[1]);
+        return n(m[3]) - k * n(m[2]);
+      }
+      if ((m = expr.match(new RegExp(`^Recta por ${P} y ${P}: ¿n en y = mx \\+ n\\?$`)))) {
+        const [x1, y1, x2, y2] = m.slice(1).map(n);
+        return y1 - ((y2 - y1) / (x2 - x1)) * x1;
+      }
+      if ((m = expr.match(/^Cruce de y = (.+) e y = (.+): ¿x\?$/))) {
+        const line = (s) => [evaluate(s, 1) - evaluate(s, 0), evaluate(s, 0)];
+        const [[m1, a], [m2, b]] = [line(m[1]), line(m[2])];
+        return (b - a) / (m1 - m2);
+      }
+      break;
+    }
+    case "despejar-formulas":
+      if ((m = expr.match(/^A = b · h; A = (\d+), b = (\d+): h$/))) return m[1] / m[2];
+      if ((m = expr.match(/^v = d ÷ t; v = (\d+), d = (\d+): t$/))) return m[2] / m[1];
+      if ((m = expr.match(/^P = 2\(a \+ b\); P = (\d+), a = (\d+): b$/))) return m[1] / 2 - m[2];
+      if ((m = expr.match(/^F = 1,8C \+ 32; F = (\d+): C$/))) return Math.round(((m[1] - 32) / 1.8) * 1e9) / 1e9;
+      break;
+    case "diagrama-cajon": {
+      const PCT = { "sobre Q3": 25, "bajo la mediana": 50, "entre Q1 y Q3": 50, "bajo Q3": 75, "bajo Q1": 25 };
+      if ((m = expr.match(/^Cajón: mín (\d+), Q1 (\d+), mediana (\d+), Q3 (\d+), máx (\d+): (rango intercuartil|rango)$/))) {
+        const [min, q1, med, q3, max] = m.slice(1, 6).map(Number);
+        assert.ok(min < q1 && q1 < med && med < q3 && q3 < max, expr);
+        return m[6] === "rango" ? max - min : q3 - q1;
+      }
+      if ((m = expr.match(/^Cajón: % de los datos (.+)$/))) return PCT[m[1]];
+      if ((m = expr.match(/^Q1 (\d+), Q3 (\d+): límite para datos atípicos$/))) return +m[2] + 1.5 * (m[2] - m[1]);
+      break;
+    }
+    case "geometria-analitica":
+      if ((m = expr.match(new RegExp(`^Distancia entre ${P} y ${P}$`))) || (m = expr.match(new RegExp(`^Centro ${P} y pasa por ${P}: radio$`)))) {
+        const [x1, y1, x2, y2] = m.slice(1).map(n);
+        return Math.hypot(x2 - x1, y2 - y1);
+      }
+      if ((m = expr.match(new RegExp(`^Punto medio de ${P} y ${P}: ¿x\\?$`)))) return (n(m[1]) + n(m[3])) / 2;
+      if ((m = expr.match(/^\(x [+−] \d+\)² \+ \(y [+−] \d+\)² = (\d+): radio$/))) return Math.sqrt(m[1]);
+      break;
+  }
+  return null;
+}
+
 // Sistemas 2×2: resuelve por determinantes y devuelve el valor de cada letra.
 function solveSystem(expr) {
   const letters = [...new Set(expr.match(/[a-z]/g))];
@@ -834,7 +979,7 @@ test("every generator yields valid, exact questions at every level", () => {
       for (const q of questions) {
         // Respuestas exactas: enteros, salvo la lección de decimales (hasta centésimas).
         // Respuestas exactas: enteros, salvo decimales (hasta centésimas) y fracciones.
-        if (id.startsWith("fracciones-") || ["potencias-negativas", "probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e", "base-longitud", "base-tiempo", "base-masa", "problemas-recetas"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
+        if (id.startsWith("fracciones-") || ["base-fracciones-recta", "potencias-negativas","probabilidad-teorica", "frecuencias", "racionales-mult", "racionales-operatoria", "sectores-circulares", "reglas-probabilidad", "galton", "trigonometria", "variable-aleatoria", "permutaciones", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "probabilidad-condicional", "dispersion", "binomial", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e", "base-longitud", "base-tiempo", "base-masa", "problemas-recetas"].includes(id)) assert.ok((q[1] > 0 || ["racionales-mult", "ecuacion-cuadratica", "funcion-cuadratica", "vectores", "complejos", "complejos-mult", "funcion-potencia", "funciones-trigonometricas", "normal", "limites", "graficos-enganosos", "logaritmo-base", "numero-e"].includes(id)) && Number.isFinite(q[1]), `${id}: ${q[0]} → ${q[1]}`);
         else assert.ok(Math.abs(q[1] * 100 - Math.round(q[1] * 100)) < 1e-6 && (["base-decimales", "volumen", "decimales-mult", "fracciones-mixtos", "crecimiento-exponencial", "cono", "homotecia", "cambio-porcentual", "esfera", "funcion-inversa"].includes(id) || Number.isInteger(q[1])), `${id}: ${q[0]} → ${q[1]}`);
         assert.doesNotMatch(q.join(" "), /NaN|undefined|\+ -|--/, id);
         checkAnswer(id, q);

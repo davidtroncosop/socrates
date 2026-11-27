@@ -2806,6 +2806,405 @@ function problemasPintar(rng, level) {
     [[2 * (l + w), "Ese es el perímetro. Para el piso, el área."]]];
 }
 
+// Lote 13: temas que faltaban de 3° Básico a 3° Medio.
+// Coordenadas «(x, y)» con signo menos tipográfico.
+const pt = (x, y) => `(${num(x)}, ${num(y)})`;
+
+function baseArea(rng, level) {
+  if (level === 0) {
+    const [a, b] = [int(rng, 2, 9), int(rng, 2, 9)];
+    return [`Rectángulo de ${a} por ${b} cuadraditos: área`, a * b, `Un rectángulo mide ${a} cuadraditos de largo y ${b} de alto. ¿Cuántos cuadraditos cubren su superficie?`,
+      `🟦 Son ${b} filas iguales de cuadraditos.`, `${b} filas de ${a} cuadraditos: ${a} · ${b} = ${a * b}.`,
+      [[2 * (a + b), "Ese es el perímetro (el borde). El área cuenta los cuadraditos de adentro."], [a + b, "Se multiplica: son filas iguales de cuadraditos."]]];
+  }
+  if (level === 1) {
+    const n = int(rng, 3, 12);
+    return [`Cuadrado de lado ${n} cm: área`, n * n, `¿Cuál es el área de un cuadrado de ${n} cm de lado, en cm²?`, "En un cuadrado, el largo y el ancho miden lo mismo.", `${n} · ${n} = ${n * n} cm².`,
+      [[4 * n, "Ese es el perímetro. El área es lado · lado."], [2 * n, "Es lado · lado, no lado · 2."]]];
+  }
+  if (level === 2) {
+    const [b, h] = [int(rng, 2, 9), int(rng, 3, 12)];
+    return [`Rectángulo de ${b * h} cm² con base ${b} cm: altura`, h, `Un rectángulo tiene ${b * h} cm² de área y su base mide ${b} cm. ¿Cuánto mide su altura?`,
+      "Área = base · altura. ¿Qué número multiplicado por la base da el área?", `${b * h} ÷ ${b} = ${h} cm. Comprobación: ${b} · ${h} = ${b * h}.`,
+      [[b * h - b, "Se divide el área por la base, no se resta."]]];
+  }
+  const [a, b, c, d] = [int(rng, 4, 9), int(rng, 2, 4), int(rng, 2, 4), int(rng, 2, 5)];
+  return [`Figura en L: ${a} por ${b} más ${c} por ${d}`, a * b + c * d, `Una figura en forma de L se arma con un rectángulo de ${a} cm por ${b} cm y otro de ${c} cm por ${d} cm. ¿Cuál es su área en cm²?`,
+    "Calcula el área de cada rectángulo por separado y después júntalas.", `${a} · ${b} = ${a * b}; ${c} · ${d} = ${c * d}; ${a * b} + ${c * d} = ${a * b + c * d} cm².`,
+    [[a * b, "Falta sumar el área del otro rectángulo."], [a * b * c * d, "Las áreas se suman, no se multiplican."]]];
+}
+
+const BASE_NAME = { 3: "triangular", 4: "cuadrada", 5: "pentagonal", 6: "hexagonal", 8: "octogonal" };
+function baseCuerpos(rng, level) {
+  const what = pick(rng, ["caras", "aristas", "vértices"]);
+  if (level === 0) {
+    const [v, why] = { caras: [6, "arriba, abajo y 4 a los lados: 6 caras."], aristas: [12, "4 arriba, 4 abajo y 4 de pie: 12 aristas."], vértices: [8, "4 esquinas arriba y 4 abajo: 8 vértices."] }[what];
+    return [`Cubo: ¿${what}?`, v, `¿Cuántas ${what} tiene un cubo?`, "🎲 Piensa en un dado y recórrelo de arriba hacia abajo.", `Un cubo tiene ${why}`,
+      [[6, "Esas son las caras."], [12, "Esas son las aristas (los bordes)."], [8, "Esos son los vértices (las esquinas)."]].filter(([n]) => n !== v)];
+  }
+  const n = pick(rng, [3, 4, 5, 6, 8]);
+  if (level === 1) {
+    const [v, hint, why] = {
+      caras: [n + 2, "Cuenta las dos bases y una cara lateral por cada lado de la base.", `2 bases + ${n} caras laterales = ${n + 2} caras.`],
+      aristas: [3 * n, "Cuenta los bordes de la base de arriba, los de abajo y los que van de pie.", `${n} arriba + ${n} abajo + ${n} de pie = ${3 * n} aristas.`],
+      vértices: [2 * n, "Cuenta las esquinas de la base de arriba y las de abajo.", `${n} arriba + ${n} abajo = ${2 * n} vértices.`],
+    }[what];
+    return [`Prisma de base ${BASE_NAME[n]}: ¿${what}?`, v, `Un prisma tiene dos bases iguales y caras laterales con forma de rectángulo. ¿Cuántas ${what} tiene un prisma de base ${BASE_NAME[n]} (${n} lados)?`,
+      `📦 ${hint}`, why, [[n, `La base tiene ${n} lados, pero el prisma tiene más ${what}.`]]];
+  }
+  if (level === 2) {
+    const [v, hint, why] = {
+      caras: [n + 1, "Cuenta la base y un triángulo por cada lado de la base.", `1 base + ${n} triángulos = ${n + 1} caras.`],
+      aristas: [2 * n, "Cuenta los bordes de la base y los que suben hasta la punta.", `${n} en la base + ${n} hasta la punta = ${2 * n} aristas.`],
+      vértices: [n + 1, "Cuenta las esquinas de la base y la punta.", `${n} esquinas + 1 punta = ${n + 1} vértices.`],
+    }[what];
+    return [`Pirámide de base ${BASE_NAME[n]}: ¿${what}?`, v, `Una pirámide tiene una base y caras con forma de triángulo que se juntan en una punta. ¿Cuántas ${what} tiene una pirámide de base ${BASE_NAME[n]} (${n} lados)?`,
+      `🔺 ${hint}`, why, [[n, `La base tiene ${n} lados, pero la pirámide tiene más ${what}.`]]];
+  }
+  const prism = rng() < 0.5;
+  const [c, v, a] = prism ? [n + 2, 2 * n, 3 * n] : [n + 1, n + 1, 2 * n];
+  return [`Poliedro con ${c} caras y ${v} vértices: ¿aristas?`, a, "En todo poliedro se cumple la fórmula de Euler: caras + vértices − aristas = 2. ¿Cuántas aristas tiene?",
+    "Reemplaza en la fórmula y despeja las aristas.", `${c} + ${v} − aristas = 2, así que aristas = ${c + v} − 2 = ${a}.`, [[c + v, "Falta restar 2."], [c + v + 2, "Se resta 2, no se suma."]]];
+}
+
+const SYMMETRIC = [["un cuadrado", 4, "por la mitad de los lados (2) y por las diagonales (2)"], ["un rectángulo que no es cuadrado", 2, "solo por la mitad de los lados: las diagonales no calzan"],
+  ["un triángulo equilátero", 3, "desde cada vértice hasta la mitad del lado opuesto"], ["un rombo que no es cuadrado", 2, "solo por sus dos diagonales"],
+  ["un triángulo isósceles que no es equilátero", 1, "solo por la línea que baja desde el vértice entre los lados iguales"]];
+function baseSimetria(rng, level) {
+  if (level === 0) {
+    const [name, v, why] = pick(rng, SYMMETRIC);
+    return [`Ejes de simetría de ${name}`, v, `¿Cuántos ejes de simetría tiene ${name}? Un eje de simetría divide la figura en dos mitades que calzan al doblarla.`,
+      "🪞 Imagina que doblas la figura: ¿por cuántas líneas distintas calzan las dos mitades?", `Tiene ${v}: ${why}.`, [[4, "Revisa si las diagonales calzan al doblar."], [0, "Sí tiene: prueba doblándola por la mitad."]]];
+  }
+  if (level === 1) {
+    const n = int(rng, 5, 10);
+    return [`Ejes de simetría de un polígono regular de ${n} lados`, n, `Un polígono regular tiene todos sus lados y ángulos iguales. ¿Cuántos ejes de simetría tiene uno de ${n} lados?`,
+      "Compara con el triángulo equilátero (3 lados) y el cuadrado (4 lados): ¿qué relación ves?", `Tiene ${n} ejes, tantos como lados.`, [[2 * n, `Cada eje pasa por dos puntos de la figura: se cuentan ${n} ejes.`]]];
+  }
+  if (level === 2) {
+    const [e, d] = [int(rng, 4, 12), int(rng, 1, 4)];
+    const a = e - d;
+    return [`Reflejo de ${a} con el espejo en ${e}`, e + d, `En una recta numérica hay un espejo en el ${e}. ¿En qué número queda el reflejo del punto ${a}?`,
+      `¿A cuántos pasos del espejo está el ${a}? El reflejo queda a los mismos pasos, al otro lado.`, `${a} está a ${d} pasos del espejo: ${e} + ${d} = ${e + d}.`,
+      [[a + e, "No se suman: se cuentan los pasos hasta el espejo."], [e, "Ese es el espejo. El reflejo queda al otro lado."]]];
+  }
+  const k = int(rng, 3, 15);
+  return [`Mitad pintada: ${k} cuadraditos; figura completa`, 2 * k, `Un dibujo simétrico tiene ${k} cuadraditos pintados a la izquierda del eje. Al completarlo, ¿cuántos cuadraditos pintados tiene en total?`,
+    "El lado derecho es el reflejo del izquierdo.", `${k} + ${k} = ${2 * k} cuadraditos.`, [[k, "Falta el otro lado del eje."]]];
+}
+
+const TURNS = [["un cuarto de vuelta", 90, "360 ÷ 4"], ["media vuelta", 180, "360 ÷ 2"], ["tres cuartos de vuelta", 270, "3 · 90"], ["un tercio de vuelta", 120, "360 ÷ 3"], ["un sexto de vuelta", 60, "360 ÷ 6"]];
+function baseAngulosTipos(rng, level) {
+  if (level === 0) {
+    const a = 5 * int(rng, 2, 16);
+    return [`Le falta a ${a}° para un ángulo recto`, 90 - a, `Un ángulo recto mide 90°. ¿Cuántos grados le faltan a un ángulo de ${a}° para ser recto?`,
+      "📐 Un ángulo recto es la esquina de una hoja de cuaderno.", `90 − ${a} = ${90 - a}°.`, [[180 - a, "Eso le falta para un ángulo llano (180°). El recto mide 90°."]]];
+  }
+  if (level === 1) {
+    const a = 10 * int(rng, 2, 17);
+    return [`Le falta a ${a}° para un ángulo llano`, 180 - a, `Un ángulo llano mide 180°: es media vuelta, una línea recta. ¿Cuántos grados le faltan a un ángulo de ${a}°?`,
+      "Un ángulo llano forma una línea recta.", `180 − ${a} = ${180 - a}°.`, [[Math.abs(90 - a), "Eso es respecto del recto (90°). El llano mide 180°."]]];
+  }
+  if (level === 2) {
+    const [name, v, how] = pick(rng, TURNS);
+    return [`${name[0].toUpperCase() + name.slice(1)} en grados`, v, `¿Cuántos grados gira algo que da ${name}?`, "🔄 Una vuelta completa son 360°.", `${how} = ${v}°.`,
+      [[360, "Esa es la vuelta completa."]]];
+  }
+  const h = int(rng, 1, 11);
+  const k = Math.min(h, 12 - h);
+  return [`Reloj a las ${h}:00: ángulo entre las manecillas`, 30 * k, `A las ${h}:00, ¿cuántos grados mide el ángulo menor entre las manecillas del reloj?`,
+    "🕒 Entre dos números seguidos del reloj hay 360 ÷ 12 = 30°.", `Hay ${k} espacios de 30° entre las manecillas: ${k} · 30 = ${30 * k}°.`,
+    h > 6 ? [[30 * h, "Ese es el ángulo mayor. Se pide el menor."]] : [[h, "Cada espacio entre dos números del reloj vale 30°, no 1°."]]];
+}
+
+function baseGraficosBarras(rng, level) {
+  if (level === 0) {
+    const [k, n] = [pick(rng, [2, 5, 10]), int(rng, 2, 8)];
+    return [`Pictograma: cada ícono vale ${k}; hay ${n} íconos`, k * n, `En un pictograma, cada 🍎 representa ${k} manzanas. Si hay ${n} 🍎 dibujadas, ¿cuántas manzanas son?`,
+      "Cada dibujo vale más de uno: fíjate en la clave del pictograma.", `${n} · ${k} = ${k * n} manzanas.`, [[n, `Cada 🍎 vale ${k}, no 1.`]]];
+  }
+  if (level === 1) {
+    const a = 5 * int(rng, 2, 12);
+    let b = 5 * int(rng, 2, 12);
+    if (b === a) b = a + 5;
+    return [`Barras: lunes ${a}, martes ${b}: diferencia`, Math.abs(a - b), `En un gráfico de barras, el lunes se vendieron ${a} helados y el martes ${b}. ¿Cuántos helados más se vendieron el día con más ventas?`,
+      "📊 Compara la barra más alta con la más baja.", `${Math.max(a, b)} − ${Math.min(a, b)} = ${Math.abs(a - b)} helados.`, [[a + b, "Ese es el total. Se pide la diferencia."]]];
+  }
+  if (level === 2) {
+    const [a, b, c] = [5 * int(rng, 2, 10), 5 * int(rng, 2, 10), 5 * int(rng, 2, 10)];
+    return [`Barras: ${a}, ${b} y ${c}: total`, a + b + c, `Un gráfico de barras muestra los libros leídos por tres cursos: ${a}, ${b} y ${c}. ¿Cuántos libros leyeron en total?`,
+      "Junta lo que muestra cada barra.", `${a} + ${b} + ${c} = ${a + b + c} libros.`, [[Math.max(a, b, c), "Esa es solo la barra más alta."]]];
+  }
+  const [k, n] = [pick(rng, [2, 4, 5, 10]), int(rng, 3, 9)];
+  return [`Pictograma: cada ícono vale ${k}; total ${k * n}: ¿íconos?`, n, `En un pictograma, cada ⭐ representa ${k} estudiantes. Para mostrar ${k * n} estudiantes, ¿cuántas ⭐ hay que dibujar?`,
+    `¿Cuántas veces cabe ${k} en ${k * n}?`, `${k * n} ÷ ${k} = ${n} ⭐.`, [[k * n, `Cada ⭐ vale ${k}: hay que dividir.`]]];
+}
+
+function baseDivisionResto(rng, level) {
+  if (level === 3) {
+    const [d, q] = [int(rng, 3, 9), int(rng, 4, 15)];
+    const r = int(rng, 1, d - 1);
+    return [`Cociente ${q}, divisor ${d}, resto ${r}: dividendo`, d * q + r, `En una división, el cociente es ${q}, el divisor es ${d} y el resto es ${r}. ¿Qué número se dividió?`,
+      "Dividendo = divisor · cociente + resto.", `${d} · ${q} + ${r} = ${d * q} + ${r} = ${d * q + r}.`, [[d * q, "Falta sumar el resto."]]];
+  }
+  const g = int(rng, 3, 6);
+  const q = int(rng, 3, 9);
+  const r = int(rng, 1, g - 1);
+  const n = g * q + r;
+  if (level === 0)
+    return [`${n} estudiantes en grupos de ${g}: grupos completos`, q, `${n} estudiantes se ordenan en grupos de ${g}. ¿Cuántos grupos completos se forman?`,
+      `¿Cuántas veces cabe ${g} en ${n}?`, `${g} · ${q} = ${g * q} y sobran ${r}: ${q} grupos completos.`, [[q + 1, `El último grupo tendría solo ${r}: no está completo.`]]];
+  if (level === 1)
+    return [`${n} estudiantes en grupos de ${g}: sobran`, r, `${n} estudiantes se ordenan en grupos de ${g}. ¿Cuántos estudiantes quedan sin grupo completo?`,
+      "Primero arma todos los grupos completos que puedas.", `${g} · ${q} = ${g * q}; ${n} − ${g * q} = ${r}.`, [[q, "Esos son los grupos. Se pide cuántos sobran."]]];
+  return [`${n} personas, autos de ${g} asientos: autos`, q + 1, `${n} personas van a un paseo en autos de ${g} asientos. ¿Cuántos autos se necesitan para que viajen todas?`,
+    "Si sobran personas, igual necesitan un auto para ellas.", `${n} ÷ ${g} = ${q} y sobran ${r}: hace falta un auto más, ${q + 1} autos.`, [[q, `Quedarían ${r} personas sin auto.`]]];
+}
+
+function baseFraccionesRecta(rng, level) {
+  if (level === 0) {
+    const b = pick(rng, [3, 4, 5, 6, 8]);
+    const n = int(rng, 1, b - 1);
+    return [`Recta de 0 a 1 en ${b} partes: marca ${n}`, n / b, `La recta del 0 al 1 está dividida en ${b} partes iguales. ¿Qué fracción marca la raya número ${n}, contando desde el 0? Responde como fracción.`,
+      `📏 Cada parte es un ${b === 3 ? "tercio" : b === 4 ? "cuarto" : b === 5 ? "quinto" : b === 6 ? "sexto" : "octavo"} del entero.`, `${n} partes de 1/${b}: ${n}/${b}.`, [[n, "Cada raya vale una parte del entero, no 1."]]];
+  }
+  if (level === 1) {
+    const b = pick(rng, [2, 3, 4, 5]);
+    const a = int(rng, 1, b - 1);
+    return [`1 y ${a}/${b} = ?/${b}`, b + a, `Un punto de la recta está en 1 y ${a}/${b}. Escríbelo como una sola fracción con denominador ${b}.`,
+      `El 1 entero también se puede escribir con ${b} en el denominador.`, `1 = ${b}/${b}; ${b}/${b} + ${a}/${b} = ${a + b}/${b}.`, [[a + 1, `El 1 entero son ${b}/${b}, no 1/${b}.`]]];
+  }
+  if (level === 2) {
+    const sameDen = rng() < 0.5;
+    const [p, q] = sameDen
+      ? (() => { const b = pick(rng, [5, 7, 8, 9]); const [x, y] = shuffle(rng, [1, 2, 3, 4]).slice(0, 2); return [[x, b], [y, b]]; })()
+      : (() => { const a = int(rng, 1, 3); const [x, y] = shuffle(rng, [4, 5, 6, 8]).slice(0, 2); return [[a, x], [a, y]]; })();
+    const big = p[0] / p[1] > q[0] / q[1] ? p : q;
+    const small = big === p ? q : p;
+    return [`Más a la derecha: ${p[0]}/${p[1]} o ${q[0]}/${q[1]}`, big[0] / big[1], `En la recta numérica, ¿cuál de las dos fracciones queda más a la derecha? Escríbela.`,
+      sameDen ? "Las dos tienen partes del mismo tamaño: ¿cuál toma más partes?" : "Toman la misma cantidad de partes: ¿cuáles partes son más grandes?",
+      sameDen ? `Mismo denominador: ${big[0]} partes son más que ${small[0]}. Queda a la derecha ${big[0]}/${big[1]}.` : `Mismo numerador: las partes de 1/${big[1]} son más grandes que las de 1/${small[1]}. Queda a la derecha ${big[0]}/${big[1]}.`,
+      [[small[0] / small[1], "Esa queda más a la izquierda: es la menor."]]];
+  }
+  const [a, b] = pick(rng, [[1, 2], [1, 3], [3, 4], [2, 5], [3, 5], [1, 4]]);
+  return [`Punto medio entre 0 y ${a}/${b}`, a / (2 * b), `¿Qué fracción está justo en la mitad entre 0 y ${a}/${b}? Responde como fracción.`,
+    "Partir cada parte en dos deja el doble de partes, cada una más chica.", `Con partes de 1/${2 * b}, ${a}/${b} = ${2 * a}/${2 * b}; la mitad es ${a}/${2 * b}.`,
+    [[a / b, "Esa es la fracción completa. Se pide su mitad."]]];
+}
+
+function baseEcuacionesCajitas(rng, level) {
+  const [a, x] = [int(rng, 2, 9), int(rng, 2, 12)];
+  if (level === 0)
+    return [`□ + ${a} = ${x + a}`, x, "¿Qué número va en la cajita?", `Haz la operación contraria: ¿qué le falta a ${a} para llegar a ${x + a}?`, `${x + a} − ${a} = ${x}. Comprobación: ${x} + ${a} = ${x + a}.`,
+      [[x + 2 * a, "Se resta para encontrar lo que falta."]]];
+  if (level === 1)
+    return [`□ − ${a} = ${x}`, x + a, "¿Qué número va en la cajita?", "Haz la operación contraria: si le quitaron algo, súmaselo de vuelta.", `${x} + ${a} = ${x + a}. Comprobación: ${x + a} − ${a} = ${x}.`,
+      [[x - a, "Si al número le quitaron algo, hay que sumárselo de vuelta."]]];
+  if (level === 2)
+    return [`${a} · □ = ${a * x}`, x, "¿Qué número va en la cajita?", `¿Qué número multiplicado por ${a} da ${a * x}?`, `${a * x} ÷ ${a} = ${x}. Comprobación: ${a} · ${x} = ${a * x}.`,
+      [[a * x - a, "Se divide, no se resta."]]];
+  return [`□ ÷ ${a} = ${x}`, a * x, "¿Qué número va en la cajita?", "Haz la operación contraria: si lo repartieron, júntalo de nuevo.", `${x} · ${a} = ${a * x}. Comprobación: ${a * x} ÷ ${a} = ${x}.`,
+    [[x + a, "Se multiplica para deshacer la división."]]];
+}
+
+function factorizacion(rng, level) {
+  if (level === 0) {
+    const k = int(rng, 2, 7);
+    let [a, b] = [int(rng, 1, 6), int(rng, 1, 9)];
+    while (gcd(a, b) !== 1) b++;
+    return [`${coef(k * a)} + ${k * b} = ?(${coef(a)} + ${b})`, k, "Factor común: ¿qué número va delante del paréntesis?", "Busca el número más grande que divide a los dos términos.",
+      `${coef(k * a)} = ${k} · ${coef(a)} y ${k * b} = ${k} · ${b}: ${k}(${coef(a)} + ${b}).`, [[k * a, `Ese es el primer término completo. Busca lo que tienen en común.`]]];
+  }
+  if (level === 1) {
+    const [p, q] = shuffle(rng, [1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 2);
+    return [`x² + ${p + q}x + ${p * q} = (x + ${p})(x + ?)`, q, "Factoriza el trinomio: ¿qué número falta?", "Busca dos números que sumados den el término del medio y multiplicados den el último.",
+      `${p} + ${q} = ${p + q} y ${p} · ${q} = ${p * q}: (x + ${p})(x + ${q}).`, [[p + q, "Ese es el término del medio. Busca el número que falta."], [p * q, "Ese es el último término."]]];
+  }
+  if (level === 2) {
+    const a = int(rng, 2, 12);
+    return [`x² − ${a * a} = (x + ?)(x − ?)`, a, "Factoriza la diferencia de cuadrados: ¿qué número va en los dos paréntesis?", "Diferencia de cuadrados: x² − b² = (x + b)(x − b).",
+      `${a * a} = ${a}²: x² − ${a * a} = (x + ${a})(x − ${a}).`, [[(a * a) / 2, "No es la mitad: busca qué número al cuadrado da ese valor."]]];
+  }
+  const a = int(rng, 2, 9);
+  return [`x² + ${2 * a}x + ${a * a} = (x + ?)²`, a, "Escribe el trinomio como un cuadrado de binomio: ¿qué número falta?", "Cuadrado de binomio: (x + b)² = x² + 2bx + b².",
+    `${a * a} = ${a}² y 2 · ${a} = ${2 * a}: (x + ${a})².`, [[2 * a, "Ese es el doble. El número es la mitad del término del medio."], [a * a, "Ese es el cuadrado. Busca su raíz."]]];
+}
+
+function notacionCientifica(rng, level) {
+  if (level === 0 || level === 1) {
+    const m = pick(rng, [1.2, 2.5, 3, 4.5, 6.8, 7, 9.1]);
+    const e = level === 0 ? int(rng, 3, 8) : int(rng, 2, 5);
+    const n = Math.round(m * 10 ** e);
+    if (level === 0)
+      return [`${pesos(n)} = ${dec(m)} · 10^?`, e, "Escribe el número en notación científica: ¿cuál es el exponente?", "Cuenta cuántos lugares se mueve la coma hasta dejar una sola cifra antes de ella.",
+        `La coma se mueve ${e} lugares: ${pesos(n)} = ${dec(m)} · 10${sup(e)}.`, [[String(n).length, "Contaste todas las cifras. Cuenta los lugares que se mueve la coma."]]];
+    return [`${dec(m)} · 10${sup(e)} = ?`, n, "Escribe el número sin potencia.", `Multiplicar por 10${sup(e)} mueve la coma ${e} lugares a la derecha.`, `${dec(m)} · 10${sup(e)} = ${pesos(n)}.`,
+      [[m * 10 * e, `10${sup(e)} no es 10 · ${e}: es ${e} veces 10.`]]];
+  }
+  if (level === 2) {
+    const m = pick(rng, [2, 3, 4.5, 6, 8, 1.5]);
+    const e = -int(rng, 2, 5);
+    const digits = String(m).replace(".", "");
+    const small = `0,${"0".repeat(-e - 1)}${digits}`;
+    return [`${small} = ${dec(m)} · 10^?`, e, "Escribe el número en notación científica: ¿cuál es el exponente?", "Para números menores que 1, la coma se mueve a la derecha y el exponente es negativo.",
+      `La coma se mueve ${-e} lugares a la derecha: ${small} = ${dec(m)} · 10${sup(e)}.`, [[-e, "Para un número menor que 1, el exponente es negativo."]]];
+  }
+  const [a, b] = pick(rng, [[2, 3], [2, 4], [3, 3], [2, 2], [1.5, 4], [4, 2]]);
+  const [p, q] = [int(rng, 2, 6), int(rng, 2, 6)];
+  return [`(${dec(a)} · 10${sup(p)}) · (${b} · 10${sup(q)}) = ${dec(a * b)} · 10^?`, p + q, "Multiplica en notación científica: ¿cuál es el exponente del resultado?", "Multiplica los números por un lado y junta las potencias de 10 por otro.",
+    `${dec(a)} · ${b} = ${dec(a * b)} y 10${sup(p)} · 10${sup(q)} = 10${sup(p + q)}.`, [[p * q, "Al multiplicar potencias de igual base, los exponentes se suman."]]];
+}
+
+function irracionales(rng, level) {
+  const nonSquare = (lo, hi) => {
+    let n = int(rng, lo, hi);
+    while (Number.isInteger(Math.sqrt(n))) n++;
+    return n;
+  };
+  if (level === 0) {
+    const n = nonSquare(3, 99);
+    const f = Math.floor(Math.sqrt(n));
+    return [`√${n} está entre ? y el siguiente entero`, f, `√${n} no es un número entero. ¿Entre qué enteros seguidos está? Escribe el menor.`, `Busca los cuadrados perfectos más cercanos a ${n}, uno menor y uno mayor.`,
+      `${f}² = ${f * f} y ${f + 1}² = ${(f + 1) ** 2}: √${n} está entre ${f} y ${f + 1}.`, [[Math.floor(n / 2), "No es la mitad: busca qué número al cuadrado se acerca."]]];
+  }
+  if (level === 1) {
+    const n = nonSquare(3, 99);
+    const r = Math.round(Math.sqrt(n));
+    const f = Math.floor(Math.sqrt(n));
+    return [`√${n} al entero más cercano`, r, `Aproxima √${n} al entero más cercano.`, `Ubica √${n} entre dos enteros y decide a cuál está más cerca.`,
+      `√${n} ≈ ${dec(cents(Math.sqrt(n)))}: está entre ${f} y ${f + 1}, más cerca de ${r}.`, [[r === f ? f + 1 : f, `√${n} ≈ ${dec(cents(Math.sqrt(n)))}: revisa a qué entero está más cerca.`]]];
+  }
+  if (level === 2) {
+    const [k, s, t] = [pick(rng, [2, 3, 5, 6, 7]), int(rng, 1, 4), int(rng, 1, 4)];
+    const [a, b] = [k * s * s, k * t * t];
+    return [`√${a} · √${b}`, k * s * t, "Multiplica las raíces. El resultado es un número entero.", "√a · √b = √(a · b).", `√${a} · √${b} = √${a * b} = ${k * s * t}.`,
+      [[a * b, "Falta sacar la raíz."]]];
+  }
+  const a = nonSquare(2, 30);
+  const b = nonSquare(a + 15, a + 80);
+  const count = Math.floor(Math.sqrt(b)) - Math.floor(Math.sqrt(a));
+  return [`Enteros entre √${a} y √${b}`, count, `¿Cuántos números enteros hay entre √${a} y √${b}?`, "Ubica cada raíz entre dos enteros y cuenta los enteros que quedan al medio.",
+    `√${a} está entre ${Math.floor(Math.sqrt(a))} y ${Math.floor(Math.sqrt(a)) + 1}; √${b}, entre ${Math.floor(Math.sqrt(b))} y ${Math.floor(Math.sqrt(b)) + 1}. Al medio: del ${Math.floor(Math.sqrt(a)) + 1} al ${Math.floor(Math.sqrt(b))}, ${count} enteros.`,
+    [[b - a - 1, "Se cuentan los enteros entre las raíces, no entre los números de adentro."]]];
+}
+
+function rectaPendiente(rng, level) {
+  if (level === 3) {
+    const [m1, m2] = shuffle(rng, [-3, -2, -1, 1, 2, 3]).slice(0, 2);
+    const [x0, a] = [int(rng, -4, 4), int(rng, -6, 6)];
+    const b = (m1 - m2) * x0 + a;
+    return [`Cruce de y = ${linear(m1, a)} e y = ${linear(m2, b)}: ¿x?`, x0, "¿En qué valor de x se cruzan las dos rectas?", "En el cruce, las dos rectas tienen el mismo y: iguala las expresiones.",
+      `${linear(m1, a)} = ${linear(m2, b)} → ${coef(m1 - m2)} = ${num(b - a)} → x = ${num(x0)}.`, [[-x0, "Revisa el signo al despejar x."]]];
+  }
+  const m = nonZero(rng, -3, 3);
+  const [x1, y1, dx] = [int(rng, -3, 3), int(rng, -4, 4), int(rng, 1, 4)];
+  const [x2, y2] = [x1 + dx, y1 + m * dx];
+  const n = y1 - m * x1;
+  if (level === 0)
+    return [`Pendiente de ${pt(x1, y1)} a ${pt(x2, y2)}`, m, "Calcula la pendiente de la recta que pasa por los dos puntos.", "Pendiente = cuánto sube (o baja) ÷ cuánto avanza: (y₂ − y₁) ÷ (x₂ − x₁).",
+      `(${num(y2)} − ${paren(y1)}) ÷ (${num(x2)} − ${paren(x1)}) = ${num(m * dx)} ÷ ${dx} = ${num(m)}.`, [[-m, "Revisa el orden: resta en el mismo orden arriba y abajo."], [m * dx, `Falta dividir por lo que avanza (${dx}).`]]];
+  if (level === 1)
+    return [`y = ${coef(m)} + n pasa por ${pt(x1, y1)}: ¿n?`, n, `La recta y = ${coef(m)} + n pasa por el punto ${pt(x1, y1)}. ¿Cuánto vale n?`, `Reemplaza x = ${num(x1)} e y = ${num(y1)} en la recta y despeja n.`,
+      `${num(y1)} = ${m}·${paren(x1)} + n → ${num(y1)} = ${num(m * x1)} + n → n = ${num(n)}.`, [[y1 + m * x1, "Al despejar n, el término pasa al otro lado con el signo contrario."]]];
+  return [`Recta por ${pt(x1, y1)} y ${pt(x2, y2)}: ¿n en y = mx + n?`, n, `Una recta pasa por ${pt(x1, y1)} y ${pt(x2, y2)}. Si su ecuación es y = mx + n, ¿cuánto vale n?`, "Primero calcula la pendiente m; después reemplaza un punto para despejar n.",
+    `m = ${num(m * dx)} ÷ ${dx} = ${num(m)}; ${num(y1)} = ${m}·${paren(x1)} + n → n = ${num(n)}.`, [[m, "Esa es la pendiente m. Se pide n."]]];
+}
+
+function despejarFormulas(rng, level) {
+  if (level === 0) {
+    const [b, h] = [int(rng, 2, 12), int(rng, 2, 12)];
+    return [`A = b · h; A = ${b * h}, b = ${b}: h`, h, `El área de un rectángulo es A = b · h. Si A = ${b * h} cm² y b = ${b} cm, ¿cuánto mide h?`, "Reemplaza los datos y despeja h como en una ecuación.",
+      `${b * h} = ${b} · h → h = ${b * h} ÷ ${b} = ${h} cm.`, [[b * h - b, "h está multiplicada: se divide."]]];
+  }
+  if (level === 1) {
+    const [v, t] = [10 * int(rng, 3, 12), int(rng, 2, 6)];
+    return [`v = d ÷ t; v = ${v}, d = ${v * t}: t`, t, `La rapidez es v = d ÷ t. Si un bus va a ${v} km/h y recorre ${v * t} km, ¿cuántas horas viaja?`, "t está dividiendo: despeja con cuidado, t = d ÷ v.",
+      `t = ${v * t} ÷ ${v} = ${t} horas.`, [[v * t * v, "Se divide la distancia por la rapidez."]]];
+  }
+  if (level === 2) {
+    const [a, b] = [int(rng, 2, 15), int(rng, 2, 15)];
+    return [`P = 2(a + b); P = ${2 * (a + b)}, a = ${a}: b`, b, `El perímetro de un rectángulo es P = 2(a + b). Si P = ${2 * (a + b)} cm y a = ${a} cm, ¿cuánto mide b?`, "Primero divide por 2; después resta a.",
+      `${2 * (a + b)} ÷ 2 = ${a + b}; ${a + b} − ${a} = ${b} cm.`, [[2 * (a + b) - 2 * a - a, "Primero se divide por 2 y después se resta a."], [2 * (a + b) - a, "Falta dividir por 2."]]];
+  }
+  const c = 5 * int(rng, 0, 8);
+  const f = (9 * c) / 5 + 32;
+  return [`F = 1,8C + 32; F = ${f}: C`, c, `Para pasar de grados Celsius a Fahrenheit se usa F = 1,8C + 32. Si un termómetro marca ${f} °F, ¿cuántos °C son?`, "Primero resta 32; después divide por 1,8.",
+    `${f} − 32 = ${f - 32}; ${f - 32} ÷ 1,8 = ${c} °C.`, [[cents((f - 32) * 1.8), "Se divide por 1,8, no se multiplica."], [cents(f / 1.8), "Primero hay que restar 32."]]];
+}
+
+const QUARTER = [["sobre Q3", 25], ["bajo la mediana", 50], ["entre Q1 y Q3", 50], ["bajo Q3", 75], ["bajo Q1", 25]];
+function diagramaCajon(rng, level) {
+  const min = int(rng, 1, 10);
+  const q1 = min + 2 * int(rng, 1, 5);
+  const med = q1 + 2 * int(rng, 1, 5);
+  const q3v = med + 2 * int(rng, 1, 5);
+  const max = q3v + int(rng, 2, 12);
+  const box = `mín ${min}, Q1 ${q1}, mediana ${med}, Q3 ${q3v}, máx ${max}`;
+  if (level === 0)
+    return [`Cajón: ${box}: rango intercuartil`, q3v - q1, `Un diagrama de cajón muestra: ${box}. ¿Cuál es el rango intercuartil (el largo de la caja)?`, "📦 La caja va de Q1 a Q3.",
+      `RIC = Q3 − Q1 = ${q3v} − ${q1} = ${q3v - q1}.`, [[max - min, "Ese es el rango (de mínimo a máximo). El RIC es el largo de la caja."]]];
+  if (level === 1)
+    return [`Cajón: ${box}: rango`, max - min, `Un diagrama de cajón muestra: ${box}. ¿Cuál es el rango de los datos?`, "El rango va de un bigote al otro.",
+      `Rango = máx − mín = ${max} − ${min} = ${max - min}.`, [[q3v - q1, "Ese es el rango intercuartil (la caja). El rango va de extremo a extremo."]]];
+  if (level === 2) {
+    const [which, v] = pick(rng, QUARTER);
+    return [`Cajón: % de los datos ${which}`, v, `En un diagrama de cajón, ¿qué porcentaje de los datos queda ${which}?`, "Los cuartiles parten los datos en cuatro grupos, cada uno con la cuarta parte de los datos.",
+      `Cada tramo tiene el 25 % de los datos: ${which} hay ${v} %.`, [[100 - v, "Revisa hacia qué lado del cuartil se pregunta."]]];
+  }
+  const ric = 2 * int(rng, 2, 8);
+  const a = int(rng, 5, 30);
+  const lim = a + ric + 1.5 * ric;
+  return [`Q1 ${a}, Q3 ${a + ric}: límite para datos atípicos`, lim, `Un dato se considera atípico si supera Q3 + 1,5 · RIC. Si Q1 = ${a} y Q3 = ${a + ric}, ¿desde qué valor un dato es atípico?`,
+    "Primero calcula el RIC (Q3 − Q1); después multiplícalo por 1,5 y súmalo a Q3.", `RIC = ${ric}; 1,5 · ${ric} = ${1.5 * ric}; ${a + ric} + ${1.5 * ric} = ${lim}.`,
+    [[a + ric + ric, "Se suma 1,5 veces el RIC, no una vez."], [1.5 * ric, "Falta sumarlo a Q3."]]];
+}
+
+function geometriaAnalitica(rng, level) {
+  const [p, q, r] = pick(rng, TRIPLES);
+  const [sx, sy] = [pick(rng, [1, -1]), pick(rng, [1, -1])];
+  const [dx, dy] = rng() < 0.5 ? [sx * p, sy * q] : [sx * q, sy * p];
+  const [x1, y1] = [int(rng, -5, 5), int(rng, -5, 5)];
+  if (level === 0)
+    return [`Distancia entre ${pt(x1, y1)} y ${pt(x1 + dx, y1 + dy)}`, r, "¿Cuál es la distancia entre los dos puntos?", "📐 Es la hipotenusa de un triángulo rectángulo: d = √((x₂ − x₁)² + (y₂ − y₁)²).",
+      `Avanza ${Math.abs(dx)} y sube o baja ${Math.abs(dy)}: √(${dx * dx} + ${dy * dy}) = √${r * r} = ${r}.`, [[Math.abs(dx) + Math.abs(dy), "No se suman los lados: se usa Pitágoras."]]];
+  if (level === 1) {
+    const [a, b] = [int(rng, -8, 8), int(rng, -8, 8)];
+    const c = a + 2 * int(rng, 1, 6);
+    return [`Punto medio de ${pt(a, b)} y ${pt(c, b + 2)}: ¿x?`, (a + c) / 2, "¿Cuál es la coordenada x del punto medio?", "El punto medio promedia las coordenadas: (x₁ + x₂) ÷ 2.",
+      `(${num(a)} + ${paren(c)}) ÷ 2 = ${num(a + c)} ÷ 2 = ${num((a + c) / 2)}.`, [[a + c, "Falta dividir por 2."], [(c - a) / 2, "Se suman las coordenadas, no se restan."]]];
+  }
+  if (level === 2) {
+    const [a, b] = [nonZero(rng, -6, 6), nonZero(rng, -6, 6)];
+    return [`(x ${plus(-a)})² + (y ${plus(-b)})² = ${r * r}: radio`, r, "Esta es la ecuación de una circunferencia. ¿Cuánto mide su radio?", "En (x − a)² + (y − b)² = r², el número de la derecha es el radio al cuadrado.",
+      `r² = ${r * r}, así que r = ${r}. El centro es ${pt(a, b)}.`, [[r * r, "Ese es el radio al cuadrado. Saca la raíz."]]];
+  }
+  return [`Centro ${pt(x1, y1)} y pasa por ${pt(x1 + dx, y1 + dy)}: radio`, r, `Una circunferencia tiene centro ${pt(x1, y1)} y pasa por el punto ${pt(x1 + dx, y1 + dy)}. ¿Cuánto mide su radio?`,
+    "El radio es la distancia del centro a cualquier punto de la circunferencia.", `√(${dx * dx} + ${dy * dy}) = √${r * r} = ${r}.`, [[r * r, "Falta sacar la raíz."]]];
+}
+
+function ecuacionesFracciones(rng, level) {
+  if (level === 0) {
+    const [a, b, c] = [nonZero(rng, -6, 9), int(rng, 2, 6), int(rng, 2, 9)];
+    const x = b * c - a;
+    return [`(x ${plus(a)})/${b} = ${c}`, x, "Resuelve la ecuación.", `Multiplica los dos lados por ${b} para sacar la fracción.`, `x ${plus(a)} = ${b * c}; x = ${num(x)}.`,
+      [[c - a, `Primero multiplica por ${b}; después despeja.`]]];
+  }
+  if (level === 1) {
+    const [[b, c], k] = [pick(rng, [[1, 2], [2, 3], [3, 4], [1, 3], [3, 5], [2, 5]]), int(rng, 2, 5)];
+    const a = c * k;
+    return [`x/${a} = ${b}/${c}`, k * b, "Resuelve la proporción.", `Multiplica los dos lados por ${a}.`, `x = ${a} · ${b}/${c} = ${a * b}/${c} = ${k * b}.`,
+      [[(a * c) / b, "Revisa: x se despeja multiplicando por su denominador."]].filter(([v]) => Number.isInteger(v) && v !== k * b)];
+  }
+  const [a, b] = pick(rng, [[2, 3], [2, 4], [3, 6], [2, 6], [4, 12], [3, 4]]);
+  const l = (a * b) / gcd(a, b);
+  const x = l * int(rng, 1, 4);
+  if (level === 2)
+    return [`x/${a} + x/${b} = ${x / a + x / b}`, x, "Resuelve la ecuación.", `Multiplica todo por ${l}, el mínimo común múltiplo de ${a} y ${b}.`,
+      `${l / a}x + ${l / b}x = ${l * (x / a + x / b)} → ${(l / a) + (l / b)}x = ${l * (x / a + x / b)} → x = ${x}.`, [[x / a + x / b, "Ese es el lado derecho. Despeja x."]]];
+  return [`x/${a} − x/${b} = ${x / a - x / b}`, x, "Resuelve la ecuación.", `Multiplica todo por ${l}, el mínimo común múltiplo de ${a} y ${b}.`,
+    `${l / a}x − ${l / b}x = ${l * (x / a - x / b)} → ${l / a - l / b === 1 ? `x = ${x}` : `${coef(l / a - l / b)} = ${l * (x / a - x / b)} → x = ${x}`}.`, [[x / a - x / b, "Ese es el lado derecho. Despeja x."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -2929,6 +3328,22 @@ export const generators = {
   limites,
   derivadas,
   integrales,
+  "base-area": baseArea,
+  "base-cuerpos": baseCuerpos,
+  "base-simetria": baseSimetria,
+  "base-angulos-tipos": baseAngulosTipos,
+  "base-graficos-barras": baseGraficosBarras,
+  "base-division-resto": baseDivisionResto,
+  "base-fracciones-recta": baseFraccionesRecta,
+  "base-ecuaciones-cajitas": baseEcuacionesCajitas,
+  factorizacion,
+  "notacion-cientifica": notacionCientifica,
+  irracionales,
+  "recta-pendiente": rectaPendiente,
+  "ecuaciones-fracciones": ecuacionesFracciones,
+  "despejar-formulas": despejarFormulas,
+  "diagrama-cajon": diagramaCajon,
+  "geometria-analitica": geometriaAnalitica,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);
@@ -2957,6 +3372,7 @@ export const polish = (text) =>
     ? text
     : text
         .replace(PLURAL_AFTER_ONE, (_, before, word) => `${before}1 ${SINGULAR[word]}`)
+        .replace(/\b(sobran|quedan|faltan) 1(?![\d,.\/])/g, (_, verb) => `${verb.slice(0, -1)} 1`)
         .replace(/(^|[\s(=≥≤<>·])-(\d)/g, "$1−$2")
         .replace(/(^|[^\d,./^])1x(?![²³\d])/g, "$1x")
         .replace(/\b(x = (−?\d+(?:,\d+)?))[.;] x = \2\./g, "$1.");

@@ -284,3 +284,11 @@ test("si se pide redondear a 2 decimales, también vale el valor exacto", async 
   assert.ok(!answersQuestion("2,45", q));
   assert.ok(!answersQuestion("2,4414", [q[0], 2.44, "Calcula.", "", ""]), "sin la instrucción se exige el valor pedido");
 });
+
+test("la descripción para el estudiante no muestra el curso ni el código del objetivo", async () => {
+  const { forStudent } = await import("../public/learning.js");
+  assert.equal(forStudent("3° y 4° Básico · Contar cuadraditos"), "Contar cuadraditos");
+  assert.equal(forStudent("8° Básico y 1° Medio · Números muy grandes"), "Números muy grandes");
+  assert.equal(forStudent("MA04 OA 01 · Monedas de $1, $10 y $100"), "Monedas de $1, $10 y $100");
+  assert.equal(forStudent("Partes de cada 100"), "Partes de cada 100");
+});
