@@ -19,10 +19,14 @@ const getSession = () => {
     return null;
   }
 };
-const destinations = ["#ruta", "#hoja", "#repaso", "#cuaderno", "#tarea", "#familia", "#contenido"];
-const destination = () =>
+const destinations = ["#sala", "#ruta", "#hoja", "#repaso", "#cuaderno", "#tarea", "#familia", "#contenido"];
+const destination = (role = getSession()?.role) =>
   "./aprender" +
-  (destinations.includes(location.hash) ? location.hash : "#ruta");
+  (destinations.includes(location.hash)
+    ? location.hash
+    : role === "teacher"
+      ? "#sala"
+      : "#ruta");
 const storageError =
   "No pudimos guardar la sesión. Permite el almacenamiento del navegador e inténtalo de nuevo.";
 
@@ -145,11 +149,39 @@ $("#cancel-login").onclick = () => dialog.close();
 $("#demo-login").onclick = () => {
   try {
     startSession(localStorage, Date.now(), "student");
-    location.assign(destination());
+    location.assign(destination("student"));
   } catch {
     error.textContent = storageError;
   }
 };
+const demoTeacherBtn = $("#demo-teacher-login");
+if (demoTeacherBtn) {
+  demoTeacherBtn.onclick = () => {
+    try {
+      startSession(localStorage, Date.now(), "teacher");
+      location.assign("./aprender#sala");
+    } catch {
+      error.textContent = storageError;
+    }
+  };
+}
+document.querySelectorAll("[data-teacher-demo]").forEach((btn) => {
+  btn.onclick = () => {
+    const existing = getSession();
+    if (existing?.role === "teacher") {
+      location.assign("./aprender#sala");
+      return;
+    }
+    try {
+      startSession(localStorage, Date.now(), "teacher");
+      location.assign("./aprender#sala");
+    } catch {
+      show("panel-demo");
+      dialog.showModal();
+      error.textContent = storageError;
+    }
+  };
+});
 
 // Tras registrarse o recuperar, se muestra el código antes de entrar.
 function showRecoveryCode(code) {
@@ -198,7 +230,7 @@ async function submit(form, action) {
     if (action === "register" && user.role === "student" && demo && !localStorage.getItem(progressKey(session)))
       localStorage.setItem(progressKey(session), demo);
     if (recoveryCode) showRecoveryCode(recoveryCode);
-    else location.assign(destination());
+    else location.assign(destination(user.role));
   } catch (err) {
     error.textContent = err.status === undefined ? storageError : err.message;
   } finally {
@@ -222,8 +254,15 @@ if (new URLSearchParams(location.search).has("login")) {
   show("panel-login");
   dialog.showModal();
 }
-// Desde el aviso de la demo: abre directamente el registro.
+// Desde el aviso de la demo: abre directamente el registro (y preselecciona docente si viene de #sala).
 if (new URLSearchParams(location.search).has("registro") && !getSession()) {
+  if (new URLSearchParams(location.search).get("registro") === "docente") {
+    const teacherRadio = register.querySelector('input[name="role"][value="teacher"]');
+    if (teacherRadio) {
+      teacherRadio.checked = true;
+      syncRole();
+    }
+  }
   show("panel-register");
   dialog.showModal();
 }

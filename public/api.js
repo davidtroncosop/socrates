@@ -62,4 +62,24 @@ export const api = {
   publishCatalog: (catalog) => request("PUT", "/api/catalog", { catalog }),
   submitInquiry: (data) => request("POST", "/api/inquiries", data),
   inquiries: () => request("GET", "/api/inquiries"),
+  classes: () => request("GET", "/api/classes"),
+  createClass: (data) => request("POST", "/api/classes", data),
+  classDetail: (id) => request("GET", `/api/classes/${encodeURIComponent(id)}`),
+  updateClass: (id, data) => request("PUT", `/api/classes/${encodeURIComponent(id)}`, data),
+  rotateClassCode: (id) => request("POST", `/api/classes/${encodeURIComponent(id)}/rotate-code`, {}),
+  deleteClass: (id) => request("DELETE", `/api/classes/${encodeURIComponent(id)}`),
+  addRoster: (id, data) => request("POST", `/api/classes/${encodeURIComponent(id)}/roster`, data),
+  resetClassStudentPassword: (classId, studentId, password) =>
+    request(
+      "POST",
+      `/api/classes/${encodeURIComponent(classId)}/students/${encodeURIComponent(studentId)}/password`,
+      password ? { password } : {},
+    ),
+  removeClassStudent: (classId, studentId) =>
+    request(
+      "DELETE",
+      `/api/classes/${encodeURIComponent(classId)}/students/${encodeURIComponent(studentId)}`,
+    ),
+  joinClass: (code) => request("POST", "/api/classes/join", { code }),
+  leaveClass: (id) => request("DELETE", `/api/classes/${encodeURIComponent(id)}/leave`),
 };

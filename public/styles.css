@@ -6169,3 +6169,1102 @@ dialog::backdrop {
   padding: 0;
   font-size: 14px;
 }
+
+/* ── Pulido de superficies del navegador y numerales tabulares ────────────── */
+::selection {
+  background: #dce8ff;
+  color: var(--ink);
+}
+input,
+textarea {
+  caret-color: var(--blue);
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Vista docente y PIE (#sala) + conexión escolar de estudiantes ────────── */
+.teacher-shell {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.teacher-shell > *,
+.teacher-diagnostic-grid > *,
+.roster-split > * {
+  min-width: 0;
+}
+.main-wrap {
+  min-width: 0;
+}
+.teacher-page-head h1 {
+  margin: 0 0 6px;
+}
+.teacher-demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 22px;
+  border-radius: 16px;
+  background: var(--ink);
+  color: #ffffff;
+}
+.teacher-demo-copy strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.teacher-demo-copy p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #dbe3f8;
+  max-width: 68ch;
+}
+.teacher-demo-banner .primary {
+  flex: none;
+  background: var(--coral);
+  border-color: var(--coral);
+  color: #ffffff;
+}
+.teacher-demo-banner .primary:hover {
+  background: #df5c2d;
+}
+
+/* Selector de cursos */
+.course-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+.course-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.course-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--surface);
+  color: #3a4562;
+  border: 1px solid var(--line);
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+.course-pill:hover {
+  background: #eef3fc;
+  border-color: #c5d4ec;
+}
+.course-pill.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #ffffff;
+}
+.course-pill-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: #edf2fb;
+  color: var(--ink);
+}
+.course-pill.active .course-pill-count {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+.course-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  font-size: 14px;
+  border-style: dashed;
+  border-color: #b7c6e2;
+  color: var(--blue);
+  background: #f8faff;
+}
+.course-add-btn.active {
+  border-style: solid;
+  background: #e8f0fe;
+}
+
+/* Cabecera del curso seleccionado */
+.teacher-course-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+.teacher-course-titles h1 {
+  margin: 0 0 4px;
+  font-size: 31px;
+  letter-spacing: -0.03em;
+}
+.teacher-course-sub {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.teacher-course-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.teacher-course-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  padding: 9px 14px;
+}
+.code-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 12px;
+  border-radius: 11px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+}
+.code-badge-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.code-badge-val {
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+.code-badge .icon-btn {
+  padding: 5px 7px;
+  border-radius: 8px;
+  border: 0;
+  background: #eef3fc;
+  color: var(--blue);
+}
+.code-badge .icon-btn:hover {
+  background: #dce8ff;
+}
+
+/* Paneles desplegables en línea (crear curso, nómina, foco, ajustes) */
+.teacher-drawer {
+  border-color: #c8d6ee;
+  box-shadow: 0 10px 28px rgba(37, 35, 84, 0.06);
+}
+.teacher-drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.teacher-drawer-head h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+.teacher-drawer-head p {
+  margin: 0;
+}
+.teacher-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+.teacher-form-grid label,
+.roster-pane label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+.teacher-form-grid input,
+.teacher-form-grid select,
+.roster-pane textarea,
+.roster-search-box input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 14px;
+}
+.roster-pane textarea {
+  resize: vertical;
+  min-height: 118px;
+  line-height: 1.5;
+}
+.teacher-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  grid-column: 1 / -1;
+  padding-top: 4px;
+}
+.teacher-form-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* Nómina dividida (sin correo vs código de pizarra) */
+.roster-split {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 20px;
+}
+.roster-pane {
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--surface-tint);
+  border: 1px solid var(--line);
+}
+.roster-pane h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+.roster-pane p {
+  margin: 0 0 14px;
+}
+.roster-pane .inline-row {
+  margin-top: 12px;
+}
+.board-code-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #cbd5e8;
+  margin-bottom: 12px;
+}
+.board-code-value {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+.board-code-display button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+.roster-steps {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  line-height: 1.45;
+}
+
+/* Tarjetas recortables de acceso */
+.teacher-credentials-box {
+  border-color: #b8cdf2;
+  background: #f8fbff;
+}
+.teacher-credentials-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.teacher-credentials-head h2 {
+  margin: 0 0 4px;
+  font-size: 19px;
+}
+.teacher-credentials-head p {
+  margin: 0;
+  max-width: 66ch;
+}
+.teacher-credentials-head .inline-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.teacher-credentials-head button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+}
+.print-cards-sheet-header {
+  display: none;
+}
+.access-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+.access-card {
+  background: #ffffff;
+  border: 1px dashed #94a3b8;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.access-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+.access-card-top strong {
+  color: var(--blue);
+  font-weight: 800;
+}
+.access-card-student {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.access-card-dl {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+}
+.access-card-dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.access-card-dl dt {
+  color: var(--muted);
+}
+.access-card-dl dd {
+  margin: 0;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* Franja de pulso semanal del grupo */
+.cohort-pulse-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.pulse-cell {
+  padding: 16px 20px;
+  display: grid;
+  gap: 3px;
+}
+.pulse-cell + .pulse-cell {
+  border-left: 1px solid var(--line);
+}
+.pulse-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.pulse-val {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.pulse-val small {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.pulse-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+.pulse-cell.is-alert {
+  background: #fff8f5;
+}
+.pulse-cell.is-alert .pulse-val {
+  color: #b93815;
+}
+
+/* Barra de foco sugerido para el grupo */
+.teacher-focus-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 15px 20px;
+  border-radius: 15px;
+  background: #eff5ff;
+  border: 1px solid #c9dbfa;
+}
+.teacher-focus-strip.is-empty {
+  background: var(--surface);
+  border-color: var(--line);
+}
+.teacher-focus-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 320px;
+}
+.teacher-focus-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #dce8ff;
+  color: var(--blue);
+  flex: none;
+}
+.teacher-focus-strip.is-empty .teacher-focus-icon {
+  background: var(--surface-tint);
+  color: var(--muted);
+}
+.teacher-focus-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.teacher-focus-body p {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+.teacher-focus-strip .inline-row button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  font-size: 13px;
+}
+.oa-pill,
+.level-pill,
+.focus-progress-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.oa-pill {
+  background: #eef2f8;
+  color: #334155;
+  border: 1px solid #d5dfee;
+}
+.level-pill {
+  background: #e6effe;
+  color: var(--blue-deep);
+}
+.focus-progress-pill {
+  background: #ffffff;
+  color: var(--ink);
+  border: 1px solid #c9dbfa;
+}
+
+/* Grilla diagnóstica 2 columnas (Tropiezos MINEDUC + Niveles A–O) */
+.teacher-diagnostic-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.teacher-panel {
+  margin: 0;
+}
+.teacher-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.teacher-panel-head h2 {
+  margin: 0 0 3px;
+  font-size: 19px;
+}
+.teacher-panel-head p {
+  margin: 0;
+}
+.stumble-legend {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.stumble-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.stumble-legend i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+}
+.dot-err,
+.seg-err {
+  background: var(--coral);
+}
+.dot-hint,
+.seg-hint {
+  background: var(--gold);
+}
+.dot-ok,
+.seg-ok {
+  background: var(--blue);
+}
+.stumble-list {
+  display: grid;
+  gap: 12px;
+}
+.stumble-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 13px 15px;
+  border-radius: 13px;
+  background: var(--surface-tint);
+  border: 1px solid var(--line);
+}
+.stumble-main {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.stumble-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+.stumble-main h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.3;
+}
+.stumble-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #e2e8f0;
+  margin-bottom: 6px;
+}
+.stumble-bar > span {
+  height: 100%;
+}
+.stumble-numbers {
+  display: flex;
+  gap: 4px 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+.txt-err {
+  color: #b93815;
+}
+.stumble-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.stumble-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 11px;
+  font-size: 12.5px;
+  border-radius: 9px;
+}
+.stumble-actions .active-focus-btn {
+  background: #e6effe;
+  border-color: #b8cdf2;
+  color: var(--blue-deep);
+  opacity: 1;
+}
+
+/* Distribución Niveles A–O */
+.level-dist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.level-dist-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr) 76px 26px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: var(--surface-tint);
+  text-align: left;
+  font-weight: 600;
+}
+.level-dist-row:hover {
+  background: #eef3fc;
+  border-color: #cddaf0;
+}
+.level-dist-row.selected {
+  background: #e6effe;
+  border-color: var(--blue);
+}
+.level-dist-row.is-zero {
+  opacity: 0.62;
+}
+.level-code {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--blue-deep);
+}
+.level-unit-name {
+  font-size: 13px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.level-bar-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #dfe7f5;
+  overflow: hidden;
+}
+.level-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--blue);
+}
+.level-count {
+  font-size: 13px;
+  font-weight: 800;
+  text-align: right;
+  color: var(--ink);
+}
+
+/* Tabla de seguimiento nominal por estudiante */
+.teacher-roster-section {
+  margin: 0;
+}
+.teacher-roster-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.teacher-roster-top h2 {
+  margin: 0 0 4px;
+  font-size: 19px;
+}
+.privacy-line {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.privacy-line svg {
+  flex: none;
+  color: var(--blue);
+}
+.roster-search-box {
+  flex: 0 1 250px;
+  min-width: 200px;
+}
+.roster-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--surface-tint);
+  border: 1px solid var(--line);
+  color: #3a4562;
+}
+.filter-chip.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #ffffff;
+}
+.teacher-roster-section .table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.teacher-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.teacher-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.teacher-table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #edf1f8;
+  vertical-align: top;
+}
+.teacher-table .num-col {
+  text-align: right;
+}
+.student-cell-name {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+.status-indicator {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex: none;
+}
+.status-indicator.st-support {
+  background: var(--coral);
+}
+.status-indicator.st-inactive {
+  background: #94a3b8;
+}
+.status-indicator.st-steady {
+  background: #16a34a;
+}
+.student-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.days-strip {
+  display: inline-flex;
+  gap: 3px;
+}
+.day-dot {
+  width: 19px;
+  height: 19px;
+  border-radius: 5px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  background: #edf2fa;
+  color: #7b879d;
+}
+.day-dot.on {
+  background: var(--blue);
+  color: #ffffff;
+}
+.focus-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.focus-tag.done {
+  background: #e6f5ec;
+  color: #166534;
+}
+.focus-tag.pending {
+  background: #fef3c7;
+  color: #854d0e;
+}
+.support-cell {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.support-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  flex: 1 1 180px;
+}
+.topic-link {
+  padding: 4px 9px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #fff0ea;
+  border: 1px solid #fbd2c2;
+  color: #9a3412;
+  text-align: left;
+}
+.topic-link:hover {
+  background: #ffe3d6;
+}
+.steady-note {
+  font-size: 13px;
+  color: #166534;
+  font-weight: 600;
+}
+.student-manage summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--blue);
+  padding: 4px 8px;
+  border-radius: 7px;
+}
+.student-manage summary::-webkit-details-marker {
+  display: none;
+}
+.student-manage summary:hover {
+  background: #eef3fc;
+}
+.student-manage[open] .student-manage-menu {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--surface-tint);
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 6px;
+}
+.student-manage-menu button {
+  padding: 6px 10px;
+  font-size: 12.5px;
+  text-align: left;
+}
+.student-manage-menu .danger-link {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background: #fff5f5;
+}
+.student-manage-menu .danger-link:hover {
+  background: #fee2e2;
+}
+.empty-filter-msg {
+  margin: 12px 0 4px;
+}
+
+/* Esqueleto de carga docente */
+.teacher-skeleton-bar,
+.teacher-skeleton-card {
+  border-radius: 14px;
+  background: linear-gradient(90deg, #eef2f9 25%, #f6f8fc 50%, #eef2f9 75%);
+  background-size: 200% 100%;
+  animation: teacher-shimmer 1.4s ease-in-out infinite;
+}
+.teacher-skeleton-bar {
+  height: 52px;
+}
+.teacher-skeleton-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.teacher-skeleton-card {
+  height: 240px;
+}
+@keyframes teacher-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Tarjeta del foco sugerido por el profesor en la vista del estudiante */
+.class-focus-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  background: #eff5ff;
+  border-color: #c9dbfa;
+}
+.class-focus-banner-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.class-focus-banner h3 {
+  margin: 0;
+  font-size: 17px;
+}
+.class-focus-banner p {
+  margin: 4px 0 0;
+}
+.student-classes-card {
+  margin-top: 16px;
+}
+.student-class-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+.student-class-item {
+  padding: 14px 16px;
+  border-radius: 13px;
+  background: var(--surface-tint);
+  border: 1px solid var(--line);
+}
+.student-class-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.student-class-head strong {
+  display: block;
+}
+.student-class-focus {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.student-class-focus p {
+  margin: 3px 0 0;
+}
+
+@media (max-width: 980px) {
+  .teacher-diagnostic-grid,
+  .roster-split,
+  .teacher-skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .cohort-pulse-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pulse-cell:nth-child(3) {
+    border-left: 0;
+  }
+  .pulse-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+  .teacher-demo-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .teacher-course-titles h1 {
+    font-size: 25px;
+  }
+}
+
+/* Impresión exclusiva de tarjetas recortables de acceso escolar */
+@media print {
+  body[data-print-mode="cards"] .cohort-pulse-strip,
+  body[data-print-mode="cards"] .teacher-diagnostic-grid,
+  body[data-print-mode="cards"] .teacher-roster-section,
+  body[data-print-mode="cards"] .teacher-course-header,
+  body[data-print-mode="cards"] .course-switcher,
+  body[data-print-mode="cards"] .teacher-demo-banner,
+  body[data-print-mode="cards"] .teacher-drawer,
+  body[data-print-mode="cards"] .teacher-focus-strip,
+  body[data-print-mode="cards"] #teacher-feedback {
+    display: none !important;
+  }
+  body[data-print-mode="cards"] .teacher-credentials-box {
+    border: 0 !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+  body[data-print-mode="cards"] .print-cards-sheet-header {
+    display: flex !important;
+    justify-content: space-between;
+    border-bottom: 2px solid #1e293b;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  body[data-print-mode="cards"] .access-cards-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  body[data-print-mode="cards"] .access-card {
+    break-inside: avoid;
+    border: 1px dashed #475569 !important;
+    padding: 12px 14px;
+  }
+}
+

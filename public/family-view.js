@@ -4,6 +4,7 @@ import { displayTitle } from "./learning.js";
 import { weeklySummary, compareText } from "./weekly.js";
 import { FICHAS_RULE_FAMILY } from "./stats.js";
 import { hydrateTelegramCard } from "./notify.js";
+import { hydrateStudentClassesBox } from "./teacher-view.js";
 
 const dateTime = (ms) =>
   ms
@@ -84,7 +85,7 @@ function weeklyCard(w, claims = []) {
 // Cada render invalida los anteriores para que una respuesta lenta no pise la vista actual.
 let renderId = 0;
 
-export function renderFamilyPage({ app, session, lessons }) {
+export function renderFamilyPage({ app, session, lessons, onOpenLesson, onOpenSheet }) {
   const id = ++renderId;
   const current = () => id === renderId && app.dataset.view === "familia";
   app.dataset.view = "familia";
@@ -235,8 +236,14 @@ export function renderFamilyPage({ app, session, lessons }) {
 
   async function studentHome() {
     app.innerHTML =
-      heading("APRENDER ACOMPAÑADO", "Mi familia", "Vincula a tu apoderado para que pueda ver tu avance.") +
-      `<section class="card"><p>Tu apoderado verá cuántas lecciones completas y dominas, qué días practicas, cómo te va en cada lección y cuántos videos viste. Tus notas y fotos no se comparten.</p><button class="primary" id="make-code">Generar código para mi apoderado</button><div id="family-message" role="status" class="feedback"></div><div id="code-box"></div></section><div id="parents" aria-busy="true"></div>`;
+      heading("APRENDER ACOMPAÑADO", "Mi familia", "Vincula a tu apoderado o a tu curso del colegio para compartir tu avance.") +
+      `<section class="card"><p>Tu apoderado verá cuántas lecciones completas y dominas, qué días practicas, cómo te va en cada lección y cuántos videos viste. Tus notas y fotos no se comparten.</p><button class="primary" id="make-code">Generar código para mi apoderado</button><div id="family-message" role="status" class="feedback"></div><div id="code-box"></div></section><div id="parents" aria-busy="true"></div><div id="student-classes-box"></div>`;
+    hydrateStudentClassesBox(app.querySelector("#student-classes-box"), {
+      session,
+      lessons,
+      onOpenLesson,
+      onOpenSheet,
+    });
     app.querySelector("#make-code").onclick = guard(async () => {
       const { code, expiresAt } = await api.linkCode();
       if (!current()) return;

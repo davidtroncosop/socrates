@@ -5,7 +5,7 @@ Espacio de aprendizaje autónomo, al estilo Duolingo, de matemática y comprensi
 ## Ejecutar
 
 ```sh
-npm test                 # 155 pruebas (Node 22+)
+npm test                 # 170 pruebas (Node 22+)
 npm run db:migrate:local # una vez: crea la base D1 local
 npm run dev              # sitio + API en http://localhost:8788
 npm run dev:static       # solo el sitio, sin cuentas (puerto 3000)
@@ -43,7 +43,8 @@ Módulos del cliente (`public/`):
 - `notify.js`, `sw.js`, `manifest.webmanifest`: app instalable, uso sin conexión y recordatorio diario.
 - `subjects.js`: materias visibles para los estudiantes.
 - `ui.js`, `units.js`, `stats.js`, `dialogs.js`: utilidades de interfaz, unidades de la ruta, métricas de motivación y diálogos.
-- `family-view.js`: «Mi familia».
+- `family-view.js`: «Mi familia» y vínculo con el curso escolar.
+- `teacher-view.js`, `teacher-analytics.js`: «Mis cursos» (`#sala`), panel docente y PIE B2B (mapa grupal de tropiezos por OA MINEDUC, distribución en Niveles A–O, foco sugerido, carga rápida de nómina sin correo con tarjetas recortables imprimibles y modo demostración interactivo).
 - `auth.js`, `session.js`, `api.js`, `landing.js`: sesión, verificación con el servidor y cliente de la API.
 
 ## Qué incluye
@@ -108,7 +109,7 @@ El acceso ofrece **Entrar** (con correo o usuario), **Crear cuenta** y **Probar 
 
 | Método y ruta | Descripción |
 |---|---|
-| `POST /api/auth/register` | `{name, email, password, role: "student" \| "parent", age14}` → cuenta, sesión y `recoveryCode` |
+| `POST /api/auth/register` | `{name, email, password, role: "student" \| "parent" \| "teacher", age14}` → cuenta, sesión y `recoveryCode` |
 | `POST /api/auth/login` | `{login (correo o usuario), password}` |
 | `POST /api/auth/recover` | `{login, code, password}` → nueva contraseña y nuevo código |
 | `POST /api/auth/logout` · `GET /api/me` · `DELETE /api/me` | Cerrar sesión · usuario actual (`isAdmin`) · eliminar cuenta |
@@ -117,6 +118,11 @@ El acceso ofrece **Entrar** (con correo o usuario), **Crear cuenta** y **Probar 
 | `POST /api/family/children` | Apoderado crea la cuenta de un menor `{name, username, password}` |
 | `POST /api/family/link-code` · `POST /api/family/link` | Estudiante genera código · apoderado lo usa `{code}` |
 | `POST /api/family/children/:id/password` · `DELETE /api/family/children/:id` | Cambiar contraseña · desvincular o eliminar |
+| `GET /api/classes` · `POST /api/classes` | Cursos y grupos PIE (docente: lista sus cursos · estudiante: ve sus cursos y foco sugerido) |
+| `GET /api/classes/:id` · `PUT /api/classes/:id` · `DELETE /api/classes/:id` | Detalle grupal y nominal sin notas ni fotos · actualizar datos o `focusLesson` · eliminar |
+| `POST /api/classes/:id/roster` · `POST /api/classes/:id/rotate-code` | Carga rápida de nómina sin correo (tarjetas de acceso) · rotar código de pizarra |
+| `POST /api/classes/:id/students/:studentId/password` · `DELETE /api/classes/:id/students/:studentId` | Nueva clave escolar · quitar del curso |
+| `POST /api/classes/join` · `DELETE /api/classes/:id/leave` | Estudiante se une con código de 6 letras · salir de un curso |
 | `GET /api/catalog` · `PUT /api/catalog` | Catálogo central (lectura pública · publicar solo administración, máximo 2 MB) |
 | `GET /api/push/key` · `PUT /api/push` · `DELETE /api/push` | Clave VAPID · suscribir `{endpoint, hour, timeZone}` · anular |
 | `GET /api/reminder` | Texto del recordatorio según la racha y los repasos del usuario |

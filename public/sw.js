@@ -5,7 +5,7 @@
 //   mezclaba código viejo y nuevo); sin conexión, la copia guardada.
 // - /api/*: siempre la red (el progreso se sincroniza desde la app).
 // - /media/*: siempre la red; los videos se piden por rangos y no se guardan.
-const CACHE = "socatres-v1";
+const CACHE = "socatres-v2";
 const SHELL = [
   "/",
   "/aprender",
@@ -24,7 +24,7 @@ const SHELL = [
   ...[
     "admin", "api", "app", "auth", "coach", "content", "csv", "curriculum", "daily",
     "dialogs", "family-view", "generators", "landing", "learning", "lesson-videos", "mistakes", "sheets", "subjects",
-    "metrics", "minigames", "notify", "session", "speak", "stats", "ui", "units", "video", "weekly", "work-photo",
+    "metrics", "minigames", "notify", "session", "speak", "stats", "teacher-analytics", "teacher-view", "ui", "units", "video", "weekly", "work-photo",
   ].map((name) => `/${name}.js`),
 ];
 

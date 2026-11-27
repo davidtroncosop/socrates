@@ -23,6 +23,7 @@ import {
 import { readSession, endSession, progressKey } from "./auth.js";
 import { api } from "./api.js";
 import { renderFamilyPage } from "./family-view.js";
+import { renderTeacherPage } from "./teacher-view.js";
 import { hydrateReminderCard } from "./notify.js";
 import { readCatalog, seedCatalog, writeCatalog, withNewCurriculum } from "./content.js";
 import { createAdmin } from "./admin.js";
@@ -68,6 +69,7 @@ try {
 } catch {}
 // El mantenedor es de la administración; el servidor valida cada publicación.
 const isAdmin = account?.mode === "account" && account.isAdmin === true;
+const isTeacher = account?.role === "teacher";
 const synced = account?.mode === "account";
 const stateKey = progressKey(account);
 const CATALOG_VERSION_KEY = "socatres.catalog.updatedAt";
@@ -145,8 +147,11 @@ function contentManager() {
 // materia; la primera de cada curso queda abierta para que el diagnóstico
 // pueda ubicar ahí. Las del currículo ampliado son libres, salvo que necesiten
 // otra antes (PREREQUISITES). Lo ya completado nunca se bloquea.
+let studentClasses = [];
+const classFocusIds = () =>
+  new Set(studentClasses.map((c) => c?.focusLesson).filter(Boolean));
 function lockedBy(l) {
-  if (state.completed.includes(l.id)) return null;
+  if (isTeacher || state.completed.includes(l.id) || classFocusIds().has(l.id)) return null;
   const missing = (PREREQUISITES[l.id] ?? [])
     .map((id) => lessons.find((x) => x.id === id))
     .find((x) => x && !state.completed.includes(x.id));
@@ -309,11 +314,30 @@ function updateBadge() {
     (r) => r.due <= Date.now(),
   ).length;
 }
+function openLessonDirect(id) {
+  const lesson = lessons.find((l) => l.id === id);
+  if (!lesson || isLocked(lesson)) return;
+  if (app.dataset) app.dataset.view = "ruta";
+  start(id);
+}
+function openSheetDirect(id) {
+  const lesson = lessons.find((l) => l.id === id);
+  if (!lesson || isLocked(lesson)) return;
+  if (app.dataset) app.dataset.view = "hoja";
+  startSheet(id);
+}
+function demoRegisterTeacher() {
+  try {
+    endSession(localStorage);
+  } catch {}
+  location.assign("./?registro=docente");
+}
 function navigate() {
   stopSpeaking();
   session = null;
-  let page = location.hash.slice(1) || "ruta";
-  if (page === "contenido" && !isAdmin) page = "ruta";
+  const defaultPage = isTeacher ? "sala" : "ruta";
+  let page = location.hash.slice(1) || defaultPage;
+  if (page === "contenido" && !isAdmin) page = defaultPage;
   if (app.dataset) app.dataset.view = page;
   document.querySelectorAll("[data-nav]").forEach((a) => {
     const active = a.dataset.nav === page;
@@ -323,14 +347,30 @@ function navigate() {
   });
   (
     ({
+      sala: () =>
+        renderTeacherPage({
+          app,
+          session: account,
+          lessons,
+          onOpenLesson: openLessonDirect,
+          onOpenSheet: openSheetDirect,
+          onDemoRegister: demoRegisterTeacher,
+        }),
       ruta: route,
       hoja: dailySheetEntry,
       repaso: reviews,
       cuaderno: notebook,
       tarea: task,
-      familia: () => renderFamilyPage({ app, session: account, lessons }),
+      familia: () =>
+        renderFamilyPage({
+          app,
+          session: account,
+          lessons,
+          onOpenLesson: openLessonDirect,
+          onOpenSheet: openSheetDirect,
+        }),
       contenido: contentManager,
-    })[page] || route
+    })[page] || (isTeacher ? () => navigate() : route)
   )();
   updateBadge();
 }
@@ -679,6 +719,7 @@ function route() {
     ${demoNotice()}
     <div class="dashboard">
       <div>
+        ${classFocusCard()}
         ${nextStepCard(next)}
         ${state.diagnosed || state.completed.length ? dailyHero(next) : ""}
 
@@ -2577,8 +2618,13 @@ app.addEventListener("click", (e) => {
     next();
   } else if (action === "exit") {
     session = null;
-    location.hash = "ruta";
-    route();
+    if (isTeacher) {
+      location.hash = "sala";
+      navigate();
+    } else {
+      location.hash = "ruta";
+      route();
+    }
   } else if (action === "go") {
     if (location.hash === "#" + id) navigate();
     else location.hash = id;
@@ -2686,6 +2732,25 @@ app.addEventListener("click", (e) => {
 });
 const contentLink = document.querySelector('[data-nav="contenido"]');
 if (contentLink) contentLink.hidden = !isAdmin;
+const salaLink = document.querySelector('[data-nav="sala"]');
+if (salaLink) salaLink.hidden = !isTeacher;
+if (isTeacher) {
+  for (const navId of ["repaso", "cuaderno", "tarea", "familia"]) {
+    const el = document.querySelector(`[data-nav="${navId}"]`);
+    if (el) el.hidden = true;
+  }
+  const rutaSpan = document.querySelector('[data-nav="ruta"] span');
+  if (rutaSpan) rutaSpan.textContent = "Explorar ruta";
+  const hojaSpan = document.querySelector('[data-nav="hoja"] span');
+  if (hojaSpan) hojaSpan.textContent = "Hojas";
+  const topCrumb = document.querySelector(".topbar > span:first-child");
+  if (topCrumb) topCrumb.innerHTML = `Espacio docente <span class="crumb">/ Matemática y PIE</span>`;
+  syncStatus(
+    account?.mode === "demo"
+      ? "Modo demostración · Datos de ejemplo en este navegador"
+      : "Panel docente · Notas y fotos de estudiantes siempre privadas",
+  );
+}
 if (synced) {
   $("#privacy-summary").textContent =
     "Tu progreso se guarda en este navegador y en tu cuenta, para continuar en otros dispositivos. Tus fotos quedan solo en este dispositivo. Si vinculaste a tu apoderado, ve cuántas lecciones completas y dominas, cuánto practicas y cuántos videos viste, no tus notas ni fotos. Para mejorar las lecciones se cuentan, sin tu nombre ni tu cuenta, los aciertos, errores y pistas de cada ejercicio.";
@@ -2781,7 +2846,45 @@ if (typeof document.addEventListener === "function")
       refreshCatalog();
     }
   });
-if (synced) {
+function classFocusCard() {
+  if (!studentClasses.length || isTeacher) return "";
+  const active = studentClasses.find((c) => {
+    if (!c?.focusLesson || state.mastered.includes(c.focusLesson)) return false;
+    return lessons.some((l) => l.id === c.focusLesson);
+  });
+  if (!active) return "";
+  const lesson = lessons.find((l) => l.id === active.focusLesson);
+  const lvl = lessonLevel(lesson.id);
+  const done =
+    state.completed.includes(lesson.id) || (state.sheets?.[lesson.id]?.count ?? 0) > 0;
+  return `<section class="card class-focus-banner" aria-label="Foco sugerido por tu curso">
+    <div class="class-focus-banner-body">
+      <div class="class-focus-banner-meta">
+        <span class="level-pill">${escape(lvl.label)}</span>
+        <span class="muted">${escape(active.name)} · Prof. ${escape(active.teacherName || "")}</span>
+        ${done ? `<span class="focus-tag done">✓ Practicado</span>` : ""}
+      </div>
+      <h3>Foco sugerido: ${escape(displayTitle(lesson))}</h3>
+      ${active.focusNote ? `<p class="muted">${escape(active.focusNote)}</p>` : ""}
+    </div>
+    <div class="inline-row">
+      ${button("Practicar lección", `lesson:${escape(lesson.id)}`, "primary")}
+      ${getSubject(lesson) === "matematica" ? button("Abrir hoja", `sheet:${escape(lesson.id)}`) : ""}
+    </div>
+  </section>`;
+}
+if (synced && !isTeacher) {
   pullProgress();
+  if (account?.role === "student") {
+    api
+      .classes()
+      .then((res) => {
+        if (Array.isArray(res?.classes) && res.classes.length) {
+          studentClasses = res.classes;
+          if (!session && app.dataset?.view === "ruta") route();
+        }
+      })
+      .catch(() => {});
+  }
   window.addEventListener("online", pushProgress);
 }

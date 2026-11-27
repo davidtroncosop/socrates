@@ -21,6 +21,20 @@ import {
 } from "./telegram.js";
 import { readReviewRequest, reviewWork, ReviewError, MAX_IMAGE } from "./work-review.js";
 import { readReflectionRequest, reflect, readEncouragementRequest, encourage } from "./coach.js";
+import {
+  ClassError,
+  listClasses,
+  createClass,
+  getClassDetail,
+  updateClass,
+  rotateClassCode,
+  deleteClass,
+  addClassRoster,
+  resetClassStudentPassword,
+  removeClassStudent,
+  joinClassByCode,
+  leaveClass,
+} from "./classes.js";
 
 export const COOKIE = "socatres_session";
 const SESSION_DAYS = 30;
@@ -315,6 +329,8 @@ const LIMITS = {
   coachAll: [5000, 24 * 60 * 60_000],
   telegramLink: [15, 15 * 60_000],
   inquiry: [5, 60 * 60_000],
+  roster: [20, 60 * 60_000],
+  classJoin: [15, 15 * 60_000],
 };
 const clientIp = (request) => request.headers.get("cf-connecting-ip") || "local";
 async function limit(env, kind, who, message = "Demasiados intentos. Espera unos minutos y vuelve a probar.", waitUntil) {
@@ -340,11 +356,11 @@ async function limit(env, kind, who, message = "Demasiados intentos. Espera unos
 }
 
 const routes = {
-  // Registro propio: apoderados y estudiantes de 14 años o más (Ley 21.719).
+  // Registro propio: apoderados, docentes y estudiantes de 14 años o más (Ley 21.719).
   async "POST /api/auth/register"({ request, env, waitUntil }) {
     await limit(env, "register", clientIp(request), undefined, waitUntil);
     const body = await readJson(request);
-    const role = body.role === "parent" ? "parent" : "student";
+    const role = body.role === "parent" ? "parent" : body.role === "teacher" ? "teacher" : "student";
     if (role === "student" && body.age14 !== true)
       fail(400, "Si tienes menos de 14 años, tu apoderado debe crear tu cuenta.");
     const email = cleanEmail(body.email);
@@ -567,6 +583,63 @@ const routes = {
         .bind(user.id, child.id)
         .run();
     return json({ ok: true, deleted: child.consent_by === user.id });
+  },
+
+  // Cursos y grupos PIE (vista docente B2B) ----------------------------------
+  async "GET /api/classes"({ env, user }) {
+    return json(await listClasses(env, user));
+  },
+
+  async "POST /api/classes"({ request, env, user }) {
+    return json(await createClass(env, user, await readJson(request)), 201);
+  },
+
+  async "POST /api/classes/join"({ request, env, user, waitUntil }) {
+    await limit(env, "classJoin", user.id, undefined, waitUntil);
+    return json(await joinClassByCode(env, user, await readJson(request)));
+  },
+
+  async "GET /api/classes/:id"({ env, user, params }) {
+    return json(await getClassDetail(env, user, params.id));
+  },
+
+  async "PUT /api/classes/:id"({ request, env, user, params }) {
+    return json(await updateClass(env, user, params.id, await readJson(request)));
+  },
+
+  async "POST /api/classes/:id/rotate-code"({ request, env, user, params }) {
+    await readJson(request);
+    return json(await rotateClassCode(env, user, params.id));
+  },
+
+  async "DELETE /api/classes/:id"({ env, user, params }) {
+    return json(await deleteClass(env, user, params.id));
+  },
+
+  async "DELETE /api/classes/:id/leave"({ env, user, params }) {
+    return json(await leaveClass(env, user, params.id));
+  },
+
+  async "POST /api/classes/:id/roster"({ request, env, user, params, waitUntil }) {
+    await limit(env, "roster", user.id, undefined, waitUntil);
+    const body = await readJson(request);
+    return json(
+      await addClassRoster(env, user, params.id, body, { cleanUsername, cleanPassword }),
+      201,
+    );
+  },
+
+  async "POST /api/classes/:id/students/:studentId/password"({ request, env, user, params }) {
+    const body = await readJson(request);
+    return json(
+      await resetClassStudentPassword(env, user, params.id, params.studentId, body, {
+        cleanPassword,
+      }),
+    );
+  },
+
+  async "DELETE /api/classes/:id/students/:studentId"({ env, user, params }) {
+    return json(await removeClassStudent(env, user, params.id, params.studentId));
   },
 
   // Premios en casa ----------------------------------------------------------
@@ -955,7 +1028,7 @@ export async function handle(request, env, waitUntil) {
     if (!PUBLIC.has(route.key) && !user) fail(401, "Tu sesión terminó. Vuelve a entrar.");
     return await routes[route.key]({ request, env, user, params: route.params, waitUntil });
   } catch (err) {
-    if (err instanceof HttpError) return json({ error: err.message }, err.status);
+    if (err instanceof HttpError || err instanceof ClassError) return json({ error: err.message }, err.status);
     console.error(
       JSON.stringify({
         event: "api_error",

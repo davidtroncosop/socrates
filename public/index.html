@@ -708,6 +708,11 @@
                   </div>
                 </li>
               </ul>
+              <div class="school-demo-row">
+                <button type="button" class="pill-outline school-demo-btn" data-teacher-demo>
+                  Explorar panel docente y PIE en vivo <span aria-hidden="true">↗</span>
+                </button>
+              </div>
             </div>
 
             <div class="school-form-card">
@@ -1004,6 +1009,10 @@
             ><input type="radio" name="role" value="parent" />
             Apoderado/a</label
           >
+          <label
+            ><input type="radio" name="role" value="teacher" />
+            Docente / PIE</label
+          >
         </fieldset>
         <label class="check-row" id="age-row"
           ><input type="checkbox" name="age14" id="register-age14" /> Tengo 14
@@ -1061,8 +1070,16 @@
           >
           <span aria-hidden="true">↗</span>
         </button>
+        <button class="demo-account" id="demo-teacher-login" data-role="teacher">
+          <span class="account-avatar avatar-teacher">D</span>
+          <span
+            ><strong>Docente / Equipo PIE demo</strong
+            ><small>Explora cursos, tropiezos MINEDUC y nómina imprimible</small></span
+          >
+          <span aria-hidden="true">↗</span>
+        </button>
         <p class="auth-disclaimer">
-          La sesión demo dura 24 horas y el progreso queda solo en este
+          La sesión demo dura 24 horas y los datos de prueba quedan solo en este
           navegador.
         </p>
       </div>
