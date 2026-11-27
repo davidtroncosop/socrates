@@ -226,13 +226,16 @@ let session = null,
 // La ruta se ve como camino o como lista compacta por unidad; cada navegador
 // recuerda la vista elegida.
 const ROUTE_VIEW_KEY = "socatres.routeView";
+// La lista es la vista inicial: es corta y muestra el estado de cada lección.
 let routeView = (() => {
   try {
-    return localStorage.getItem(ROUTE_VIEW_KEY) === "list" ? "list" : "path";
+    return localStorage.getItem(ROUTE_VIEW_KEY) === "path" ? "path" : "list";
   } catch {
-    return "path";
+    return "list";
   }
 })();
+// En la lista, los niveles más allá de los próximos quedan tras un botón.
+let showAllUnits = false;
 function save() {
   Object.assign(state, compactAttempts(state));
   try {
@@ -370,7 +373,6 @@ function dailyHero(next) {
     }
     <div class="actions">
       ${pending ? button("Empezar práctica del día →", "daily", sheetPick ? "" : "primary") : ""}
-      ${button(`Siguiente lección: ${escape(displayTitle(next))}`, "lesson:" + next.id, pending || sheetPick ? "" : "primary")}
     </div>
     <div class="goal-picker" role="group" aria-label="Meta diaria">
       <span class="muted">Meta diaria:</span>
@@ -388,51 +390,96 @@ function demoNotice() {
   const when = end.toDateString() === new Date().toDateString() ? `hoy a las ${hour}` : `mañana a las ${hour}`;
   return `<section class="callout demo-notice" role="note"><strong>🕒 Estás probando socatres sin cuenta.</strong> La sesión termina ${when} y tu avance queda solo en este navegador. Si creas tu cuenta, conservas lo que ya practicaste (si tienes menos de 14 años, pídele a tu apoderado que la cree). ${button("Crear mi cuenta", "demo-signup", "secondary")}</section>`;
 }
+// Barra de niveles: un tramo por unidad con su avance. Tocar un nivel filtra la
+// ruta; tocarlo de nuevo vuelve a mostrar todos.
+function levelTrack(next) {
+  const units = getUnitsForLessons(lessons).filter(
+    (u) => u.lessons.length > 0 && (currentSubject === "all" || u.subject === currentSubject || u.subject === "all"),
+  );
+  const here = units.find((u) => u.lessons.some((l) => l.id === next.id));
+  return `<div class="level-track" role="group" aria-label="Niveles de la ruta">${units
+    .map((u) => {
+      const lvl = unitLevel(u);
+      const done = u.lessons.filter((l) => state.completed.includes(l.id)).length;
+      const active = currentKumonLevel === lvl.code;
+      return `<button class="level-seg${active ? " active" : ""}${u === here ? " here" : ""}" data-action="kumon-level:${active ? "all" : escape(lvl.code)}" title="${escape(lvl.label)} · ${escape(u.title)} · ${done} de ${u.lessons.length}" aria-pressed="${active}">
+        <span class="level-seg-code">${escape(lvl.code)}</span>
+        <span class="level-seg-bar"><span style="width:${Math.round((done / u.lessons.length) * 100)}%"></span></span>
+      </button>`;
+    })
+    .join("")}</div>
+    <p class="level-where">${here ? `Estás en el <strong>${escape(unitLevel(here).label)}</strong>` : ""}${
+      currentKumonLevel !== "all" ? ` · Mostrando solo el ${escape(units.map(unitLevel).find((l) => l.code === currentKumonLevel)?.label ?? "nivel elegido")} <button class="link-button" data-action="kumon-level:all">Ver todos</button>` : ""
+    }</p>`;
+}
 // Vista de lista: cada unidad se pliega y muestra su avance; se abre sola la
 // unidad de la lección que sigue. Pensada para quien ya sabe qué busca.
 function routeList(units, next) {
+  // Se abre la unidad de la lección que sigue (o la primera, si un filtro la
+  // dejó fuera); se muestran también las dos siguientes y el resto queda tras
+  // un botón, salvo que haya un filtro de nivel.
+  const current = Math.max(0, units.findIndex((u) => u.lessons.some((l) => l.id === next.id)));
+  const shown = showAllUnits || currentKumonLevel !== "all" ? units.length : Math.max(current + 3, 3);
+  const rest = units.slice(shown);
+  const restCodes = rest.map((u) => unitLevel(u).code);
   return `<div class="route-list">${units
-    .map((unit) => {
+    .map((unit, i) => {
       const done = unit.lessons.filter((l) => state.completed.includes(l.id)).length;
       const total = unit.lessons.length;
-      const open = unit.lessons.some((l) => l.id === next.id);
-      const rows = unit.lessons
-        .map((l) => {
+      const lvl = unitLevel(unit);
+      const videos = unit.lessons.filter((l) => l.video).length;
+      const isLang = unit.subject === "lenguaje";
+      const cells = unit.lessons
+        .map((l, k) => {
           const blocker = lockedBy(l);
           const mastered = state.mastered.includes(l.id);
           const completed = state.completed.includes(l.id);
           const isNext = next.id === l.id;
-          const [icon, status] = mastered
-            ? ["👑", "Dominio confirmado"]
+          const [mark, status, cls] = mastered
+            ? ["👑", "Dominada", "done"]
             : completed
-              ? ["✓", "Completada"]
+              ? ["✓", "Hecha", "done"]
               : blocker
-                ? ["🔒", `Se abre al completar «${escape(displayTitle(blocker))}»`]
+                ? ["🔒", "", "locked"]
                 : isNext
-                  ? ["▶", "Te toca ahora"]
-                  : ["○", escape(forStudent(l.description))];
-          const isLang = getSubject(l) === "lenguaje";
-          return `<li class="route-row${isNext ? " route-row-next" : ""}${completed ? " route-row-done" : ""}">
-            <span class="route-row-icon" aria-hidden="true">${icon}</span>
-            <div class="route-row-text"><strong>${escape(displayTitle(l))}</strong><small>${status}${l.video ? " · 🎬 Video" : ""}</small></div>
-            <div class="route-row-actions">
-              <button class="duo-card-btn ${isNext ? "primary" : ""}" data-action="lesson:${l.id}" ${blocker ? "disabled" : ""}>${blocker ? "Bloqueada" : completed ? "Practicar" : "Empezar →"}</button>
-              ${!blocker && !isLang ? `<button class="duo-card-btn sheet-card-btn" data-action="sheet:${l.id}" title="Hoja de fluidez (${SHEET_SIZE} ejercicios)" aria-label="Hoja de fluidez de ${escape(displayTitle(l))}">📄</button>` : ""}
-            </div>
+                  ? [String(k + 1), "", "next"]
+                  : [String(k + 1), "", "open"];
+          const sub = blocker ? `Se abre al completar «${escape(displayTitle(blocker))}»` : escape(forStudent(l.description));
+          const action = blocker
+            ? `<span class="route-cell-state">Bloqueada</span>`
+            : isNext
+              ? `<button class="primary route-cell-btn" data-action="lesson:${l.id}">Seguir</button>`
+              : completed
+                ? `<button class="route-cell-link" data-action="lesson:${l.id}" aria-label="Practicar de nuevo «${escape(displayTitle(l))}»">${status} · practicar</button>`
+                : `<button class="route-cell-link" data-action="lesson:${l.id}">Empezar</button>`;
+          return `<li class="route-cell route-cell-${cls}">
+            <span class="route-cell-mark" aria-hidden="true">${mark}</span>
+            <div class="route-cell-text"><strong>${escape(displayTitle(l))}</strong><small>${sub}</small></div>
+            ${action}
           </li>`;
         })
         .join("");
-      return `<details class="route-list-unit ${unit.theme}"${open ? " open" : ""}>
+      return `<details class="route-list-unit ${unit.theme}"${i === current ? " open" : ""}${i >= shown ? " hidden" : ""}>
         <summary>
-          <span class="route-list-level">${escape(unitLevel(unit).label)}</span>
-          <span class="route-list-title">${escape(unit.title)}</span>
-          <span class="route-list-progress"><span class="muted">${done} / ${total}</span><span class="bar mini-bar"><span style="width:${Math.round((done / total) * 100)}%"></span></span></span>
+          <span class="route-list-letter" aria-hidden="true">${escape(lvl.code)}</span>
+          <span class="route-list-head">
+            <span class="route-list-eyebrow">${escape(lvl.label.toUpperCase())} · SECCIÓN ${unit.unitNumber}</span>
+            <span class="route-list-title">${escape(unit.title)}</span>
+          </span>
+          <span class="route-list-progress"><span class="muted">${done} / ${total} lecciones</span><span class="bar mini-bar"><span style="width:${Math.round((done / total) * 100)}%"></span></span></span>
         </summary>
-        <ul class="route-list-rows">${rows}</ul>
-        <button class="duo-guide-btn route-list-guide" data-action="unit-guide:${unit.id}">📖 Guía de unidad</button>
+        <div class="route-list-info">
+          <p>${escape(unit.description)}</p>
+          <p class="muted">Cada lección: idea clave, ejemplo y ejercicios${isLang ? "" : ` · hoja de ${SHEET_SIZE} para practicar`}${videos ? ` · ${videos === total ? "todas" : videos} con video` : ""} · <button class="link-button" data-action="unit-guide:${unit.id}">Guía de unidad</button></p>
+        </div>
+        <ul class="route-cells">${cells}</ul>
       </details>`;
     })
-    .join("")}</div>`;
+    .join("")}${
+    rest.length
+      ? `<button class="secondary route-list-more" data-action="more-units">Ver ${rest.length === 1 ? "el nivel siguiente" : `los ${rest.length} niveles siguientes`} (${restCodes[0]}${rest.length > 1 ? ` – ${restCodes.at(-1)}` : ""})</button>`
+      : ""
+  }</div>`;
 }
 function route() {
   if (!lessons.length) {
@@ -523,9 +570,7 @@ function route() {
 
             const sub = getSubject(l);
             const isLang = sub === "lenguaje";
-            const lvl = lessonLevel(l.id);
             const sheetRec = state.sheets?.[l.id];
-            const badge = `<span class="oa-badge">${escape(lvl.label)}</span>`;
             const sheetBadge = !isLang && sheetRec
               ? sheetRec.level >= MAX_MICRO_LEVEL
                 ? `<span class="sheet-badge sheet-badge-done">📄 Fluidez 100 %</span>`
@@ -554,9 +599,8 @@ function route() {
                   </button>
                   <div class="duo-node-card ${isLang ? "duo-card-lang" : "duo-card-math"} ${isNext ? "duo-card-current" : ""}">
                     <div class="duo-node-meta">
-                      ${badge}
                       ${sheetBadge}
-                      ${subjectBadge}
+                      ${bothSubjects ? subjectBadge : ""}
                       ${beltBadge}
                       ${l.video ? `<span class="video-tag" title="Incluye un video explicativo">🎬 Video</span>` : ""}
                     </div>
@@ -635,32 +679,8 @@ function route() {
     ${demoNotice()}
     <div class="dashboard">
       <div>
-        ${coachCard(!state.diagnosed && !state.completed.length && state.attempts.length ? next : null)}
-        ${
-          state.diagnosed || state.completed.length
-            ? dailyHero(next)
-            : !state.attempts.length
-              ? `<section class="hero">
-          <span class="eyebrow">TU PRIMER PASO</span>
-          <h2>Empecemos con algo fácil.</h2>
-          <p>Dos preguntas cortas para entrar en calor. Sin notas y sin apuro.</p>
-          <div class="hero-meta">
-            <span>◷ 1 minuto</span>
-            <span>◇ Sin calificación</span>
-          </div>
-          ${button("Empezar →", "warmup", "primary")}
-        </section>`
-              : `<section class="hero">
-          <span class="eyebrow">ENCONTREMOS TU PUNTO DE PARTIDA</span>
-          <h2>¿Por dónde te conviene seguir?</h2>
-          <p>${DIAGNOSTIC_BASE.length + MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length} preguntas cortas, primero de base y después de tu curso. No es una prueba: puedes saltar las que no sepas y pedir ayuda.</p>
-          <div class="hero-meta">
-            <span>◷ 5 minutos aprox.</span>
-            <span>◇ Sin calificación</span>
-          </div>
-          ${button("Buscar mi punto de partida →", "diagnostic", "primary")}
-        </section>`
-        }
+        ${nextStepCard(next)}
+        ${state.diagnosed || state.completed.length ? dailyHero(next) : ""}
 
         <div class="section-title">
           <h2>Tu ruta</h2>
@@ -680,19 +700,7 @@ function route() {
               <button class="filter-btn subject-lang-btn ${currentSubject === "lenguaje" ? "active" : ""}" data-action="subject:lenguaje">📖 Lenguaje (${countLang})</button>
             </div>
           </div>` : ""}
-          <div class="route-filter-row">
-            <span class="filter-label">Nivel:</span>
-            <div class="route-filters">
-              <button class="filter-btn ${currentKumonLevel === "all" ? "active" : ""}" data-action="kumon-level:all">Todos</button>
-              ${getUnitsForLessons(lessons)
-                .filter((u) => u.lessons.length > 0 && (currentSubject === "all" || u.subject === currentSubject || u.subject === "all"))
-                .map((u) => {
-                  const lvl = unitLevel(u);
-                  return `<button class="filter-btn ${currentKumonLevel === lvl.code ? "active" : ""}" data-action="kumon-level:${escape(lvl.code)}" title="${escape(u.title)}">${escape(lvl.label)}</button>`;
-                })
-                .join("")}
-            </div>
-          </div>
+          ${levelTrack(next)}
           <details class="grade-filter-details"${currentLevel !== "all" ? " open" : ""}>
             <summary class="grade-filter-summary">Referencia por curso escolar (opcional)</summary>
             <div class="route-filter-row">
@@ -717,10 +725,6 @@ function route() {
       </div>
 
       <aside class="stack">
-        <section class="card reminder-card">
-          <div class="mini-label">RECORDATORIO DIARIO</div>
-          <div id="reminder-body"><p class="muted">Cargando…</p></div>
-        </section>
         <section class="card duo-side-progress">
           <div class="mini-label">ASÍ VAS AVANZANDO</div>
           <div class="stat">${activeCompleted().length}<span class="muted"> / ${lessons.length}</span></div>
@@ -746,6 +750,30 @@ ${bothSubjects ? `<div class="subject-progress-grid">
             <span class="crown-icon">👑</span>
             <span><strong>${activeMastered().length}</strong> habilidades con dominio confirmado</span>
           </div>
+        </section>
+
+        <section class="card">
+          <div class="mini-icon">↺</div>
+          <h3>Recordar también es aprender.</h3>
+          <p class="muted">${dueCount ? `Tienes ${dueCount} repaso${dueCount > 1 ? "s" : ""} listo${dueCount > 1 ? "s" : ""}.` : "Tus repasos espaciados recuperan lo que necesitas practicar. Sin empezar de cero."}</p>
+          ${button("Ver mis repasos →", "go:repaso", dueCount ? "primary" : "")}
+        </section>
+
+        <section class="card duo-side-quest">
+          <div class="mini-label">MISIÓN DEL DÍA</div>
+          <div class="duo-quest-row">
+            <span class="quest-icon">✍️</span>
+            <div>
+              <strong>Resuelve a mano en tu cuaderno</strong>
+              <p class="muted">Sube una foto de tu procedimiento para afianzar el aprendizaje.</p>
+            </div>
+          </div>
+          <button class="secondary" data-action="go:cuaderno" style="width:100%;margin-top:10px;">Ver mi cuaderno (${notesCount}) →</button>
+        </section>
+
+        <section class="card reminder-card">
+          <div class="mini-label">RECORDATORIO DIARIO</div>
+          <div id="reminder-body"><p class="muted">Cargando…</p></div>
         </section>
 
         ${fullRewards() ? `<section class="card duo-side-rewards duo-side-habitribu">
@@ -778,32 +806,33 @@ ${bothSubjects ? `<div class="subject-progress-grid">
           <button class="secondary" data-action="parent-report" style="width:100%;margin-top:10px;">Ver reporte para papás →</button>
         </section>
 
-        <section class="card duo-side-quest">
-          <div class="mini-label">MISIÓN DEL DÍA</div>
-          <div class="duo-quest-row">
-            <span class="quest-icon">✍️</span>
-            <div>
-              <strong>Resuelve a mano en tu cuaderno</strong>
-              <p class="muted">Sube una foto de tu procedimiento para afianzar el aprendizaje.</p>
-            </div>
-          </div>
-          <button class="secondary" data-action="go:cuaderno" style="width:100%;margin-top:10px;">Ver mi cuaderno (${notesCount}) →</button>
-        </section>
-
-        <section class="card">
-          <div class="mini-icon">↺</div>
-          <h3>Recordar también es aprender.</h3>
-          <p class="muted">Tus repasos espaciados recuperan lo que necesitas practicar. Sin empezar de cero.</p>
-          ${button("Ver mis repasos →", "go:repaso")}
-        </section>
-
         <div class="callout">
           ✧ <strong>Aquí las pistas cuentan como ayuda, no como errores.</strong> El dominio se confirma cuando resuelves sin ellas en un repaso posterior.
         </div>
       </aside>
-    </div>`;
+    </div>
+    ${
+      isFresh()
+        ? ""
+        : `<div class="continue-bar" id="continue-bar" hidden><span class="continue-bar-label">Continúa donde quedaste</span><strong>${escape(displayTitle(next))}</strong>${button("Continuar →", "lesson:" + next.id, "primary")}</div>`
+    }`;
   hydrateReminderCard($("#reminder-body"), account);
   hydrateCoach();
+  watchContinueBar();
+}
+// La barra «Continúa donde quedaste» aparece cuando la tarjeta del paso
+// siguiente sale de la pantalla, para no repetir el mismo botón a la vista.
+let continueObserver = null;
+function watchContinueBar() {
+  continueObserver?.disconnect();
+  continueObserver = null;
+  const bar = $("#continue-bar"),
+    card = $("#next-step");
+  if (!bar || !card || typeof IntersectionObserver !== "function") return;
+  continueObserver = new IntersectionObserver(([entry]) => {
+    bar.hidden = entry.isIntersecting;
+  });
+  continueObserver.observe(card);
 }
 
 // Frase de ánimo del día: el búho mira el avance (solo números y títulos) y
@@ -828,16 +857,58 @@ function cachedCoach() {
     return null;
   }
 }
-// `next`: lección para seguir de inmediato, cuando ninguna otra tarjeta la ofrece.
-function coachCard(next) {
+// Quien todavía no practica nada parte con el calentamiento.
+const isFresh = () => !state.attempts.length && !state.diagnosed && !state.completed.length;
+// Un solo paso siguiente arriba de la ruta: el búho, la lección que toca y,
+// en segundo plano, el diagnóstico para quien no sabe por dónde seguir.
+function nextStepCard(next) {
   const message = cachedCoach()?.message || localEncouragement(coachSummary());
-  return `<section class="coach-card" aria-labelledby="coach-title">
-    <img class="coach-owl-img" src="buho-saluda.webp" alt="" width="78" height="96" />
-    <div>
-      <h2 id="coach-title" class="mini-label">EL BÚHO TE DICE</h2>
-      <p id="coach-message">${escape(message)}</p>
-      <div class="coach-actions">${speakButton("coach", "Escuchar")}${next ? button(`Continuar: ${escape(displayTitle(next))} →`, "lesson:" + next.id, "primary") : ""}</div>
+  const fresh = isFresh();
+  const diagnosticSize = DIAGNOSTIC_BASE.length + MAX_PER_SUBJECT * ACTIVE_SUBJECTS.length;
+  // Tras el calentamiento, el paso siguiente es ubicarse con el diagnóstico.
+  const placeFirst = !fresh && !state.diagnosed && !state.completed.length;
+  const unit = getUnitsForLessons(lessons).find((u) => u.lessons.some((l) => l.id === next.id));
+  const meta = unit
+    ? [
+        `${unitLevel(unit).label} · Lección ${unit.lessons.findIndex((l) => l.id === next.id) + 1} de ${unit.lessons.length}`,
+        next.video ? "video corto" : "",
+        getSubject(next) !== "lenguaje" ? `hoja de ${SHEET_SIZE} ejercicios` : "",
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : "";
+  return `<section class="next-step" id="next-step" aria-labelledby="next-step-title">
+    <div class="next-step-main">
+      <img class="next-step-owl" src="buho-saluda.webp" alt="" width="96" height="118" />
+      <div class="next-step-body">
+        <p class="next-step-bubble" id="coach-message">${escape(message)}</p>
+        <h2 id="next-step-title">${
+          fresh ? "Empecemos con algo fácil." : placeFirst ? "¿Por dónde te conviene seguir?" : `Sigue con «${escape(displayTitle(next))}».`
+        }</h2>
+        <p class="next-step-meta">${
+          fresh
+            ? "Dos preguntas cortas para entrar en calor · sin notas y sin apuro"
+            : placeFirst
+              ? `${diagnosticSize} preguntas cortas, primero de base y después de tu curso · 5 min · no es una prueba: puedes saltar las que no sepas`
+              : escape(meta)
+        }</p>
+        <div class="next-step-actions">
+          ${
+            fresh
+              ? button("Empezar →", "warmup", "primary")
+              : placeFirst
+                ? button("Buscar mi punto de partida →", "diagnostic", "primary") + button(`O sigue con «${escape(displayTitle(next))}»`, "lesson:" + next.id, "link-button")
+                : button("Continuar lección →", "lesson:" + next.id, "primary")
+          }
+          ${speakButton("coach", "Escuchar")}
+        </div>
+      </div>
     </div>
+    ${
+      fresh || placeFirst || state.diagnosed
+        ? ""
+        : `<div class="next-step-foot"><span>¿No sabes por dónde seguir? <strong>Busca tu punto de partida</strong> · ${diagnosticSize} preguntas, 5 min</span>${button("Hacer diagnóstico →", "diagnostic", "link-button")}</div>`
+    }
   </section>`;
 }
 let coachAsking = false;
@@ -2516,6 +2587,9 @@ app.addEventListener("click", (e) => {
     route();
   } else if (action === "kumon-level") {
     currentKumonLevel = id;
+    route();
+  } else if (action === "more-units") {
+    showAllUnits = true;
     route();
   } else if (action === "route-view") {
     routeView = id === "list" ? "list" : "path";

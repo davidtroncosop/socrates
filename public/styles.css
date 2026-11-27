@@ -5791,7 +5791,7 @@ dialog::backdrop {
   }
 }
 
-/* Vista de lista de la ruta (alternativa al camino) */
+/* ── Mi ruta: un paso siguiente, barra de niveles y lista por unidad ───────── */
 .section-title {
   flex-wrap: wrap;
   gap: 8px 14px;
@@ -5801,29 +5801,140 @@ dialog::backdrop {
   gap: 6px;
   margin-left: auto;
 }
-.coach-actions {
+
+/* Tarjeta única del paso siguiente */
+.next-step {
+  margin-bottom: 20px;
+  border-radius: 20px;
+  background: #fff7e0;
+  border: 1px solid #fde7a6;
+  overflow: hidden;
+}
+.next-step-main {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 22px 24px;
+}
+.next-step-owl {
+  flex: none;
+  width: 96px;
+  height: auto;
+}
+.next-step-body {
+  min-width: 0;
+}
+.next-step-bubble {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 14px;
+  box-shadow: 0 1px 2px rgba(37, 35, 84, 0.08);
+}
+.next-step h2 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.2;
+}
+.next-step-meta {
+  margin: 6px 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.next-step-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  margin-top: 8px;
 }
+.next-step-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 16px;
+  padding: 12px 24px;
+  border-top: 1px solid #fde7a6;
+  font-size: 14px;
+}
+.next-step-foot .link-button {
+  padding: 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Barra de niveles con avance */
+.level-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(34px, 1fr));
+  gap: 6px;
+}
+.level-seg {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.level-seg-bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+.level-seg-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+}
+.level-seg.here,
+.level-seg.active {
+  color: var(--blue-deep);
+}
+.level-seg.here .level-seg-bar {
+  box-shadow: 0 0 0 2px var(--blue-display);
+}
+.level-seg.active .level-seg-code {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.level-where {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.level-where .link-button {
+  padding: 0;
+}
+
+/* Lista por unidad */
 .route-list {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 .route-list-unit {
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--surface);
   overflow: hidden;
 }
 .route-list-unit > summary {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
+  gap: 14px;
+  padding: 16px 20px;
   cursor: pointer;
   list-style: none;
 }
@@ -5831,105 +5942,230 @@ dialog::backdrop {
   display: none;
 }
 .route-list-unit > summary::after {
-  content: "▾";
-  grid-column: 4;
+  content: "+";
+  font-size: 20px;
   color: var(--muted);
-  transition: transform 0.15s;
 }
 .route-list-unit[open] > summary::after {
-  transform: rotate(180deg);
+  content: "−";
 }
-.route-list-unit[open] > summary {
-  border-bottom: 1px solid var(--line);
-}
-.route-list-level {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--blue-deep);
-  background: var(--surface-tint);
-  border-radius: 999px;
-  padding: 4px 10px;
-  white-space: nowrap;
-}
-.route-list-title {
-  font-weight: 700;
-  min-width: 0;
-}
-.route-list-progress {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  white-space: nowrap;
-}
-.route-list-progress .bar {
-  width: 70px;
-}
-.route-list-rows {
-  list-style: none;
-  margin: 0;
-  padding: 6px 0;
-}
-.route-row {
+.route-list-letter {
   display: grid;
-  grid-template-columns: 28px 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 18px;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--surface-tint);
+  color: var(--blue-deep);
+  font-weight: 800;
+  font-size: 20px;
 }
-.route-row + .route-row {
-  border-top: 1px solid var(--surface-tint);
-}
-.route-row-next {
-  background: var(--coral-soft);
-}
-.route-row-icon {
-  text-align: center;
-  font-size: 16px;
-}
-.route-row-done .route-row-icon {
-  color: #1f8a4c;
-  font-weight: 700;
-}
-.route-row-text {
+.route-list-head {
   display: grid;
   gap: 2px;
   min-width: 0;
 }
-.route-row-text small {
+.route-list-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.route-list-title {
+  font-weight: 800;
+  font-size: 18px;
+}
+.route-list-progress {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.route-list-progress .bar {
+  width: 120px;
+}
+.route-list-info {
+  padding: 0 20px;
+}
+.route-list-info p {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+.route-list-info .link-button {
+  padding: 0;
+  font-size: 14px;
+}
+.route-cells {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 12px 20px 20px;
+  list-style: none;
+}
+.route-cell {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.route-cell-mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  font-weight: 700;
+  color: var(--muted);
+}
+.route-cell-done .route-cell-mark {
+  border-color: #1f8a4c;
+  background: #1f8a4c;
+  color: #fff;
+}
+.route-cell-next {
+  border-color: #f9c3ad;
+  background: var(--coral-soft);
+}
+.route-cell-next .route-cell-mark {
+  border-color: var(--coral);
+  background: var(--coral);
+  color: #fff;
+}
+.route-cell-locked {
+  opacity: 0.6;
+}
+.route-cell-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.route-cell-text strong {
+  line-height: 1.25;
+}
+.route-cell-text small {
   color: var(--muted);
   font-size: 13px;
 }
-.route-row-actions {
-  display: flex;
-  gap: 6px;
-}
-.route-list-guide {
-  margin: 4px 18px 14px;
-}
-@media (max-width: 640px) {
-  .route-list-unit > summary {
-    grid-template-columns: 1fr auto;
-    padding: 12px 14px;
-  }
-  .route-list-level {
-    grid-column: 1 / -1;
-    justify-self: start;
-  }
-  .route-list-unit > summary::after {
-    grid-column: auto;
-  }
-  .route-row {
-    grid-template-columns: 24px 1fr;
-    padding: 10px 14px;
-  }
-  .route-row-actions {
-    grid-column: 2;
-  }
-}
-.route-row-actions .duo-card-btn {
+.route-cell-btn {
+  padding: 8px 14px;
   white-space: nowrap;
-  width: auto;
+}
+.route-cell-link {
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.route-cell-done .route-cell-link {
+  color: #1f8a4c;
+}
+.route-cell-state {
+  font-size: 12px;
+  color: var(--muted);
+}
+.route-list-more {
+  justify-self: center;
+}
+
+/* Barra flotante para seguir */
+.continue-bar {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: min(560px, calc(100vw - 48px));
+  padding: 10px 10px 10px 20px;
+  border-radius: 16px;
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(37, 35, 84, 0.3);
+}
+.continue-bar-label {
+  color: #c9c8e6;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.continue-bar strong {
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.continue-bar .primary {
+  flex: none;
+  background: var(--coral);
+  border-color: var(--coral);
+}
+
+/* Columna lateral fija arriba y con scroll propio */
+@media (min-width: 881px) {
+  .dashboard > .stack {
+    align-self: start;
+    top: 20px;
+    bottom: auto;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+@media (max-width: 640px) {
+  .next-step-main {
+    align-items: flex-start;
+    padding: 18px;
+    gap: 14px;
+  }
+  .next-step-owl {
+    width: 64px;
+  }
+  .next-step h2 {
+    font-size: 21px;
+  }
+  .next-step-foot {
+    padding: 12px 18px;
+  }
+  .route-list-unit > summary {
+    grid-template-columns: auto 1fr auto;
+    padding: 14px 16px;
+  }
+  .route-list-progress {
+    grid-column: 2 / 3;
+    justify-items: start;
+  }
+  .route-list-progress .bar {
+    width: 100%;
+  }
+  .route-list-info {
+    padding: 0 16px;
+  }
+  .route-cells {
+    padding: 12px 16px 16px;
+    grid-template-columns: 1fr;
+  }
+  .continue-bar {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    max-width: none;
+  }
+  .continue-bar-label {
+    display: none;
+  }
+}
+.next-step-actions .link-button {
+  padding: 0;
+  font-size: 14px;
 }

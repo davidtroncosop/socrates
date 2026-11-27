@@ -13,7 +13,9 @@ const correctText = (q) =>
   q[0].split("\n").find((line) => line.startsWith(q[1] + ". ")).slice(3);
 const lessonById = (id) => catalogLessons.find((l) => l.id === id);
 // Lightweight DOM adapter for exercising real app handlers; visual QA remains separate.
-async function harness(saved, { session, key = "socatres.v1", fetch, catalog, subjects = ["matematica", "lenguaje"], photoRequired = false } = {}) {
+// Las pruebas de la ruta revisan la vista de camino; la lista tiene las suyas
+// (routeView: "list").
+async function harness(saved, { session, key = "socatres.v1", fetch, catalog, subjects = ["matematica", "lenguaje"], photoRequired = false, routeView = "path" } = {}) {
   ACTIVE_SUBJECTS.splice(0, ACTIVE_SUBJECTS.length, ...subjects);
   // La foto obligatoria tiene sus propias pruebas; el resto responde sin ella.
   WORK_PHOTO.required = photoRequired;
@@ -48,6 +50,7 @@ async function harness(saved, { session, key = "socatres.v1", fetch, catalog, su
     storage.set("socatres.catalog.updatedAt", "1");
   }
   if (session) storage.set("socatres.demo-session.v1", JSON.stringify(session));
+  if (routeView) storage.set("socatres.routeView", routeView);
   globalThis.localStorage = {
     getItem: (k) => storage.get(k) || null,
     setItem: (k, v) => storage.set(k, v),
@@ -1108,7 +1111,7 @@ test("with an account the owl answers the summary and question, and both stay in
 
 test("the home page has the owl's encouragement: local without an account, from the AI once a day with one", async () => {
   const local = await harness({ version: 1, diagnosed: true, completed: ["equations"], mastered: [], attempts: [], notes: [], reviews: [] });
-  assert.match(local.node("#app").innerHTML, /EL BÚHO TE DICE/);
+  assert.match(local.node("#app").innerHTML, /id="next-step"[\s\S]*id="coach-message"/);
 
   let asked = 0;
   const fetch = async (path, init = {}) => {
@@ -1240,4 +1243,49 @@ test("Kumon fluency sheets: 8 exercises, 100% self-correction, silent SCT, print
   assert.equal(saved.sheets.equations.level, 1);
   assert.equal(saved.sheets.equations.count, 1);
   assert.equal(saved.sheets.equations.lastAccuracy, 88);
+});
+
+test("la ruta parte en la vista de lista: un paso siguiente, niveles con avance y solo la unidad actual abierta", async () => {
+  const h = await harness(
+    { version: 1, diagnosed: true, completed: ["base-valor-posicional", "base-redondeo"], mastered: [], attempts: [], notes: [], reviews: [] },
+    { routeView: null, subjects: ["matematica"] },
+  );
+  let html = h.node("#app").innerHTML;
+  // Un solo llamado arriba, con la lección que sigue y su lugar en la unidad.
+  assert.match(html, /id="next-step"/);
+  assert.match(html, /Sigue con «Sumar y restar con canje»/);
+  assert.match(html, /Nivel A · Lección 3 de 22/);
+  assert.equal(html.match(/data-action="lesson:base-suma-resta"/g).length, 3, "tarjeta, lista y barra flotante");
+  assert.doesNotMatch(html, /¡EMPEZAR!/, "sin la burbuja del camino");
+  // Barra de niveles: un tramo por unidad, con el nivel actual marcado.
+  assert.match(html, /class="level-seg here"[^>]*data-action="kumon-level:A"/);
+  assert.match(html, /Estás en el <strong>Nivel A<\/strong>/);
+  // Lista: la unidad actual abierta, las siguientes cerradas y el resto tras un botón.
+  assert.match(html, /<details class="route-list-unit theme-cyan" open>/);
+  assert.match(html, /route-cell-done[\s\S]*Hecha · practicar/);
+  assert.match(html, /route-cell-next[\s\S]*data-action="lesson:base-suma-resta">Seguir/);
+  assert.match(html, /<details class="route-list-unit [^"]+" hidden>/);
+  assert.match(html, /data-action="more-units">Ver los \d+ niveles siguientes \(D – O\)/);
+  // Las etiquetas comunes van una vez, en el encabezado de la unidad.
+  assert.match(html, /Cada lección: idea clave, ejemplo y ejercicios · hoja de 8 para practicar/);
+  assert.match(html, /id="continue-bar" hidden/);
+  h.click("more-units");
+  html = h.node("#app").innerHTML;
+  assert.doesNotMatch(html, /<details[^>]* hidden>/);
+  assert.doesNotMatch(html, /more-units/);
+  // El camino sigue disponible y se recuerda.
+  h.click("route-view:path");
+  assert.match(h.node("#app").innerHTML, /duo-winding-path/);
+  assert.equal(h.storage.get("socatres.routeView"), "path");
+});
+
+test("tras el calentamiento la tarjeta propone el diagnóstico; con avance, lo deja como opción", async () => {
+  const warmed = await harness({ version: 1, completed: [], mastered: [], attempts: [{ lesson: "base-suma-resta", correct: true, hints: 0, at: 1 }], notes: [], reviews: [] }, { routeView: null });
+  let html = warmed.node("#app").innerHTML;
+  assert.match(html, /¿Por dónde te conviene seguir\?[\s\S]*data-action="diagnostic"/);
+  assert.match(html, /O sigue con «/);
+  const going = await harness({ version: 1, completed: ["base-valor-posicional"], mastered: [], attempts: [], notes: [], reviews: [] }, { routeView: null });
+  html = going.node("#app").innerHTML;
+  assert.match(html, /Continuar lección →/);
+  assert.match(html, /next-step-foot[\s\S]*Hacer diagnóstico →/);
 });
