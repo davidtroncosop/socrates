@@ -59,4 +59,6 @@ export const api = {
   encourage: (data) => request("POST", "/api/coach/encouragement", data),
   catalog: () => request("GET", "/api/catalog"),
   publishCatalog: (catalog) => request("PUT", "/api/catalog", { catalog }),
+  submitInquiry: (data) => request("POST", "/api/inquiries", data),
+  inquiries: () => request("GET", "/api/inquiries"),
 };

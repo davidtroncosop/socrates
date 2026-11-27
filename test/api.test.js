@@ -631,3 +631,99 @@ test("router hardening: constant-time equality, content-type parsing, malformed 
   assert.ok(pending.length >= 1, "expired session cleanup is scheduled via waitUntil");
   await Promise.all(pending);
 });
+
+test("school pilot inquiries validate, block spam honeypot, notify linked admin on Telegram and require admin to list", async () => {
+  const sentMessages = [];
+  const mockFetch = async (_url, opts) => {
+    sentMessages.push(JSON.parse(opts.body));
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  };
+  const e = env({ TELEGRAM_BOT_TOKEN: "test-bot-token", fetch: mockFetch });
+  const anon = client(e);
+  const regular = client(e);
+  const admin = client(e);
+
+  await parent(regular, "Apoderado", "apoderado@socatres.cl");
+  const adminReg = await parent(admin, "David Admin", "admin@socatres.cl");
+  // Vincula Telegram del admin en D1 para verificar el aviso instantáneo.
+  e.DB.raw
+    .prepare(
+      "INSERT INTO telegram_links (user_id, chat_id, remind_hour, time_zone, daily_enabled, weekly_enabled, created_at) VALUES (?, ?, 18, 'America/Santiago', 1, 1, ?)",
+    )
+    .run(adminReg.body.user.id, "999000111", Date.now());
+
+  // Validaciones básicas.
+  assert.equal(
+    (await anon.call("POST", "/api/inquiries", { name: "", organization: "Escuela Sur", email: "utp@colegio.cl" })).status,
+    400,
+  );
+  assert.equal(
+    (await anon.call("POST", "/api/inquiries", { name: "Camila", organization: "", email: "utp@colegio.cl" })).status,
+    400,
+  );
+  assert.equal(
+    (await anon.call("POST", "/api/inquiries", { name: "Camila", organization: "Escuela Sur", email: "malo" })).status,
+    400,
+  );
+  assert.equal(
+    (await anon.call("POST", "/api/inquiries", { name: "Camila", organization: "Escuela Sur", email: "utp@colegio.cl", message: "x".repeat(801) })).status,
+    400,
+  );
+
+  // Honeypot lleno responde 201 pero no guarda ni avisa.
+  const bot = await anon.call(
+    "POST",
+    "/api/inquiries",
+    { name: "Bot", organization: "Spam", email: "bot@spam.cl", website: "https://spam.example" },
+    { "cf-connecting-ip": "10.0.0.1" },
+  );
+  assert.equal(bot.status, 201);
+  assert.equal(e.DB.raw.prepare("SELECT COUNT(*) AS n FROM school_inquiries").get().n, 0);
+  assert.equal(sentMessages.length, 0);
+
+  // Envío real se guarda y notifica al admin vinculado en Telegram.
+  const ok = await anon.call(
+    "POST",
+    "/api/inquiries",
+    {
+      name: "Camila Rojas · Coord. PIE",
+      organization: "Escuela Gabriela Mistral, Temuco",
+      email: "CROJAS@colegio.cl",
+      message: "Queremos pilotear con 45 estudiantes de 5° y 6° básico.",
+    },
+    { "cf-connecting-ip": "10.0.0.2" },
+  );
+  assert.equal(ok.status, 201);
+  assert.equal(ok.body.ok, true);
+  assert.equal(sentMessages.length, 1);
+  assert.equal(sentMessages[0].chat_id, "999000111");
+  assert.match(sentMessages[0].text, /Escuela Gabriela Mistral, Temuco/);
+  assert.match(sentMessages[0].text, /crojas@colegio\.cl/);
+
+  // Listar solicitudes exige sesión de administrador.
+  assert.equal((await anon.call("GET", "/api/inquiries")).status, 401);
+  assert.equal((await regular.call("GET", "/api/inquiries")).status, 403);
+  const list = await admin.call("GET", "/api/inquiries");
+  assert.equal(list.status, 200);
+  assert.equal(list.body.inquiries.length, 1);
+  assert.equal(list.body.inquiries[0].email, "crojas@colegio.cl");
+  assert.equal(list.body.inquiries[0].organization, "Escuela Gabriela Mistral, Temuco");
+
+  // Límite de tasa por IP (5 por hora -> 6to intento da 429).
+  for (let i = 0; i < 4; i++) {
+    const r = await anon.call(
+      "POST",
+      "/api/inquiries",
+      { name: `Docente ${i}`, organization: "Liceo Norte", email: `d${i}@liceo.cl` },
+      { "cf-connecting-ip": "10.0.0.2" },
+    );
+    assert.equal(r.status, 201);
+  }
+  const throttled = await anon.call(
+    "POST",
+    "/api/inquiries",
+    { name: "Extra", organization: "Liceo Norte", email: "extra@liceo.cl" },
+    { "cf-connecting-ip": "10.0.0.2" },
+  );
+  assert.equal(throttled.status, 429);
+});

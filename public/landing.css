@@ -130,7 +130,7 @@ a:focus-visible {
 
 .nav nav {
   display: flex;
-  gap: 32px;
+  gap: 26px;
   font-size: 15px;
   font-weight: 600;
   color: var(--ink);
@@ -941,10 +941,63 @@ h3 {
 }
 
 .trust-note a,
-.faq .section-heading a {
+.faq .section-heading a,
+.maker-meta a,
+.school-alt a {
   color: var(--blue-ui);
   font-weight: 700;
   border-bottom: 1.5px solid currentColor;
+}
+
+.maker-strip {
+  grid-column: 1 / -1;
+  margin-top: 12px;
+  padding: 28px 32px;
+  border-radius: 20px;
+  background: var(--surface-tint);
+  border: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  gap: 24px 30px;
+  align-items: center;
+}
+
+.maker-owl {
+  display: block;
+  width: 92px;
+  height: auto;
+}
+
+.maker-copy h3 {
+  font-size: 21px;
+  margin: 0 0 8px;
+}
+
+.maker-copy p:last-child {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--muted);
+  max-width: 58ch;
+  text-wrap: pretty;
+}
+
+.maker-meta {
+  display: grid;
+  gap: 7px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  justify-items: start;
+}
+
+.maker-meta span {
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .faq-owl {
@@ -1133,67 +1186,200 @@ h3 {
   text-align: center;
 }
 
-/* Bloque Colegios / Sostenedores / PIE — índigo profundo + acento mostaza */
-.school-strip {
-  margin-top: 28px;
-  padding: 28px 34px;
-  border-radius: 20px;
+/* Bloque Colegios / Sostenedores / PIE — sección índigo con formulario real de piloto */
+.school-band {
+  margin-top: 40px;
+  scroll-margin-top: 28px;
+  padding: 40px;
+  border-radius: 24px;
   background: var(--ink);
   color: #ffffff;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.04fr 0.96fr;
+  gap: 40px;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
 }
 
-.school-left {
+.school-band > * {
+  min-width: 0;
+}
+
+.school-badge-row {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
 .school-medallion {
   display: inline-flex;
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   flex-shrink: 0;
 }
 
-.school-head strong {
-  font-size: 19px;
+.school-eyebrow {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.school-pitch h3 {
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin: 0 0 16px;
+  text-wrap: balance;
+}
+
+.school-lead {
+  margin: 0 0 26px;
+  font-size: 16px;
+  line-height: 1.62;
+  color: #dcdfee;
+  max-width: 48ch;
+  text-wrap: pretty;
+}
+
+.school-price {
+  color: var(--gold);
+}
+
+.school-points {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.school-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #dcdfee;
+}
+
+.school-points li span {
+  color: var(--gold);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.school-points strong {
   color: #ffffff;
 }
 
-.school-strip .school-price {
-  color: var(--gold);
-  font-size: inherit;
+.school-form-card {
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 20px 44px rgba(13, 12, 34, 0.28);
 }
 
-.school-strip p {
-  margin: 6px 0 0;
-  font-size: 15px;
-  color: #dcdfee;
-  max-width: 58ch;
-  line-height: 1.55;
-}
-
-.school-link {
-  font-size: 15px;
+.school-form-card h4 {
+  margin: 0 0 6px;
+  font-size: 21px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
   font-weight: 800;
-  color: var(--gold-ink);
-  padding: 13px 24px;
-  min-height: 48px;
-  display: inline-flex;
-  align-items: center;
-  background: var(--gold);
-  border-radius: 999px;
-  white-space: nowrap;
-  transition: background-color 180ms ease;
+  color: var(--ink);
 }
 
-.school-link:hover {
-  background: #f9d166;
+.school-form-sub {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.school-form {
+  display: grid;
+  gap: 6px;
+}
+
+.school-form label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: 6px;
+}
+
+.school-form label .opt {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.school-form input,
+.school-form textarea {
+  font: inherit;
+  font-size: 15px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  width: 100%;
+}
+
+.school-form textarea {
+  resize: vertical;
+  min-height: 68px;
+  line-height: 1.48;
+}
+
+.school-form input:focus-visible,
+.school-form textarea:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 1px;
+}
+
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.school-submit {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.school-submit[disabled] {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.school-status {
+  margin: 8px 0 0;
+  min-height: 1.2em;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.48;
+}
+
+.school-status.ok {
+  color: #166534;
+}
+
+.school-status.err {
+  color: #a02727;
+}
+
+.school-alt {
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #ebeff7;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
 }
 
 /* 5. Preguntas frecuentes */
@@ -1799,8 +1985,27 @@ dialog .primary {
     inset: 0;
     border-radius: 24px;
   }
+  .nav nav {
+    gap: 18px;
+    font-size: 14px;
+  }
   .eco-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .maker-strip {
+    grid-template-columns: 82px 1fr;
+  }
+  .maker-meta {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    align-items: center;
+  }
+  .school-band {
+    grid-template-columns: 1fr;
+    padding: 32px 28px;
+    gap: 28px;
   }
   .faq {
     gap: 40px;
@@ -1828,8 +2033,8 @@ dialog .primary {
   .plan-card {
     padding: 26px;
   }
-  .school-strip {
-    padding: 24px;
+  .school-band {
+    padding: 26px 22px;
   }
 }
 
@@ -1917,12 +2122,20 @@ dialog .primary {
   .faq {
     grid-template-columns: 1fr;
   }
-  .school-left {
-    align-items: flex-start;
+  .maker-strip {
+    grid-template-columns: 1fr;
+    padding: 22px 20px;
+    gap: 16px;
   }
-  .school-link {
-    white-space: normal;
-    text-align: center;
+  .maker-owl {
+    width: 72px;
+  }
+  .school-band {
+    padding: 24px 18px;
+    border-radius: 20px;
+  }
+  .school-form-card {
+    padding: 22px 18px;
   }
   .faq {
     gap: 28px;

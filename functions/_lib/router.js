@@ -17,6 +17,7 @@ import {
   unlinkTelegram,
   handleTelegramWebhook,
   notifyParentRewardClaim,
+  notifySchoolInquiry,
 } from "./telegram.js";
 import { readReviewRequest, reviewWork, ReviewError, MAX_IMAGE } from "./work-review.js";
 import { readReflectionRequest, reflect, readEncouragementRequest, encourage } from "./coach.js";
@@ -308,6 +309,7 @@ const LIMITS = {
   encouragement: [4, 24 * 60 * 60_000],
   coachAll: [5000, 24 * 60 * 60_000],
   telegramLink: [15, 15 * 60_000],
+  inquiry: [5, 60 * 60_000],
 };
 const clientIp = (request) => request.headers.get("cf-connecting-ip") || "local";
 async function limit(env, kind, who, message = "Demasiados intentos. Espera unos minutos y vuelve a probar.", waitUntil) {
@@ -807,6 +809,59 @@ const routes = {
       .run();
     return json({ catalog, updatedAt });
   },
+
+  // Solicitudes de colegios, sostenedores y equipos PIE -------------------------
+  async "POST /api/inquiries"({ request, env, waitUntil }) {
+    await limit(
+      env,
+      "inquiry",
+      clientIp(request),
+      "Ya recibimos varias solicitudes desde tu conexión. Escríbenos a davidtroncosop@gmail.com o inténtalo más tarde.",
+      waitUntil,
+    );
+    const body = await readJson(request);
+    // Campo trampa invisible: frena bots sin delatar la validación.
+    if (String(body.website || "").trim()) return json({ ok: true }, 201);
+    const name = cleanName(body.name, "tu nombre y cargo", 80);
+    const organization = cleanName(body.organization, "el establecimiento o comuna", 120);
+    const email = cleanEmail(body.email);
+    const rawMessage = String(body.message || "").trim().replace(/\s+/g, " ");
+    if (rawMessage.length > 800) fail(400, "El mensaje es muy largo (máximo 800 caracteres).");
+    const inquiry = {
+      id: crypto.randomUUID(),
+      name,
+      organization,
+      email,
+      message: rawMessage,
+      createdAt: Date.now(),
+    };
+    await env.DB.prepare(
+      "INSERT INTO school_inquiries (id, name, organization, email, message, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+    )
+      .bind(inquiry.id, inquiry.name, inquiry.organization, inquiry.email, inquiry.message, inquiry.createdAt)
+      .run();
+    if (env.TELEGRAM_BOT_TOKEN) {
+      await runBackground(
+        waitUntil,
+        (async () => {
+          const { results } = await env.DB.prepare(
+            "SELECT u.id, u.email, t.chat_id FROM telegram_links t JOIN users u ON u.id = t.user_id",
+          ).all();
+          const chatIds = results.filter((row) => isAdmin(env, row)).map((row) => row.chat_id);
+          await notifySchoolInquiry(env, chatIds, inquiry);
+        })(),
+      );
+    }
+    return json({ ok: true, id: inquiry.id }, 201);
+  },
+
+  async "GET /api/inquiries"({ env, user }) {
+    if (!isAdmin(env, user)) fail(403, "Solo la administración puede ver las solicitudes.");
+    const { results } = await env.DB.prepare(
+      "SELECT id, name, organization, email, message, created_at AS createdAt FROM school_inquiries ORDER BY created_at DESC LIMIT 100",
+    ).all();
+    return json({ inquiries: results });
+  },
 };
 
 // «photo»: la foto obligatoria frenó la respuesta; «game»: terminó el minijuego; «sheet»: completó una hoja al 100 %.
@@ -814,6 +869,7 @@ const METRIC_KINDS = ["correct", "wrong", "hint", "revealed", "photo", "game", "
 
 const PUBLIC = new Set([
   "POST /api/metrics",
+  "POST /api/inquiries",
   "POST /api/auth/register",
   "POST /api/auth/login",
   "POST /api/auth/recover",

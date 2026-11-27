@@ -52,7 +52,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
     pending = null;
     dirty = false;
     const catalog = getCatalog();
-    app.innerHTML = `<div class="eyebrow">ESTUDIO DE CONTENIDO</div><h1>Lo que enseñas empieza aquí.</h1><p class="intro">Crea lecciones, prepara las pistas y decide cuándo están listas para tu ruta.</p><div class="callout">Catálogo central · Cada cambio que guardas se publica para todos los estudiantes. Las lecciones en borrador no se muestran. Exporta un respaldo JSON antes de cambios grandes.</div><div class="admin-toolbar"><button class="primary" data-admin="new">＋ Nueva lección</button><button data-admin="import">Subir CSV o JSON</button><button data-admin="export">Respaldo JSON</button><button data-admin="export-csv">Exportar CSV</button><button data-admin="template">Plantilla para Excel (CSV)</button><button data-admin="metrics">📊 Dónde se traban</button><input id="content-file" type="file" accept=".csv,.json,text/csv,application/json" hidden></div><div id="admin-message" role="status" class="feedback ${warning() ? "" : "good"}">${esc(warning() || notice)}</div><label for="import-mode">Al importar</label><select id="import-mode"><option value="add">Añadir lecciones nuevas como borradores</option><option value="replace">Restaurar catálogo: reemplazar el contenido actual</option></select><p class="muted">En Excel, guarda la plantilla como CSV UTF-8. Usa cuatro filas de tipo ejercicio (orden 1–4) y una de tipo repaso por lección. No se admiten archivos .xlsx directamente.</p><div id="import-preview"></div><div class="section-title"><h2>Biblioteca de lecciones</h2><span class="muted">${catalog.lessons.length} lecciones · ${catalog.lessons.filter((l) => l.status === "published").length} publicadas</span></div><label for="content-search">Buscar por título</label><input id="content-search" type="search" placeholder="Busca una lección…"><div id="content-list"></div>`;
+    app.innerHTML = `<div class="eyebrow">ESTUDIO DE CONTENIDO</div><h1>Lo que enseñas empieza aquí.</h1><p class="intro">Crea lecciones, prepara las pistas y decide cuándo están listas para tu ruta.</p><div class="callout">Catálogo central · Cada cambio que guardas se publica para todos los estudiantes. Las lecciones en borrador no se muestran. Exporta un respaldo JSON antes de cambios grandes.</div><div class="admin-toolbar"><button class="primary" data-admin="new">＋ Nueva lección</button><button data-admin="import">Subir CSV o JSON</button><button data-admin="export">Respaldo JSON</button><button data-admin="export-csv">Exportar CSV</button><button data-admin="template">Plantilla para Excel (CSV)</button><button data-admin="metrics">📊 Dónde se traban</button><button data-admin="inquiries">🏫 Solicitudes colegios</button><input id="content-file" type="file" accept=".csv,.json,text/csv,application/json" hidden></div><div id="admin-message" role="status" class="feedback ${warning() ? "" : "good"}">${esc(warning() || notice)}</div><label for="import-mode">Al importar</label><select id="import-mode"><option value="add">Añadir lecciones nuevas como borradores</option><option value="replace">Restaurar catálogo: reemplazar el contenido actual</option></select><p class="muted">En Excel, guarda la plantilla como CSV UTF-8. Usa cuatro filas de tipo ejercicio (orden 1–4) y una de tipo repaso por lección. No se admiten archivos .xlsx directamente.</p><div id="import-preview"></div><div class="section-title"><h2>Biblioteca de lecciones</h2><span class="muted">${catalog.lessons.length} lecciones · ${catalog.lessons.filter((l) => l.status === "published").length} publicadas</span></div><label for="content-search">Buscar por título</label><input id="content-search" type="search" placeholder="Busca una lección…"><div id="content-list"></div>`;
     list("");
     $("#content-search").oninput = (e) => list(e.target.value);
     $("#content-file").onchange = async (e) => {
@@ -209,6 +209,32 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
           .join("")}</tbody></table></div>`
       : `<p class="muted">Todavía no hay respuestas registradas.</p>`;
   }
+  async function inquiriesView() {
+    app.innerHTML = `<button class="back" data-admin="back">← Biblioteca de contenido</button><div class="eyebrow">COLEGIOS Y PIE</div><h1>Solicitudes de piloto</h1><p class="intro">Mensajes enviados desde la sección «Colegios y PIE» de la portada.</p><div id="inquiries-body" class="muted">Cargando…</div>`;
+    let data;
+    try {
+      const res = await fetch("/api/inquiries", { credentials: "same-origin" });
+      data = await res.json();
+      if (!res.ok) throw new Error(data.error || "No se pudieron cargar las solicitudes.");
+    } catch (err) {
+      const target = app.querySelector("#inquiries-body");
+      if (target) target.textContent = err.message;
+      return;
+    }
+    const target = app.querySelector("#inquiries-body");
+    if (!target) return;
+    const fmt = (ms) =>
+      new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeStyle: "short" }).format(new Date(ms));
+    const list = data.inquiries ?? [];
+    target.outerHTML = list.length
+      ? `<div class="table-scroll"><table class="metrics-table"><thead><tr><th>Fecha</th><th>Contacto</th><th>Establecimiento</th><th>Correo</th><th>Mensaje</th></tr></thead><tbody>${list
+          .map(
+            (q) =>
+              `<tr><td>${esc(fmt(q.createdAt))}</td><td>${esc(q.name)}</td><td>${esc(q.organization)}</td><td><a href="mailto:${esc(q.email)}">${esc(q.email)}</a></td><td>${esc(q.message || "—")}</td></tr>`,
+          )
+          .join("")}</tbody></table></div>`
+      : `<p class="muted">Todavía no hay solicitudes de colegios o equipos PIE.</p>`;
+  }
   async function handle(e) {
     const b = e.target.closest("[data-admin]");
     if (!b || b.disabled) return;
@@ -217,6 +243,7 @@ export function createAdmin({ app, getCatalog, commit, warning = () => "" }) {
     try {
       if (action === "new") editor(newLesson());
       else if (action === "metrics") await metricsView();
+      else if (action === "inquiries") await inquiriesView();
       else if (action === "edit")
         editor(getCatalog().lessons.find((l) => l.id === id));
       else if (action === "back") {

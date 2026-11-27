@@ -218,4 +218,8 @@ test("landing page reflects current Kumon + tutor value proposition, CLP pricing
   assert.match(html, /Kumon/i);
   assert.match(html, /Niveles neutros \(A–O\)/);
   assert.match(html, /125 minijuegos/);
+  assert.match(html, /id="colegios"/);
+  assert.match(html, /id="school-form"/);
+  assert.match(html, /buho-saluda\.webp/);
+  assert.match(html, /Quién hace socatres/);
 });

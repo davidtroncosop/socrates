@@ -636,3 +636,26 @@ export async function sendDueTelegram(env, now = Date.now(), fetchImpl = env?.fe
 
   return summary;
 }
+
+export async function notifySchoolInquiry(env, chatIds, inquiry, fetchImpl = env?.fetch ?? fetch) {
+  if (!env?.TELEGRAM_BOT_TOKEN || !Array.isArray(chatIds) || !chatIds.length) return 0;
+  const appUrl = appBaseUrl(env);
+  const text =
+    `🏫 <b>Nueva solicitud de colegio · socatres</b>\n\n` +
+    `<b>Contacto:</b> ${escapeHtml(inquiry.name)}\n` +
+    `<b>Establecimiento:</b> ${escapeHtml(inquiry.organization)}\n` +
+    `<b>Correo:</b> ${escapeHtml(inquiry.email)}` +
+    (inquiry.message ? `\n<b>Mensaje:</b> ${escapeHtml(inquiry.message)}` : "");
+  let sent = 0;
+  for (const chatId of chatIds) {
+    const res = await sendTelegramMessage(
+      env,
+      chatId,
+      text,
+      { buttonText: "Abrir panel ↗", buttonUrl: `${appUrl}/aprender#contenido` },
+      fetchImpl,
+    );
+    if (res.ok) sent++;
+  }
+  return sent;
+}

@@ -16,6 +16,11 @@ const SHELL = [
   "/favicon-32x32.png",
   "/logo-buho.png",
   "/icon-192.png",
+  "/buho-saluda.webp",
+  "/buho-duda.webp",
+  "/buho-lee.webp",
+  "/buho-rama.webp",
+  "/buho-asoma.webp",
   ...[
     "admin", "api", "app", "auth", "coach", "content", "csv", "curriculum", "daily",
     "dialogs", "family-view", "generators", "landing", "learning", "lesson-videos", "mistakes", "sheets", "subjects",

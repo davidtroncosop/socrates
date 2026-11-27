@@ -91,6 +91,54 @@ closingForm.onsubmit = (e) => {
   dialog.showModal();
   $("#register-name").focus();
 };
+
+// Solicitudes de piloto para colegios, sostenedores y equipos PIE.
+const schoolForm = $("#school-form");
+if (schoolForm) {
+  schoolForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const status = $("#school-status");
+    const button = schoolForm.querySelector('button[type="submit"]');
+    const data = Object.fromEntries(new FormData(schoolForm));
+    status.className = "school-status err";
+    if (!String(data.name || "").trim()) {
+      status.textContent = "Escribe tu nombre y cargo para saber a quién responder.";
+      $("#school-name").focus();
+      return;
+    }
+    if (!String(data.organization || "").trim()) {
+      status.textContent = "Indica el nombre del establecimiento o comuna.";
+      $("#school-org").focus();
+      return;
+    }
+    if (!$("#school-email").checkValidity()) {
+      status.textContent = "Escribe un correo válido, por ejemplo nombre@colegio.cl.";
+      $("#school-email").focus();
+      return;
+    }
+    status.textContent = "";
+    const original = button.innerHTML;
+    button.disabled = true;
+    button.textContent = "Enviando…";
+    try {
+      await api.submitInquiry(data);
+      schoolForm.reset();
+      status.className = "school-status ok";
+      status.textContent =
+        "¡Recibimos tu solicitud! Te responderemos a tu correo dentro de 48 horas hábiles.";
+    } catch (err) {
+      status.className = "school-status err";
+      status.textContent =
+        err.status === 0
+          ? "No pudimos enviar el formulario ahora. Escríbenos directo a davidtroncosop@gmail.com."
+          : err.message;
+    } finally {
+      button.disabled = false;
+      button.innerHTML = original;
+    }
+  };
+}
+
 $("#close-login").onclick = () => dialog.close();
 $("#cancel-login").onclick = () => dialog.close();
 
