@@ -12471,5 +12471,319 @@ export const curriculumLessons = [
         ]
       ]
     ]
+  },
+  {
+    "id": "base-numeros-mil",
+    "since": "2026-11-28",
+    "title": "Números hasta 10.000",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA04 OA 01 · Contar, leer y comparar",
+    "concept": "Los números hasta 10.000 se leen por partes: primero los miles y después tres cifras más. Si falta un lugar, se escribe un 0. Para comparar, se mira cifra por cifra desde la izquierda.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 3° y 4° Básico, OA 1 a OA 3.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "«Cuatro mil treinta y seis» se escribe 4.036: después del 4 van tres cifras. Contando de 100 en 100 desde 2.800: 2.900, 3.000, 3.100.",
+    "status": "published",
+    "questions": [
+      [
+        "De 100 en 100: 8.700, 8.800, 8.900, ?",
+        9000,
+        "Cuenta de 100 en 100. ¿Qué número sigue?",
+        "Suma 100 al último número; fíjate en el cambio de unidad de mil.",
+        "8.900 + 100 = 9.000.",
+        [
+          [
+            8901,
+            "Se cuenta de 100 en 100, no de 1 en 1."
+          ]
+        ]
+      ],
+      [
+        "4 mil 692",
+        4692,
+        "Escribe el número con cifras.",
+        "Los miles van primero y después tres cifras más; si falta un lugar, va un 0.",
+        "4 mil = 4.000; 4.000 + 692 = 4.692."
+      ],
+      [
+        "Mayor: 8.959 o 8.919",
+        8959,
+        "¿Cuál de los dos números es mayor? Escríbelo.",
+        "Compara cifra por cifra desde la izquierda: miles, centenas, decenas y unidades.",
+        "Los miles y las centenas son iguales; 8.959 tiene más decenas.",
+        [
+          [
+            8919,
+            "Ese es el menor."
+          ]
+        ]
+      ],
+      [
+        "¿Cuántas centenas completas hay en 2.804?",
+        28,
+        "¿Cuántas centenas completas caben en 2.804?",
+        "Tapa las dos últimas cifras: lo que queda son las centenas.",
+        "2.804 tiene 28 centenas y sobran 4.",
+        [
+          [
+            8,
+            "Esa es solo la cifra de las centenas; cuenta también las que forman los miles."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "¿Cuántas centenas completas hay en 1.657?",
+      16,
+      "¿Cuántas centenas completas caben en 1.657?",
+      "Tapa las dos últimas cifras: lo que queda son las centenas.",
+      "1.657 tiene 16 centenas y sobran 57.",
+      [
+        [
+          6,
+          "Esa es solo la cifra de las centenas; cuenta también las que forman los miles."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "base-rectangulos-disenar",
+    "since": "2026-11-28",
+    "title": "Diseñar rectángulos",
+    "subject": "matematica",
+    "grade": "6b",
+    "description": "MA05 OA 21 · Dado el perímetro o el área",
+    "concept": "El perímetro de un rectángulo tiene dos largos y dos anchos: la mitad del perímetro es largo + ancho. El área es largo · ancho. Con un mismo perímetro caben rectángulos distintos, y el más parejo encierra más área.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 5° Básico, OA 21.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Con 16 cm de perímetro, largo + ancho = 8: un rectángulo de 6 por 2 tiene área 12 y uno de 4 por 4 tiene área 16.",
+    "status": "published",
+    "questions": [
+      [
+        "Perímetro 20 cm y largo 7 cm: ancho",
+        3,
+        "Un rectángulo tiene 20 cm de perímetro y su largo mide 7 cm. ¿Cuánto mide su ancho?",
+        "El perímetro tiene dos largos y dos anchos: la mitad es un largo más un ancho.",
+        "20 ÷ 2 = 10; 10 − 7 = 3 cm.",
+        [
+          [
+            13,
+            "Primero divide el perímetro en 2."
+          ],
+          [
+            6,
+            "Quedan dos anchos: divide por 2."
+          ]
+        ]
+      ],
+      [
+        "Área 72 cm² y largo 8 cm: perímetro",
+        34,
+        "Un rectángulo tiene 72 cm² de área y su largo mide 8 cm. ¿Cuál es su perímetro?",
+        "Primero encuentra el ancho con el área; después da la vuelta completa.",
+        "Ancho: 72 ÷ 8 = 9; perímetro: 2 · (8 + 9) = 34 cm.",
+        [
+          [
+            17,
+            "Falta la otra mitad de la vuelta."
+          ],
+          [
+            72,
+            "Esa es el área."
+          ]
+        ]
+      ],
+      [
+        "Rectángulos de lados enteros con área 30 cm²",
+        4,
+        "¿Cuántos rectángulos distintos, con lados enteros en cm, tienen 30 cm² de área? (El de 2 por 3 y el de 3 por 2 cuentan como uno.)",
+        "Busca pares de números que multiplicados den 30.",
+        "1 por 30; 2 por 15; 3 por 10; 5 por 6: 4 rectángulos.",
+        [
+          [
+            8,
+            "Un rectángulo girado es el mismo: no lo cuentes dos veces."
+          ]
+        ]
+      ],
+      [
+        "Perímetro 28 cm: mayor área con lados enteros",
+        49,
+        "Con 28 cm de cuerda armas rectángulos de lados enteros. ¿Cuál es el área más grande que puedes encerrar?",
+        "Largo y ancho suman la mitad del perímetro; el área crece mientras más parecidos son.",
+        "Largo + ancho = 14; lo más parejo es 7 y 7: 7 · 7 = 49 cm².",
+        [
+          [
+            14,
+            "Esa es la suma de los lados, no el área."
+          ],
+          [
+            13,
+            "Un rectángulo muy flaco encierra poco: hazlo más parejo."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Perímetro 12 cm: mayor área con lados enteros",
+      9,
+      "Con 12 cm de cuerda armas rectángulos de lados enteros. ¿Cuál es el área más grande que puedes encerrar?",
+      "Largo y ancho suman la mitad del perímetro; el área crece mientras más parecidos son.",
+      "Largo + ancho = 6; lo más parejo es 3 y 3: 3 · 3 = 9 cm².",
+      [
+        [
+          6,
+          "Esa es la suma de los lados, no el área."
+        ],
+        [
+          5,
+          "Un rectángulo muy flaco encierra poco: hazlo más parejo."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "inecuaciones-racionales",
+    "since": "2026-11-28",
+    "title": "Inecuaciones con fracciones y decimales",
+    "subject": "matematica",
+    "grade": "8b",
+    "description": "MA08 OA 09 · Desigualdades con coeficientes racionales",
+    "concept": "Una inecuación se resuelve como una ecuación: lo que haces a un lado, lo haces al otro. Con una excepción: si multiplicas o divides por un número negativo, el signo de la desigualdad se da vuelta.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 8° Básico, OA 9.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "x/4 − 1 > 2 → x/4 > 3 → x > 12: el menor entero que cumple es 13. Y −2x < 6 → x > −3.",
+    "status": "published",
+    "questions": [
+      [
+        "x/5 + 7 > 13: menor entero",
+        31,
+        "¿Cuál es el menor número entero que cumple la inecuación?",
+        "Resta 7 y multiplica por 5 en ambos lados.",
+        "x/5 > 6 → x > 30. El menor entero es 31.",
+        [
+          [
+            30,
+            "x debe ser mayor que 30: 30 no sirve."
+          ]
+        ]
+      ],
+      [
+        "0,5x − 3 ≤ 0,5: mayor entero",
+        7,
+        "¿Cuál es el mayor número entero que cumple la inecuación?",
+        "Suma 3 y divide por 0,5 en ambos lados.",
+        "0,5x ≤ 3,5 → x ≤ 7. El mayor entero es 7.",
+        [
+          [
+            8,
+            "x puede ser igual a 7, pero no mayor."
+          ]
+        ]
+      ],
+      [
+        "−x/3 > 6: mayor entero",
+        -19,
+        "¿Cuál es el mayor número entero que cumple la inecuación?",
+        "Multiplica por −3: al multiplicar por un negativo, el signo de la desigualdad se da vuelta.",
+        "x < −18. El mayor entero es −19.",
+        [
+          [
+            -18,
+            "x debe ser menor que −18: −18 no sirve."
+          ],
+          [
+            19,
+            "Al multiplicar por un negativo se da vuelta la desigualdad."
+          ]
+        ]
+      ],
+      [
+        "(x − 3)/3 ≥ 2: menor entero",
+        9,
+        "¿Cuál es el menor número entero que cumple la inecuación?",
+        "Multiplica por 3 y después despeja x.",
+        "x − 3 ≥ 6 → x ≥ 9. Como puede ser igual, el menor entero es 9.",
+        [
+          [
+            10,
+            "Con «≥» el borde también sirve."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "(x − 3)/2 ≥ 1: menor entero",
+      5,
+      "¿Cuál es el menor número entero que cumple la inecuación?",
+      "Multiplica por 2 y después despeja x.",
+      "x − 3 ≥ 2 → x ≥ 5. Como puede ser igual, el menor entero es 5.",
+      [
+        [
+          6,
+          "Con «≥» el borde también sirve."
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "nubes-comparar",
+    "since": "2026-11-28",
+    "title": "Comparar poblaciones con nubes de puntos",
+    "subject": "matematica",
+    "grade": "1m",
+    "description": "MA1M OA 13 · Dos grupos, dos tendencias",
+    "concept": "Una nube de puntos muestra cómo se relacionan dos variables en un grupo: si al aumentar una la otra tiende a subir, la relación es positiva; si tiende a bajar, negativa. Para comparar dos grupos se comparan sus rectas de ajuste y sus promedios.\nReferencia curricular (MINEDUC): Bases Curriculares de Matemática, 1° Medio, OA 13.\nActividad original de socatres; practica aspectos del objetivo, no su cobertura completa.",
+    "examples": "Si en el curso A la recta es y = 2x + 1 y en el B es y = x + 4, con x = 5 el curso A predice 11 y el B, 9: en A, y crece más rápido.",
+    "status": "published",
+    "questions": [
+      [
+        "Grupo A: y = x + 2; grupo B: y = 3x + 2. ¿En qué grupo y crece más rápido?\n1. Grupo A\n2. Grupo B\n3. Igual",
+        2,
+        "Cada recta resume la nube de puntos de un grupo. Compara sin calcular.",
+        "La pendiente dice cuánto sube y por cada unidad de x.",
+        "La pendiente de B (3) es mayor: ahí y crece más rápido."
+      ],
+      [
+        "A: y = 2x + 4; B: y = 0,5x + 3; con x = 4, diferencia",
+        7,
+        "Las rectas de ajuste de dos grupos son A: y = 2x + 4 y B: y = 0,5x + 3. Para x = 4, ¿cuánto se diferencian sus predicciones?",
+        "Calcula la predicción de cada grupo y réstalas (la mayor menos la menor).",
+        "A: 12; B: 5; diferencia: 7.",
+        [
+          [
+            17,
+            "Se pide la diferencia, no la suma."
+          ]
+        ]
+      ],
+      [
+        "Puntos: (1, 10) (2, 8) (3, 7) (4, 5) (5, 3). ¿Qué relación muestran?\n1. Positiva: sube\n2. Negativa: baja\n3. Ninguna",
+        2,
+        "Mira la nube de puntos de izquierda a derecha.",
+        "Si al aumentar x, y también tiende a aumentar, la relación es positiva.",
+        "Al avanzar x, y tiende a bajar: relación negativa."
+      ],
+      [
+        "Horas de estudio grupo A: 5, 2, 8; grupo B: 6, 3, 3. Diferencia de promedios",
+        1,
+        "Para comparar dos grupos, compara sus promedios. ¿Cuánto se diferencian?",
+        "Calcula el promedio de cada grupo y réstalos.",
+        "A: 5 + 2 + 8 = 15, ÷ 3 = 5; B: 6 + 3 + 3 = 12, ÷ 3 = 4; diferencia: 1.",
+        [
+          [
+            3,
+            "Falta dividir por la cantidad de datos."
+          ]
+        ]
+      ]
+    ],
+    "review": [
+      "Horas de estudio grupo A: 8, 4, 9; grupo B: 3, 3, 6. Diferencia de promedios",
+      3,
+      "Para comparar dos grupos, compara sus promedios. ¿Cuánto se diferencian?",
+      "Calcula el promedio de cada grupo y réstalos.",
+      "A: 8 + 4 + 9 = 21, ÷ 3 = 7; B: 3 + 3 + 6 = 12, ÷ 3 = 4; diferencia: 3.",
+      [
+        [
+          9,
+          "Falta dividir por la cantidad de datos."
+        ]
+      ]
+    ]
   }
 ];

@@ -10,7 +10,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "Todo lo que viene después se apoya en estas bases. Si alguna te cuesta, no pasa nada: aquí se practica sin apuro, con dinero, medidas y repartos.",
     rule: "🧱 Paso a paso: haz una cosa a la vez y revisa con la operación contraria (la resta revisa la suma; la multiplicación revisa la división).",
     notebookTip: "Dibuja las monedas, los grupos o las partes en tu cuaderno antes de hacer la cuenta.",
-    lessonIds: ["base-valor-posicional", "base-numeros-grandes", "base-redondeo", "base-suma-resta", "base-ecuaciones-cajitas", "base-patrones", "base-multiplicar", "base-cero-uno", "base-mult-dos-cifras", "base-dividir", "base-division-resto", "base-division-larga", "base-fracciones", "base-fracciones-equivalentes", "base-fracciones-recta", "base-decimales", "base-decimales-comparar", "base-longitud", "base-masa", "base-tiempo", "base-calendario", "base-perimetro", "base-area", "base-volumen-cubitos", "base-angulos-tipos", "base-paralelas", "base-simetria", "base-cuadriculas", "base-cuerpos", "base-redes-vistas", "base-graficos-barras", "base-diagrama-puntos", "base-posibilidad"],
+    lessonIds: ["base-valor-posicional", "base-numeros-mil", "base-numeros-grandes", "base-redondeo", "base-suma-resta", "base-ecuaciones-cajitas", "base-patrones", "base-multiplicar", "base-cero-uno", "base-mult-dos-cifras", "base-dividir", "base-division-resto", "base-division-larga", "base-fracciones", "base-fracciones-equivalentes", "base-fracciones-recta", "base-decimales", "base-decimales-comparar", "base-longitud", "base-masa", "base-tiempo", "base-calendario", "base-perimetro", "base-area", "base-rectangulos-disenar", "base-volumen-cubitos", "base-angulos-tipos", "base-paralelas", "base-simetria", "base-cuadriculas", "base-cuerpos", "base-redes-vistas", "base-graficos-barras", "base-diagrama-puntos", "base-posibilidad"],
     // Se ve en cualquier curso: los vacíos de base no dependen del curso.
     forAllGrades: true,
   },
@@ -64,7 +64,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "Al distribuir factores con paréntesis, el término exterior multiplica a cada término interior: a(b + c) = ab + ac. Recuerda que (-) × (-) = (+) y (-) × (+) = (-).",
     rule: "🎯 Método de distribución: Elimina primero los paréntesis multiplicando signo por signo, reduce términos semejantes en cada lado y luego traslada las incógnitas.",
     notebookTip: "Encierra en un círculo las incógnitas y en un cuadrado los números libres antes de moverlos para no confundir signos en tu hoja.",
-    lessonIds: ["enteros-mult", "signs", "algebra-producto", "both", "racionales-mult", "racionales", "combinadas", "ecuaciones-fracciones"],
+    lessonIds: ["enteros-mult", "signs", "algebra-producto", "both", "racionales-mult", "racionales", "combinadas", "ecuaciones-fracciones", "inecuaciones-racionales"],
   },
   {
     id: "unit-math-3",
@@ -116,7 +116,7 @@ export const UNIT_DEFINITIONS = [
     concepts: "Dos figuras semejantes tienen la misma forma: todos sus lados se multiplican por el mismo número. En probabilidad, «o» suma y «y» multiplica.",
     rule: "🔍 Busca el factor: ¿por cuánto se multiplicó? Ese mismo número sirve para todos los lados.",
     notebookTip: "Dibuja las dos figuras una al lado de la otra y une con flechas los lados que se corresponden.",
-    lessonIds: ["sectores-circulares", "cono", "homotecia", "vectores", "tales", "semejanza", "euclides", "doble-entrada", "recta-ajuste", "reglas-probabilidad", "galton"],
+    lessonIds: ["sectores-circulares", "cono", "homotecia", "vectores", "tales", "semejanza", "euclides", "doble-entrada", "recta-ajuste", "nubes-comparar", "reglas-probabilidad", "galton"],
   },
   {
     id: "unit-math-2m-alg",

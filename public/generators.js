@@ -3603,6 +3603,119 @@ function ipcUf(rng, level) {
     `${a} % − ${b} % ≈ ${a - b} %. Lo demás del aumento solo compensa la subida de precios.`, [[a, "Parte de ese aumento se lo come la inflación."], [a + b, "La inflación resta, no suma."]]];
 }
 
+// Lote 15: objetivos que estaban cubiertos a medias.
+function baseNumerosMil(rng, level) {
+  if (level === 0) {
+    const step = pick(rng, [10, 100]);
+    const end = step * (10 * int(rng, 2, 9) + 10) - step;
+    const seq = [end - 2 * step, end - step, end];
+    return [`De ${step} en ${step}: ${seq.map(pesos).join(", ")}, ?`, end + step, `Cuenta de ${step} en ${step}. ¿Qué número sigue?`, `Suma ${step} al último número; fíjate en el cambio de ${step === 10 ? "centena" : "unidad de mil"}.`,
+      `${pesos(end)} + ${step} = ${pesos(end + step)}.`, [[end + 1, `Se cuenta de ${step} en ${step}, no de 1 en 1.`]]];
+  }
+  if (level === 1) {
+    // A veces sin centenas («7 mil 58»): ahí se practica el 0.
+    const [m, rest] = [int(rng, 1, 9), rng() < 0.5 ? int(rng, 1, 99) : int(rng, 100, 999)];
+    const n = m * 1000 + rest;
+    return [`${m} mil ${rest}`, n, "Escribe el número con cifras.", "Los miles van primero y después tres cifras más; si falta un lugar, va un 0.",
+      `${m} mil = ${pesos(m * 1000)}; ${pesos(m * 1000)} + ${rest} = ${pesos(n)}.`, [[Number(`${m}${rest}`), "Después de los miles van siempre tres cifras: completa con 0."]]];
+  }
+  if (level === 2) {
+    // Mismos miles y centenas: se decide en las decenas (las unidades distraen).
+    const base = 1000 * int(rng, 1, 9) + 100 * int(rng, 0, 9);
+    const [d1, d2] = shuffle(rng, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 2);
+    const [a, b] = [base + 10 * d1 + int(rng, 0, 9), base + 10 * d2 + int(rng, 0, 9)];
+    return [`Mayor: ${pesos(a)} o ${pesos(b)}`, Math.max(a, b), "¿Cuál de los dos números es mayor? Escríbelo.", "Compara cifra por cifra desde la izquierda: miles, centenas, decenas y unidades.",
+      `Los miles y las centenas son iguales; ${pesos(Math.max(a, b))} tiene más decenas.`, [[Math.min(a, b), "Ese es el menor."]]];
+  }
+  const n = int(rng, 1100, 9899);
+  return [`¿Cuántas centenas completas hay en ${pesos(n)}?`, Math.floor(n / 100), `¿Cuántas centenas completas caben en ${pesos(n)}?`, "Tapa las dos últimas cifras: lo que queda son las centenas.",
+    `${pesos(n)} tiene ${Math.floor(n / 100)} centenas y sobran ${n % 100}.`, [[Math.floor(n / 100) % 10, "Esa es solo la cifra de las centenas; cuenta también las que forman los miles."]]];
+}
+
+function baseRectangulosDisenar(rng, level) {
+  if (level === 0) {
+    const [a, b] = [int(rng, 3, 15), int(rng, 2, 12)];
+    return [`Perímetro ${2 * (a + b)} cm y largo ${a} cm: ancho`, b, `Un rectángulo tiene ${2 * (a + b)} cm de perímetro y su largo mide ${a} cm. ¿Cuánto mide su ancho?`, "El perímetro tiene dos largos y dos anchos: la mitad es un largo más un ancho.",
+      `${2 * (a + b)} ÷ 2 = ${a + b}; ${a + b} − ${a} = ${b} cm.`, [[2 * (a + b) - a, "Primero divide el perímetro en 2."], [2 * (a + b) - 2 * a, "Quedan dos anchos: divide por 2."]]];
+  }
+  if (level === 1) {
+    const [a, b] = [int(rng, 3, 12), int(rng, 2, 9)];
+    return [`Área ${a * b} cm² y largo ${a} cm: perímetro`, 2 * (a + b), `Un rectángulo tiene ${a * b} cm² de área y su largo mide ${a} cm. ¿Cuál es su perímetro?`, "Primero encuentra el ancho con el área; después da la vuelta completa.",
+      `Ancho: ${a * b} ÷ ${a} = ${b}; perímetro: 2 · (${a} + ${b}) = ${2 * (a + b)} cm.`, [[a + b, "Falta la otra mitad de la vuelta."], [a * b, "Esa es el área."]]];
+  }
+  if (level === 2) {
+    const A = pick(rng, [12, 16, 18, 20, 24, 30, 36]);
+    const pairs = [];
+    for (let s = 1; s * s <= A; s++) if (A % s === 0) pairs.push(`${s} por ${A / s}`);
+    return [`Rectángulos de lados enteros con área ${A} cm²`, pairs.length, `¿Cuántos rectángulos distintos, con lados enteros en cm, tienen ${A} cm² de área? (El de 2 por 3 y el de 3 por 2 cuentan como uno.)`, `Busca pares de números que multiplicados den ${A}.`,
+      `${pairs.join("; ")}: ${pairs.length} rectángulos.`, [[pairs.length * 2, "Un rectángulo girado es el mismo: no lo cuentes dos veces."]]];
+  }
+  const s = int(rng, 5, 15);
+  const [a, b] = [Math.floor(s / 2), Math.ceil(s / 2)];
+  return [`Perímetro ${2 * s} cm: mayor área con lados enteros`, a * b, `Con ${2 * s} cm de cuerda armas rectángulos de lados enteros. ¿Cuál es el área más grande que puedes encerrar?`, "Largo y ancho suman la mitad del perímetro; el área crece mientras más parecidos son.",
+    `Largo + ancho = ${s}; lo más parejo es ${a} y ${b}: ${a} · ${b} = ${a * b} cm².`, [[s, "Esa es la suma de los lados, no el área."], [(s - 1), "Un rectángulo muy flaco encierra poco: hazlo más parejo."]]];
+}
+
+function inecuacionesRacionales(rng, level) {
+  if (level === 0) {
+    const [a, b, k] = [int(rng, 2, 5), int(rng, 1, 9), int(rng, 1, 6)];
+    const c = b + k;
+    return [`x/${a} + ${b} > ${c}: menor entero`, a * k + 1, "¿Cuál es el menor número entero que cumple la inecuación?", `Resta ${b} y multiplica por ${a} en ambos lados.`,
+      `x/${a} > ${k} → x > ${a * k}. El menor entero es ${a * k + 1}.`, [[a * k, `x debe ser mayor que ${a * k}: ${a * k} no sirve.`]]];
+  }
+  if (level === 1) {
+    const [k, kTxt] = pick(rng, [[0.5, "0,5"], [0.25, "0,25"], [1.5, "1,5"]]);
+    const [b, x] = [int(rng, 1, 6), k === 1.5 ? 2 * int(rng, 1, 6) : int(rng, 2, 12)];
+    const c = cents(k * x - b);
+    return [`${kTxt}x − ${b} ≤ ${dec(c)}: mayor entero`, x, "¿Cuál es el mayor número entero que cumple la inecuación?", `Suma ${b} y divide por ${kTxt} en ambos lados.`,
+      `${kTxt}x ≤ ${dec(cents(c + b))} → x ≤ ${x}. El mayor entero es ${x}.`, [[x + 1, `x puede ser igual a ${x}, pero no mayor.`]]];
+  }
+  if (level === 2) {
+    const [a, c] = [int(rng, 2, 5), int(rng, 1, 6)];
+    return [`−x/${a} > ${c}: mayor entero`, -a * c - 1, "¿Cuál es el mayor número entero que cumple la inecuación?", `Multiplica por −${a}: al multiplicar por un negativo, el signo de la desigualdad se da vuelta.`,
+      `x < −${a * c}. El mayor entero es ${num(-a * c - 1)}.`, [[-a * c, `x debe ser menor que −${a * c}: −${a * c} no sirve.`], [a * c + 1, "Al multiplicar por un negativo se da vuelta la desigualdad."]]];
+  }
+  const [a, c, b] = [int(rng, 2, 5), int(rng, 1, 6), nonZero(rng, -6, 6)];
+  return [`(x ${plus(b)})/${a} ≥ ${c}: menor entero`, a * c - b, "¿Cuál es el menor número entero que cumple la inecuación?", `Multiplica por ${a} y después despeja x.`,
+    `x ${plus(b)} ≥ ${a * c} → x ≥ ${num(a * c - b)}. Como puede ser igual, el menor entero es ${num(a * c - b)}.`, [[a * c - b + 1, "Con «≥» el borde también sirve."]]];
+}
+
+function nubesComparar(rng, level) {
+  if (level === 0) {
+    const [m1, m2] = shuffle(rng, [0.5, 1, 1.5, 2, 3]).slice(0, 2);
+    const ans = m1 > m2 ? 1 : 2;
+    return [`Grupo A: y = ${dec(m1)}x + 2; grupo B: y = ${dec(m2)}x + 2. ¿En qué grupo y crece más rápido?\n1. Grupo A\n2. Grupo B\n3. Igual`, ans, "Cada recta resume la nube de puntos de un grupo. Compara sin calcular.", "La pendiente dice cuánto sube y por cada unidad de x.",
+      `La pendiente de ${ans === 1 ? "A" : "B"} (${dec(Math.max(m1, m2))}) es mayor: ahí y crece más rápido.`, []];
+  }
+  if (level === 1) {
+    const [m1, n1, m2, n2] = [pick(rng, [0.5, 1, 2]), int(rng, 1, 6), pick(rng, [0.5, 1, 2]), int(rng, 1, 6)];
+    const x = 2 * int(rng, 2, 6);
+    const diff = cents(Math.abs(m1 * x + n1 - (m2 * x + n2)));
+    if (!diff) return nubesComparar(rng, level);
+    return [`A: y = ${dec(m1)}x + ${n1}; B: y = ${dec(m2)}x + ${n2}; con x = ${x}, diferencia`, diff, `Las rectas de ajuste de dos grupos son A: y = ${dec(m1)}x + ${n1} y B: y = ${dec(m2)}x + ${n2}. Para x = ${x}, ¿cuánto se diferencian sus predicciones?`, "Calcula la predicción de cada grupo y réstalas (la mayor menos la menor).",
+      `A: ${dec(cents(m1 * x + n1))}; B: ${dec(cents(m2 * x + n2))}; diferencia: ${dec(diff)}.`, [[cents(m1 * x + n1 + m2 * x + n2), "Se pide la diferencia, no la suma."]]];
+  }
+  if (level === 2) {
+    const up = rng() < 0.5;
+    const xs = [1, 2, 3, 4, 5];
+    const ys = xs.map((x) => (up ? 2 * x + int(rng, 0, 1) : 12 - 2 * x + int(rng, 0, 1)));
+    return [`Puntos: ${xs.map((x, i) => `(${x}, ${ys[i]})`).join(" ")}. ¿Qué relación muestran?\n1. Positiva: sube\n2. Negativa: baja\n3. Ninguna`, up ? 1 : 2, "Mira la nube de puntos de izquierda a derecha.", "Si al aumentar x, y también tiende a aumentar, la relación es positiva.",
+      `Al avanzar x, y tiende a ${up ? "subir: relación positiva" : "bajar: relación negativa"}.`, []];
+  }
+  // Tres datos por grupo, con suma múltiplo de 3 para que el promedio sea entero.
+  const group = () => {
+    const g = [int(rng, 2, 9), int(rng, 2, 9), int(rng, 2, 9)];
+    const r = g.reduce((p, q) => p + q) % 3;
+    if (r) g[2] += 3 - r;
+    return g;
+  };
+  const [A, B] = [group(), group()];
+  const [ma, mb] = [A.reduce((p, q) => p + q) / 3, B.reduce((p, q) => p + q) / 3];
+  if (ma === mb) return nubesComparar(rng, level);
+  return [`Horas de estudio grupo A: ${A.join(", ")}; grupo B: ${B.join(", ")}. Diferencia de promedios`, Math.abs(ma - mb), "Para comparar dos grupos, compara sus promedios. ¿Cuánto se diferencian?", "Calcula el promedio de cada grupo y réstalos.",
+    `A: ${A.join(" + ")} = ${ma * 3}, ÷ 3 = ${ma}; B: ${B.join(" + ")} = ${mb * 3}, ÷ 3 = ${mb}; diferencia: ${Math.abs(ma - mb)}.`, [[Math.abs(ma - mb) * 3, "Falta dividir por la cantidad de datos."]]];
+}
+
 export const generators = {
   equations,
   enteros,
@@ -3759,6 +3872,10 @@ export const generators = {
   "complejos-division": complejosDivision,
   "circunferencia-secantes": circunferenciaSecantes,
   "ipc-uf": ipcUf,
+  "base-numeros-mil": baseNumerosMil,
+  "base-rectangulos-disenar": baseRectangulosDisenar,
+  "inecuaciones-racionales": inecuacionesRacionales,
+  "nubes-comparar": nubesComparar,
 };
 
 export const hasGenerator = (lessonId) => Object.hasOwn(generators, lessonId);

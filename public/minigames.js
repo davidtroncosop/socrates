@@ -727,6 +727,10 @@ Object.assign(GAMES, {
   "complejos-division": [count("(6 + 4i) ÷ 2: divide cada parte por 2. ¿Cuánto queda de cada una?", [["parte real"], ["parte con i"]], [3, 2], "6 ÷ 2 y 4 ÷ 2.", "(6 + 4i) ÷ 2 = 3 + 2i.")],
   "circunferencia-secantes": [mach("Dos secantes desde P: 2 · 12 = 3 · PD. Cambia PD hasta que los productos sean iguales.", "PD", "3 · PD", (x) => 3 * x, 24, { max: 12, win: "PD = 8: 3 · 8 = 24 = 2 · 12." })],
   "ipc-uf": [mach("La UF vale $40.000 (ejemplo). ¿Cuántas UF son $200.000?", "UF", "pesos", (x) => 40000 * x, 200000, { max: 8, show: money, win: "5 UF · $40.000 = $200.000." })],
+  "base-numeros-mil": [{ kind: "build", steps: [1000, 100, 10, 1], target: 4036, prompt: "Arma el número 4.036 con piezas de 1.000, 100, 10 y 1.", win: "4 miles, 0 cientos, 3 dieces y 6 unos: 4.036. El 0 guarda el lugar de los cientos." }],
+  "base-rectangulos-disenar": [mach("Con 16 cm de cuerda, largo + ancho = 8. Cambia el largo y busca el rectángulo de mayor área.", "largo", "área", (x) => x * (8 - x), 16, { start: 1, min: 1, max: 7, draw: (x) => tiles(x, x * (8 - x)), win: "4 por 4 encierra 16 cm²: el más parejo es el que más encierra." })],
+  "inecuaciones-racionales": [mach("x/2 + 1 > 4. Busca el número entero MÁS CHICO que la cumple.", "x", "x/2 + 1", (x) => x / 2 + 1, null, { start: 2, min: 0, max: 12, ok: (x) => x === 7, show: (y) => `${num(y)} ${y > 4 ? "es mayor que 4 ✓" : "no es mayor que 4"}`, goal: "Tiene que cumplirse, y el número anterior no.", hint: "Busca el primero que la cumple.", win: "x = 7: 7/2 + 1 = 4,5 > 4. Con x = 6 da justo 4, que no es mayor." })],
+  "nubes-comparar": [count("En el curso A, por cada hora de estudio la nota sube 2 décimas; en el B, 1 décima. Con 3 horas, ¿cuántas décimas sube cada uno?", [["curso A"], ["curso B"]], [6, 3], "Multiplica las horas por lo que sube en cada curso.", "A sube 6 décimas y B, 3: en A la tendencia es más fuerte.")],
 });
 
 // ── Motor ────────────────────────────────────────────────────────────────────

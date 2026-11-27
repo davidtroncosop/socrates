@@ -27,6 +27,11 @@ function baseAnswer(expr, id, prompt) {
     assert.notEqual(answer, null, `${id}: sin cálculo para «${expr}»`);
     return answer;
   }
+  if (LOTE15.includes(id)) {
+    const answer = lote15Answer(expr, id);
+    assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
+    return answer;
+  }
   if (LOTE14.includes(id)) {
     const answer = lote14Answer(expr, id);
     assert.ok(answer !== null && answer !== undefined, `${id}: sin cálculo para «${expr}»`);
@@ -1081,6 +1086,69 @@ function lote14Answer(expr, id) {
       if ((m = stem.match(/^\$([\d.]+) en UF \(UF = \$([\d.]+)\)$/))) return n(m[1]) / n(m[2]);
       if ((m = stem.match(/^Sueldo sube (\d+) %, IPC (\d+) %: aumento real aproximado$/))) return m[1] - m[2];
       break;
+  }
+  return null;
+}
+
+// Lote 15: objetivos que estaban cubiertos a medias.
+const LOTE15 = ["base-numeros-mil", "base-rectangulos-disenar", "inecuaciones-racionales", "nubes-comparar"];
+function lote15Answer(expr, id) {
+  let m;
+  const n = (v) => Number(String(v).replace(/−/g, "-").replace(/\.(?=\d{3})/g, "").replace(",", "."));
+  const stem = expr.split("\n")[0];
+  // Prueba enteros en un rango amplio: el menor (o el mayor) que cumple.
+  const integers = Array.from({ length: 401 }, (_, i) => i - 200);
+  const holds = (f, op, r) => (x) => ({ ">": f(x) > r, "≥": f(x) >= r, "<": f(x) < r, "≤": f(x) <= r })[op];
+  switch (id) {
+    case "base-numeros-mil":
+      if ((m = stem.match(/^De (\d+) en \d+: ([\d., ]+), \?$/))) { const s = m[2].split(", ").map(n); assert.equal(s[1] - s[0], Number(m[1]), expr); return s.at(-1) + Number(m[1]); }
+      if ((m = stem.match(/^(\d) mil (\d+)$/))) return m[1] * 1000 + Number(m[2]);
+      if ((m = stem.match(/^Mayor: ([\d.]+) o ([\d.]+)$/))) return Math.max(n(m[1]), n(m[2]));
+      if ((m = stem.match(/^¿Cuántas centenas completas hay en ([\d.]+)\?$/))) return Math.floor(n(m[1]) / 100);
+      break;
+    case "base-rectangulos-disenar":
+      if ((m = stem.match(/^Perímetro (\d+) cm y largo (\d+) cm: ancho$/))) return m[1] / 2 - m[2];
+      if ((m = stem.match(/^Área (\d+) cm² y largo (\d+) cm: perímetro$/))) return 2 * (+m[2] + m[1] / m[2]);
+      if ((m = stem.match(/^Rectángulos de lados enteros con área (\d+) cm²$/))) {
+        let c = 0;
+        for (let s = 1; s * s <= m[1]; s++) if (m[1] % s === 0) c++;
+        return c;
+      }
+      if ((m = stem.match(/^Perímetro (\d+) cm: mayor área con lados enteros$/))) {
+        let best = 0;
+        for (let a = 1; a < m[1] / 2; a++) best = Math.max(best, a * (m[1] / 2 - a));
+        return best;
+      }
+      break;
+    case "inecuaciones-racionales": {
+      if ((m = stem.match(/^x\/(\d) \+ (\d+) > (\d+): menor entero$/))) return integers.find(holds((x) => x / m[1] + Number(m[2]), ">", Number(m[3])));
+      if ((m = stem.match(/^([\d,]+)x − (\d+) ≤ ([\d,−-]+): mayor entero$/))) return integers.findLast(holds((x) => n(m[1]) * x - m[2], "≤", n(m[3]) + 1e-9));
+      if ((m = stem.match(/^−x\/(\d) > (\d+): mayor entero$/))) return integers.findLast(holds((x) => -x / m[1], ">", Number(m[2])));
+      if ((m = stem.match(/^\(x ([+−]) (\d+)\)\/(\d) ≥ (\d+): menor entero$/))) {
+        const b = (m[1] === "+" ? 1 : -1) * m[2];
+        return integers.find(holds((x) => (x + b) / m[3], "≥", Number(m[4])));
+      }
+      break;
+    }
+    case "nubes-comparar": {
+      if ((m = stem.match(/^Grupo A: y = ([\d,]*)x \+ 2; grupo B: y = ([\d,]*)x \+ 2\./))) {
+        const [a, b] = [n(m[1] || "1"), n(m[2] || "1")];
+        return a > b ? 1 : a < b ? 2 : 3;
+      }
+      if ((m = stem.match(/^A: y = ([\d,]*)x \+ (\d+); B: y = ([\d,]*)x \+ (\d+); con x = (\d+), diferencia$/))) {
+        const x = Number(m[5]);
+        return Math.round(Math.abs(n(m[1] || "1") * x + Number(m[2]) - (n(m[3] || "1") * x + Number(m[4]))) * 100) / 100;
+      }
+      if ((m = stem.match(/^Puntos: ((?:\(\d+, \d+\) ?)+)\. ¿Qué relación muestran\?$/))) {
+        const ys = [...m[1].matchAll(/\(\d+, (\d+)\)/g)].map((p) => Number(p[1]));
+        return ys.at(-1) > ys[0] ? 1 : ys.at(-1) < ys[0] ? 2 : 3;
+      }
+      if ((m = stem.match(/^Horas de estudio grupo A: ([\d, ]+); grupo B: ([\d, ]+)\. Diferencia de promedios$/))) {
+        const mean = (s) => { const v = s.split(", ").map(Number); return v.reduce((p, q) => p + q) / v.length; };
+        return Math.abs(mean(m[1]) - mean(m[2]));
+      }
+      break;
+    }
   }
   return null;
 }
