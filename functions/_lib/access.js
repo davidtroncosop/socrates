@@ -8,10 +8,14 @@
 // - Un estudiante practica si tiene acceso él, alguno de sus apoderados
 //   vinculados o el docente de alguno de sus cursos. Las cuentas que crea un
 //   apoderado o un docente no tienen prueba propia: dependen de quien las creó.
-// - `paid_until` lo llenará el cobro con Flow; para un piloto con un colegio
-//   se puede poner a mano en la cuenta del docente.
+// - `paid_until` lo llena el cobro con Flow (functions/_lib/billing.js). El
+//   Plan Estudiante de un apoderado cubre a su hijo vinculado más antiguo; el
+//   Plan Familia, a los 3 más antiguos. Para un piloto con un colegio se pone
+//   paid_until a mano en la cuenta del docente (sin plan: sin límite).
 // - Al vencer no se pierde nada: el progreso se sigue guardando y
 //   sincronizando; solo se pausa la práctica nueva y lo que usa IA.
+
+import { needsRefresh, refreshSubscription, SEATS } from "./billing.js";
 
 export const TRIAL_DAYS = 14;
 const DAY = 86400000;
@@ -27,10 +31,12 @@ export function billingStart(env) {
 // Quién puede cubrir a este usuario: él mismo, sus apoderados y sus docentes.
 async function holdersOf(env, user) {
   const { results } = await env.DB.prepare(
-    `SELECT id, role, created_at, consent_by, paid_until, 'self' AS via FROM users WHERE id = ?
-     UNION SELECT u.id, u.role, u.created_at, u.consent_by, u.paid_until, 'parent'
+    `SELECT u.*, 'self' AS via, 0 AS seat FROM users u WHERE u.id = ?
+     UNION SELECT u.*, 'parent',
+         (SELECT COUNT(*) FROM family_links o WHERE o.parent_id = f.parent_id
+            AND (o.created_at < f.created_at OR (o.created_at = f.created_at AND o.child_id < f.child_id)))
        FROM family_links f JOIN users u ON u.id = f.parent_id WHERE f.child_id = ?
-     UNION SELECT u.id, u.role, u.created_at, u.consent_by, u.paid_until, 'school'
+     UNION SELECT u.*, 'school', 0
        FROM class_members m JOIN classes c ON c.id = m.class_id JOIN users u ON u.id = c.teacher_id
        WHERE m.student_id = ?`,
   )
@@ -47,7 +53,11 @@ export async function accessFor(env, user, { admin = false, now = Date.now() } =
     trial = null,
     lastTrial = null;
   for (const h of await holdersOf(env, user)) {
-    if (Number.isFinite(h.paid_until) && h.paid_until > now && (!paid || h.paid_until > paid.endsAt))
+    // Lo pagado por tarjeta se confirma en Flow cuando está por vencer.
+    if (needsRefresh(h, now)) await refreshSubscription(env, h, { now }).catch(() => {});
+    // El plan de un apoderado cubre solo a sus primeros hijos vinculados.
+    const covered = h.via !== "parent" || !SEATS[h.plan] || h.seat < SEATS[h.plan];
+    if (covered && Number.isFinite(h.paid_until) && h.paid_until > now && (!paid || h.paid_until > paid.endsAt))
       paid = { endsAt: h.paid_until, via: h.via };
     // Las cuentas que creó otra persona no tienen prueba propia.
     if (h.consent_by) continue;

@@ -58,30 +58,62 @@ export function paywallView(account) {
   </section>`;
 }
 
-// Planes dentro de la app. El pago con tarjeta (Flow) todavía no está: se
-// avisa en vez de mostrar un botón que no funciona.
-export function plansView(account, now = Date.now()) {
+// Qué pasó al volver de Flow (?pago=…).
+const RESULTS = {
+  ok: "¡Listo! Tu tarjeta quedó registrada y tu plan se activa en cuanto Flow confirme el primer cobro (suele tardar unos segundos).",
+  tarjeta: "Flow no pudo registrar tu tarjeta. Puedes intentarlo de nuevo, también con otra tarjeta.",
+  error: "No pudimos terminar de activar tu plan. Inténtalo de nuevo; si ves un cobro en tu tarjeta, escríbenos y lo resolvemos.",
+};
+const fmtDate = (ms) => new Date(ms).toLocaleDateString("es-CL", { day: "numeric", month: "long", year: "numeric" });
+const planName = (plan) => PLANS.find((p) => p.id === plan)?.name ?? "Tu plan";
+
+// Planes dentro de la app. `billing` viene de GET /api/billing/status (null
+// mientras carga o sin conexión); `result`, del regreso desde Flow.
+export function plansView(account, billing = null, { now = Date.now(), result = "", confirmCancel = false } = {}) {
   const a = account?.access;
-  const status =
-    a?.status === "paid"
-      ? "Tu plan está activo."
+  const active = billing?.active === true;
+  const status = active
+    ? `${planName(billing.plan)} activo${billing.cancelAtPeriodEnd ? `: lo cancelaste y sigue vigente hasta el ${fmtDate(billing.paidUntil)}` : ` hasta el ${fmtDate(billing.paidUntil)}; se renueva solo`}.`
+    : a?.status === "paid"
+      ? "Tienes acceso pagado."
       : a?.status === "trial"
         ? `Estás en la prueba gratis: ${daysLeft(a, now) <= 1 ? "hoy es el último día" : `quedan ${daysLeft(a, now)} días`}.`
         : a?.status === "expired"
           ? "Tu prueba gratis terminó. Tu avance sigue guardado."
           : "";
-  return `<section class="card plans-page">
-    <h1>Planes</h1>
-    ${status ? `<p class="intro">${escape(status)}</p>` : ""}
-    <div class="plans-grid">${PLANS.map(
-      (p) => `<article class="plan-card">
+  const canBuy = billing?.available && billing?.canPay && !active;
+  const cards = PLANS.map(
+    (p) => `<article class="plan-card${active && billing.plan === p.id ? " plan-current" : ""}">
         <h2>${escape(p.name)}</h2>
         <p class="plan-price"><strong>${p.month}</strong> / mes</p>
         <p class="muted">o ${p.year} al año · IVA incluido</p>
         <p>${escape(p.detail)}</p>
+        ${canBuy ? `<div class="actions">${button("Pagar mensual", `subscribe:${p.id}-mes`, "primary")}${button("Pagar anual", `subscribe:${p.id}-anual`)}</div>` : ""}
       </article>`,
-    ).join("")}</div>
-    <p class="callout">💳 Muy pronto vas a poder activar tu plan aquí con tarjeta de crédito o débito. Te avisaremos apenas esté listo.</p>
+  ).join("");
+  const footer = active
+    ? billing.cancelAtPeriodEnd
+      ? ""
+      : confirmCancel
+        ? `<div class="callout">¿Cancelar tu plan? No se hacen más cobros y sigues usando todo hasta el ${fmtDate(billing.paidUntil)}. Tu avance queda guardado. ${button("Sí, cancelar", "cancel-plan-yes", "secondary")} ${button("No, mantener", "go:planes")}</div>`
+        : `<p>${button("Cancelar mi plan", "cancel-plan", "link-button")}</p>`
+    : billing === null
+      ? `<p class="muted">Cargando…</p>`
+      : !billing.available
+        ? `<p class="callout">💳 Muy pronto vas a poder activar tu plan aquí con tarjeta de crédito o débito. Te avisaremos apenas esté listo.</p>`
+        : !billing.canPay
+          ? `<p class="callout">${account?.role === "teacher" ? 'Para cursos y equipos PIE conversamos un piloto con el colegio: <a href="/#colegios">escríbenos</a>.' : "Tu apoderado es quien activa el plan desde su cuenta."}</p>`
+          : `<p class="muted">💳 Pagas con tarjeta de crédito o débito en la página segura de Flow: socatres nunca ve los datos de tu tarjeta. Puedes cancelar cuando quieras y sigues usando lo que ya pagaste.</p>`;
+  return `<section class="card plans-page">
+    <h1>Planes</h1>
+    ${RESULTS[result] ? `<p class="callout" role="status">${escape(RESULTS[result])}</p>` : ""}
+    ${status ? `<p class="intro">${escape(status)}</p>` : ""}
+    <div class="plans-grid">${cards}</div>
+    ${footer}
     <div class="actions">${button("Volver a mi ruta", "exit")}</div>
   </section>`;
 }
+
+// Quién ve «Planes» en el menú: quien paga (no los menores ni los docentes).
+export const showsPlans = (account) =>
+  account?.mode === "account" && (account.role === "parent" || (account.role === "student" && !account.managedByParent));

@@ -22,6 +22,8 @@ import {
 import { readReviewRequest, reviewWork, ReviewError, MAX_IMAGE } from "./work-review.js";
 import { readReflectionRequest, reflect, readEncouragementRequest, encourage } from "./coach.js";
 import { accessFor, hasAccess } from "./access.js";
+import { FlowError } from "./flow.js";
+import { checkout, cardReturn, billingStatus, cancelSubscription, paymentCallback } from "./billing.js";
 import {
   ClassError,
   listClasses,
@@ -313,6 +315,9 @@ const requireRole = (user, role, message) => {
 // Límite de intentos: cuenta por clave dentro de una ventana fija. Frena a
 // quien intenta adivinar contraseñas, códigos de recuperación o de vínculo.
 const LIMITS = {
+  // Cada intento de pago crea un registro de tarjeta en Flow.
+  billing: [10, 60 * 60_000],
+  billingReturn: [60, 15 * 60_000],
   loginIp: [30, 15 * 60_000],
   loginAccount: [10, 15 * 60_000],
   register: [10, 60 * 60_000],
@@ -355,6 +360,15 @@ async function limit(env, kind, who, message = "Demasiados intentos. Espera unos
       env.DB.prepare("DELETE FROM rate_limits WHERE window_start < ?").bind(now - 24 * 60 * 60_000).run(),
     );
 }
+
+// Lo que Flow manda de vuelta (navegador o aviso) es un formulario con un
+// solo dato: el token, que se verifica preguntándole a Flow.
+async function flowToken(request) {
+  if (request.method === "GET") return new URL(request.url).searchParams.get("token");
+  const text = (await request.text()).slice(0, 4096);
+  return new URLSearchParams(text).get("token");
+}
+const redirect = (location) => new Response(null, { status: 303, headers: { location, "cache-control": "no-store" } });
 
 // Lo que usa IA tiene costo: se pausa cuando vence la prueba sin plan.
 async function requireAccess(env, user) {
@@ -895,6 +909,47 @@ const routes = {
     }
   },
 
+  // Planes y pago con Flow -------------------------------------------------------
+  async "GET /api/billing/status"({ env, user }) {
+    return json(await billingStatus(env, user));
+  },
+
+  async "POST /api/billing/checkout"({ request, env, user, waitUntil }) {
+    await limit(env, "billing", user.id, "Hiciste muchos intentos de pago. Espera un rato y vuelve a probar.", waitUntil);
+    return json(await checkout(env, user, await readJson(request), new URL(request.url).origin));
+  },
+
+  async "POST /api/billing/cancel"({ request, env, user }) {
+    await readJson(request);
+    return json(await cancelSubscription(env, user));
+  },
+
+  // Flow devuelve aquí el navegador tras registrar la tarjeta (sin cookie).
+  async "POST /api/billing/card-return"({ request, env, waitUntil }) {
+    await limit(env, "billingReturn", clientIp(request), undefined, waitUntil);
+    try {
+      return redirect(await cardReturn(env, await flowToken(request)));
+    } catch (err) {
+      if (err instanceof FlowError) return redirect("/aprender?pago=error#planes");
+      throw err;
+    }
+  },
+  async "GET /api/billing/card-return"(ctx) {
+    return routes["POST /api/billing/card-return"](ctx);
+  },
+
+  // Aviso de Flow tras cada cobro (urlCallback de los planes).
+  async "POST /api/billing/flow-callback"({ request, env, waitUntil }) {
+    await limit(env, "billingReturn", clientIp(request), undefined, waitUntil);
+    try {
+      await paymentCallback(env, await flowToken(request));
+    } catch (err) {
+      // Flow reintenta si no respondemos 200; un error nuestro no debe repetirse en bucle.
+      if (!(err instanceof FlowError)) throw err;
+    }
+    return new Response("ok", { headers: { "content-type": "text/plain" } });
+  },
+
   // Catálogo central ------------------------------------------------------------
   async "GET /api/catalog"({ env }) {
     const row = await env.DB.prepare("SELECT data, updated_at FROM catalog WHERE id = 1").first();
@@ -987,6 +1042,9 @@ const PUBLIC = new Set([
   "GET /api/catalog",
   "GET /api/push/key",
   "POST /api/telegram/webhook",
+  "POST /api/billing/card-return",
+  "GET /api/billing/card-return",
+  "POST /api/billing/flow-callback",
 ]);
 
 const COMPILED_ROUTES = Object.keys(routes).map((key) => {
@@ -1014,7 +1072,8 @@ function match(method, pathname) {
 }
 
 const MUTATING = new Set(["POST", "PUT", "DELETE", "PATCH"]);
-const ORIGIN_EXEMPT = new Set(["POST /api/telegram/webhook"]);
+// Llegan desde otro sitio por diseño; cada una se verifica con su servicio.
+const ORIGIN_EXEMPT = new Set(["POST /api/telegram/webhook", "POST /api/billing/card-return", "POST /api/billing/flow-callback"]);
 
 function assertSameOrigin(request, routeKey) {
   if (!MUTATING.has(request.method) || ORIGIN_EXEMPT.has(routeKey)) return;
@@ -1038,7 +1097,8 @@ export async function handle(request, env, waitUntil) {
     if (!PUBLIC.has(route.key) && !user) fail(401, "Tu sesión terminó. Vuelve a entrar.");
     return await routes[route.key]({ request, env, user, params: route.params, waitUntil });
   } catch (err) {
-    if (err instanceof HttpError || err instanceof ClassError) return json({ error: err.message }, err.status);
+    if (err instanceof HttpError || err instanceof ClassError || err instanceof FlowError)
+      return json({ error: err.message }, err.status);
     console.error(
       JSON.stringify({
         event: "api_error",

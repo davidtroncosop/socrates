@@ -918,3 +918,206 @@ test("students in a class ride on their teacher's access; admins are always free
   await age(e, "admin@socatres.cl", 400);
   assert.equal((await admin.call("GET", "/api/me")).body.access.status, "free");
 });
+
+// Pago con Flow (simulador) ----------------------------------------------------
+import { sign, signingString, flowDate } from "../functions/_lib/flow.js";
+import { paidUntilFrom, GRACE_DAYS } from "../functions/_lib/billing.js";
+
+const FLOW_ENV = { BILLING_START: "2026-01-01", FLOW_API_URL: "https://sandbox.flow.cl/api", FLOW_API_KEY: "api-prueba", FLOW_SECRET_KEY: "secreto-prueba" };
+
+// «AAAA-MM-DD hh:mm:ss» en hora de Chile, como las fechas de Flow.
+const chile = (ms) => new Date(ms - 3 * 3600_000).toISOString().slice(0, 19).replace("T", " ");
+// Fin del período pagado en el simulador: dentro de 30 días.
+const PERIOD_END = chile(Date.now() + 30 * 86400000);
+
+// Simula la API de Flow: verifica la firma de cada llamada y guarda el estado.
+function flowSim() {
+  const calls = [];
+  const sim = { customers: {}, registrations: {}, subscriptions: {}, cardOk: true, invoicePaid: true, calls };
+  sim.fetch = async (url, init = {}) => {
+    const u = new URL(url);
+    const params = Object.fromEntries(init.method === "GET" || !init.body ? u.searchParams : new URLSearchParams(init.body));
+    const service = u.pathname.replace("/api/", "");
+    calls.push({ service, params, method: init.method });
+    const { s, ...rest } = params;
+    if (s !== (await sign(rest, FLOW_ENV.FLOW_SECRET_KEY)) || rest.apiKey !== FLOW_ENV.FLOW_API_KEY)
+      return new Response(JSON.stringify({ code: 108, message: "firma inválida" }), { status: 401 });
+    const ok = (data) => new Response(JSON.stringify(data), { status: 200 });
+    if (service === "customer/create") {
+      const id = `cus_${Object.keys(sim.customers).length + 1}`;
+      sim.customers[id] = rest;
+      return ok({ customerId: id });
+    }
+    if (service === "customer/register") {
+      const token = `tok_${calls.length}`;
+      sim.registrations[token] = rest.customerId;
+      return ok({ url: "https://sandbox.flow.cl/app/customer/register", token });
+    }
+    if (service === "customer/getRegisterStatus")
+      return sim.registrations[rest.token]
+        ? ok({ status: sim.cardOk ? "1" : "0", customerId: sim.registrations[rest.token], creditCardType: "Visa", last4CardDigits: "4242" })
+        : new Response(JSON.stringify({ code: 404, message: "token" }), { status: 400 });
+    if (service === "subscription/create") {
+      const id = `sus_${Object.keys(sim.subscriptions).length + 1}`;
+      sim.subscriptions[id] = { subscriptionId: id, planId: rest.planId, customerId: rest.customerId, status: 1, cancel_at_period_end: 0 };
+      return ok(sim.subscriptions[id]);
+    }
+    if (service === "subscription/get") {
+      const sub = sim.subscriptions[rest.subscriptionId];
+      return ok({ ...sub, invoices: [{ id: 1, status: sim.invoicePaid ? 1 : 0, period_start: chile(Date.now()), period_end: PERIOD_END }] });
+    }
+    if (service === "subscription/cancel") {
+      sim.subscriptions[rest.subscriptionId].cancel_at_period_end = Number(rest.at_period_end);
+      return ok(sim.subscriptions[rest.subscriptionId]);
+    }
+    if (service === "payment/getStatus") return ok({ status: 2, subscriptionId: "sus_1" });
+    return new Response("{}", { status: 404 });
+  };
+  return sim;
+}
+async function withFlow(sim, fn) {
+  const original = globalThis.fetch;
+  globalThis.fetch = sim.fetch;
+  try {
+    return await fn();
+  } finally {
+    globalThis.fetch = original;
+  }
+}
+// Flow devuelve el navegador con un formulario desde su dominio, sin cookie.
+const fromFlow = (e, path, token) =>
+  handle(new Request(`https://socatres.test${path}`, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded", origin: "https://sandbox.flow.cl", "sec-fetch-site": "cross-site" },
+    body: `token=${token}`,
+  }), e);
+
+test("Flow requests are signed exactly as the docs describe", async () => {
+  assert.equal(signingString({ apiKey: "XXXX-XXXX-XXXX", currency: "CLP", amount: 5000, s: "ignorada" }), "amount5000apiKeyXXXX-XXXX-XXXXcurrencyCLP");
+  assert.match(await sign({ amount: 5000 }, "k"), /^[0-9a-f]{64}$/);
+  assert.equal(flowDate("2026-12-27 10:00:00"), Date.parse("2026-12-27T10:00:00-03:00"));
+  const end = Date.parse("2026-12-27T10:00:00-03:00");
+  assert.equal(paidUntilFrom({ invoices: [{ status: 1, period_end: "2026-12-27 10:00:00" }, { status: 0, period_end: "2027-01-27 10:00:00" }] }), end + GRACE_DAYS * DAYS, "only paid invoices count");
+  assert.equal(paidUntilFrom({ invoices: [{ status: 0, period_end: "2026-12-27 10:00:00" }] }), null);
+});
+
+test("a parent pays with Flow: card on Flow's page, subscription, and access for their child", async () => {
+  const e = env(FLOW_ENV);
+  const mom = client(e), kid = client(e);
+  await parent(mom, "Carla", "carla@correo.cl");
+  await mom.call("POST", "/api/family/children", { name: "Tomás", username: "tomas.r", password: "clave-tomas" });
+  await kid.call("POST", "/api/auth/login", { login: "tomas.r", password: "clave-tomas" });
+  await age(e, "carla@correo.cl", 20);
+  assert.equal((await kid.call("GET", "/api/me")).body.access.status, "expired");
+
+  const sim = flowSim();
+  await withFlow(sim, async () => {
+    const out = await mom.call("POST", "/api/billing/checkout", { plan: "familia-mes" });
+    assert.equal(out.status, 200);
+    assert.match(out.body.redirect, /^https:\/\/sandbox\.flow\.cl\/app\/customer\/register\?token=tok_/);
+    assert.deepEqual(sim.customers.cus_1, { apiKey: "api-prueba", email: "carla@correo.cl", externalId: sim.customers.cus_1.externalId, name: "Carla" });
+    const registerCall = sim.calls.find((c) => c.service === "customer/register");
+    assert.equal(registerCall.params.url_return, "https://socatres.test/api/billing/card-return");
+    assert.ok(!JSON.stringify(sim.calls).includes("4242 4242"), "no card number ever passes through socatres");
+
+    const token = out.body.redirect.split("token=")[1];
+    const back = await fromFlow(e, "/api/billing/card-return", token);
+    assert.equal(back.status, 303);
+    assert.equal(back.headers.get("location"), "/aprender?pago=ok#planes");
+    assert.equal(sim.subscriptions.sus_1.planId, "socatres-familia-mes");
+
+    // Volver a cargar la página de regreso no crea otra suscripción.
+    await fromFlow(e, "/api/billing/card-return", token);
+    assert.equal(Object.keys(sim.subscriptions).length, 1);
+
+    const status = (await mom.call("GET", "/api/billing/status")).body;
+    assert.equal(status.active, true);
+    assert.equal(status.plan, "familia");
+    assert.equal(status.paidUntil, flowDate(PERIOD_END) + GRACE_DAYS * DAYS);
+    assert.deepEqual([(await kid.call("GET", "/api/me")).body.access.status, (await kid.call("GET", "/api/me")).body.access.via], ["paid", "parent"]);
+
+    const cancelled = await mom.call("POST", "/api/billing/cancel", {});
+    assert.equal(cancelled.body.cancelAtPeriodEnd, true);
+    assert.equal(sim.calls.find((c) => c.service === "subscription/cancel").params.at_period_end, "1", "cancel at period end: what was paid is used");
+    assert.equal(cancelled.body.active, true);
+    assert.equal((await mom.call("POST", "/api/billing/checkout", { plan: "familia-mes" })).status, 409, "no double subscription");
+  });
+});
+
+test("Plan Estudiante covers one child and Plan Familia up to three", async () => {
+  const e = env(FLOW_ENV);
+  const mom = client(e);
+  await parent(mom, "Carla", "carla@correo.cl");
+  const kids = [];
+  for (const name of ["uno", "dos", "tres", "cuatro"]) {
+    await mom.call("POST", "/api/family/children", { name, username: `hijo.${name}`, password: "clave-hijo" });
+    const k = client(e);
+    await k.call("POST", "/api/auth/login", { login: `hijo.${name}`, password: "clave-hijo" });
+    kids.push(k);
+  }
+  // Vinculados en orden: «uno» es el más antiguo (sin empates de milisegundo).
+  for (const [i, name] of ["uno", "dos", "tres", "cuatro"].entries())
+    await e.DB.prepare("UPDATE family_links SET created_at = ? WHERE child_id = (SELECT id FROM users WHERE username = ?)")
+      .bind(1000 + i, `hijo.${name}`)
+      .run();
+  await age(e, "carla@correo.cl", 20);
+  const later30 = Date.now() + 30 * DAYS;
+  const statuses = () => Promise.all(kids.map(async (k) => (await k.call("GET", "/api/me")).body.access.status));
+  await e.DB.prepare("UPDATE users SET paid_until = ?, plan = 'estudiante' WHERE email = 'carla@correo.cl'").bind(later30).run();
+  assert.deepEqual(await statuses(), ["paid", "expired", "expired", "expired"], "only the oldest child");
+  await e.DB.prepare("UPDATE users SET plan = 'familia' WHERE email = 'carla@correo.cl'").run();
+  assert.deepEqual(await statuses(), ["paid", "paid", "paid", "expired"]);
+});
+
+test("payments are safe: forged returns, children, teachers and a missing config never create charges", async () => {
+  const e = env(FLOW_ENV);
+  const sim = flowSim();
+  await withFlow(sim, async () => {
+    const forged = await fromFlow(e, "/api/billing/card-return", "inventado");
+    assert.equal(forged.headers.get("location"), "/aprender?pago=error#planes");
+    assert.equal(Object.keys(sim.subscriptions).length, 0);
+
+    const mom = client(e), kid = client(e), teacher = client(e);
+    await parent(mom, "Carla", "carla@correo.cl");
+    await mom.call("POST", "/api/family/children", { name: "Tomás", username: "tomas.r", password: "clave-tomas" });
+    await kid.call("POST", "/api/auth/login", { login: "tomas.r", password: "clave-tomas" });
+    assert.equal((await kid.call("POST", "/api/billing/checkout", { plan: "estudiante-mes" })).status, 403);
+    await teacher.call("POST", "/api/auth/register", { name: "Profe", email: "profe@colegio.cl", role: "teacher", password: "clave-segura" });
+    assert.equal((await teacher.call("POST", "/api/billing/checkout", { plan: "estudiante-mes" })).status, 403);
+    assert.equal((await mom.call("POST", "/api/billing/checkout", { plan: "gratis-para-siempre" })).status, 400);
+    assert.equal((await client(e).call("POST", "/api/billing/checkout", { plan: "estudiante-mes" })).status, 401);
+
+    // Tarjeta rechazada: no se crea suscripción.
+    sim.cardOk = false;
+    const out = await mom.call("POST", "/api/billing/checkout", { plan: "estudiante-mes" });
+    const back = await fromFlow(e, "/api/billing/card-return", out.body.redirect.split("token=")[1]);
+    assert.equal(back.headers.get("location"), "/aprender?pago=tarjeta#planes");
+    assert.equal(Object.keys(sim.subscriptions).length, 0);
+
+    // Un aviso de Flow solo hace que se vuelva a consultar a Flow.
+    const cb = await fromFlow(e, "/api/billing/flow-callback", "tok_x");
+    assert.equal(cb.status, 200);
+  });
+  const off = client(env({ BILLING_START: "2026-01-01" }));
+  await parent(off, "Carla", "carla@correo.cl");
+  assert.equal((await off.call("POST", "/api/billing/checkout", { plan: "estudiante-mes" })).status, 503, "never assumes production without config");
+  assert.equal((await off.call("GET", "/api/billing/status")).body.available, false);
+});
+
+test("an unpaid renewal ends access after the grace days, and a paid one extends it", async () => {
+  const e = env(FLOW_ENV);
+  const mom = client(e);
+  await parent(mom, "Carla", "carla@correo.cl");
+  const sim = flowSim();
+  await withFlow(sim, async () => {
+    const out = await mom.call("POST", "/api/billing/checkout", { plan: "estudiante-mes" });
+    await fromFlow(e, "/api/billing/card-return", out.body.redirect.split("token=")[1]);
+    const row = () => e.DB.prepare("SELECT paid_until, billing_checked_at FROM users WHERE email = 'carla@correo.cl'").first();
+    const first = (await row()).paid_until;
+    assert.ok(first > Date.now());
+    // Una respuesta sin factura pagada no acorta lo ya pagado.
+    sim.invoicePaid = false;
+    await mom.call("GET", "/api/billing/status");
+    assert.equal((await row()).paid_until, first);
+  });
+});

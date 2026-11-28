@@ -58,7 +58,7 @@ import {
   pickDailySheet,
 } from "./sheets.js";
 import { $, escape, button, heading } from "./ui.js";
-import { practiceBlocked, trialBanner, paywallView, plansView } from "./access.js";
+import { practiceBlocked, trialBanner, paywallView, plansView, showsPlans } from "./access.js";
 import { getUnitsForLessons, routeOrder, PREREQUISITES, UNIT_DEFINITIONS, ALL_GRADES_LESSONS } from "./units.js";
 import { getStreakInfo, getXpAndFichas, getBeltInfo, FICHAS_RULE } from "./stats.js";
 import { showUnitGuide, showParentReport, showRewardsModal } from "./dialogs.js";
@@ -81,6 +81,50 @@ const liveAccount = () => {
   }
 };
 const blocked = () => practiceBlocked(liveAccount());
+// Planes: primero se dibuja con lo que se sabe y luego con el estado en Flow.
+let plansState = { billing: null, confirmCancel: false };
+async function plansPage({ confirmCancel = false } = {}) {
+  const result = new URLSearchParams(globalThis.location?.search ?? "").get("pago") ?? "";
+  const draw = () => {
+    if ((location.hash || "") !== "#planes") return; // ya se fue a otra página
+    app.innerHTML = plansView(liveAccount(), plansState.billing, { result, confirmCancel: plansState.confirmCancel });
+  };
+  plansState.confirmCancel = confirmCancel;
+  draw();
+  if (!synced) {
+    plansState.billing = { available: false, canPay: false };
+    return draw();
+  }
+  try {
+    plansState.billing = await api.billingStatus();
+  } catch {
+    plansState.billing = { available: false, canPay: showsPlans(liveAccount()) };
+  }
+  draw();
+  // Al volver de Flow el primer cobro puede tardar: se reintenta unas veces.
+  if (result === "ok" && !plansState.billing.active && (plansPage.tries = (plansPage.tries ?? 0) + 1) <= 4)
+    setTimeout(() => plansPage(), 4000);
+}
+async function subscribe(plan, b) {
+  b.disabled = true;
+  try {
+    const { redirect } = await api.checkout(plan);
+    globalThis.location.href = redirect;
+  } catch (err) {
+    b.disabled = false;
+    app.insertAdjacentHTML?.("afterbegin", `<p class="callout" role="alert">${escape(err.status === 0 ? "Sin conexión: inténtalo cuando vuelvas a tener internet." : err.message)}</p>`);
+  }
+}
+async function cancelPlan() {
+  try {
+    plansState.billing = await api.cancelPlan();
+    plansState.confirmCancel = false;
+    app.innerHTML = plansView(liveAccount(), plansState.billing);
+  } catch (err) {
+    app.insertAdjacentHTML?.("afterbegin", `<p class="callout" role="alert">${escape(err.message)}</p>`);
+  }
+}
+
 function paywall() {
   stopSpeaking();
   session = null;
@@ -392,7 +436,7 @@ function navigate() {
           onOpenSheet: openSheetDirect,
         }),
       contenido: contentManager,
-      planes: () => (app.innerHTML = plansView(liveAccount())),
+      planes: plansPage,
       pausa: paywall,
     })[page] || (isTeacher ? () => navigate() : route)
   )();
@@ -2592,6 +2636,9 @@ app.addEventListener("click", (e) => {
     paywall();
     return;
   }
+  if (action === "subscribe") return subscribe(id, b);
+  if (action === "cancel-plan") return plansPage({ confirmCancel: true });
+  if (action === "cancel-plan-yes") return cancelPlan();
   if (action === "lesson") {
     const lesson = lessons.find((l) => l.id === id);
     if (!lesson || isLocked(lesson)) return;
@@ -2762,6 +2809,8 @@ app.addEventListener("click", (e) => {
 });
 const contentLink = document.querySelector('[data-nav="contenido"]');
 if (contentLink) contentLink.hidden = !isAdmin;
+const plansLink = document.querySelector('[data-nav="planes"]');
+if (plansLink) plansLink.hidden = !showsPlans(account);
 const salaLink = document.querySelector('[data-nav="sala"]');
 if (salaLink) salaLink.hidden = !isTeacher;
 if (isTeacher) {
